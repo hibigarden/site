@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" data-page="addons">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="description"
+      content="browse hibi's built-in addons for markdown, git, vim, math, documentation, and more."
+    />
+    <meta property="og:title" content="addons — hibi" />
+    <meta
+      property="og:description"
+      content="built-in tools for your markdown editor."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script src="/theme-init.js"></script>
+    <link rel="stylesheet" href="/src/style.css" />
+    <script type="module" src="/src/theme.js"></script>
+    <script type="module" src="/src/navigation.js"></script>
+    <script type="module" src="/src/addons.jsx"></script>
+    <title>addons — hibi</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">skip to content</a>
+    <header class="site-header page-header wrap">
+      <a class="wordmark" href="/" aria-label="hibi home">hibi</a>
+      <nav aria-label="main navigation">
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-links"
+        >
+          menu
+        </button>
+        <div class="nav-links" id="site-links">
+          <a href="/#features">features</a>
+          <a href="/addons/" aria-current="page">addons</a>
+          <a href="/#changelog">changelog</a>
+          <a href="/#faq" aria-label="frequently asked questions">faq</a>
+          <a href="/#cloud">cloud</a>
+          <a href="https://docs.hibi.garden"
+            >documentation <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="switch to dark mode"
+          title="switch to dark mode"
+          hidden
+        >
+          <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z" />
+          </svg>
+          <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42m0-14.14-1.42 1.42m-11.3 11.3-1.42 1.42"
+            />
+          </svg>
+        </button>
+      </nav>
+    </header>
+    <main id="main" class="addons-page wrap">
+      <div class="page-intro">
+        <h1>addons</h1>
+        <p>built-in tools for hibi. enable them in settings → addons.</p>
+      </div>
+      <div id="addon-grid"></div>
+      <noscript
+        ><p>
+          enable javascript to browse addon details, or
+          <a href="https://docs.hibi.garden">read the documentation</a>.
+        </p></noscript
+      >
+      <div class="addon-developers">
+        <p>build your own commands, themes, and editor extensions.</p>
+        <a href="https://docs.hibi.garden/#page=docs%2Fdevelopment%2Faddons.md"
+          >addon api <span aria-hidden="true">↗</span></a
+        >
+      </div>
+    </main>
+    <footer class="site-footer wrap">
+      <a class="wordmark" href="/" aria-label="hibi home">hibi</a
+      ><a href="https://docs.hibi.garden"
+        >documentation <span aria-hidden="true">↗</span></a
+      >
+    </footer>
+  </body>
+</html>

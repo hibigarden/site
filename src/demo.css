@@ -1,0 +1,50 @@
+.app[data-platform="linux"] .titlebar {
+  padding-right: var(--titlebar-edge-inset);
+}
+
+.titlebar .palette-trigger,
+.titlebar [aria-label="editor settings"],
+.titlebar [aria-label="open"] {
+  display: none;
+}
+
+.titlebar .view-switch {
+  margin-left: auto;
+}
+
+/* Fit the desktop controls to phones without changing the vendored hibi UI. */
+@media (max-width: 640px) {
+  .app {
+    --editor-padding: 24px;
+  }
+  .sidebar-toolbar,
+  .sidebar-toolbar[data-open="true"] {
+    width: 40px;
+  }
+  .document-toolbar {
+    padding-left: 0;
+    gap: 4px;
+  }
+  .document-actions {
+    display: none;
+  }
+  .palette-trigger .shortcut-keys {
+    display: none;
+  }
+  .settings-sidebar {
+    display: none;
+  }
+  .settings-screen::before {
+    left: 0;
+  }
+  .app[data-sidebar="true"] .editor-surface {
+    width: 100%;
+    transform: none;
+  }
+  .workspace-sidebar {
+    z-index: 3;
+  }
+  .titlebar {
+    z-index: 4;
+  }
+}

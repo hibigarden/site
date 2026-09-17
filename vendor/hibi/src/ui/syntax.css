@@ -1,0 +1,24 @@
+.hibi-token-keyword {
+  color: var(--syntax-keyword);
+}
+.hibi-token-string {
+  color: var(--syntax-string);
+}
+.hibi-token-number {
+  color: var(--syntax-number);
+}
+.hibi-token-comment {
+  color: var(--syntax-comment);
+}
+.hibi-token-type {
+  color: var(--syntax-type);
+}
+.hibi-token-function {
+  color: var(--syntax-function);
+}
+.hibi-token-variable {
+  color: var(--syntax-variable);
+}
+.hibi-token-operator {
+  color: var(--syntax-operator);
+}

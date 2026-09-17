@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en" data-page="home">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="description"
+      content="hibi is a free, fast, extensible markdown editor. local files, three editing modes, and built-in addons."
+    />
+    <meta
+      property="og:title"
+      content="hibi — good markdown editors should be free"
+    />
+    <meta
+      property="og:description"
+      content="a free, fast, extensible markdown editor."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script src="/theme-init.js"></script>
+    <link
+      rel="preload"
+      href="/fonts/eb-garamond-latin-500.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+    <script type="module" src="/src/theme.js"></script>
+    <script type="module" src="/src/navigation.js"></script>
+    <script type="module" src="/src/scale-demo.js"></script>
+    <title>hibi — free markdown editor</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">skip to content</a>
+    <header class="site-header wrap">
+      <a class="wordmark" href="#" aria-label="hibi home">hibi</a>
+      <nav aria-label="main navigation">
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-links"
+        >
+          menu
+        </button>
+        <div class="nav-links" id="site-links">
+          <a href="#features">features</a>
+          <a href="/addons/">addons</a>
+          <a href="#changelog">changelog</a>
+          <a href="#faq" aria-label="frequently asked questions">faq</a>
+          <a href="#cloud">cloud</a>
+          <a href="https://docs.hibi.garden"
+            >documentation <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="switch to dark mode"
+          title="switch to dark mode"
+          hidden
+        >
+          <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z" />
+          </svg>
+          <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42m0-14.14-1.42 1.42m-11.3 11.3-1.42 1.42"
+            />
+          </svg>
+        </button>
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <h1 id="hero-title">
+          good markdown editors<br />should be <span>free</span>.
+        </h1>
+        <div class="hero-actions">
+          <a class="button" href="#editor"
+            >try the editor <span aria-hidden="true">↓</span></a
+          >
+          <a href="https://docs.hibi.garden"
+            >read the docs <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <section class="demo" id="editor" aria-label="hibi editor">
+          <iframe
+            src="/demo/"
+            width="900"
+            height="520"
+            title="hibi markdown editor — interactive demo"
+            loading="lazy"
+            sandbox="allow-scripts allow-same-origin allow-downloads allow-modals allow-popups allow-popups-to-escape-sandbox"
+            referrerpolicy="no-referrer"
+          ></iframe>
+        </section>
+      </section>
+      <section class="features wrap" id="features" aria-label="features">
+        <h2 class="section-title">features</h2>
+        <article class="feature-card feature-files">
+          <h3>local files.</h3>
+          <p>
+            open a folder and write in plain markdown. your files stay on your
+            computer.
+          </p>
+          <div class="file-illustration" aria-hidden="true">
+            <span>your folder</span>
+            <div>
+              <span class="file-glyph">md</span><span>welcome.md</span
+              ><span class="file-local">local</span>
+            </div>
+          </div>
+        </article>
+        <article class="feature-card feature-views">
+          <h3>three ways to write.</h3>
+          <p>
+            rich text, markdown source, or both side by side. switch views
+            without losing your place.
+          </p>
+          <div class="view-illustration" aria-hidden="true">
+            <div><span>markdown</span><code>**hibi**</code></div>
+            <div><span>rich text</span><strong>hibi</strong></div>
+          </div>
+          <div class="view-labels" aria-hidden="true">
+            <span>rich text</span><span>source</span><span>side by side</span>
+          </div>
+        </article>
+        <article class="feature-card feature-customize">
+          <h3>make it yours.</h3>
+          <p>
+            nine colorschemes, rebindable shortcuts, and a toolbar you can
+            rearrange.
+          </p>
+          <div class="palette-illustration" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i
+            ><span>your theme. your keys.</span>
+          </div>
+          <a href="https://docs.hibi.garden/#page=docs%2Fguides%2Fsettings.md"
+            >settings <span aria-hidden="true">↗</span></a
+          >
+        </article>
+        <article class="feature-card feature-addons">
+          <h3>batteries included.</h3>
+          <p>
+            tables, task lists, math, git, vim, and documentation exports.
+            enable the addons you use.
+          </p>
+          <ul class="addon-tags" aria-label="included addons">
+            <li>git</li>
+            <li>vim</li>
+            <li>math</li>
+            <li>graphs</li>
+            <li>documentation</li>
+          </ul>
+          <a href="/addons/">browse addons <span aria-hidden="true">↗</span></a>
+        </article>
+      </section>
+      <section class="faq wrap" id="faq" aria-labelledby="faq-title">
+        <h2 class="section-title" id="faq-title">frequently asked questions</h2>
+        <div class="faq-list">
+          <details>
+            <summary>is hibi free?</summary>
+            <p>yes. hibi is free to use.</p>
+          </details>
+          <details>
+            <summary>where are my notes stored?</summary>
+            <p>
+              on your computer, as plain markdown files. open a folder in hibi
+              to browse and edit them.
+            </p>
+          </details>
+          <details>
+            <summary>how do i enable addons?</summary>
+            <p>
+              open settings → addons in the desktop app. enable the tools you
+              need, or build your own with the addon api.
+            </p>
+          </details>
+          <details>
+            <summary>does hibi have cloud sync?</summary>
+            <p>
+              cloud sync is not available in the current alpha. notes are stored
+              locally.
+            </p>
+          </details>
+          <details>
+            <summary>what stage is hibi in?</summary>
+            <p>
+              hibi is currently in alpha. contributions and feedback are
+              welcome.
+            </p>
+          </details>
+        </div>
+      </section>
+      <section
+        class="cloud-section wrap"
+        id="cloud"
+        aria-labelledby="cloud-title"
+      >
+        <div>
+          <h2 id="cloud-title">cloud</h2>
+          <p>
+            cloud features are not available in the current alpha. hibi
+            currently works with local markdown files.
+          </p>
+        </div>
+        <span class="availability">not available yet</span>
+      </section>
+      <section
+        class="cloud-section wrap"
+        id="changelog"
+        aria-labelledby="changelog-title"
+      >
+        <div>
+          <h2 id="changelog-title">changelog</h2>
+          <p>hibi is currently in alpha.</p>
+        </div>
+        <span class="availability">0.1.0 alpha</span>
+      </section>
+      <section class="extensions wrap" aria-labelledby="extensions-title">
+        <div>
+          <h2 id="extensions-title">extensible by design.</h2>
+          <p>
+            add commands, themes, toolbar actions, and editor features with
+            hibi’s addon api.
+          </p>
+        </div>
+        <a href="https://docs.hibi.garden/#page=docs%2Fdevelopment%2Faddons.md"
+          >build an addon <span aria-hidden="true">↗</span></a
+        >
+      </section>
+    </main>
+    <footer class="site-footer wrap">
+      <a class="wordmark" href="#" aria-label="hibi home">hibi</a
+      ><a href="https://docs.hibi.garden"
+        >documentation <span aria-hidden="true">↗</span></a
+      >
+    </footer>
+  </body>
+</html>

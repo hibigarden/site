@@ -1,0 +1,119 @@
+.sonner {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  width: min(360px, calc(100vw - 32px));
+  max-height: calc(100svh - 64px);
+  overflow-y: auto;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  pointer-events: none;
+  -webkit-app-region: no-drag;
+}
+.sonner[data-position^="top"] {
+  top: max(44px, env(safe-area-inset-top));
+}
+.sonner[data-position^="bottom"] {
+  bottom: max(16px, env(safe-area-inset-bottom));
+}
+.sonner[data-position$="left"] {
+  left: 16px;
+}
+.sonner[data-position$="right"] {
+  right: 16px;
+}
+.sonner[data-position$="center"] {
+  left: 50%;
+  translate: -50% 0;
+}
+.toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  padding: var(--space-3);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+  font: var(--text-ui) / 1.5 var(--font-ui);
+  pointer-events: auto;
+  animation: toast-in var(--motion-feedback) var(--ease-out) both;
+}
+.toast[data-closing="true"] {
+  animation: toast-out var(--motion-feedback) var(--ease-out) both;
+  pointer-events: none;
+}
+.toast-icon {
+  flex-shrink: 0;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  margin-top: 5px;
+  color: var(--accent);
+}
+.toast-copy {
+  flex: 1;
+  min-width: 0;
+  padding-block: var(--space-1);
+  overflow-wrap: anywhere;
+}
+.toast-copy p {
+  margin: var(--space-1) 0 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left;
+  animation: toast-countdown var(--toast-remaining) linear both;
+}
+.toast-progress[data-paused="true"] {
+  animation-play-state: paused;
+}
+@keyframes toast-countdown {
+  from {
+    transform: scaleX(var(--toast-progress));
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast-progress {
+    animation-timing-function: steps(10, end);
+  }
+  .toast,
+  .toast[data-closing="true"] {
+    animation: none;
+  }
+  .toast[data-closing="true"] {
+    opacity: 0;
+  }
+}

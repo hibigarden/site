@@ -1,0 +1,103 @@
+import { useSyncExternalStore } from 'react'
+import { Select, SettingRow } from './Controls'
+import type { ColorschemeStore } from './colorschemes'
+import './colorschemes.css'
+
+export function ColorschemeSettings({
+  store,
+  showLicense = true,
+}: {
+  store: ColorschemeStore
+  showLicense?: boolean
+}) {
+  const { preferences, schemes, active } = useSyncExternalStore(
+    store.subscribe,
+    store.snapshot,
+  )
+  return (
+    <div className="colorscheme-settings">
+      <div className="settings-group">
+        <SettingRow
+          id="theme-mode"
+          label="appearance"
+          description="follow your system, or keep one appearance."
+        >
+          <Select
+            id="theme-mode"
+            value={preferences.mode}
+            onChange={(event) =>
+              store.set({ mode: event.target.value as typeof preferences.mode })
+            }
+          >
+            <option value="system">system</option>
+            <option value="light">light</option>
+            <option value="dark">dark</option>
+          </Select>
+        </SettingRow>
+        {(['light', 'dark'] as const).map((mode) => {
+          const selected = schemes.find(
+            (scheme) =>
+              scheme.id === preferences[mode] && scheme.appearance === mode,
+          )
+          return (
+            <SettingRow
+              key={mode}
+              id={`theme-${mode}`}
+              label={`${mode} colorscheme`}
+              description={
+                selected
+                  ? `${selected.author} · ${selected.license.name}`
+                  : 'selected addon unavailable; using hibi.'
+              }
+            >
+              <div className="colorscheme-choice">
+                {selected && (
+                  <span className="colorscheme-swatches" aria-hidden="true">
+                    {['background', 'surface', 'ink', 'accent'].map((key) => (
+                      <span
+                        key={key}
+                        style={{
+                          background:
+                            selected.colors[
+                              key as keyof typeof selected.colors
+                            ],
+                        }}
+                      />
+                    ))}
+                  </span>
+                )}
+                <Select
+                  id={`theme-${mode}`}
+                  value={selected?.id ?? `hibi-${mode}`}
+                  onChange={(event) =>
+                    store.set({ [mode]: event.target.value })
+                  }
+                >
+                  {schemes
+                    .filter((scheme) => scheme.appearance === mode)
+                    .map((scheme) => (
+                      <option key={scheme.id} value={scheme.id}>
+                        {scheme.name}
+                      </option>
+                    ))}
+                </Select>
+              </div>
+            </SettingRow>
+          )
+        })}
+      </div>
+      {showLicense && (
+        <details className="colorscheme-license">
+          <summary>{active.name} · license and credits</summary>
+          <p>
+            {active.author} · {active.license.name}
+          </p>
+          <pre>{active.license.text}</pre>
+          {active.license.source && (
+            <p className="colorscheme-source">{active.license.source}</p>
+          )}
+        </details>
+      )}
+    </div>
+  )
+}

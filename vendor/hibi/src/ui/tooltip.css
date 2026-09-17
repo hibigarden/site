@@ -1,0 +1,34 @@
+.ui-tooltip {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  max-width: min(320px, calc(100vw - 16px));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity var(--motion-fast) ease-out,
+    display var(--motion-fast) allow-discrete,
+    overlay var(--motion-fast) allow-discrete;
+}
+.ui-tooltip:popover-open {
+  opacity: 1;
+}
+@starting-style {
+  .ui-tooltip:popover-open {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-tooltip {
+    transition: none;
+  }
+}

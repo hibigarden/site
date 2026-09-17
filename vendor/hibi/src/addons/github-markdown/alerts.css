@@ -1,0 +1,33 @@
+blockquote.github-alert {
+  --alert-color: var(--status-info);
+  margin: 1em 0;
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  border-left: 3px solid var(--alert-color);
+  background: color-mix(in srgb, var(--alert-color) 6%, transparent);
+  color: var(--ink);
+}
+.github-alert[data-alert="tip"] {
+  --alert-color: var(--status-success);
+}
+.github-alert[data-alert="important"] {
+  --alert-color: var(--accent);
+}
+.github-alert[data-alert="warning"] {
+  --alert-color: var(--status-warning);
+}
+.github-alert[data-alert="caution"] {
+  --alert-color: var(--status-danger);
+}
+.github-alert > .github-alert-title {
+  margin: 0 0 var(--space-2);
+  color: var(--alert-color);
+  font-weight: 600;
+  user-select: none;
+}
+.github-alert-body > :first-child {
+  margin-top: 0;
+}
+.github-alert-body > :last-child {
+  margin-bottom: 0;
+}

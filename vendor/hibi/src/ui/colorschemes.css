@@ -1,0 +1,42 @@
+.colorscheme-choice {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  max-width: 100%;
+}
+.colorscheme-swatches {
+  display: inline-flex;
+  gap: 3px;
+}
+.colorscheme-swatches span {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+.colorscheme-license {
+  margin: var(--space-3) 0 var(--space-5);
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.colorscheme-license summary {
+  cursor: pointer;
+}
+.colorscheme-license pre {
+  margin: var(--space-3) 0;
+  padding: var(--space-3);
+  background: var(--surface);
+  border-radius: var(--radius-control);
+  color: var(--ink);
+  font: var(--text-xs) / 1.5 var(--font-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.colorscheme-source {
+  overflow-wrap: anywhere;
+}
+.colorscheme-settings {
+  container: settings / inline-size;
+}

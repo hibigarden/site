@@ -1,0 +1,77 @@
+import {
+  type ComponentPropsWithRef,
+  useImperativeHandle,
+  useLayoutEffect,
+  useRef,
+} from 'react'
+import './modal.css'
+
+export type ModalProps = Omit<
+  ComponentPropsWithRef<'dialog'>,
+  'open' | 'onCancel' | 'onClick'
+> & {
+  'aria-label': string
+  onDismiss: () => void
+  closeOnOutsideClick?: boolean
+}
+
+/** Native focus trap and focus restoration, shared by app and addon dialogs. */
+export function Modal({
+  ref,
+  onDismiss,
+  closeOnOutsideClick = true,
+  className = '',
+  onKeyDown,
+  onPointerDown,
+  ...props
+}: ModalProps) {
+  const element = useRef<HTMLDialogElement>(null)
+  const outsidePress = useRef(false)
+  useImperativeHandle(ref, () => element.current as HTMLDialogElement)
+  useLayoutEffect(() => {
+    const dialog = element.current
+    dialog?.showModal()
+    return () => dialog?.close()
+  }, [])
+  return (
+    <dialog
+      {...props}
+      ref={element}
+      className={`modal ${className}`}
+      closedby={closeOnOutsideClick ? 'any' : 'closerequest'}
+      onKeyDown={(event) => {
+        onKeyDown?.(event)
+        if (!event.defaultPrevented && event.key === 'Escape') {
+          event.preventDefault()
+          onDismiss()
+        }
+      }}
+      onCancel={(event) => {
+        event.preventDefault()
+        onDismiss()
+      }}
+      onPointerDown={(event) => {
+        onPointerDown?.(event)
+        const bounds = event.currentTarget.getBoundingClientRect()
+        outsidePress.current =
+          event.clientX < bounds.left ||
+          event.clientX > bounds.right ||
+          event.clientY < bounds.top ||
+          event.clientY > bounds.bottom
+      }}
+      onClick={(event) => {
+        const bounds = event.currentTarget.getBoundingClientRect()
+        if (
+          closeOnOutsideClick &&
+          outsidePress.current &&
+          (event.clientX < bounds.left ||
+            event.clientX > bounds.right ||
+            event.clientY < bounds.top ||
+            event.clientY > bounds.bottom)
+        )
+          onDismiss()
+        outsidePress.current = false
+      }}
+    />
+  )
+}

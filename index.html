@@ -48,9 +48,8 @@
         <div class="nav-links" id="site-links">
           <a href="#features">features</a>
           <a href="/addons/">addons</a>
-          <a href="#changelog">changelog</a>
+          <a href="https://github.com/schmayterling/hibi/releases">changelog</a>
           <a href="#faq" aria-label="frequently asked questions">faq</a>
-          <a href="#cloud">cloud</a>
           <a href="https://docs.hibi.garden"
             >documentation <span aria-hidden="true">↗</span></a
           >
@@ -80,23 +79,44 @@
           good markdown editors<br />should be <span>free</span>.
         </h1>
         <div class="hero-actions">
-          <a class="button" href="#editor"
-            >try the editor <span aria-hidden="true">↓</span></a
+          <a
+            class="button cta-primary"
+            href="https://github.com/schmayterling/hibi/releases"
+            >download hibi</a
           >
-          <a href="https://docs.hibi.garden"
-            >read the docs <span aria-hidden="true">↗</span></a
+          <a class="button" href="https://github.com/schmayterling/hibi"
+            >star on github</a
+          >
+          <a class="button" href="https://discord.gg/v9r4cABUP2"
+            >join discord</a
           >
         </div>
-        <section class="demo" id="editor" aria-label="hibi editor">
-          <iframe
-            src="/demo/"
-            width="900"
-            height="520"
-            title="hibi markdown editor — interactive demo"
-            loading="lazy"
-            sandbox="allow-scripts allow-same-origin allow-downloads allow-modals allow-popups allow-popups-to-escape-sandbox"
-            referrerpolicy="no-referrer"
-          ></iframe>
+        <section
+          class="demo"
+          id="editor"
+          aria-label="hibi editor"
+          aria-busy="true"
+        >
+          <div class="demo-shell">
+            <iframe
+              src="/demo/"
+              width="900"
+              height="520"
+              title="hibi markdown editor — interactive demo"
+              loading="lazy"
+              inert
+              aria-hidden="true"
+              sandbox="allow-scripts allow-same-origin allow-downloads allow-modals allow-popups allow-popups-to-escape-sandbox"
+              referrerpolicy="no-referrer"
+            ></iframe>
+            <div
+              class="demo-loader"
+              role="status"
+              aria-label="loading hibi editor"
+            >
+              <span class="demo-loader-wordmark" aria-hidden="true">hibi</span>
+            </div>
+          </div>
         </section>
       </section>
       <section class="features wrap" id="features" aria-label="features">
@@ -181,13 +201,6 @@
             </p>
           </details>
           <details>
-            <summary>does hibi have cloud sync?</summary>
-            <p>
-              cloud sync is not available in the current alpha. notes are stored
-              locally.
-            </p>
-          </details>
-          <details>
             <summary>what stage is hibi in?</summary>
             <p>
               hibi is currently in alpha. contributions and feedback are
@@ -196,42 +209,21 @@
           </details>
         </div>
       </section>
-      <section
-        class="cloud-section wrap"
-        id="cloud"
-        aria-labelledby="cloud-title"
-      >
-        <div>
-          <h2 id="cloud-title">cloud</h2>
-          <p>
-            cloud features are not available in the current alpha. hibi
-            currently works with local markdown files.
-          </p>
+      <section class="cta wrap" aria-labelledby="cta-title">
+        <h2 id="cta-title">for those who write <em>after</em>.</h2>
+        <div class="cta-actions">
+          <a
+            class="button cta-primary"
+            href="https://github.com/schmayterling/hibi/releases"
+            >download hibi</a
+          >
+          <a class="button" href="https://github.com/schmayterling/hibi"
+            >star on github</a
+          >
+          <a class="button" href="https://discord.gg/v9r4cABUP2"
+            >join discord</a
+          >
         </div>
-        <span class="availability">not available yet</span>
-      </section>
-      <section
-        class="cloud-section wrap"
-        id="changelog"
-        aria-labelledby="changelog-title"
-      >
-        <div>
-          <h2 id="changelog-title">changelog</h2>
-          <p>hibi is currently in alpha.</p>
-        </div>
-        <span class="availability">0.1.0 alpha</span>
-      </section>
-      <section class="extensions wrap" aria-labelledby="extensions-title">
-        <div>
-          <h2 id="extensions-title">extensible by design.</h2>
-          <p>
-            add commands, themes, toolbar actions, and editor features with
-            hibi’s addon api.
-          </p>
-        </div>
-        <a href="https://docs.hibi.garden/#page=docs%2Fdevelopment%2Faddons.md"
-          >build an addon <span aria-hidden="true">↗</span></a
-        >
       </section>
     </main>
     <footer class="site-footer wrap">

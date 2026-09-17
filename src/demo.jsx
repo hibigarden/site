@@ -57,7 +57,7 @@ const examples = [
   {
     name: "welcome.md",
     markdown:
-      "**hibi** is a free, beautiful,  fast, and extensible markdown editor.\n\n-# - [view addons](https://test.com) \n\n-# - [view documentation](https://test.com)\n\n-# - [join the discord](https://test.com)\n\n-# - [star on github](https://test.com) \n\n> -# hibi is currently in alpha, contributions are greatly appreciated!  \n",
+      "**hibi** is a free, beautiful,  fast, and extensible markdown editor.\n\n> -# hibi is currently in alpha, contributions are greatly appreciated.\n\n---\n\n-# scroll down to learn more or type to get a feel.\n",
   },
 ];
 const initialDocuments = examples.map((example, index) => ({

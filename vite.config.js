@@ -1,8 +1,10 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
+import addonCatalog from "./scripts/addon-catalog.mjs";
 
 export default defineConfig({
   plugins: [
+    addonCatalog(),
     {
       name: "hibi-embedded-focus",
       enforce: "pre",

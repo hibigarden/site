@@ -8,9 +8,24 @@
   font-display: swap;
 }
 @font-face {
+  font-family: "EB Garamond";
+  src: url("/fonts/eb-garamond-latin-500-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
   font-family: Geist;
   src: url("../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2")
     format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: Geist;
+  src: url("../node_modules/geist/dist/fonts/geist-sans/Geist-Italic[wght].woff2")
+    format("woff2");
+  font-style: italic;
   font-weight: 100 900;
   font-display: swap;
 }
@@ -205,9 +220,10 @@ summary:focus-visible {
 .hero-actions {
   flex-shrink: 0;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 26px;
+  gap: 12px;
   margin-top: 20px;
   font-size: 13px;
 }
@@ -239,17 +255,64 @@ summary:focus-visible {
   text-align: left;
   overflow: hidden;
 }
-.demo iframe {
+.demo-shell {
   position: absolute;
   left: 50%;
   top: 50%;
-  display: block;
-  max-width: none;
+  width: 900px;
+  height: 520px;
   transform: translate(-50%, -50%);
   transform-origin: center;
   border: 1px solid var(--border);
-  border-radius: var(--radius-panel);
+  border-radius: 16px;
   background: var(--background);
+  overflow: hidden;
+}
+.demo iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  opacity: 0;
+}
+.demo-loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--background);
+  pointer-events: none;
+}
+.demo-loader-wordmark {
+  position: relative;
+  font-size: 28px;
+  font-weight: 550;
+  letter-spacing: -0.035em;
+  color: color-mix(in srgb, var(--ink) 28%, transparent);
+}
+.demo-loader-wordmark::after {
+  content: "hibi";
+  position: absolute;
+  inset: 0;
+  color: var(--ink);
+  opacity: 0.65;
+  mask-image: linear-gradient(
+    110deg,
+    transparent 42%,
+    black 50%,
+    transparent 58%
+  );
+  mask-size: 300% 100%;
+}
+.demo[data-ready="true"] iframe {
+  opacity: 1;
+}
+.demo[data-ready="true"] .demo-loader {
+  opacity: 0;
+  visibility: hidden;
+}
+.demo[data-ready="true"] .demo-loader-wordmark::after {
+  animation-play-state: paused;
 }
 .features {
   display: grid;
@@ -283,8 +346,7 @@ summary:focus-visible {
 .feature-customize {
   grid-column: span 5;
 }
-.features h3,
-.extensions h2 {
+.features h3 {
   font-size: 19px;
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -440,35 +502,7 @@ summary:focus-visible {
   font-size: 13px;
   line-height: 1.8;
 }
-.cloud-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 28px;
-  padding-block: 34px;
-  border-top: 1px solid var(--border);
-}
-.cloud-section h2 {
-  font-size: 20px;
-  font-weight: 500;
-}
-.cloud-section p {
-  margin-top: 10px;
-  max-width: 58ch;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.8;
-}
-.availability {
-  white-space: nowrap;
-  font-size: 11px;
-  color: var(--muted);
-  padding: 7px 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-control);
-}
-.features p,
-.extensions p {
+.features p {
   font-size: 14px;
   line-height: 1.8;
   color: var(--muted);
@@ -483,18 +517,45 @@ summary:focus-visible {
   font-size: 12px;
   margin-top: 5px;
 }
-.extensions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-  padding-block: 38px 43px;
-  border-top: 1px solid var(--border);
+.cta {
+  max-width: 900px;
+  margin-block: 16px 76px;
+  padding: 44px 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  text-align: center;
 }
-.extensions > a {
-  white-space: nowrap;
+.cta h2 {
+  font:
+    500 clamp(28px, 3vw, 36px) / 1.2 "EB Garamond",
+    Georgia,
+    serif;
+  letter-spacing: -0.025em;
+}
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
   font-size: 13px;
-  padding-block: 12px;
+}
+.cta-actions .button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.cta-primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--background);
+}
+.cta-primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--background);
 }
 .site-footer {
   display: flex;
@@ -525,6 +586,7 @@ summary:focus-visible {
 }
 .page-intro {
   padding-block: 62px 42px;
+  text-align: left;
 }
 .page-intro h1 {
   font-family: "EB Garamond", Georgia, serif;
@@ -538,6 +600,37 @@ summary:focus-visible {
   color: var(--muted);
   font-size: 14px;
   line-height: 1.8;
+}
+.addon-guide-link {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.addon-search {
+  --field-background: var(--background);
+  --field-border: var(--border);
+  --field-placeholder: var(--muted);
+  --control-padding-x: var(--space-2);
+  --control-padding-y: var(--space-1);
+  margin-bottom: 24px;
+}
+.addon-search .settings-filter-bar {
+  margin-bottom: 0;
+}
+.addon-result-count {
+  margin-bottom: 10px;
+  font-size: 11px;
+  color: var(--muted);
+  text-align: left;
+}
+.addon-empty {
+  padding-block: 40px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
 }
 .addon-grid {
   display: grid;
@@ -601,24 +694,13 @@ summary:focus-visible {
   width: 100%;
   font-size: 10px;
   color: var(--muted);
+  line-height: 1.6;
 }
-.addon-developers {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  padding-top: 34px;
-  font-size: 13px;
-}
-.addon-developers p {
-  color: var(--muted);
-  line-height: 1.8;
-}
-.addon-developers a {
-  white-space: nowrap;
+.addon-card-footer > :last-child {
+  flex-shrink: 0;
 }
 .addon-modal {
-  width: min(560px, calc(100% - 32px));
+  width: min(720px, calc(100% - 32px));
   max-height: calc(100svh - 40px);
   padding: 0;
   border: 1px solid var(--border);
@@ -636,9 +718,39 @@ summary:focus-visible {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: -28px -32px 0;
+  padding: 16px 32px;
+  border-bottom: 1px solid transparent;
+  background: var(--background);
 }
 .addon-modal-icon {
   color: var(--muted);
+  display: flex;
+}
+.addon-modal-compact-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(4px);
+}
+.addon-modal[data-collapsed="true"] .addon-modal-header {
+  border-bottom-color: var(--border);
+}
+.addon-modal[data-collapsed="true"] .addon-modal-compact-title {
+  opacity: 1;
+  transform: none;
+}
+.addon-modal[data-collapsed="true"] .addon-modal-icon svg {
+  transform: scale(0.8);
 }
 .modal-close {
   display: grid;
@@ -666,9 +778,23 @@ summary:focus-visible {
   font-size: 14px;
   line-height: 1.8;
 }
-.addon-modal .addon-detail {
-  margin-top: 20px;
-  color: var(--ink);
+.addon-authors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 0;
+  margin: 20px 0 0;
+  list-style: none;
+  font-size: 12px;
+}
+.addon-authors li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.addon-authors small {
+  color: var(--muted);
+  font-size: 11px;
 }
 .addon-availability {
   display: flex;
@@ -681,11 +807,70 @@ summary:focus-visible {
   color: var(--muted);
   font-size: 11px;
 }
-.addon-docs {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 13px;
+.addon-readme {
+  font-size: 14px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.addon-readme > * + * {
+  margin-top: 16px;
+}
+.addon-readme :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-ui);
+  font-size: 18px;
+  font-weight: 500;
+  margin-block: 26px 12px;
+  letter-spacing: -0.02em;
+}
+.addon-readme > :is(h1, h2, h3):first-child {
+  margin-top: 0;
+}
+.addon-readme a,
+.addon-authors a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.addon-readme :is(ul, ol) {
+  padding-left: 24px;
+}
+.addon-readme li + li {
+  margin-top: 5px;
+}
+.addon-readme code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.86em;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: var(--surface);
+}
+.addon-readme pre {
+  padding: 16px;
+  overflow: auto;
+  border-radius: 6px;
+  background: var(--surface);
+}
+.addon-readme pre code {
+  padding: 0;
+  white-space: pre;
+}
+.addon-readme blockquote {
+  margin-inline: 0;
+  padding-left: 16px;
+  border-left: 1px solid var(--border);
+}
+.addon-readme img {
+  max-width: 100%;
+  height: auto;
+}
+.addon-readme table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+.addon-readme :is(th, td) {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  text-align: left;
 }
 @media (max-width: 1024px) {
   .hero {
@@ -768,7 +953,7 @@ summary:focus-visible {
   .hero-actions {
     margin-top: 23px;
     font-size: 12px;
-    gap: 22px;
+    gap: 10px;
   }
   .demo {
     margin-top: 24px;
@@ -782,22 +967,16 @@ summary:focus-visible {
     grid-column: 1;
     padding: 24px;
   }
-  .features h3,
-  .extensions h2 {
+  .features h3 {
     font-size: 17px;
   }
-  .features p,
-  .extensions p {
+  .features p {
     font-size: 13px;
     margin-top: 9px;
   }
-  .extensions {
-    gap: 18px;
-    padding-block: 30px;
-    align-items: start;
-  }
-  .extensions > a {
-    font-size: 12px;
+  .cta {
+    margin-bottom: 48px;
+    padding: 36px 20px;
   }
   .faq {
     grid-template-columns: 1fr;
@@ -809,11 +988,6 @@ summary:focus-visible {
   }
   .section-title {
     font-size: 32px;
-  }
-  .cloud-section {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
   }
   .page-intro {
     padding-block: 36px 30px;
@@ -827,13 +1001,15 @@ summary:focus-visible {
   .addon-card {
     padding: 19px;
   }
-  .addon-developers {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
   .addon-modal-content {
     padding: 22px;
+  }
+  .addon-modal-header {
+    margin: -22px -22px 0;
+    padding: 14px 22px;
+  }
+  .addon-search {
+    --control-height: 44px;
   }
   .modal-close {
     width: 44px;
@@ -866,14 +1042,13 @@ summary:focus-visible {
     grid-template-columns: 1fr;
     gap: 14px;
   }
-  .extensions {
-    flex-direction: column;
-    gap: 9px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .demo-loader-wordmark::after {
+    display: none;
   }
   ::view-transition-group(root),
   ::view-transition-old(root),
@@ -894,6 +1069,28 @@ summary:focus-visible {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .addon-modal-compact-title {
+    transition:
+      opacity var(--motion-feedback) var(--ease-out),
+      transform var(--motion-feedback) var(--ease-out);
+  }
+  .addon-modal-icon svg {
+    transition: transform var(--motion-feedback) var(--ease-out);
+  }
+  .addon-modal-header {
+    transition: border-color var(--motion-fast) var(--ease-out);
+  }
+  .demo iframe {
+    transition: opacity var(--motion-pane) var(--ease-out);
+  }
+  .demo-loader {
+    transition:
+      opacity var(--motion-feedback) var(--ease-out),
+      visibility 0s linear var(--motion-feedback);
+  }
+  .demo-loader-wordmark::after {
+    animation: preview-shine 1.8s ease-in-out infinite;
+  }
   a,
   button,
   summary {
@@ -978,5 +1175,13 @@ summary:focus-visible {
 @keyframes site-fade-in {
   from {
     opacity: 0;
+  }
+}
+@keyframes preview-shine {
+  from {
+    mask-position: 100% 0;
+  }
+  to {
+    mask-position: -100% 0;
   }
 }

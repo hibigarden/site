@@ -875,4 +875,108 @@ summary:focus-visible {
   html {
     scroll-behavior: auto;
   }
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* Use hibi's shared timings and easing for interaction feedback. */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--motion-pane);
+  animation-timing-function: var(--ease-out);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  button,
+  summary {
+    transition:
+      color var(--motion-fast) var(--ease-out),
+      background-color var(--motion-fast) var(--ease-out),
+      border-color var(--motion-fast) var(--ease-out);
+  }
+  .addon-card-arrow {
+    transform: translate(-2px, 2px);
+    transition:
+      opacity var(--motion-fast) var(--ease-out),
+      transform var(--motion-fast) var(--ease-out);
+  }
+  .addon-card:is(:hover, :focus-visible) .addon-card-arrow {
+    transform: none;
+  }
+  .faq-list details[open] p {
+    animation: site-fade-in var(--motion-feedback) var(--ease-out);
+  }
+  .addon-modal {
+    opacity: 0;
+    transform: translateY(4px) scale(0.99);
+    transition:
+      opacity var(--motion-fast) var(--ease-out),
+      transform var(--motion-fast) var(--ease-out),
+      display var(--motion-fast) allow-discrete,
+      overlay var(--motion-fast) allow-discrete;
+  }
+  .addon-modal[open] {
+    opacity: 1;
+    transform: none;
+    transition-duration: var(--motion-feedback);
+  }
+  .addon-modal:not([open]) {
+    pointer-events: none;
+  }
+  .addon-modal::backdrop {
+    opacity: 0;
+    transition:
+      opacity var(--motion-fast) var(--ease-out),
+      display var(--motion-fast) allow-discrete,
+      overlay var(--motion-fast) allow-discrete;
+  }
+  .addon-modal[open]::backdrop {
+    opacity: 1;
+    transition-duration: var(--motion-feedback);
+  }
+  @starting-style {
+    .addon-modal[open] {
+      opacity: 0;
+      transform: translateY(6px) scale(0.99);
+    }
+    .addon-modal[open]::backdrop {
+      opacity: 0;
+    }
+  }
+  @media (max-width: 720px) {
+    .nav-links {
+      opacity: 0;
+      transform: translateY(-3px);
+      transition:
+        opacity var(--motion-fast) var(--ease-out),
+        transform var(--motion-fast) var(--ease-out),
+        display var(--motion-fast) allow-discrete;
+    }
+    .nav-links[data-open="true"] {
+      opacity: 1;
+      transform: none;
+    }
+    .nav-links:not([data-open="true"]) {
+      pointer-events: none;
+    }
+    @starting-style {
+      .nav-links[data-open="true"] {
+        opacity: 0;
+        transform: translateY(-3px);
+      }
+    }
+  }
+}
+@keyframes site-fade-in {
+  from {
+    opacity: 0;
+  }
 }

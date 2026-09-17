@@ -19,3 +19,5 @@ documentation links point to https://docs.hibi.garden. add download links when a
 the landing preview uses a fixed 900 × 520 iframe and scales to fit without reflowing its contents. the only starter file is the supplied `welcome.md`; its `test.com` links are retained verbatim.
 
 `/addons/` lists the bundled addons with keyboard-accessible detail dialogs. faq, cloud, and changelog navigation point to informational sections on the homepage; cloud services are not implemented. changelog shows the source app's current alpha version until release notes are supplied.
+
+site motion reuses hibi's 120–240 ms tokens and easing: theme crossfades, menu and dialog transitions, faq fades, and hover feedback. reduced-motion skips these animations. browsers without view transitions switch themes immediately; the editor remains mounted throughout.

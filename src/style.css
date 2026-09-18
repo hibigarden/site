@@ -231,7 +231,7 @@ summary:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 11px;
+  gap: 8px;
   min-height: 42px;
 }
 .button {
@@ -243,6 +243,12 @@ summary:focus-visible {
 .button:hover {
   color: var(--ink);
   background: var(--border);
+}
+.button-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
 }
 .demo {
   position: relative;
@@ -878,6 +884,7 @@ summary:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
 }
 .cta-primary {
   background: var(--ink);

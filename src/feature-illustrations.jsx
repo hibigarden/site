@@ -4,6 +4,7 @@ import {
   CaseSensitive,
   ChevronDown,
   ChevronRight,
+  Download,
   FileDown,
   FilePenLine,
   FileText,
@@ -15,10 +16,12 @@ import {
   Italic,
   Keyboard,
   List,
+  MessageCircle,
   PanelLeft,
   PenLine,
   Search,
   Sigma,
+  Star,
   Undo2,
 } from "lucide-react";
 
@@ -124,4 +127,14 @@ for (const [id, Illustration] of [
   ["editor-icon", FilePenLine],
 ]) {
   createRoot(document.getElementById(id)).render(<Illustration />);
+}
+
+for (const [name, Icon] of [
+  ["download", Download],
+  ["star", Star],
+  ["chat", MessageCircle],
+]) {
+  for (const element of document.querySelectorAll(`[data-button-icon="${name}"]`)) {
+    createRoot(element).render(<Icon size={16} strokeWidth={1.75} />);
+  }
 }

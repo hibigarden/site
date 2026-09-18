@@ -1,7 +1,17 @@
-# hibi ui snapshot
+# hibi editor source
 
-these components and styles are copied unchanged from `../hibi 2/src/` on 2026-09-17. only the renderer's reachable editor components, shared controls, and their runtime dependencies are included.
+this folder contains the hibi components used by the website's editor demo, copied from the main app on 2026-09-17. it includes the titlebar, sidebar, editor, formatting toolbar, status bar, and the code they depend on.
 
-`src/demo.jsx` supplies browser state around the real hibi titlebar, sidebar, markdown editor, formatting toolbar, and status bar. the vendor source remains unchanged. vite redirects the original geist font paths and suppresses automatic focus inside the landing-page frame so it does not scroll past the hero. standalone editor autofocus is retained. `src/demo.css` removes window-control padding and hides the disabled command palette, settings, and open buttons.
+the copied files are kept unchanged. browser-specific behavior lives in [`src/demo.jsx`](../../src/demo.jsx) and [`src/demo.css`](../../src/demo.css). [`vite.config.js`](../../vite.config.js) resolves font paths and prevents the embedded editor from taking focus when the page loads.
 
-desktop filesystem and addon execution are not emulated. demo files exist in memory; saving downloads markdown. theme and toolbar preferences use the components' existing local storage. settings and file opening are disabled. the browser runs the original keybeats engine with holy panda press/release samples only. its preferences select holy panda at 15% volume on load; the original toolbar action toggles mute. both upstream licenses are retained in `src/addons/keybeats/`. remaining desktop settings and addons are documented through links on the landing page.
+keybeats uses the original sound engine with holy panda samples. its [keybeats license](src/addons/keybeats/LICENSE.keybeats.md) and [kbsim license](src/addons/keybeats/LICENSE.kbsim.md) are included.
+
+## compare with the source app
+
+from the website repository, run:
+
+```sh
+node scripts/verify-source.mjs /path/to/hibi/src
+```
+
+this compares every copied file with the corresponding file in your hibi checkout. use the version the snapshot came from; later app changes will appear as differences.

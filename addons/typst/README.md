@@ -24,7 +24,6 @@ See the [Typst guide](../../../docs/editing/typst.md) for more help.
 
 ## Credits
 
-- The Hibi integration is by may (Discord `1262793452236570667`).
 - [Typst](https://github.com/typst/typst) is by the Typst project developers, under Apache-2.0.
 - [typst.ts](https://github.com/Myriad-Dreamin/typst.ts) is by Myriad-Dreamin and contributors, under Apache-2.0.
 - Bundled fonts and assets keep their [upstream notices](../../../docs/licenses/typst-assets.md), also in Hibi's **Open source licenses**.

@@ -8,4 +8,4 @@ In **Settings → Vim**, choose whether to start in insert mode. See the [Vim gu
 
 ## Credits
 
-The Hibi integration is by may (Discord `1262793452236570667`) and [angelo](https://github.com/angelofallars). The engine is by the [CodeMirror Vim contributors](https://github.com/replit/codemirror-vim). License notices are in Hibi's **Open source licenses**.
+The engine is by the [CodeMirror Vim contributors](https://github.com/replit/codemirror-vim). License notices are in Hibi's **Open source licenses**.

@@ -12,4 +12,4 @@ Authentication uses your SSH setup, or Git's Keychain helper for HTTPS on macOS.
 
 ## Credits
 
-The Hibi integration is by may. Git's documentation explains [hooks](https://git-scm.com/docs/githooks), [configuration](https://git-scm.com/docs/git-config), and [attributes](https://git-scm.com/docs/gitattributes).
+Git's documentation explains [hooks](https://git-scm.com/docs/githooks), [configuration](https://git-scm.com/docs/git-config), and [attributes](https://git-scm.com/docs/gitattributes).

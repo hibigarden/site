@@ -4,6 +4,6 @@ Play mechanical keyboard sounds while writing. Turn on **keyBeats** in **Setting
 
 ## Credits
 
-**may** (Discord `1262793452236570667`) ported [keyBeats by Yug Bhanushali](https://github.com/YugBhanushali/keyBeats) to Hibi. The keyboard recordings come from [kbsim by Thomas Lai](https://github.com/tplai/kbsim).
+The plugin uses [keyBeats by Yug Bhanushali](https://github.com/YugBhanushali/keyBeats) and keyboard recordings from [kbsim by Thomas Lai](https://github.com/tplai/kbsim).
 
 Both projects use MIT licenses. Their original notices are in [LICENSE.keybeats.md](LICENSE.keybeats.md) and [LICENSE.kbsim.md](LICENSE.kbsim.md), and in Hibi's **Open source licenses**.

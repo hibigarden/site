@@ -19,4 +19,4 @@ Choose which features to use in **Settings → Syntax**.
 
 ## Credits
 
-The Hibi integration is by may. It uses MIT-licensed Tiptap and Marked, listed in Hibi's **Open source licenses**.
+It uses MIT-licensed Tiptap and Marked, listed in Hibi's **Open source licenses**.

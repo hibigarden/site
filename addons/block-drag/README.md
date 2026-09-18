@@ -6,4 +6,4 @@ You can also choose **Move block up** or **Move block down** from the handle's m
 
 ## Credits
 
-The Hibi integration is by may. It uses the MIT-licensed [Tiptap drag handle](https://tiptap.dev/docs/editor/extensions/functionality/drag-handle) and ProseMirror. Their notices are in Hibi's **Open source licenses**.
+It uses the MIT-licensed [Tiptap drag handle](https://tiptap.dev/docs/editor/extensions/functionality/drag-handle) and ProseMirror. Their notices are in Hibi's **Open source licenses**.

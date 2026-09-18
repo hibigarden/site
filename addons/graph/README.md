@@ -8,4 +8,4 @@ Save new notes inside the workspace before expecting them to appear. Connections
 
 ## Credits
 
-The Hibi integration is by may (Discord `1262793452236570667`). The layout uses [d3-force](https://d3js.org/d3-force), copyright Mike Bostock and contributors, under the ISC license. Its notices are in Hibi's **Open source licenses**.
+The layout uses [d3-force](https://d3js.org/d3-force), copyright Mike Bostock and contributors, under the ISC license. Its notices are in Hibi's **Open source licenses**.

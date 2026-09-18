@@ -558,18 +558,86 @@ summary:focus-visible {
   color: var(--background);
 }
 .site-footer {
+  padding-block: 48px 24px;
+}
+.footer-wordmark {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(8px, 1.5vw, 16px);
+}
+.footer-wordmark span {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  background: var(--surface);
+  font-size: clamp(48px, 15vw, 160px);
+  font-weight: 550;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.footer-details {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 48px;
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+}
+.footer-tagline {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.footer-groups {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: clamp(32px, 6vw, 80px);
+}
+.footer-group h2 {
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 550;
+}
+.footer-group nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.footer-group a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.footer-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-block: 24px 30px;
+  gap: 16px;
+  margin-top: 40px;
+  padding-top: 16px;
   border-top: 1px solid var(--border);
-}
-.site-footer .wordmark {
-  font-size: 22px;
-}
-.site-footer > a:last-child {
-  font-size: 12px;
   color: var(--muted);
+  font-size: 12px;
+}
+.footer-bottom > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+}
+.site-footer a:hover {
+  color: var(--ink);
 }
 .site-header.page-header {
   position: relative;
@@ -988,6 +1056,31 @@ summary:focus-visible {
   }
   .section-title {
     font-size: 32px;
+  }
+  .site-footer {
+    padding-top: 24px;
+  }
+  .footer-wordmark span {
+    border-radius: 12px;
+  }
+  .footer-details {
+    flex-direction: column;
+    gap: 28px;
+    margin-top: 32px;
+  }
+  .footer-groups {
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .footer-group a {
+    min-height: 44px;
+    font-size: 12px;
+  }
+  .footer-bottom {
+    margin-top: 28px;
+    flex-wrap: wrap;
+    gap: 4px 16px;
   }
   .page-intro {
     padding-block: 36px 30px;

@@ -342,6 +342,35 @@ summary:focus-visible {
 .demo[data-ready="true"] .demo-loader-wordmark::after {
   animation-play-state: paused;
 }
+.alpha-notice {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 48px;
+  padding: 24px 28px;
+  border: 1px solid color-mix(in oklab, var(--hero-orange) 32%, var(--border));
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--hero-orange) 7%, var(--background));
+}
+#alpha-icon {
+  color: var(--hero-orange);
+}
+.alpha-notice h2 {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.alpha-notice p {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.alpha-notice a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .product-intro {
   display: grid;
   grid-template-columns: 0.9fr 1.3fr;
@@ -1410,6 +1439,7 @@ summary:focus-visible {
   .feature-copy {
     padding: 22px;
   }
+  .alpha-notice,
   .feature-free {
     padding: 18px 22px;
   }

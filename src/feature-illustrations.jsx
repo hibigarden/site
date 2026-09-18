@@ -24,6 +24,7 @@ import {
   Search,
   Sigma,
   Star,
+  TriangleAlert,
   Undo2,
 } from "lucide-react";
 
@@ -129,6 +130,7 @@ for (const [id, Illustration] of [
   ["editor-icon", FilePenLine],
   ["developer-icon", CodeXml],
   ["ai-user-icon", Bot],
+  ["alpha-icon", TriangleAlert],
 ]) {
   createRoot(document.getElementById(id)).render(<Illustration />);
 }

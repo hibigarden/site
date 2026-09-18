@@ -3,10 +3,10 @@ import { authors } from '../authors'
 
 export default {
   id: 'documentation',
-  name: 'Documentation',
+  name: 'Export',
   version: '0.1.0',
   authors: [authors.may],
-  description: 'Export a Markdown workspace as one searchable HTML file.',
+  description: 'Export your workspace as one searchable HTML file.',
   apiVersion: 2,
   defaultEnabled: true,
   startup: 'background',

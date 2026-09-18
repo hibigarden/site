@@ -6,8 +6,7 @@ export default {
   name: 'Frontmatter',
   version: '0.1.0',
   authors: [authors.may],
-  description:
-    'Edit YAML properties while preserving metadata and the document body.',
-  apiVersion: 1,
+  description: 'Edit note properties stored in YAML, such as titles and dates.',
+  apiVersion: 2,
   defaultEnabled: true,
 } satisfies AddonManifest

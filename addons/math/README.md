@@ -1,11 +1,21 @@
-# math
+# LaTeX
 
-optional extension by may. enable **math** in settings → addons or the command palette. `$x^2$` renders inline; `$$` delimiters render a block. fenced and inline code remain literal. automatic flavor detection recognizes these expressions; use the flavor pill to override a file's syntax.
+Turn on **LaTeX** in **Settings → Addons** to write LaTeX documents and add equations to Markdown.
 
-click a rendered expression to edit latex in a shared dialog. the toolbar and palette provide inline and block insertion in both rich and source editors. source remains ordinary markdown and latex. invalid expressions show their source rather than interrupting editing.
+## LaTeX documents
 
-settings → syntax has separate inline and block math switches. turning either off keeps the latex delimiters visible as literal markdown in the editor and export.
+Open a `.tex` file or choose **New LaTeX document**. Install Tectonic, then choose **Compile document** in side-by-side view to preview the PDF. Choose **Export PDF** to save it.
 
-katex and its fonts run locally. exports embed rendered equations, mathml, styles, fonts, and license notices; no cdn or runtime model is required. katex uses `trust: false`, bounded macro expansion, and no shared user macros. this is latex math supported by katex, not an executable tex document engine.
+Use **Check tools** in the plugin's settings to check your installation. The tools must be available on your system's `PATH`. Save files included by your document before compiling; Hibi uses the active note's unsaved text.
 
-uses mit-licensed [tiptap mathematics](https://tiptap.dev/docs/editor/extensions/nodes/mathematics) and [katex](https://katex.org/docs/security), listed in hibi's open source licenses.
+Tectonic downloads packages as needed. You can search for packages or clear downloads under **Settings → LaTeX → Packages**. Add them to your document with `\usepackage{package-name}`.
+
+## Equations in Markdown
+
+Write `$x^2$` for an inline equation or use `$$` delimiters for a block. You can also insert equations from the toolbar or command palette. Click a rendered equation to edit it.
+
+Choose which math features to use in **Settings → Syntax**.
+
+## Credits
+
+This plugin uses MIT-licensed [Tiptap Mathematics](https://tiptap.dev/docs/editor/extensions/nodes/mathematics) and [KaTeX](https://katex.org/docs/security), listed in Hibi's **Open source licenses**.

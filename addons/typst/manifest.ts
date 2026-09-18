@@ -1,4 +1,5 @@
 import notice from '../../../docs/licenses/typst-assets.md?raw'
+import { fileAssociations } from '../../shared/file-associations'
 import type { AddonManifest } from '../api'
 import { authors } from '../authors'
 
@@ -7,24 +8,11 @@ export default {
   name: 'Typst',
   kind: 'extension',
   version: '1.0.0',
-  apiVersion: 1,
-  description:
-    'Typst documents, live previews, PDF export, and rendered Markdown blocks.',
+  apiVersion: 2,
+  description: 'Write Typst documents with live previews and PDF export.',
   defaultEnabled: false,
-  fileExtensions: ['typ'],
-  authors: [
-    authors.may,
-    {
-      displayName: 'typst contributors',
-      github: 'typst',
-      role: 'typesetting engine',
-    },
-    {
-      displayName: 'myriad-dreamin',
-      github: 'Myriad-Dreamin',
-      role: 'typst.ts compiler bindings',
-    },
-  ],
+  fileExtensions: fileAssociations.typst.ext,
+  authors: [authors.may],
   licenses: [
     {
       id: 'typst-assets',

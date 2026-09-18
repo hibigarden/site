@@ -5,9 +5,9 @@ export default {
   name: 'Git',
   kind: 'extension',
   version: '1.1.0',
-  apiVersion: 1,
-  description:
-    'Explorer status markers, diffs, staging, commits, branches, pull, and push.',
+  apiVersion: 2,
+  description: 'Review changes, commit notes, switch branches, pull, and push.',
   defaultEnabled: false,
+  startup: 'background',
   authors: [authors.may],
 } satisfies AddonManifest

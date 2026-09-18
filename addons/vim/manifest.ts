@@ -6,7 +6,7 @@ export default {
   name: 'Vim',
   version: '0.2.0',
   authors: [authors.may, authors.angelo],
-  description: 'Vim editing in Markdown and split source panes.',
-  apiVersion: 1,
+  description: 'Use Vim keys and commands in source views.',
+  apiVersion: 2,
   defaultEnabled: false,
 } satisfies AddonManifest

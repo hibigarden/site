@@ -1,7 +1,11 @@
-# text extras
+# Text extras
 
-bundled extension by may, enabled by default. adds `~subscript~` (for example `H~2~O`) and discord-style `-# small text`. `-# ` must begin a line; ordinary headings and lists stay unchanged. use `~~text~~` for strikethrough.
+Write subscript with `~subscript~`, as in `H~2~O`. Start a line with `-# small text` for Discord-style small text. This plugin is on by default.
 
-both forms work in rich editing, source, split preview, and exported documentation. subscript cannot span newlines or have surrounding whitespace. press enter after small text to continue with a normal paragraph.
+Subscript must stay on one line with no spaces next to the `~` characters. Use `~~text~~` for strikethrough. Press Enter after small text to start a normal paragraph.
 
-settings → syntax has separate switches. disabled syntax remains literal, editable markdown. the flavor pill can also enable text extras before typing. no network requests, storage, or native permissions.
+Choose which features to use in **Settings → Syntax**.
+
+## Credits
+
+The Hibi integration is by may.

@@ -5,9 +5,8 @@ export default {
   name: 'GitHub Markdown',
   kind: 'extension',
   version: '1.1.0',
-  apiVersion: 1,
-  description:
-    'Alerts, tables, task lists, strikethrough, and GitHub-style Markdown.',
+  apiVersion: 2,
+  description: 'Add alerts, tables, task lists, and strikethrough to Markdown.',
   defaultEnabled: true,
   authors: [authors.may],
 } satisfies AddonManifest

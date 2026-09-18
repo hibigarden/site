@@ -5,9 +5,10 @@ export default {
   id: 'typing-speed',
   name: 'Typing speed',
   version: '1.1.0',
-  apiVersion: 1,
+  apiVersion: 2,
   description:
-    'Estimated words and characters per minute for this typing session.',
+    'See your estimated words and characters per minute as you type.',
   defaultEnabled: false,
+  startup: 'background',
   authors: [authors.may],
 } satisfies AddonManifest

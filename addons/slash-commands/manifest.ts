@@ -6,7 +6,7 @@ export default {
   name: 'Slash commands',
   version: '0.1.0',
   authors: [authors.may],
-  description: 'Insert Markdown blocks by typing / at the start of a line.',
-  apiVersion: 1,
+  description: 'Type / at the start of a line to insert a block.',
+  apiVersion: 2,
   defaultEnabled: true,
 } satisfies AddonManifest

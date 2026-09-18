@@ -40,6 +40,7 @@
     <script type="module" src="/src/theme.js"></script>
     <script type="module" src="/src/navigation.js"></script>
     <script type="module" src="/src/scale-demo.js"></script>
+    <script type="module" src="/src/feature-illustrations.jsx"></script>
     <title>hibi | for those who write after</title>
   </head>
   <body>
@@ -132,49 +133,35 @@
       <section class="features wrap" id="features" aria-label="features">
         <h2 class="section-title">features</h2>
         <article class="feature-card feature-files">
-          <h3>local files.</h3>
-          <p>write in markdown files on your computer.</p>
-          <div class="file-illustration" aria-hidden="true">
-            <span>your folder</span>
-            <div>
-              <span class="file-glyph">md</span><span>welcome.md</span
-              ><span class="file-local">local</span>
-            </div>
+          <div class="feature-art workspace-art" id="workspace-illustration" aria-hidden="true"></div>
+          <div class="feature-copy">
+            <h3>your files, your folders.</h3>
+            <p>keep your notes on your computer.</p>
           </div>
         </article>
-        <article class="feature-card feature-views">
-          <h3>three ways to write.</h3>
-          <p>
-            write in rich text, markdown, or both side by side.
-          </p>
-          <div class="view-illustration" aria-hidden="true">
-            <div><span>markdown</span><code>**hibi**</code></div>
-            <div><span>rich text</span><strong>hibi</strong></div>
-          </div>
-          <div class="view-labels" aria-hidden="true">
-            <span>rich text</span><span>source</span><span>side by side</span>
+        <article class="feature-card feature-formats">
+          <div class="feature-art formats-art" id="formats-illustration" aria-hidden="true"></div>
+          <div class="feature-copy">
+            <h3>beyond markdown.</h3>
+            <p>write in typst, latex, mdx, and more.</p>
           </div>
         </article>
         <article class="feature-card feature-customize">
-          <h3>make it yours.</h3>
-          <p>change your theme, shortcuts, and toolbar.</p>
-          <div class="palette-illustration" aria-hidden="true">
-            <i></i><i></i><i></i><i></i><i></i>
+          <div class="feature-art themes-art" id="themes-illustration" aria-hidden="true"></div>
+          <div class="feature-copy">
+            <h3>make it yours.</h3>
+            <p>change your theme, shortcuts, and toolbar.</p>
+            <a href="https://docs.hibi.garden/#page=docs%2Fguides%2Fsettings.md"
+              >settings <span aria-hidden="true">↗</span></a
+            >
           </div>
-          <a href="https://docs.hibi.garden/#page=docs%2Fguides%2Fsettings.md"
-            >settings <span aria-hidden="true">↗</span></a
-          >
         </article>
         <article class="feature-card feature-addons">
-          <h3>batteries included.</h3>
-          <ul class="addon-tags" aria-label="included addons">
-            <li>git</li>
-            <li>vim</li>
-            <li>math</li>
-            <li>graphs</li>
-            <li>documentation</li>
-          </ul>
-          <a href="/addons/">browse addons <span aria-hidden="true">↗</span></a>
+          <div class="feature-art addons-art" id="addons-illustration" role="img" aria-label="bundled addons for git, latex, vim, and exporting"></div>
+          <div class="feature-copy">
+            <h3>batteries included.</h3>
+            <a href="/addons/">browse addons <span aria-hidden="true">↗</span></a>
+          </div>
         </article>
       </section>
       <section class="faq wrap" id="faq" aria-labelledby="faq-title">

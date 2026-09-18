@@ -572,6 +572,7 @@ summary:focus-visible {
   border-radius: 16px;
   background: var(--surface);
   font-size: clamp(48px, 15vw, 160px);
+  color: var(--background);
   font-weight: 550;
   line-height: 1;
   letter-spacing: -0.035em;

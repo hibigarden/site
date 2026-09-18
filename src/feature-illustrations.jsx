@@ -53,7 +53,7 @@ function EditorPreview({ label = "welcome.md", className = "" }) {
             <strong>hibi</strong>
             <span>a free markdown editor.</span>
             <hr />
-            <small>for those who write after.</small>
+            <small>a place for your words.</small>
           </div>
         </div>
       </div>

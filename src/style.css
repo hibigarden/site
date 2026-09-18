@@ -837,6 +837,8 @@ summary:focus-visible {
   margin-top: 5px;
 }
 .cta {
+  position: relative;
+  isolation: isolate;
   max-width: 900px;
   margin-block: 16px 76px;
   padding: 44px 24px;
@@ -844,6 +846,17 @@ summary:focus-visible {
   border-radius: 12px;
   background: var(--surface);
   text-align: center;
+}
+.cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--hero-image) center / cover no-repeat;
+  opacity: 0.33;
+  filter: brightness(0.5);
+  pointer-events: none;
 }
 .cta h2 {
   font:

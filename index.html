@@ -106,11 +106,21 @@
           class="demo"
           id="editor"
           aria-label="hibi editor"
-          aria-busy="true"
+          aria-busy="false"
         >
+          <picture class="demo-snapshot">
+            <source srcset="/editor-preview-dark.webp" media="(prefers-color-scheme: dark)" />
+            <img
+              src="/editor-preview-light.webp"
+              width="900"
+              height="520"
+              alt="hibi editor showing welcome.md."
+              decoding="async"
+            />
+          </picture>
           <div class="demo-shell">
             <iframe
-              src="/demo/"
+              data-src="/demo/"
               width="900"
               height="520"
               title="hibi markdown editor | interactive demo"

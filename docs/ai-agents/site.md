@@ -1,35 +1,27 @@
 # website notes for ai agents
 
-## where to make changes
+## writing
 
-`index.html` contains the home page, and `addons/index.html` contains the addon page. the website styles live in `src/style.css`, while `src/theme.js` handles theme changes.
+write documentation and user-facing prose in complete sentences and paragraphs. ponytail shorthand does not apply to anything user-facing. include details only when they help the reader act or avoid a mistake. do not narrate obvious behavior, list features to sound thorough, or repeat what is already clear.
 
-`src/demo.jsx` adapts the copied editor for the browser, and `src/demo.css` styles those changes. keep edits out of `vendor/hibi/src/`; see the [source notes](../../vendor/hibi/README.md). `src/scale-demo.js` scales the fixed 900 × 520 editor frame and reveals it when the editor and fonts are ready.
+## source boundaries
 
-`src/addons.jsx` renders the addon search, cards, and readme dialogs. `scripts/addon-catalog.mjs` reads addon metadata and sanitizes readmes at build time. all paths in these notes are relative to the repository root.
+keep `vendor/hibi/src/` unchanged. make browser adaptations in `src/demo.jsx` and `src/demo.css`. `vite.config.js` adjusts font paths and disables autofocus in the embedded editor.
 
-`vite.config.js` resolves the copied font paths and disables autofocus in the embedded editor. the source snapshot can be checked with `node scripts/verify-source.mjs /path/to/hibi/src`; compare against the version it came from.
-
-## addon sync
+to check the copied source, run `node scripts/verify-source.mjs /path/to/hibi/src` against the version it came from. preserve third-party license text.
 
 `addons/authors.ts` and the addon subfolders come from the main hibi repository. make content changes upstream. preserve `addons/index.html` during sync: it belongs to this website.
 
-each addon needs a `manifest.ts` and a `readme.md` or `README.md`. the catalog reads static metadata without running addon code. keep html sanitization and relative-link handling in the build step. the sync workflow is managed upstream.
+each addon needs a `manifest.ts` and a `readme.md` or `README.md`. read manifests without executing them. keep html sanitization and relative-link handling in the build step. the sync workflow is managed upstream.
 
-## design and behavior
+## editor constraints
 
-use hibi's existing components, geist body font, neutral surfaces, and compact controls. headings use eb garamond. keep copy factual and avoid repeating the same claim across sections.
+reuse hibi's components. scale the fixed 900 × 520 editor frame without changing its aspect ratio. keep the hero sized to its content on smaller screens.
 
-the hero fills the viewport on desktop and fits its content with padding on smaller screens. preserve the editor's aspect ratio when scaling it. each garden background has 25% opacity and 80% brightness.
-
-keep theme changes and other motion subtle. respect reduced-motion settings, preserve keyboard focus, and keep controls labeled. changing themes must not remount the editor or discard writing.
-
-the demo keeps documents in memory and saves through browser downloads. it does not provide desktop filesystem access. fonts and sound samples are served locally; the site has no analytics.
+theme changes must not remount the editor or discard writing. respect reduced-motion settings and preserve keyboard focus.
 
 ## checks
 
 install with `npm ci` and start the site with `npm run dev`. run `npm test` and `npm run build` before publishing. `npm run preview` serves the built site; `dist/` is the deployable output.
 
-for interface changes, also check both themes, a narrow screen, keyboard navigation, and reduced motion. preserve third-party license text.
-
-write documentation and user-facing prose in complete sentences and natural paragraphs. ponytail shorthand does not apply to anything user-facing, including ui copy. keep public readmes to a short introduction and useful links, and keep maintenance details here.
+for interface changes, also check both themes, a narrow screen, keyboard navigation, and reduced motion.

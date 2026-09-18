@@ -1,5 +1,5 @@
 # hibi website
 
-this repository contains the [website and live demo](https://www.hibi.garden) for hibi, a free markdown editor.
+hibi is a free markdown editor. [try it online](https://www.hibi.garden) or [download the app](https://github.com/schmayterling/hibi/releases).
 
-[download hibi](https://github.com/schmayterling/hibi/releases) or [browse addons](https://www.hibi.garden/addons/). you can find help in the [documentation](https://docs.hibi.garden) or on [discord](https://discord.gg/v9r4cABUP2).
+visit the [addon catalog](https://www.hibi.garden/addons/), [documentation](https://docs.hibi.garden), or [discord](https://discord.gg/v9r4cABUP2).

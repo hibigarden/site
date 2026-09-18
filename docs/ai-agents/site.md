@@ -2,13 +2,13 @@
 
 ## where to make changes
 
-- `index.html` contains the home page. `addons/index.html` contains the addon page.
-- `src/style.css` contains the website styles. `src/theme.js` handles theme changes.
-- `src/demo.jsx` adapts the copied editor for the browser. `src/demo.css` styles those changes. keep edits out of `vendor/hibi/src/`; see the [source notes](../../vendor/hibi/README.md).
-- `src/scale-demo.js` scales the fixed 900 × 520 editor frame and reveals it when the editor and fonts are ready.
-- `src/addons.jsx` renders the addon search, cards, and readme dialogs. `scripts/addon-catalog.mjs` reads addon metadata and sanitizes readmes at build time.
+`index.html` contains the home page, and `addons/index.html` contains the addon page. the website styles live in `src/style.css`, while `src/theme.js` handles theme changes.
 
-paths above are relative to the repository root.
+`src/demo.jsx` adapts the copied editor for the browser, and `src/demo.css` styles those changes. keep edits out of `vendor/hibi/src/`; see the [source notes](../../vendor/hibi/README.md). `src/scale-demo.js` scales the fixed 900 × 520 editor frame and reveals it when the editor and fonts are ready.
+
+`src/addons.jsx` renders the addon search, cards, and readme dialogs. `scripts/addon-catalog.mjs` reads addon metadata and sanitizes readmes at build time. all paths in these notes are relative to the repository root.
+
+`vite.config.js` resolves the copied font paths and disables autofocus in the embedded editor. the source snapshot can be checked with `node scripts/verify-source.mjs /path/to/hibi/src`; compare against the version it came from.
 
 ## addon sync
 
@@ -28,4 +28,8 @@ the demo keeps documents in memory and saves through browser downloads. it does 
 
 ## checks
 
-use the [commands in the readme](../../README.md#check-and-publish-changes). for interface changes, also check both themes, a narrow screen, keyboard navigation, and reduced motion. keep user documentation outside this folder and preserve third-party license text.
+install with `npm ci` and start the site with `npm run dev`. run `npm test` and `npm run build` before publishing. `npm run preview` serves the built site; `dist/` is the deployable output.
+
+for interface changes, also check both themes, a narrow screen, keyboard navigation, and reduced motion. preserve third-party license text.
+
+write documentation and user-facing prose in complete sentences and natural paragraphs. ponytail shorthand does not apply to anything user-facing, including ui copy. keep public readmes to a short introduction and useful links, and keep maintenance details here.

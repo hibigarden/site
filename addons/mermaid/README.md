@@ -1,0 +1,16 @@
+# Mermaid
+
+Enable Mermaid in Settings → Addons to edit `.mmd` and `.mermaid` files. Use side-by-side view to see your diagram as you write, then choose **Export HTML** to save it.
+
+Mermaid code blocks also render in Markdown. Click the pencil on a diagram to edit its source.
+
+```mermaid
+flowchart LR
+  Idea --> Draft --> Publish
+```
+
+Diagrams use Mermaid’s strict security mode. Click handlers and embedded HTML are disabled. See the [Mermaid syntax guide](https://mermaid.js.org/intro/) for supported diagrams.
+
+## Credits
+
+Rendering uses [Mermaid](https://github.com/mermaid-js/mermaid), licensed under MIT.

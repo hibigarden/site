@@ -314,6 +314,65 @@ summary:focus-visible {
 .demo[data-ready="true"] .demo-loader-wordmark::after {
   animation-play-state: paused;
 }
+.product-intro {
+  display: grid;
+  grid-template-columns: 0.9fr 1.3fr;
+  align-items: start;
+  gap: 80px;
+  padding-block: 76px;
+}
+.product-intro + .product-intro {
+  padding-top: 52px;
+  border-top: 1px solid var(--border);
+}
+.product-intro h2 {
+  max-width: 15ch;
+}
+.product-intro p {
+  max-width: 52ch;
+  color: var(--muted);
+  font-size: 19px;
+  line-height: 1.75;
+}
+.comparison {
+  padding-block: 20px 0;
+}
+.comparison-table {
+  width: 100%;
+  margin-top: 32px;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.comparison-table th {
+  font-weight: 500;
+}
+.comparison-table thead {
+  color: var(--muted);
+  font-size: 12px;
+}
+.comparison-table :is(th, td) {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.comparison-table th:first-child {
+  width: 160px;
+  padding-left: 0;
+}
+.comparison-table :is(th, td):last-child {
+  padding-right: 0;
+}
+.comparison-table td {
+  color: var(--muted);
+}
+.comparison-table a,
+.feature-free a,
+.writing-role > a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 .features {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -352,6 +411,65 @@ summary:focus-visible {
   font-size: 19px;
   font-weight: 500;
   letter-spacing: -0.02em;
+}
+.feature-free {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 24px 28px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.feature-free a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13px;
+}
+.writing-roles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding-bottom: 76px;
+}
+.writing-role {
+  padding: 32px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.role-icon {
+  display: block;
+  height: 24px;
+  margin-bottom: 24px;
+  color: var(--accent);
+}
+.role-icon .lucide {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.5;
+}
+.writing-role h2 {
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.writing-role p {
+  max-width: 45ch;
+  margin-block: 14px 16px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.writing-role > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13px;
 }
 .feature-art {
   position: relative;
@@ -1206,6 +1324,33 @@ summary:focus-visible {
   .demo {
     margin-top: 24px;
   }
+  .product-intro {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding-block: 48px;
+  }
+  .product-intro + .product-intro {
+    padding-top: 36px;
+  }
+  .product-intro h2 {
+    max-width: 20ch;
+  }
+  .product-intro p {
+    font-size: 16px;
+  }
+  .comparison {
+    padding-top: 8px;
+  }
+  .comparison-table {
+    margin-top: 20px;
+    font-size: 13px;
+  }
+  .comparison-table :is(th, td) {
+    padding: 18px 12px;
+  }
+  .comparison-table th:first-child {
+    width: 80px;
+  }
   .features {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -1219,6 +1364,17 @@ summary:focus-visible {
   }
   .feature-copy {
     padding: 22px;
+  }
+  .feature-free {
+    padding: 18px 22px;
+  }
+  .writing-roles {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding-bottom: 48px;
+  }
+  .writing-role {
+    padding: 24px;
   }
   .features h3 {
     font-size: 17px;

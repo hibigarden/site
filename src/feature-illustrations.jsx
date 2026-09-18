@@ -5,6 +5,7 @@ import {
   ChevronDown,
   ChevronRight,
   FileDown,
+  FilePenLine,
   FileText,
   Folder,
   FolderOpen,
@@ -15,6 +16,7 @@ import {
   Keyboard,
   List,
   PanelLeft,
+  PenLine,
   Search,
   Sigma,
   Undo2,
@@ -118,6 +120,8 @@ for (const [id, Illustration] of [
   ["formats-illustration", FormatsIllustration],
   ["themes-illustration", ThemesIllustration],
   ["addons-illustration", AddonsIllustration],
+  ["writer-icon", PenLine],
+  ["editor-icon", FilePenLine],
 ]) {
   createRoot(document.getElementById(id)).render(<Illustration />);
 }

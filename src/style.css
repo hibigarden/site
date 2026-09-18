@@ -395,6 +395,9 @@ summary:focus-visible {
 .comparison-table td {
   color: var(--muted);
 }
+.comparison-table strong {
+  color: var(--ink);
+}
 .comparison-table a,
 .feature-free a,
 .writing-role > a {

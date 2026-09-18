@@ -1,9 +1,11 @@
 import { createRoot } from "react-dom/client";
 import {
   Bold,
+  Bot,
   CaseSensitive,
   ChevronDown,
   ChevronRight,
+  CodeXml,
   Download,
   FileDown,
   FilePenLine,
@@ -125,6 +127,8 @@ for (const [id, Illustration] of [
   ["addons-illustration", AddonsIllustration],
   ["writer-icon", PenLine],
   ["editor-icon", FilePenLine],
+  ["developer-icon", CodeXml],
+  ["ai-user-icon", Bot],
 ]) {
   createRoot(document.getElementById(id)).render(<Illustration />);
 }

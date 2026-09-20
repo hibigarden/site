@@ -1,6 +1,6 @@
 # Frontmatter
 
-Frontmatter lets you edit note properties, such as a title or date, above the document body. The properties are stored as YAML at the start of the Markdown file. This plugin is on by default.
+Frontmatter lets you edit note properties, such as a title or date, above the document body. The properties are stored as YAML at the start of the Markdown file. This addon is on by default.
 
 Choose **Add frontmatter** from the command palette or type `/frontmatter` in the slash menu. In normal view, expand the properties section to edit values. Choose **Add property** to add a name and type, or use a row's action to remove it.
 

@@ -1,6 +1,6 @@
 # GitHub Markdown
 
-Add tables, task lists, strikethrough, automatic links, and alerts to Markdown. This plugin is on by default.
+Add tables, task lists, strikethrough, automatic links, and alerts to Markdown. This addon is on by default.
 
 ## Alerts
 
@@ -16,6 +16,8 @@ In normal view, type `> `, then `[!WARNING]`, and press Enter to create an alert
 ## Choose features
 
 Choose which features to use in **Settings → Syntax**.
+
+Automatic flavor detection ignores examples inside code blocks and escaped syntax.
 
 ## Credits
 

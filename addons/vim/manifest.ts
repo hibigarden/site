@@ -9,5 +9,6 @@ export default {
   description: 'Use Vim keys and commands in source views.',
   settings: { category: 'editing', icon: 'keyboard' },
   apiVersion: 2,
+  capabilities: ['modalEditing'],
   defaultEnabled: false,
 } satisfies AddonManifest

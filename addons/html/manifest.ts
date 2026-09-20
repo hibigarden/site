@@ -5,7 +5,7 @@ export default {
   id: 'html',
   name: 'HTML',
   apiVersion: 2,
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'extension',
   description: 'Edit, preview, and export HTML documents.',
   fileExtensions: fileAssociations.html.ext,

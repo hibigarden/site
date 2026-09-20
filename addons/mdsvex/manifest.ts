@@ -5,7 +5,7 @@ export default {
   id: 'mdsvex',
   name: 'MDsveX',
   apiVersion: 2,
-  version: '1.0.0',
+  version: '1.0.1',
   kind: 'extension',
   description: 'Edit and preview MDsveX; run embedded code when you choose.',
   fileExtensions: fileAssociations.mdsvex.ext,

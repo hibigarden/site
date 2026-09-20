@@ -4,7 +4,7 @@ import { authors } from '../authors'
 export default {
   id: 'word-count',
   name: 'Word count',
-  version: '1.0.0',
+  version: '1.1.1',
   apiVersion: 2,
   description: 'See word and character counts for your current document.',
   defaultEnabled: false,

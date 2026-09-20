@@ -6,7 +6,7 @@ export default {
   name: 'Text extras',
   description: 'Add subscript and Discord-style small text.',
   kind: 'extension',
-  version: '1.0.0',
+  version: '1.0.2',
   apiVersion: 2,
   defaultEnabled: true,
   authors: [authors.may],

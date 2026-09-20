@@ -4,7 +4,7 @@ import { authors } from '../authors'
 export default {
   id: 'typing-speed',
   name: 'Typing speed',
-  version: '1.1.0',
+  version: '1.1.1',
   apiVersion: 2,
   description:
     'See your estimated words and characters per minute as you type.',

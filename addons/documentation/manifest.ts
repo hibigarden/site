@@ -4,7 +4,7 @@ import { authors } from '../authors'
 export default {
   id: 'documentation',
   name: 'Export',
-  version: '0.2.0',
+  version: '0.2.3',
   authors: [authors.may],
   description: 'Customize and export your workspace as a website.',
   apiVersion: 2,

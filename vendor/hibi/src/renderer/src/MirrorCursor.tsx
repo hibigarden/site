@@ -1,26 +1,24 @@
+import { EditorView } from '@codemirror/view'
 import type { Editor } from '@tiptap/core'
-import { type RefObject, useEffect, useState } from 'react'
+import { type RefObject, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import type { MarkdownPositionLookup } from './markdown-positions'
-import {
-  editorPosition,
-  sourceView as findSourceView,
-  sourcePosition,
-} from './source-view'
+import { markdownPositions } from './markdown-positions'
 
 export function MirrorCursor({
   editor,
   root,
-  content,
+  source,
+  body,
   active,
-  positions,
 }: {
   editor: Editor | null
   root: RefObject<HTMLDivElement | null>
-  content: () => { source: string; body: string } | null
+  source: string
+  body: string
   active: boolean
-  positions: MarkdownPositionLookup
 }) {
+  const latest = useRef({ source, body })
+  latest.current = { source, body }
   const [position, setPosition] = useState<{
     pane: HTMLElement
     x: number
@@ -33,16 +31,17 @@ export function MirrorCursor({
       return
     }
     let frame = 0
+    let cached: {
+      doc: typeof editor.state.doc
+      source: string
+      map: ReturnType<typeof markdownPositions>
+    } | null = null
     const measure = () => {
       frame = 0
-      if (editor.isDestroyed) {
-        setPosition(null)
-        return
-      }
       const focused = document.activeElement
       const sourceElement =
         root.current?.querySelector<HTMLElement>('.cm-content')
-      const sourceView = sourceElement && findSourceView(sourceElement)
+      const sourceView = sourceElement && EditorView.findFromDOM(sourceElement)
       const richFocus = focused === editor.view.dom
       const sourceFocus = focused === sourceElement
       if (
@@ -58,28 +57,25 @@ export function MirrorCursor({
         setPosition(null)
         return
       }
-      const text = content()
-      if (!text) {
-        setPosition(null)
-        return
-      }
-      const { source, body } = text
-      const bodyOffset = source.lastIndexOf(body)
+      const { source, body } = latest.current
+      const bodyOffset = source.indexOf(body)
       if (
         bodyOffset < 0 ||
-        (sourceFocus &&
-          sourcePosition(sourceView, sourceView.state.selection.main.head) <
-            bodyOffset)
+        (sourceFocus && sourceView.state.selection.main.head < bodyOffset)
       ) {
         setPosition(null)
         return
       }
-      const map = positions(body, editor.state.doc)
-      const target = map(
+      if (!cached || cached.doc !== editor.state.doc || cached.source !== body)
+        cached = {
+          doc: editor.state.doc,
+          source: body,
+          map: markdownPositions(body, editor.state.doc),
+        }
+      const target = cached.map(
         richFocus
           ? editor.state.selection.head
-          : sourcePosition(sourceView, sourceView.state.selection.main.head) -
-              bodyOffset,
+          : sourceView.state.selection.main.head - bodyOffset,
         richFocus ? 'rich' : 'source',
       )
       const pane = root.current?.querySelector<HTMLElement>(
@@ -89,11 +85,10 @@ export function MirrorCursor({
         setPosition(null)
         return
       }
-      const sourceTarget = editorPosition(sourceView, target + bodyOffset)
       const caret = richFocus
-        ? sourceTarget === null
-          ? null
-          : sourceView.coordsAtPos(sourceTarget)
+        ? sourceView.coordsAtPos(
+            Math.min(sourceView.state.doc.length, target + bodyOffset),
+          )
         : editor.view.coordsAtPos(target)
       const bounds = pane.getBoundingClientRect()
       if (
@@ -106,20 +101,12 @@ export function MirrorCursor({
         setPosition(null)
         return
       }
-      const next = {
+      setPosition({
         pane,
         x: caret.left - bounds.left + pane.scrollLeft,
         y: caret.top - bounds.top + pane.scrollTop,
         height: caret.bottom - caret.top,
-      }
-      setPosition((previous) =>
-        previous?.pane === next.pane &&
-        previous.x === next.x &&
-        previous.y === next.y &&
-        previous.height === next.height
-          ? previous
-          : next,
-      )
+      })
     }
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(measure)
@@ -132,8 +119,6 @@ export function MirrorCursor({
       'focusin',
       'focusout',
       'compositionend',
-      'hibi:source-caret',
-      'hibi:rich-content',
     ])
       document.addEventListener(event, schedule)
     document.addEventListener('scroll', schedule, true)
@@ -149,15 +134,13 @@ export function MirrorCursor({
         'focusin',
         'focusout',
         'compositionend',
-        'hibi:source-caret',
-        'hibi:rich-content',
       ])
         document.removeEventListener(event, schedule)
       document.removeEventListener('scroll', schedule, true)
       window.removeEventListener('resize', schedule)
       editor.off('transaction', schedule)
     }
-  }, [active, editor, root, positions, content])
+  }, [active, editor, root])
   return (
     position &&
     createPortal(

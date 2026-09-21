@@ -4,10 +4,7 @@
 
 .titlebar .palette-trigger,
 .titlebar [aria-label="editor settings"],
-.titlebar [aria-label="Settings"],
-.titlebar [aria-label="open"],
-.titlebar [aria-label="Sidebar views"],
-.titlebar [aria-label="Toggle right sidebar"] {
+.titlebar [aria-label="open"] {
   display: none;
 }
 

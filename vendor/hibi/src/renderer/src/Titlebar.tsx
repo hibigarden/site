@@ -1,28 +1,32 @@
 import {
   ArrowLeft,
-  ChevronDown,
   Code,
   Columns2,
+  FilePlus,
   FileText,
+  FolderOpen,
   PanelLeft,
-  PanelRight,
-  Pin,
-  PinOff,
-  SettingsIcon,
+  Save,
+  Search,
+  SlidersHorizontal,
 } from 'lucide-react'
-import { useLayoutEffect, useRef, useState } from 'react'
-import type { DocumentState } from '../../shared/desktop'
+import { useEffect, useRef, useState } from 'react'
+import type { DocumentCommand, DocumentState } from '../../shared/desktop'
+import { isMarkdownDocument } from '../../shared/document-types'
 import { type Hotkeys, shortcutLabels } from '../../shared/hotkeys'
 import { IconButton } from '../../ui/Controls'
-import { useMenus } from '../../ui/MenuHost'
-import type { viewShortcut } from './AddonSidebar'
-import { DocumentTabs } from './DocumentTabs'
+import { ShortcutKeys } from '../../ui/ShortcutKeys'
 import type { ViewMode } from './Editor'
 
 const icons = {
+  new: FilePlus,
+  open: FolderOpen,
+  save: Save,
   normal: FileText,
   'side-by-side': Columns2,
   markdown: Code,
+  settings: SlidersHorizontal,
+  back: ArrowLeft,
 } as const
 
 function Icon({ name }: { name: keyof typeof icons }) {
@@ -33,227 +37,157 @@ function Icon({ name }: { name: keyof typeof icons }) {
 export function Titlebar({
   document,
   settingsOpen,
+  onSettings,
+  onPalette,
   mode,
-  availableViews,
   onMode,
+  onCommand,
+  disabled,
   hotkeys,
   platform,
   sidebarOpen,
   onSidebar,
-  onSettings,
-  onBack,
-  sidebarOverlay,
-  sidebarView,
-  sidebarViews,
-  onSidebarView,
-  rightSidebarOpen,
-  rightSidebarView,
-  onRightSidebar,
-  onRightSidebarView,
-  onSelectTab,
-  onCloseTab,
-  onMoveTab,
+  onRename,
   busy,
 }: {
   document: DocumentState | null
   settingsOpen: boolean
+  onSettings: () => void
+  onPalette: () => void
   mode: ViewMode
-  availableViews: readonly ViewMode[]
   onMode: (mode: ViewMode) => void
+  onCommand: (command: DocumentCommand) => void
+  disabled: boolean
   hotkeys: Hotkeys
   platform: string
   sidebarOpen: boolean
   onSidebar: () => void
-  onSettings: () => void
-  onBack: () => void
-  sidebarOverlay: boolean
-  sidebarView: string
-  sidebarViews: ReturnType<typeof viewShortcut>[]
-  onSidebarView: (view: string) => void
-  rightSidebarOpen: boolean
-  rightSidebarView: string
-  onRightSidebar: () => void
-  onRightSidebarView: (view: string) => void
-  onSelectTab: (id: string) => void
-  onCloseTab: (id: string) => void
-  onMoveTab: (id: string, beforeId: string | null) => void
+  onRename: (name: string) => Promise<void>
   busy: boolean
 }) {
-  const menus = useMenus(console.error)
-  const [pinned, setPinned] = useState<string[]>(() => {
-    try {
-      const saved: unknown = JSON.parse(
-        localStorage.getItem('sidebar-pinned-views') ?? '[]',
-      )
-      return Array.isArray(saved)
-        ? [...new Set(saved)]
-            .filter((id): id is string => typeof id === 'string')
-            .slice(0, 3)
-        : []
-    } catch {
-      return []
-    }
-  })
-  const shortcuts = useRef<HTMLDivElement>(null)
-  const [visibleCount, setVisibleCount] = useState(0)
-  useLayoutEffect(() => {
-    const element = shortcuts.current
-    if (settingsOpen || !sidebarOpen || !element) return
-    const measure = () => {
-      const style = getComputedStyle(element)
-      const size = Number.parseFloat(
-        style.getPropertyValue('--sidebar-action-size'),
-      )
-      const gap = Number.parseFloat(style.columnGap)
-      setVisibleCount(
-        Math.max(0, Math.floor((element.clientWidth + gap) / (size + gap))),
-      )
-    }
-    const observer = new ResizeObserver(measure)
-    observer.observe(element)
-    measure()
-    return () => observer.disconnect()
-  }, [settingsOpen, sidebarOpen])
-  const orderedViews = [
-    ...pinned.flatMap((id) => sidebarViews.filter((view) => view.id === id)),
-    ...sidebarViews.filter((view) => !pinned.includes(view.id)),
-  ]
-  const currentView =
-    sidebarViews.find((view) => view.id === sidebarView) ?? sidebarViews[0]
-  const availablePins = pinned.filter((id) =>
-    sidebarViews.some((view) => view.id === id),
-  )
-  const currentPinned = availablePins.includes(sidebarView)
-  function togglePin() {
-    const next = currentPinned
-      ? availablePins.filter((id) => id !== sidebarView)
-      : [...availablePins, sidebarView].slice(0, 3)
-    localStorage.setItem('sidebar-pinned-views', JSON.stringify(next))
-    setPinned(next)
-  }
+  const [renaming, setRenaming] = useState(false)
+  const [name, setName] = useState('')
+  const input = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    const field = input.current
+    if (!renaming || !field) return
+    field.focus()
+    const extension = field.value.lastIndexOf('.')
+    field.setSelectionRange(0, extension > 0 ? extension : field.value.length)
+  }, [renaming])
+  // biome-ignore lint/correctness/useExhaustiveDependencies: changing documents or screens cancels inline renaming.
+  useEffect(() => setRenaming(false), [document?.name, settingsOpen])
   return (
     <header className="titlebar" aria-busy={busy}>
-      <div
-        className="sidebar-toolbar"
-        data-open={sidebarOpen}
-        data-settings={settingsOpen}
-        inert={!settingsOpen && sidebarOverlay && rightSidebarOpen}
-      >
+      <div className="sidebar-toolbar" data-open={sidebarOpen || settingsOpen}>
         {!settingsOpen && (
-          <>
-            {sidebarOpen && (
-              <div className="sidebar-view-controls">
-                <div ref={shortcuts} className="sidebar-view-shortcuts">
-                  {orderedViews.slice(0, visibleCount).map((view) => (
-                    <IconButton
-                      key={view.id}
-                      aria-label={`${view.label} view`}
-                      title={view.label}
-                      aria-pressed={sidebarOpen && sidebarView === view.id}
-                      onClick={() => onSidebarView(view.id)}
-                    >
-                      <view.icon size={16} />
-                    </IconButton>
-                  ))}
-                </div>
-                <IconButton
-                  className="sidebar-view-menu"
-                  aria-label="Sidebar views"
-                  aria-haspopup="menu"
-                  title="Sidebar views"
-                  onClick={(event) =>
-                    menus.open({
-                      label: 'Sidebar views',
-                      anchor: event.currentTarget,
-                      items: [
-                        {
-                          id: 'pin-current-view',
-                          label: `${currentPinned ? 'Unpin' : 'Pin'} ${currentView?.label ?? 'Workspace'}`,
-                          icon: currentPinned ? PinOff : Pin,
-                          disabled: !currentPinned && availablePins.length >= 3,
-                          onSelect: togglePin,
-                        },
-                        ...orderedViews.map((view, index) => ({
-                          ...view,
-                          separatorBefore: index === 0,
-                          onSelect: () => onSidebarView(view.id),
-                        })),
-                      ],
-                    })
-                  }
-                >
-                  <ChevronDown size={12} />
-                </IconButton>
-              </div>
-            )}
-          </>
-        )}
-        {settingsOpen && !sidebarOpen && (
           <IconButton
-            aria-label="Back to app"
-            title="Back to app"
-            onClick={onBack}
+            type="button"
+            aria-label="toggle workspace sidebar"
+            aria-pressed={sidebarOpen}
+            title="workspace sidebar"
+            onClick={onSidebar}
           >
-            <ArrowLeft size={16} />
+            <PanelLeft size={16} strokeWidth={1.5} />
           </IconButton>
         )}
-        <IconButton
-          className="sidebar-toggle"
-          aria-label={
-            settingsOpen
-              ? 'Toggle settings sidebar'
-              : 'Toggle workspace sidebar'
-          }
-          aria-pressed={sidebarOpen}
-          aria-expanded={sidebarOpen}
-          title="Toggle sidebar"
-          onClick={onSidebar}
-        >
-          <PanelLeft size={16} strokeWidth={1.5} />
-        </IconButton>
       </div>
-      <div
-        className="document-toolbar"
-        inert={
-          sidebarOverlay && (sidebarOpen || (!settingsOpen && rightSidebarOpen))
-        }
-      >
+      <div className="document-toolbar">
+        {!settingsOpen && (
+          <div className="document-actions">
+            {(['new', 'open', 'save'] as const).map((command) => (
+              <IconButton
+                type="button"
+                key={command}
+                aria-label={command}
+                title={`${command}${hotkeys[command] ? ` (${shortcutLabels(hotkeys[command], platform).join('')})` : ''}`}
+                disabled={disabled}
+                aria-disabled={busy || disabled}
+                onClick={() => {
+                  if (!busy) onCommand(command)
+                }}
+              >
+                <Icon name={command} />
+              </IconButton>
+            ))}
+          </div>
+        )}
         <div className="document-title">
           {settingsOpen ? (
-            <span>Settings</span>
-          ) : document?.tabsEnabled === false ? (
-            <span
-              className="single-document-title"
-              data-tooltip={document.name}
-              data-verbatim="true"
+            <span>settings</span>
+          ) : renaming ? (
+            <input
+              ref={input}
+              className="inline-edit rename-input"
+              aria-label="file name"
+              value={name}
+              spellCheck={false}
+              onChange={(event) => setName(event.target.value)}
+              onBlur={() => setRenaming(false)}
+              onKeyDown={(event) => {
+                if (event.key === 'Escape') {
+                  event.preventDefault()
+                  setRenaming(false)
+                }
+                if (event.key === 'Enter') {
+                  event.preventDefault()
+                  setRenaming(false)
+                  void onRename(name)
+                }
+              }}
+            />
+          ) : (
+            <button
+              type="button"
+              className="document-name"
+              aria-label="rename document"
+              title="rename document"
+              disabled={disabled}
+              onClick={() => {
+                if (busy) return
+                setName(document?.name ?? 'untitled.md')
+                setRenaming(true)
+              }}
             >
-              <span>{document.name}</span>
-              {document.dirty && (
+              <span>
+                {settingsOpen ? 'settings' : (document?.name ?? 'hibi')}
+              </span>
+              {!settingsOpen && document?.dirty && (
                 <span
                   className="dirty-dot"
                   role="status"
-                  aria-label="Unsaved changes"
+                  aria-label="unsaved changes"
                 >
                   •
                 </span>
               )}
-            </span>
-          ) : document ? (
-            <DocumentTabs
-              document={document}
-              busy={busy}
-              onSelect={onSelectTab}
-              onClose={onCloseTab}
-              onMove={onMoveTab}
-            />
-          ) : (
-            <span>Hibi</span>
+            </button>
           )}
         </div>
-        {!settingsOpen && (
-          <nav className="view-switch" aria-label="Editor view">
-            {(['normal', 'side-by-side', 'markdown'] as const).map((view) => {
-              const label = view === 'markdown' ? 'Source view' : view
+        <button
+          type="button"
+          className="palette-trigger"
+          aria-label="command palette"
+          title="command palette"
+          onClick={onPalette}
+        >
+          <Search size={14} strokeWidth={1.5} aria-hidden="true" />
+          {hotkeys.palette && (
+            <ShortcutKeys shortcut={hotkeys.palette} platform={platform} />
+          )}
+        </button>
+        <nav
+          className="view-switch"
+          aria-label={settingsOpen ? 'navigation' : 'editor view'}
+        >
+          {!settingsOpen &&
+            (['normal', 'side-by-side', 'markdown'] as const).map((view) => {
+              const label =
+                view === 'markdown'
+                  ? document && !isMarkdownDocument(document.name)
+                    ? 'source only'
+                    : 'markdown only'
+                  : view
               return (
                 <IconButton
                   type="button"
@@ -261,78 +195,23 @@ export function Titlebar({
                   aria-label={label}
                   title={`${label}${hotkeys[view] ? ` (${shortcutLabels(hotkeys[view], platform).join('')})` : ''}`}
                   aria-pressed={mode === view}
-                  disabled={!availableViews.includes(view)}
                   onClick={() => onMode(view)}
                 >
                   <Icon name={view} />
                 </IconButton>
               )
             })}
-          </nav>
-        )}
-        {!settingsOpen && (
           <IconButton
-            aria-label="Settings"
-            title="Settings"
+            type="button"
+            aria-label={settingsOpen ? 'back to editor' : 'editor settings'}
+            title={settingsOpen ? 'back to editor' : 'editor settings'}
+            aria-pressed={settingsOpen}
             onClick={onSettings}
           >
-            <SettingsIcon size={16} aria-hidden="true" />
+            <Icon name={settingsOpen ? 'back' : 'settings'} />
           </IconButton>
-        )}
+        </nav>
       </div>
-      {!settingsOpen && (
-        <div
-          className="right-sidebar-toolbar"
-          data-open={rightSidebarOpen}
-          inert={sidebarOverlay && sidebarOpen}
-        >
-          <IconButton
-            className="right-sidebar-toggle"
-            aria-label="Toggle right sidebar"
-            title="Toggle right sidebar"
-            aria-pressed={rightSidebarOpen}
-            aria-expanded={rightSidebarOpen}
-            onClick={onRightSidebar}
-          >
-            <PanelRight size={16} strokeWidth={1.5} />
-          </IconButton>
-          {rightSidebarOpen && (
-            <div className="right-sidebar-view-controls">
-              <span>
-                {sidebarViews.find((view) => view.id === rightSidebarView)
-                  ?.label ?? 'No view'}
-              </span>
-              <IconButton
-                aria-label="Right sidebar views"
-                title="Right sidebar views"
-                aria-haspopup="menu"
-                onClick={(event) =>
-                  menus.open({
-                    label: 'Right sidebar views',
-                    anchor: event.currentTarget,
-                    items: [
-                      {
-                        id: 'none',
-                        label: 'No view',
-                        onSelect: () => onRightSidebarView('none'),
-                      },
-                      ...sidebarViews
-                        .filter((view) => view.id !== 'workspace')
-                        .map((view, index) => ({
-                          ...view,
-                          separatorBefore: index === 0,
-                          onSelect: () => onRightSidebarView(view.id),
-                        })),
-                    ],
-                  })
-                }
-              >
-                <ChevronDown size={12} />
-              </IconButton>
-            </div>
-          )}
-        </div>
-      )}
     </header>
   )
 }

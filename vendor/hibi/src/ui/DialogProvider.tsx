@@ -11,8 +11,7 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react'
-import { sentenceCase } from '../shared/ui-case'
-import { Button, IconButton, TextInput } from './Controls'
+import { Button, IconButton } from './Controls'
 import type {
   DialogApi,
   DialogHandle,
@@ -25,6 +24,7 @@ import { TooltipHost } from './Tooltip'
 
 type Request = {
   id: number
+  owner: string
   options: DialogOptions<unknown>
   closing: boolean
   value: unknown
@@ -57,7 +57,7 @@ export function createDialogService() {
     requests = [...requests]
     publish()
   }
-  function scope() {
+  function scope(owner: string) {
     let disposed = false
     const owned = new Set<Request>()
     const api: DialogApi = {
@@ -70,6 +70,7 @@ export function createDialogService() {
         })
         const request: Request = {
           id: ++nextId,
+          owner,
           options: options as DialogOptions<unknown>,
           closing: false,
           value: null,
@@ -89,7 +90,7 @@ export function createDialogService() {
           content: () => null,
           footer: ({ close }) => (
             <Button className="dialog-primary" onClick={() => close(null)}>
-              {options.confirmLabel ?? 'Ok'}
+              {options.confirmLabel ?? 'ok'}
             </Button>
           ),
         }).result
@@ -102,10 +103,10 @@ export function createDialogService() {
             footer: ({ close }) => (
               <>
                 <Button onClick={() => close(false)}>
-                  {options.cancelLabel ?? 'Cancel'}
+                  {options.cancelLabel ?? 'cancel'}
                 </Button>
                 <Button className="dialog-primary" onClick={() => close(true)}>
-                  {options.confirmLabel ?? 'Confirm'}
+                  {options.confirmLabel ?? 'confirm'}
                 </Button>
               </>
             ),
@@ -130,7 +131,7 @@ export function createDialogService() {
       },
     }
   }
-  const root = scope()
+  const root = scope('hibi')
   return {
     api: root.api,
     scope,
@@ -201,8 +202,8 @@ class ContentBoundary extends Component<
   render() {
     return this.state.failed ? (
       <div role="alert">
-        <p>Could not load this dialog. Close it and try again.</p>
-        <Button onClick={this.props.close}>Close</Button>
+        <p>this dialog could not load.</p>
+        <Button onClick={this.props.close}>close</Button>
       </div>
     ) : (
       this.props.children
@@ -253,21 +254,24 @@ function DialogFrame({
       ref={modal}
       className={`app-dialog${request.closing ? ' closing' : ''}`}
       data-size={request.options.size ?? 'normal'}
-      aria-label={sentenceCase(request.options.title)}
+      aria-label={request.options.title}
       aria-describedby={request.options.description ? description : undefined}
       closeOnOutsideClick={request.options.closeOnOutsideClick ?? true}
       onDismiss={() => close()}
     >
       <header className="dialog-heading">
         <div className="dialog-title-row">
-          <h2>{sentenceCase(request.options.title)}</h2>
-          <IconButton aria-label="Close dialog" onClick={() => close()}>
+          <h2>{request.options.title}</h2>
+          <IconButton aria-label="close dialog" onClick={() => close()}>
             <X size={16} aria-hidden="true" />
           </IconButton>
         </div>
+        {request.owner !== 'hibi' && (
+          <p className="dialog-owner">{request.owner}</p>
+        )}
         {request.options.description && (
           <p id={description} className="dialog-description">
-            {sentenceCase(request.options.description)}
+            {request.options.description}
           </p>
         )}
       </header>
@@ -318,13 +322,13 @@ function PromptForm({
           setError(
             error instanceof Error
               ? error.message
-              : 'Could not check this value. Try again.',
+              : 'could not validate this value.',
           )
         }
       }}
     >
-      <label htmlFor={id}>{sentenceCase(options.label)}</label>
-      <TextInput
+      <label htmlFor={id}>{options.label}</label>
+      <input
         ref={input}
         id={id}
         value={value}
@@ -343,10 +347,10 @@ function PromptForm({
       )}
       <div className="dialog-actions">
         <Button onClick={() => close(null)}>
-          {options.cancelLabel ?? 'Cancel'}
+          {options.cancelLabel ?? 'cancel'}
         </Button>
         <Button type="submit" className="dialog-primary">
-          {options.confirmLabel ?? 'Save'}
+          {options.confirmLabel ?? 'save'}
         </Button>
       </div>
     </form>

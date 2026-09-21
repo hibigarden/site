@@ -3,7 +3,6 @@ import {
   ArrowRight,
   ChevronRight,
   Ellipsis,
-  EyeOff,
   GripVertical,
   Puzzle,
 } from 'lucide-react'
@@ -27,19 +26,29 @@ import type { ViewMode } from './Editor'
 import { toolbar } from './toolbar'
 import './toolbar.css'
 
-function useReorder() {
+function useReorder(axis: 'x' | 'y') {
   const dragged = useRef('')
+  const returnFocus = useRef<HTMLElement | null>(null)
   const [target, setTarget] = useState<{ id: string; after: boolean } | null>(
     null,
   )
   const clear = () => {
     dragged.current = ''
     setTarget(null)
+    returnFocus.current?.focus()
+    returnFocus.current = null
   }
   return {
     target,
     props: (id: string) => ({
       draggable: true,
+      onPointerDown() {
+        if (axis === 'x')
+          returnFocus.current =
+            document.activeElement?.closest<HTMLElement>(
+              '.cm-content, .tiptap',
+            ) ?? null
+      },
       onDragStart(event: DragEvent<HTMLElement>) {
         dragged.current = id
         event.dataTransfer.setData('application/x-hibi-toolbar-item', id)
@@ -50,7 +59,10 @@ function useReorder() {
         event.preventDefault()
         event.dataTransfer.dropEffect = 'move'
         const rect = event.currentTarget.getBoundingClientRect()
-        const after = event.clientX > rect.left + rect.width / 2
+        const after =
+          axis === 'x'
+            ? event.clientX > rect.left + rect.width / 2
+            : event.clientY > rect.top + rect.height / 2
         setTarget({ id, after })
       },
       onDrop(event: DragEvent<HTMLElement>) {
@@ -73,6 +85,7 @@ export function EditorToolbar({
   mode: ViewMode
   typing?: boolean
 }) {
+  const reorder = useReorder('x')
   const row = useRef<HTMLElement>(null)
   const probe = useRef<HTMLDivElement>(null)
   const more = useRef<HTMLButtonElement>(null)
@@ -87,14 +100,9 @@ export function EditorToolbar({
   const visible = items.filter(
     (item) =>
       !item.hidden &&
-      preferences.placements?.[item.id] !== 'hidden' &&
       (!item.when ||
         (item.when === 'source' ? mode !== 'normal' : mode !== 'markdown')),
   )
-  const inline = visible.filter(
-    (item) => preferences.placements?.[item.id] !== 'menu',
-  )
-  const hasMenuItems = inline.length !== visible.length
   // biome-ignore lint/correctness/useExhaustiveDependencies: action and mode changes alter the measured DOM.
   useLayoutEffect(() => {
     const element = row.current,
@@ -116,7 +124,7 @@ export function EditorToolbar({
         widths.reduce((sum, width) => sum + width, 0) +
         Math.max(0, widths.length - 1) * gap
       let fit = widths.length
-      if (total > space || hasMenuItems) {
+      if (total > space) {
         let used = overflowWidth
         fit = 0
         for (const width of widths) {
@@ -132,9 +140,8 @@ export function EditorToolbar({
     observer.observe(element)
     observer.observe(measurement)
     return () => observer.disconnect()
-  }, [items, mode, preferences, hasMenuItems])
-  const shown = new Set(inline.slice(0, count).map((item) => item.id))
-  const overflow = visible.filter((item) => !shown.has(item.id))
+  }, [items, mode, preferences.mode, preferences.visible])
+  const overflow = visible.slice(count)
   const hidden = typing && preferences.autoHide !== false && !open
   const closeMenu = () => {
     menu.current?.hidePopover()
@@ -167,15 +174,15 @@ export function EditorToolbar({
         <nav
           ref={row}
           className="editor-toolbar"
-          aria-label="Editor toolbar"
+          aria-label="editor toolbar"
           data-mode={preferences.mode}
-          onDragStart={(event) => event.preventDefault()}
         >
-          {inline.slice(0, count).map((item) => {
+          {visible.slice(0, count).map((item) => {
             return (
               <Button
                 key={item.id}
                 data-toolbar-id={item.id}
+                {...reorder.props(item.id)}
                 aria-label={item.label}
                 aria-pressed={item.pressed}
                 disabled={item.disabled}
@@ -189,7 +196,7 @@ export function EditorToolbar({
           <IconButton
             ref={more}
             className="toolbar-overflow"
-            aria-label="More formatting actions"
+            aria-label="more formatting actions"
             aria-haspopup="menu"
             aria-expanded={open}
             aria-controls={menuId}
@@ -205,7 +212,7 @@ export function EditorToolbar({
             role="menu"
             aria-hidden={!open}
             inert={!open}
-            aria-label="More formatting actions"
+            aria-label="more formatting actions"
             className="toolbar-menu"
             onToggle={(event) => setOpen(event.newState === 'open')}
             onKeyDown={(event) => {
@@ -259,7 +266,7 @@ export function EditorToolbar({
             ))}
           </div>
           <div className="toolbar-measure" ref={probe} aria-hidden inert>
-            {inline.map((item) => (
+            {visible.map((item) => (
               <span className="ui-button" key={item.id}>
                 <ActionContent item={item} mode={preferences.mode} />
               </span>
@@ -291,7 +298,7 @@ function ActionContent({
 }
 
 export function ToolbarSettings() {
-  const reorder = useReorder()
+  const reorder = useReorder('x')
   const [selected, setSelected] = useState<string | null>(null)
   const help = useId()
   const { preferences, items } = useSyncExternalStore(
@@ -307,12 +314,12 @@ export function ToolbarSettings() {
   }
   return (
     <>
-      <h2>Toolbar</h2>
+      <h2>toolbar</h2>
       <div className="settings-group">
         <SettingRow
           id="toolbar-visible"
-          label="Show toolbar"
-          description="Show formatting and addon actions below the top bar."
+          label="show toolbar"
+          description="show addon actions below the top bar."
         >
           <Toggle
             id="toolbar-visible"
@@ -324,8 +331,8 @@ export function ToolbarSettings() {
         </SettingRow>
         <SettingRow
           id="toolbar-autohide"
-          label="Hide toolbar while typing"
-          description="Hide the toolbar while you write to give the document more room."
+          label="hide toolbar while typing"
+          description="fade with the top bar and move the page up while you write."
         >
           <Toggle
             id="toolbar-autohide"
@@ -337,8 +344,8 @@ export function ToolbarSettings() {
         </SettingRow>
         <SettingRow
           id="toolbar-mode"
-          label="Toolbar labels"
-          description="Choose how toolbar actions appear."
+          label="toolbar labels"
+          description="choose how toolbar actions appear."
         >
           <Select
             id="toolbar-mode"
@@ -349,32 +356,30 @@ export function ToolbarSettings() {
               })
             }
           >
-            <option value="icons">Icons</option>
-            <option value="icons-and-text">Icons and text</option>
-            <option value="text">Text</option>
+            <option value="icons">icons</option>
+            <option value="icons-and-text">icons and text</option>
+            <option value="text">text</option>
           </Select>
         </SettingRow>
       </div>
-      <details className="toolbar-order ui-disclosure">
+      <details className="toolbar-order">
         <summary>
           <ChevronRight size={14} aria-hidden />
-          Arrange toolbar actions
+          arrange toolbar actions
         </summary>
         <div className="toolbar-order-panel">
           <div className="toolbar-order-heading">
             <p id={help}>
-              Drag actions to reorder them, or select one to change its
-              placement and use the arrows. Menu-only actions always stay in the
-              dropdown.
+              drag to reorder. select an action to move it with the arrows.
             </p>
             <Button
               disabled={!preferences.order?.length}
               onClick={() => toolbar.setPreferences({ order: [] })}
             >
-              Reset order
+              reset order
             </Button>
           </div>
-          <ol aria-label="Toolbar order">
+          <ol aria-label="toolbar order">
             {items.map((item) => {
               const Icon = item.icon ?? Puzzle
               const drag = reorder.props(item.id)
@@ -415,12 +420,6 @@ export function ToolbarSettings() {
                     />
                     <Icon size={16} aria-hidden />
                     <span>{item.label}</span>
-                    {preferences.placements?.[item.id] === 'menu' && (
-                      <Ellipsis size={14} aria-hidden />
-                    )}
-                    {preferences.placements?.[item.id] === 'hidden' && (
-                      <EyeOff size={14} aria-hidden />
-                    )}
                   </button>
                 </li>
               )
@@ -435,34 +434,15 @@ export function ToolbarSettings() {
                 </span>
               </p>
               <div>
-                <Select
-                  aria-label={`Toolbar placement for ${active.label}`}
-                  value={preferences.placements?.[active.id] ?? 'toolbar'}
-                  onChange={(event) =>
-                    toolbar.setPreferences({
-                      placements: {
-                        ...preferences.placements,
-                        [active.id]: event.target.value as
-                          | 'toolbar'
-                          | 'menu'
-                          | 'hidden',
-                      },
-                    })
-                  }
-                >
-                  <option value="toolbar">Show in toolbar</option>
-                  <option value="menu">Menu only</option>
-                  <option value="hidden">Hide</option>
-                </Select>
                 <IconButton
-                  aria-label={`Move ${active.label} earlier`}
+                  aria-label={`move ${active.label} earlier`}
                   disabled={position === 0}
                   onClick={() => move(active.id, -1)}
                 >
                   <ArrowLeft size={16} aria-hidden />
                 </IconButton>
                 <IconButton
-                  aria-label={`Move ${active.label} later`}
+                  aria-label={`move ${active.label} later`}
                   disabled={position === items.length - 1}
                   onClick={() => move(active.id, 1)}
                 >

@@ -2,7 +2,7 @@ import { File } from 'lucide-react'
 
 export function LoadingScreen({
   full = false,
-  label = 'Loading editor',
+  label = 'loading editor',
 }: {
   full?: boolean
   label?: string

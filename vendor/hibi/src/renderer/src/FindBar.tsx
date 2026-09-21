@@ -1,13 +1,8 @@
 import { ChevronDown, ChevronUp, Search, X } from 'lucide-react'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { IconButton, TextInput } from '../../ui/Controls'
+import { IconButton } from '../../ui/Controls'
 
-export type FindStatus = {
-  current: number
-  total: number
-  pending?: boolean
-  error?: string
-}
+export type FindStatus = { current: number; total: number }
 export type FindMove = { id: number; direction: 'next' | 'previous' }
 
 export function FindBar({
@@ -29,13 +24,9 @@ export function FindBar({
   const counter = useRef<HTMLSpanElement>(null)
   const [counterWidth, setCounterWidth] = useState(0)
   const count = query
-    ? status.error
-      ? 'Find unavailable'
-      : status.pending
-        ? 'Searching…'
-        : status.total
-          ? `${status.current}/${status.total}`
-          : 'No results'
+    ? status.total
+      ? `${status.current}/${status.total}`
+      : 'no results'
     : ''
   useLayoutEffect(() => {
     if (!open) return
@@ -49,14 +40,13 @@ export function FindBar({
   }, [open])
 
   return (
-    <search className="find-bar" aria-label="Find in document" hidden={!open}>
+    <search className="find-bar" aria-label="find in note" hidden={!open}>
       <div className="find-input">
         <Search size={15} aria-hidden="true" />
-        <TextInput
-          variant="inline"
+        <input
           ref={input}
-          aria-label="Find in document"
-          placeholder="Find in document"
+          aria-label="find in note"
+          placeholder="find in note"
           value={query}
           spellCheck={false}
           onChange={(event) => onQuery(event.target.value)}
@@ -75,10 +65,7 @@ export function FindBar({
       </div>
       <output
         aria-live="polite"
-        aria-label={
-          status.error ? `Find matches: ${status.error}` : 'Find matches'
-        }
-        title={status.error}
+        aria-label="find matches"
         style={{ width: counterWidth }}
       >
         <span className="find-count" ref={counter}>
@@ -87,8 +74,8 @@ export function FindBar({
       </output>
       <IconButton
         type="button"
-        aria-label="Previous match"
-        title="Previous match (Shift+Enter)"
+        aria-label="previous match"
+        title="previous match (shift+enter)"
         disabled={!status.total}
         onMouseDown={(event) => event.preventDefault()}
         onClick={() => onMove('previous')}
@@ -97,8 +84,8 @@ export function FindBar({
       </IconButton>
       <IconButton
         type="button"
-        aria-label="Next match"
-        title="Next match (Enter)"
+        aria-label="next match"
+        title="next match (enter)"
         disabled={!status.total}
         onMouseDown={(event) => event.preventDefault()}
         onClick={() => onMove('next')}
@@ -107,8 +94,8 @@ export function FindBar({
       </IconButton>
       <IconButton
         type="button"
-        aria-label="Close find"
-        title="Close find (Escape)"
+        aria-label="close find"
+        title="close find (escape)"
         onClick={onClose}
       >
         <X size={16} aria-hidden="true" />

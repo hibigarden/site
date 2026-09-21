@@ -9,22 +9,16 @@ import {
   themePreferences,
 } from '../shared/colorschemes'
 
-export function createColorschemeStore(
-  storageKey: string,
-  initial?: unknown,
-  persistent = true,
-) {
+export function createColorschemeStore(storageKey: string, initial?: unknown) {
   const schemes = new Map(
     bundledColorschemes.map((scheme) => [scheme.id, scheme]),
   )
   let preferences = themePreferences(initial)
   try {
     preferences = themePreferences(
-      persistent
-        ? JSON.parse(
-            localStorage.getItem(storageKey) ?? JSON.stringify(preferences),
-          )
-        : initial,
+      JSON.parse(
+        localStorage.getItem(storageKey) ?? JSON.stringify(preferences),
+      ),
     )
   } catch {
     /* Use the bundled defaults when storage is unavailable. */
@@ -89,7 +83,7 @@ export function createColorschemeStore(
       started = true
       document.head.append(style)
       media.addEventListener('change', publish)
-      if (persistent) window.addEventListener('storage', storage)
+      window.addEventListener('storage', storage)
       publish()
     },
     stop() {
@@ -108,8 +102,7 @@ export function createColorschemeStore(
           throw new Error(`choose a ${mode} colorscheme`)
       preferences = next
       try {
-        if (persistent)
-          localStorage.setItem(storageKey, JSON.stringify(preferences))
+        localStorage.setItem(storageKey, JSON.stringify(preferences))
       } catch {
         /* The current session still applies the choice. */
       }

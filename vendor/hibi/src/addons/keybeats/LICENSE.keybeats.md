@@ -1,9 +1,3 @@
-# keyBeats license
-
-Hibi includes keyboard sounds and profile mappings from keyBeats by Yug Bhanushali. The original MIT license follows.
-
----
-
 MIT License
 
 Copyright (c) 2024 Yug Bhanushali

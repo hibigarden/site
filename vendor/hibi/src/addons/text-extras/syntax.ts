@@ -8,9 +8,6 @@ export function subtextToken(source: string) {
   const match = /^-# ([^\n]*)(?:\n|$)/.exec(source)
   return match && { type: 'subtext', raw: match[0], text: match[1]! }
 }
-export function subtextStart(source: string) {
-  return source.includes('-# ') ? source.search(/^-# /m) : -1
-}
 export const textExtrasMarkdown: MarkedExtension = {
   extensions: [
     {
@@ -29,7 +26,7 @@ export const textExtrasMarkdown: MarkedExtension = {
     {
       name: 'subtext',
       level: 'block',
-      start: subtextStart,
+      start: (source) => source.search(/^-# /m),
       tokenizer(source) {
         const token = subtextToken(source)
         if (token)
@@ -43,11 +40,9 @@ export const textExtrasMarkdown: MarkedExtension = {
 }
 const detector = new Marked(textExtrasMarkdown)
 export function detectTextExtras(source: string) {
-  if (!source.includes('~') && !source.includes('-#')) return false
   let found = false
   detector.walkTokens(detector.lexer(source), (token) => {
     if (token.type === 'subscript' || token.type === 'subtext') found = true
-    return []
   })
   return found
 }

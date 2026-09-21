@@ -7,8 +7,7 @@ import {
   X,
 } from 'lucide-react'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { sentenceCase } from '../../shared/ui-case'
-import { IconButton, TextInput } from '../../ui/Controls'
+import { IconButton } from '../../ui/Controls'
 import { Modal } from '../../ui/Modal'
 import { ShortcutKeys } from '../../ui/ShortcutKeys'
 
@@ -59,14 +58,7 @@ export function CommandPalette({
   const [marker, setMarker] = useState<{ top: number; height: number } | null>(
     null,
   )
-  const normalized = query.toLowerCase().trim()
-  const terms = normalized.split(/\s+/)
-  const rank = (command: PaletteCommand) => {
-    const label = command.label.toLowerCase()
-    if (label === normalized) return 0
-    if (label.startsWith(normalized)) return 1
-    return terms.every((term) => label.includes(term)) ? 2 : 3
-  }
+  const terms = query.toLowerCase().trim().split(/\s+/)
   const results = searchCommands
     ? searchCommands(query)
     : commands.filter((command) =>
@@ -76,8 +68,6 @@ export function CommandPalette({
             .includes(term),
         ),
       )
-  if (!searchCommands && normalized)
-    results.sort((left, right) => rank(left) - rank(right))
   const active = Math.min(selected, results.length - 1)
   const activeId = results[active]?.id
   const resultCount = results.length
@@ -141,7 +131,7 @@ export function CommandPalette({
     <Modal
       ref={dialog}
       className="command-palette"
-      aria-label="Command palette"
+      aria-label="command palette"
       onKeyDown={(event) => {
         if (event.key === 'Escape') {
           event.preventDefault()
@@ -152,18 +142,17 @@ export function CommandPalette({
     >
       <div className="command-search">
         <Search size={16} aria-hidden="true" />
-        <TextInput
-          variant="inline"
+        <input
           ref={input}
           role="combobox"
-          aria-label="Search commands"
+          aria-label="search commands"
           aria-expanded="true"
           aria-controls="command-results"
           aria-autocomplete="list"
           aria-activedescendant={
             results[active] ? `command-${results[active].id}` : undefined
           }
-          placeholder="Search commands…"
+          placeholder="search commands…"
           autoComplete="off"
           spellCheck={false}
           value={query}
@@ -190,8 +179,8 @@ export function CommandPalette({
         <IconButton
           type="button"
           className="palette-close"
-          aria-label="Close command palette"
-          title="Close (Escape)"
+          aria-label="close command palette"
+          title="close (escape)"
           onClick={() => close()}
         >
           <X size={16} aria-hidden="true" />
@@ -202,7 +191,7 @@ export function CommandPalette({
         ref={list}
         className="command-results"
         role="listbox"
-        aria-label="Commands"
+        aria-label="commands"
       >
         {marker && (
           <div
@@ -236,12 +225,8 @@ export function CommandPalette({
                 className="command-icon"
                 aria-hidden="true"
               />
-              <span className="command-label">
-                {sentenceCase(command.label)}
-              </span>
-              <span className="command-category">
-                {sentenceCase(command.category)}
-              </span>
+              <span className="command-label">{command.label}</span>
+              <span className="command-category">{command.category}</span>
               {command.shortcut && (
                 <ShortcutKeys shortcut={command.shortcut} platform={platform} />
               )}
@@ -251,19 +236,19 @@ export function CommandPalette({
       </div>
       {results.length === 0 && (
         <p className="commands-empty" role="status">
-          No commands found.
+          no commands found.
         </p>
       )}
       <footer className="palette-footer">
         <span>
           <ShortcutKeys shortcut="arrowup" platform={platform} />
-          <ShortcutKeys shortcut="arrowdown" platform={platform} /> Navigate
+          <ShortcutKeys shortcut="arrowdown" platform={platform} /> navigate
         </span>
         <span>
-          <ShortcutKeys shortcut="enter" platform={platform} /> Run
+          <ShortcutKeys shortcut="enter" platform={platform} /> run
         </span>
         <span className="palette-escape">
-          <ShortcutKeys shortcut="escape" platform={platform} /> Close
+          <ShortcutKeys shortcut="escape" platform={platform} /> close
         </span>
       </footer>
     </Modal>

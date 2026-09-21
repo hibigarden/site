@@ -22,7 +22,7 @@ export function startKeybeats(context: AddonContext) {
   let disposed = false
   const action = context.toolbar.register({
     id: 'mute',
-    label: 'Mute keyboard sounds',
+    label: 'mute keyboard sounds',
     icon: Volume2,
     onClick: () => setPreferences({ muted: !getPreferences().muted }),
   })
@@ -49,10 +49,10 @@ export function startKeybeats(context: AddonContext) {
           let buffer = cache.get(path)
           if (!buffer) {
             const url = urls[`./sounds/${path}`]
-            if (!url) throw new Error('Sound unavailable.')
+            if (!url) throw new Error('sound unavailable')
             buffer = fetch(url)
               .then((response) => {
-                if (!response.ok) throw new Error('Sound unavailable.')
+                if (!response.ok) throw new Error('sound unavailable')
                 return response.arrayBuffer()
               })
               .then((bytes) => audio.decodeAudioData(bytes))
@@ -69,7 +69,7 @@ export function startKeybeats(context: AddonContext) {
     } catch {
       if (!disposed && generation === run)
         context.notify(
-          'Could not load this keyboard sound. Choose another keyboard.',
+          'could not load this keyboard sound. try another profile.',
         )
     }
   }
@@ -80,8 +80,8 @@ export function startKeybeats(context: AddonContext) {
     if (preferences.muted) silence()
     action.update({
       label: preferences.muted
-        ? 'Unmute keyboard sounds'
-        : 'Mute keyboard sounds',
+        ? 'unmute keyboard sounds'
+        : 'mute keyboard sounds',
       icon: preferences.muted ? VolumeX : Volume2,
       pressed: preferences.muted,
     })

@@ -8,13 +8,7 @@ import {
   useSyncExternalStore,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { sentenceCase } from '../shared/ui-case'
-import {
-  createTooltipScope,
-  tooltipAnchorVisible,
-  tooltipStore,
-} from './tooltip-store'
-import type { TooltipOptions } from './tooltips'
+import { createTooltipScope, tooltipStore } from './tooltip-store'
 import './tooltip.css'
 
 /** Child must forward data attributes to its DOM element. No layout wrapper. */
@@ -37,129 +31,63 @@ export function TooltipHost() {
   const node = useRef<HTMLDivElement>(null)
   const id = useId()
   const text = useRef('')
-  const verbatim = useRef(false)
   const container = useRef<HTMLElement>(document.body)
-  if (active) {
-    text.current = active.text
-    verbatim.current = !!active.anchor.closest('[data-verbatim="true"]')
-  }
+  if (active) text.current = active.text
   if (active)
-    container.current =
-      active.anchor.closest<HTMLElement>('dialog[open]') ?? document.body
+    container.current = active.anchor.closest('dialog[open]') ?? document.body
   useEffect(() => {
     const scope = createTooltipScope()
     let timer: ReturnType<typeof setTimeout> | undefined
-    let anchor: TooltipOptions['anchor'] | null = null
-    let keyboardFocus = false
+    let anchor: HTMLElement | null = null
     const hide = () => {
       clearTimeout(timer)
       anchor = null
       tooltipStore.hide()
     }
     const enter = (event: Event) => {
-      const current = tooltipStore.snapshot()
-      if (event instanceof PointerEvent) {
-        keyboardFocus = false
-        if (event.pointerType === 'touch' || event.buttons) {
-          hide()
-          return
-        }
-        if (
-          current &&
-          event.target instanceof Node &&
-          !current.anchor.contains(event.target)
-        )
-          hide()
-      } else if (!keyboardFocus) {
-        hide()
-        return
-      }
+      if (event instanceof PointerEvent && event.pointerType === 'touch') return
       const next =
         event.target instanceof Element
-          ? event.target.closest<HTMLElement | SVGElement>('[data-tooltip]')
+          ? event.target.closest<HTMLElement>('[data-tooltip]')
           : null
-      if (!next) {
-        if (
-          !(event.target instanceof Node) ||
-          !current?.anchor.contains(event.target)
-        )
-          hide()
-        return
-      }
-      if (next === anchor) return
+      if (!next || next === anchor) return
       hide()
       anchor = next
-      const focus = event.type === 'focusin'
-      const show = () => {
-        if (
-          anchor !== next ||
-          !tooltipAnchorVisible(next) ||
-          (focus
-            ? !next.contains(document.activeElement)
-            : !next.matches(':hover'))
-        ) {
-          anchor = null
-          return
-        }
-        scope.api.show({
-          anchor: next,
-          text: next.getAttribute('data-tooltip') ?? '',
-        })
-      }
+      const show = () =>
+        scope.api.show({ anchor: next, text: next.dataset.tooltip ?? '' })
       if (event.type === 'focusin') show()
       else timer = setTimeout(show, 400)
     }
     const leave = (event: Event) => {
-      const current = tooltipStore.snapshot()?.anchor ?? anchor
-      if (!(event.target instanceof Node) || !current?.contains(event.target))
+      if (!(event.target instanceof Node) || !anchor?.contains(event.target))
         return
       const related = (event as FocusEvent).relatedTarget
-      if (!(related instanceof Node) || !current.contains(related)) hide()
+      if (!(related instanceof Node) || !anchor?.contains(related)) hide()
     }
     const key = (event: KeyboardEvent) => {
-      keyboardFocus = event.key === 'Tab' || event.key.startsWith('Arrow')
-      hide()
+      if (event.key === 'Escape') hide()
     }
-    const reset = () => {
-      keyboardFocus = false
-      hide()
-    }
-    const unsubscribe = tooltipStore.subscribe(() => {
-      if (!tooltipStore.snapshot()) {
-        clearTimeout(timer)
-        anchor = null
-      }
-    })
     document.addEventListener('pointerover', enter)
-    document.addEventListener('pointermove', enter, { passive: true })
     document.addEventListener('focusin', enter)
     document.addEventListener('pointerout', leave)
     document.addEventListener('focusout', leave)
-    document.addEventListener('pointerdown', reset, true)
-    document.addEventListener('pointercancel', reset)
-    document.addEventListener('pointerleave', reset)
-    document.addEventListener('visibilitychange', reset)
+    document.addEventListener('pointerdown', hide)
     document.addEventListener('scroll', hide, true)
-    document.addEventListener('keydown', key, true)
-    window.addEventListener('resize', reset)
-    window.addEventListener('blur', reset)
+    document.addEventListener('keydown', key)
+    window.addEventListener('resize', hide)
+    window.addEventListener('blur', hide)
     return () => {
       hide()
       scope.dispose()
-      unsubscribe()
       document.removeEventListener('pointerover', enter)
-      document.removeEventListener('pointermove', enter)
       document.removeEventListener('focusin', enter)
       document.removeEventListener('pointerout', leave)
       document.removeEventListener('focusout', leave)
-      document.removeEventListener('pointerdown', reset, true)
-      document.removeEventListener('pointercancel', reset)
-      document.removeEventListener('pointerleave', reset)
-      document.removeEventListener('visibilitychange', reset)
+      document.removeEventListener('pointerdown', hide)
       document.removeEventListener('scroll', hide, true)
-      document.removeEventListener('keydown', key, true)
-      window.removeEventListener('resize', reset)
-      window.removeEventListener('blur', reset)
+      document.removeEventListener('keydown', key)
+      window.removeEventListener('resize', hide)
+      window.removeEventListener('blur', hide)
     }
   }, [])
   useLayoutEffect(() => {
@@ -170,78 +98,23 @@ export function TooltipHost() {
       return
     }
     const { anchor } = active
-    if (!tooltipAnchorVisible(anchor)) {
-      tooltipStore.hide(active)
-      return
-    }
     element.showPopover()
     const bounds = anchor.getBoundingClientRect()
     const height = element.offsetHeight
-    const above = bounds.top - 8,
-      below = innerHeight - bounds.bottom - 8
-    const bottom =
-      active.placement === 'top'
-        ? above < height && below > above
-        : below >= height || below >= above
-    const left = Math.max(
-      8,
-      Math.min(
-        innerWidth - element.offsetWidth - 8,
-        bounds.left + (bounds.width - element.offsetWidth) / 2,
-      ),
-    )
-    element.style.left = `${left}px`
-    element.style.top = `${Math.max(8, Math.min(innerHeight - height - 8, bottom ? bounds.bottom + 7 : bounds.top - height - 7))}px`
-    element.dataset.side = bottom ? 'bottom' : 'top'
-    element.style.setProperty(
-      '--tooltip-arrow-x',
-      `${Math.max(8, Math.min(element.offsetWidth - 8, bounds.left + bounds.width / 2 - left))}px`,
-    )
+    const below =
+      active.placement !== 'top' && bounds.bottom + height + 8 < innerHeight
+    element.style.left = `${Math.max(8, Math.min(innerWidth - element.offsetWidth - 8, bounds.left + (bounds.width - element.offsetWidth) / 2))}px`
+    element.style.top = `${Math.max(8, below ? bounds.bottom + 6 : bounds.top - height - 6)}px`
     const ids = (anchor.getAttribute('aria-describedby') ?? '')
       .split(/\s+/)
       .filter(Boolean)
     anchor.setAttribute('aria-describedby', [...ids, id].join(' '))
-    const validate = () => {
-      const current = anchor.getBoundingClientRect()
-      if (
-        !tooltipAnchorVisible(anchor) ||
-        (['left', 'top', 'width', 'height'] as const).some(
-          (key) => Math.abs(current[key] - bounds[key]) > 0.5,
-        )
-      )
-        tooltipStore.hide(active)
-    }
-    const observer = new MutationObserver((records) => {
-      if (
-        records.some(
-          (record) =>
-            record.type === 'attributes' &&
-            [
-              'hidden',
-              'inert',
-              'style',
-              'class',
-              'open',
-              'aria-hidden',
-              'data-tooltip',
-            ].includes(record.attributeName ?? '') &&
-            record.target instanceof Element &&
-            record.target.contains(anchor),
-        )
-      ) {
-        tooltipStore.hide(active)
-      } else validate()
+    const observer = new MutationObserver(() => {
+      if (!anchor.isConnected) tooltipStore.hide()
     })
-    observer.observe(document.documentElement, {
-      childList: true,
-      attributes: true,
-      subtree: true,
-    })
-    const resize = new ResizeObserver(validate)
-    resize.observe(anchor)
+    observer.observe(document.body, { childList: true, subtree: true })
     return () => {
       observer.disconnect()
-      resize.disconnect()
       const remaining = (anchor.getAttribute('aria-describedby') ?? '')
         .split(/\s+/)
         .filter((value) => value && value !== id)
@@ -257,10 +130,9 @@ export function TooltipHost() {
       role="tooltip"
       popover="manual"
       className="ui-tooltip"
-      data-verbatim={verbatim.current || undefined}
       aria-hidden={!active}
     >
-      {verbatim.current ? text.current : sentenceCase(text.current)}
+      {text.current}
     </div>,
     container.current,
   )

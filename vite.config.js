@@ -19,7 +19,6 @@ export default defineConfig({
     },
   ],
   esbuild: { jsx: "automatic" },
-  worker: { format: "es" },
   resolve: {
     alias: [
       {

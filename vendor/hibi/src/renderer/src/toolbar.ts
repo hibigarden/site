@@ -1,4 +1,3 @@
-import { performanceDiagnostics } from '../../ui/diagnostics'
 import type {
   ToolbarApi,
   ToolbarItem,
@@ -6,21 +5,18 @@ import type {
 } from '../../ui/toolbar'
 
 const key = 'hibi:toolbar'
-const validId = (id: unknown): id is string =>
-  typeof id === 'string' && /^[a-z][a-z0-9-]*\.[a-z][a-z0-9-]*$/.test(id)
 const validOrder = (value: unknown): string[] =>
-  Array.isArray(value) ? [...new Set(value.filter(validId))] : []
-const validPlacements = (
-  value: unknown,
-): NonNullable<ToolbarPreferences['placements']> =>
-  value && typeof value === 'object' && !Array.isArray(value)
-    ? Object.fromEntries(
-        Object.entries(value).filter(
-          ([id, placement]) =>
-            validId(id) && (placement === 'menu' || placement === 'hidden'),
+  Array.isArray(value)
+    ? [
+        ...new Set(
+          value.filter(
+            (id): id is string =>
+              typeof id === 'string' &&
+              /^[a-z][a-z0-9-]*\.[a-z][a-z0-9-]*$/.test(id),
+          ),
         ),
-      )
-    : {}
+      ]
+    : []
 let preferences: ToolbarPreferences = {
   visible: true,
   mode: 'icons',
@@ -34,21 +30,13 @@ try {
   if (['icons', 'icons-and-text', 'text'].includes(saved?.mode))
     preferences.mode = saved.mode
   preferences.order = validOrder(saved?.order)
-  preferences.placements = validPlacements(saved?.placements)
 } catch {
   /* Keep defaults when stored preferences cannot be read. */
 }
 const items = new Map<string, ToolbarItem>()
 let snapshot = { preferences, items: [] as ToolbarItem[] }
 const listeners = new Set<() => void>()
-let batchDepth = 0
-let pending = false
 const publish = () => {
-  if (batchDepth) {
-    pending = true
-    return
-  }
-  pending = false
   const rank = new Map(
     (preferences.order ?? []).map((id, index) => [id, index]),
   )
@@ -70,10 +58,6 @@ function setPreferences(changes: Partial<ToolbarPreferences>) {
       changes.order === undefined
         ? (preferences.order ?? [])
         : validOrder(changes.order),
-    placements:
-      changes.placements === undefined
-        ? (preferences.placements ?? {})
-        : validPlacements(changes.placements),
     visible:
       typeof changes.visible === 'boolean'
         ? changes.visible
@@ -88,14 +72,6 @@ function setPreferences(changes: Partial<ToolbarPreferences>) {
 }
 
 export const toolbar = {
-  batch<T>(update: () => T): T {
-    batchDepth++
-    try {
-      return update()
-    } finally {
-      if (--batchDepth === 0 && pending) publish()
-    }
-  },
   snapshot: () => snapshot,
   subscribe(listener: () => void) {
     listeners.add(listener)
@@ -119,7 +95,6 @@ export const toolbar = {
       getPreferences: () => ({
         ...preferences,
         order: [...(preferences.order ?? [])],
-        placements: { ...preferences.placements },
       }),
       setPreferences(changes) {
         if (!disposed) setPreferences(changes)
@@ -138,11 +113,7 @@ export const toolbar = {
             async onClick() {
               if (!active || disposed || item.disabled) return
               try {
-                await performanceDiagnostics.measure(
-                  owner,
-                  `toolbar:${item.id}`,
-                  () => item.onClick(),
-                )
+                await item.onClick()
               } catch (error) {
                 onError(error)
               }

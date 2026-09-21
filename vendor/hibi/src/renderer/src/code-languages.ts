@@ -1,154 +1,84 @@
-import type { Language, StreamParser } from '@codemirror/language'
+import { cpp } from '@codemirror/lang-cpp'
+import { css } from '@codemirror/lang-css'
+import { go } from '@codemirror/lang-go'
+import { html } from '@codemirror/lang-html'
+import { java } from '@codemirror/lang-java'
+import { javascript } from '@codemirror/lang-javascript'
+import { json } from '@codemirror/lang-json'
+import { python } from '@codemirror/lang-python'
+import { rust } from '@codemirror/lang-rust'
+import { sql } from '@codemirror/lang-sql'
+import { yaml } from '@codemirror/lang-yaml'
+import { StreamLanguage } from '@codemirror/language'
+import { csharp } from '@codemirror/legacy-modes/mode/clike'
+import { dockerFile } from '@codemirror/legacy-modes/mode/dockerfile'
+import { powerShell } from '@codemirror/legacy-modes/mode/powershell'
+import { ruby } from '@codemirror/legacy-modes/mode/ruby'
+import { shell } from '@codemirror/legacy-modes/mode/shell'
+import { swift } from '@codemirror/legacy-modes/mode/swift'
+import { toml } from '@codemirror/legacy-modes/mode/toml'
 import { highlightTree, tagHighlighter, tags } from '@lezer/highlight'
 import type { CodeLanguage } from '../../shared/syntax'
-
-async function streamLanguage<T>(parser: StreamParser<T>) {
-  const { StreamLanguage } = await import('@codemirror/language')
-  return StreamLanguage.define(parser)
-}
 
 const builtin: CodeLanguage[] = [
   {
     id: 'javascript',
     aliases: ['js', 'mjs', 'cjs'],
-    load: () =>
-      import('@codemirror/lang-javascript').then(
-        (m) => m.javascript().language,
-      ),
+    language: javascript().language,
   },
   {
     id: 'typescript',
     aliases: ['ts', 'mts', 'cts'],
-    load: () =>
-      import('@codemirror/lang-javascript').then(
-        (m) => m.javascript({ typescript: true }).language,
-      ),
+    language: javascript({ typescript: true }).language,
   },
-  {
-    id: 'jsx',
-    load: () =>
-      import('@codemirror/lang-javascript').then(
-        (m) => m.javascript({ jsx: true }).language,
-      ),
-  },
-  {
-    id: 'tsx',
-    load: () =>
-      import('@codemirror/lang-javascript').then(
-        (m) => m.javascript({ typescript: true, jsx: true }).language,
-      ),
-  },
-  {
-    id: 'html',
-    aliases: ['htm'],
-    load: () => import('@codemirror/lang-html').then((m) => m.html().language),
-  },
-  {
-    id: 'css',
-    load: () => import('@codemirror/lang-css').then((m) => m.css().language),
-  },
-  {
-    id: 'json',
-    load: () => import('@codemirror/lang-json').then((m) => m.json().language),
-  },
-  {
-    id: 'python',
-    aliases: ['py'],
-    load: () =>
-      import('@codemirror/lang-python').then((m) => m.python().language),
-  },
-  {
-    id: 'yaml',
-    aliases: ['yml'],
-    load: () => import('@codemirror/lang-yaml').then((m) => m.yaml().language),
-  },
+  { id: 'jsx', language: javascript({ jsx: true }).language },
+  { id: 'tsx', language: javascript({ typescript: true, jsx: true }).language },
+  { id: 'html', aliases: ['htm'], language: html().language },
+  { id: 'css', language: css().language },
+  { id: 'json', language: json().language },
+  { id: 'python', aliases: ['py'], language: python().language },
+  { id: 'yaml', aliases: ['yml'], language: yaml().language },
   {
     id: 'sql',
     aliases: ['mysql', 'postgresql', 'postgres', 'sqlite'],
-    load: () => import('@codemirror/lang-sql').then((m) => m.sql().language),
+    language: sql().language,
   },
-  {
-    id: 'java',
-    load: () => import('@codemirror/lang-java').then((m) => m.java().language),
-  },
+  { id: 'java', language: java().language },
   {
     id: 'cpp',
     aliases: ['c', 'cc', 'c++', 'cxx', 'h', 'hpp'],
-    load: () => import('@codemirror/lang-cpp').then((m) => m.cpp().language),
+    language: cpp().language,
   },
-  {
-    id: 'rust',
-    aliases: ['rs'],
-    load: () => import('@codemirror/lang-rust').then((m) => m.rust().language),
-  },
-  {
-    id: 'go',
-    aliases: ['golang'],
-    load: () => import('@codemirror/lang-go').then((m) => m.go().language),
-  },
+  { id: 'rust', aliases: ['rs'], language: rust().language },
+  { id: 'go', aliases: ['golang'], language: go().language },
   {
     id: 'shell',
     aliases: ['sh', 'bash', 'zsh'],
-    load: () =>
-      import('@codemirror/legacy-modes/mode/shell').then((m) =>
-        streamLanguage(m.shell),
-      ),
+    language: StreamLanguage.define(shell),
   },
   {
     id: 'powershell',
     aliases: ['ps1'],
-    load: () =>
-      import('@codemirror/legacy-modes/mode/powershell').then((m) =>
-        streamLanguage(m.powerShell),
-      ),
+    language: StreamLanguage.define(powerShell),
   },
   {
     id: 'csharp',
     aliases: ['cs', 'c#'],
-    load: () =>
-      import('@codemirror/legacy-modes/mode/clike').then((m) =>
-        streamLanguage(m.csharp),
-      ),
+    language: StreamLanguage.define(csharp),
   },
-  {
-    id: 'ruby',
-    aliases: ['rb'],
-    load: () =>
-      import('@codemirror/legacy-modes/mode/ruby').then((m) =>
-        streamLanguage(m.ruby),
-      ),
-  },
-  {
-    id: 'swift',
-    load: () =>
-      import('@codemirror/legacy-modes/mode/swift').then((m) =>
-        streamLanguage(m.swift),
-      ),
-  },
-  {
-    id: 'toml',
-    load: () =>
-      import('@codemirror/legacy-modes/mode/toml').then((m) =>
-        streamLanguage(m.toml),
-      ),
-  },
+  { id: 'ruby', aliases: ['rb'], language: StreamLanguage.define(ruby) },
+  { id: 'swift', language: StreamLanguage.define(swift) },
+  { id: 'toml', language: StreamLanguage.define(toml) },
   {
     id: 'dockerfile',
     aliases: ['docker'],
-    load: () =>
-      import('@codemirror/legacy-modes/mode/dockerfile').then((m) =>
-        streamLanguage(m.dockerFile),
-      ),
+    language: StreamLanguage.define(dockerFile),
   },
 ]
-const loaded = new WeakMap<CodeLanguage, Language>()
-const pending = new Map<CodeLanguage, Promise<Language | null>>()
-const failed = new WeakSet<CodeLanguage>()
 const registered = new Map<string, CodeLanguage>()
 const listeners = new Set<() => void>()
 let version = 0
-let languages = new Map<string, Language>()
-let definitions = new Map<string, CodeLanguage>()
+let languages = new Map<string, CodeLanguage['language']>()
 let aliases = new Map<string, string>()
 let catalog: readonly {
   id: string
@@ -168,28 +98,21 @@ try {
 }
 function publish() {
   languages = new Map()
-  definitions = new Map()
   aliases = new Map()
   const entries = new Map<string, (typeof catalog)[number]>()
-  const entriesWithOwner = [
-    ...builtin.map((entry) => ({
-      entry,
-      owner: 'built-in',
-    })),
+  const definitions = [
+    ...builtin.map((entry) => ({ ...entry, owner: 'built-in' })),
     ...[...registered].map(([key, entry]) => ({
-      entry,
+      ...entry,
       owner: key.slice(0, key.length - entry.id.length - 1),
     })),
   ]
-  for (const { entry, owner } of entriesWithOwner) {
-    const language = entry.language ?? loaded.get(entry)
-    definitions.set(entry.id.toLowerCase(), entry)
-    languages.delete(entry.id.toLowerCase())
-    if (language) languages.set(entry.id.toLowerCase(), language)
+  for (const entry of definitions) {
+    languages.set(entry.id.toLowerCase(), entry.language)
     entries.set(entry.id.toLowerCase(), {
       id: entry.id.toLowerCase(),
       aliases: [],
-      owner,
+      owner: entry.owner,
       enabled: !disabled.has(entry.id.toLowerCase()),
     })
     for (const name of [entry.id, ...(entry.aliases ?? [])])
@@ -205,83 +128,27 @@ function publish() {
   for (const listener of listeners) listener()
 }
 publish()
-function savePreferences() {
-  try {
-    localStorage.setItem(
-      'hibi:code-syntax-disabled',
-      JSON.stringify([...disabled]),
-    )
-  } catch {
-    /* Session preferences still apply. */
-  }
-  publish()
-}
 export const codeLanguages = {
   version: () => version,
   snapshot: () => catalog,
   setEnabled(id: string, enabled: boolean) {
-    if (
-      !catalog.some((entry) => entry.id === id) ||
-      enabled === !disabled.has(id)
-    )
-      return
+    if (!languages.has(id) || enabled === !disabled.has(id)) return
     if (enabled) disabled.delete(id)
     else disabled.add(id)
-    savePreferences()
-  },
-  reset() {
-    disabled.clear()
-    savePreferences()
+    try {
+      localStorage.setItem(
+        'hibi:code-syntax-disabled',
+        JSON.stringify([...disabled]),
+      )
+    } catch {
+      /* Session preferences still apply. */
+    }
+    publish()
   },
   resolve(info: string) {
     const id =
       aliases.get(info.trim().split(/\s+/)[0]?.toLowerCase() ?? '') ?? ''
-    if (disabled.has(id)) return null
-    const language = languages.get(id)
-    if (!language) void codeLanguages.ensure(id)
-    return language ?? null
-  },
-  async ensure(info: string): Promise<Language | null> {
-    const id =
-      aliases.get(info.trim().split(/\s+/)[0]?.toLowerCase() ?? '') ?? ''
-    const definition = definitions.get(id)
-    if (disabled.has(id) || !definition || failed.has(definition)) return null
-    if (languages.has(id)) return languages.get(id) ?? null
-    if (!definition.load) return null
-    let loading = pending.get(definition)
-    if (!loading) {
-      loading = Promise.resolve()
-        .then(() => definition.load!())
-        .then((language) => {
-          if (!validLanguage(language))
-            throw new Error('invalid code language.')
-          loaded.set(definition, language)
-          if (definitions.get(id) !== definition) return null
-          publish()
-          return disabled.has(id) ? null : language
-        })
-        .catch((error: unknown) => {
-          failed.add(definition)
-          console.error(`Could not load code language: ${id}`, error)
-          return null
-        })
-        .finally(() => pending.delete(definition))
-      pending.set(definition, loading)
-    }
-    return loading
-  },
-  async settle() {
-    await Promise.all(pending.values())
-  },
-  retry(info: string) {
-    const id =
-      aliases.get(info.trim().split(/\s+/)[0]?.toLowerCase() ?? '') ?? ''
-    const definition = definitions.get(id)
-    if (!definition || disabled.has(id)) return Promise.resolve(null)
-    failed.delete(definition)
-    const loading = codeLanguages.ensure(id)
-    publish()
-    return loading
+    return disabled.has(id) ? null : (languages.get(id) ?? null)
   },
   subscribe(listener: () => void) {
     listeners.add(listener)
@@ -297,10 +164,8 @@ export const codeLanguages = {
         (name) =>
           typeof name !== 'string' || !/^[a-z][a-z0-9_+#.-]*$/i.test(name),
       ) ||
-      !(
-        (typeof entry.load === 'function' && entry.language === undefined) ||
-        (entry.load === undefined && validLanguage(entry.language))
-      )
+      typeof entry.language?.parser?.parse !== 'function' ||
+      typeof entry.language?.parser?.startParse !== 'function'
     )
       throw new Error('invalid or duplicate code language.')
     const contribution = { ...entry }
@@ -312,13 +177,6 @@ export const codeLanguages = {
       publish()
     }
   },
-}
-
-function validLanguage(language: Language | undefined): language is Language {
-  return (
-    typeof language?.parser?.parse === 'function' &&
-    typeof language?.parser?.startParse === 'function'
-  )
 }
 
 export const codeHighlighter = tagHighlighter([
@@ -345,10 +203,9 @@ export const codeHighlighter = tagHighlighter([
 ])
 export type CodeSpan = { from: number; to: number; classes: string }
 export function highlightCode(text: string, info: string): CodeSpan[] {
-  if (text.length > 100000) return []
   const language = codeLanguages.resolve(info)
   // Large blocks remain complete plain text; avoid synchronously parsing megabytes in rich view/export.
-  if (!language) return []
+  if (!language || text.length > 100000) return []
   const spans: CodeSpan[] = []
   try {
     highlightTree(

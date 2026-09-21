@@ -1,6 +1,8 @@
+@import "./inline-edit.css";
+
 .sidebar-slot {
   position: relative;
-  width: var(--sidebar-width, 256px);
+  width: var(--sidebar-width, 196px);
   flex-shrink: 0;
   min-height: 0;
   z-index: 1;
@@ -9,42 +11,10 @@
   width: 0;
   pointer-events: none;
 }
-.sidebar-slot[data-overlay="true"] {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  z-index: 2;
-}
-.sidebar-slot[data-overlay="true"] > .sidebar {
-  position: relative;
-}
-.sidebar-slot[data-overlay="true"] > .sidebar-resizer {
-  left: calc(var(--sidebar-width) - 3px);
-  right: auto;
-}
-.sidebar-scrim,
-.sidebar-scrim:hover {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  padding: 0;
-  border-radius: 0;
-  background: var(--overlay);
-  opacity: 1;
-  visibility: visible;
-  transition:
-    opacity var(--motion-pane),
-    visibility 0s;
-}
-.sidebar-slot[data-open="false"] > .sidebar-scrim {
-  opacity: 0;
-  visibility: hidden;
-  transition-delay: 0s, var(--motion-pane);
-}
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: var(--sidebar-width, 256px);
+  width: var(--sidebar-width, 196px);
   flex-shrink: 0;
   min-height: 0;
   height: 100%;
@@ -60,16 +30,6 @@
   transform: translateX(-100%);
   visibility: hidden;
   transition-delay: 0s, var(--motion-pane);
-}
-.sidebar-slot[data-side="right"][data-open="false"] > .sidebar {
-  transform: translateX(100%);
-}
-.sidebar-slot[data-side="right"] > .sidebar {
-  margin-left: calc(100% - var(--sidebar-width, 256px));
-}
-.sidebar-slot[data-side="right"] .sidebar-resizer {
-  left: -3px;
-  right: auto;
 }
 .sidebar-header {
   display: flex;
@@ -90,61 +50,15 @@
   display: flex;
   padding: var(--space-1);
 }
-.sidebar-scroll,
-.sidebar-content {
+.sidebar-scroll {
   flex: 1;
   overflow: auto;
   min-height: 0;
-}
-.sidebar-content {
-  display: flex;
-  flex-direction: column;
-  font-size: var(--text-ui);
-}
-.sidebar-content > .ui-panel,
-.sidebar-content > .addon-view-content > .ui-panel {
-  display: flex;
-  flex-direction: column;
-  padding: 0 var(--space-3);
-  gap: var(--space-3);
-  min-width: 0;
-}
-.sidebar-content p {
-  margin: 0;
-  overflow-wrap: anywhere;
 }
 .sidebar-items {
   position: relative;
   display: flex;
   flex-direction: column;
-}
-.sidebar-scroll[data-windowed="true"] {
-  overflow-anchor: none;
-}
-.sidebar-items[data-windowed="true"] {
-  display: block;
-}
-.sidebar-items[data-windowed="true"] > :is(.sidebar-row, .sidebar-section) {
-  position: absolute;
-  left: 0;
-  right: 0;
-}
-.sidebar-metrics {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  visibility: hidden;
-  pointer-events: none;
-}
-.sidebar-metrics > span {
-  display: block;
-}
-.sidebar-row-measure {
-  height: var(--sidebar-row-height);
-}
-.sidebar-section-measure {
-  height: var(--sidebar-section-height);
 }
 .sidebar-selection {
   position: absolute;
@@ -193,25 +107,14 @@
   color: var(--accent);
   flex-shrink: 0;
 }
-.sidebar-edit {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  height: 100%;
-  padding-right: 12px;
-}
-.sidebar-edit > svg {
-  flex-shrink: 0;
-}
-.sidebar-edit .sidebar-rename {
-  flex: 1;
-  width: 0;
-  margin: 0 0 0 -5px;
-  height: calc(var(--sidebar-row-height) - 4px);
-  min-height: 0;
+.sidebar-rename {
+  width: calc(100% - 24px);
+  margin: 1px 12px;
+  height: 26px;
   min-width: 0;
-  font: var(--text-ui) / 1.4 var(--font-ui);
-  padding: 0 4px;
+  font: inherit;
+  font-size: var(--text-ui);
+  padding-inline: 0;
 }
 @media (hover: none) {
   .sidebar-items .sidebar-more {
@@ -240,11 +143,6 @@
 }
 .sidebar-items button > svg {
   flex-shrink: 0;
-}
-.sidebar-items button > svg:not(.sidebar-chevron),
-.sidebar-edit > svg:not(.sidebar-chevron) {
-  width: 15px;
-  height: 15px;
 }
 .sidebar-label {
   flex: 1;
@@ -323,7 +221,6 @@ html:has(.sidebar-resizer:is([data-dragging="true"], :focus-visible))
   :is(
     .sidebar,
     .sidebar-toolbar,
-    .right-sidebar-toolbar,
     .editor-surface,
     .site-content,
     .site-navigation-controls
@@ -333,7 +230,6 @@ html:has(.sidebar-resizer:is([data-dragging="true"], :focus-visible))
 @media (prefers-reduced-motion: reduce) {
   .sidebar-resizer::after,
   .sidebar-slot > .sidebar,
-  .sidebar-scrim,
   .sidebar-selection,
   .sidebar-chevron {
     transition: none;

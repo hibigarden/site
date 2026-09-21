@@ -10,10 +10,10 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-control);
   background: var(--surface);
-  -webkit-app-region: no-drag;
 }
 .editor-toolbar .ui-button {
   position: relative;
+  cursor: grab;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -111,8 +111,42 @@
     transition: none;
   }
 }
+.editor-toolbar [data-drop]::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  border-radius: 0;
+  background: var(--accent);
+  pointer-events: none;
+}
+.editor-toolbar [data-drop="before"]::before {
+  left: -3px;
+}
+.editor-toolbar [data-drop="after"]::before {
+  right: -3px;
+}
 .toolbar-order {
   margin-top: var(--space-3);
+}
+.toolbar-order summary {
+  font-size: var(--text-ui);
+  font-weight: 500;
+  padding-block: var(--space-1);
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  list-style: none;
+}
+.toolbar-order summary::-webkit-details-marker {
+  display: none;
+}
+.toolbar-order summary svg {
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+.toolbar-order[open] summary svg {
+  transform: rotate(90deg);
 }
 .toolbar-order-heading p {
   margin: 0;
@@ -182,7 +216,6 @@
 }
 .toolbar-order-footer {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
@@ -201,7 +234,6 @@
 }
 .toolbar-order-footer > div {
   display: flex;
-  flex-wrap: wrap;
   gap: var(--space-1);
 }
 .toolbar-order .drag-handle {
@@ -222,6 +254,11 @@
 }
 .toolbar-order [data-drop="after"]::before {
   right: -5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .toolbar-order summary svg {
+    transition: none;
+  }
 }
 
 .toolbar-slot {

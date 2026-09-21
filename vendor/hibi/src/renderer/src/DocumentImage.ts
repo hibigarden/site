@@ -1,5 +1,5 @@
 import { Image } from '@tiptap/extension-image'
-import { attachmentMarkdown } from '../../shared/media.ts'
+import { attachmentMarkdown } from '../../shared/media'
 
 /** Resolve display URLs without changing the Markdown stored in image attrs. */
 export function documentImage(revision: number) {
@@ -43,19 +43,17 @@ export function documentImage(revision: number) {
             container.replaceChildren(media)
           }
           media.title = title ?? ''
-          delete media.dataset.tooltip
           if (media instanceof HTMLVideoElement) {
             media.controls = true
             media.preload = 'metadata'
-            media.setAttribute('aria-label', alt || 'Video attachment')
+            media.setAttribute('aria-label', alt || 'video attachment')
           } else media.alt = alt ?? ''
           if (result) {
             if (media.getAttribute('src') !== result.url) media.src = result.url
           } else {
             media.removeAttribute('src')
-            media.removeAttribute('title')
-            media.dataset.tooltip =
-              'Could not load this media. Check the file path. Save the note first if the path is relative to it.'
+            media.title =
+              'media unavailable — check its path; save the note before using a relative path'
           }
         }
         void render()

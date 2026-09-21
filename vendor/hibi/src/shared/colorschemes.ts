@@ -111,9 +111,7 @@ export function defineColorscheme(input: ColorschemeInput): Colorscheme {
     (input.license.source !== undefined &&
       !/^https:\/\//.test(input.license.source))
   )
-    throw new Error(
-      'This color scheme has an invalid ID, name, author, appearance, or license details.',
-    )
+    throw new Error('invalid colorscheme metadata')
   const c = input.colors
   for (const required of [
     'background',
@@ -124,17 +122,13 @@ export function defineColorscheme(input: ColorschemeInput): Colorscheme {
     'border',
   ] as const)
     if (!/^#[\da-f]{6}$/i.test(c[required]))
-      throw new Error(
-        `This color scheme needs a six-digit hex color for ${required}.`,
-      )
+      throw new Error(`invalid colorscheme color: ${required}`)
   for (const [key, color] of Object.entries(c))
     if (
       !COLOR_TOKENS.includes(key as ColorToken) ||
       !/^#[\da-f]{6}(?:[\da-f]{2})?$/i.test(color)
     )
-      throw new Error(
-        `This color scheme has an unknown color name or invalid hex value: ${key}.`,
-      )
+      throw new Error(`invalid colorscheme color: ${key}`)
   return Object.freeze({
     ...input,
     license: Object.freeze({ ...input.license }),

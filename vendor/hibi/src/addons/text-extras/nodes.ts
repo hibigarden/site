@@ -1,5 +1,5 @@
 import { Mark, markInputRule, Node, textblockTypeInputRule } from '@tiptap/core'
-import { subscriptToken, subtextStart, subtextToken } from './syntax.ts'
+import { subscriptToken, subtextToken } from './syntax'
 
 export const Subscript = Mark.create({
   name: 'subscript',
@@ -40,7 +40,7 @@ export const Subtext = Node.create({
   markdownTokenizer: {
     name: 'subtext',
     level: 'block',
-    start: subtextStart,
+    start: (source) => source.search(/^-# /m),
     tokenize(source, _tokens, lexer) {
       const token = subtextToken(source)
       if (token) return { ...token, tokens: lexer.inlineTokens(token.text) }

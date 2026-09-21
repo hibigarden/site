@@ -1,15 +1,13 @@
 import { defineAddon, type MarkdownFlavor } from '../api'
+import { flavorInfo } from './flavor-info'
 import manifest from './manifest'
 import { Subscript, Subtext } from './nodes'
 import css from './styles.css?inline'
-import { detectTextExtras, textExtrasMarkdown } from './syntax'
+import { textExtrasMarkdown } from './syntax'
 
 const flavor: MarkdownFlavor = {
-  id: 'text-extras',
-  name: 'text extras',
-  kind: 'syntax',
-  description: '~subscript~ and -# small text.',
-  detect: detectTextExtras,
+  ...flavorInfo,
+  serialization: 'block-local',
   richExtensions: [Subscript, Subtext],
   export: { extensions: [textExtrasMarkdown], css },
 }
@@ -22,8 +20,8 @@ export default defineAddon({
     for (const id of ['subscript', 'subtext'] as const)
       context.editor.registerSyntax({
         id,
-        label: id === 'subscript' ? 'subscript' : 'small text',
-        group: 'text extras',
+        label: id === 'subscript' ? 'Subscript' : 'Small text',
+        group: 'Text extras',
         description: id === 'subscript' ? 'H~2~O' : '-# small text',
         level: id === 'subscript' ? 'inline' : 'block',
         extensions: [id],

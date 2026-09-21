@@ -2,78 +2,101 @@ import { Extension } from '@tiptap/core'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Markdown, type MarkdownExtensionOptions } from '@tiptap/markdown'
 import { StarterKit } from '@tiptap/starter-kit'
-import { Marked, marked } from 'marked'
+import { Marked } from 'marked'
 import { search } from 'prosemirror-search'
-import type {
-  MarkdownExtension,
-  MarkdownFlavor,
-  MarkdownProjection,
-} from '../../addons/api'
-import { readFrontmatter } from '../../shared/frontmatter'
-import { BlockExit } from './BlockExit'
-import { CodeHighlight } from './CodeHighlight'
+import type { MarkdownFlavor } from '../../addons/api'
+import { BlockExit } from './BlockExit.ts'
+import { CodeHighlight } from './CodeHighlight.ts'
+import { guardNativeInputRules } from './input-rule-guard.ts'
+import { literalMarkdown } from './LiteralMarkdown.ts'
+import { guardNativeListTokenizer } from './list-tokenizer-prefix.ts'
+import { MarkdownMarkExit } from './markdown-markers.ts'
+import { markdownSyntax } from './markdown-syntax.ts'
+import { installSyntaxPreferences } from './syntax-parser.ts'
 
-export function projectMarkdown(
-  source: string,
-  adapters: readonly MarkdownExtension[],
-): MarkdownProjection {
-  let result: MarkdownProjection = {
-    content: source,
-    serialize: (content) => content,
-  }
-  for (const adapter of adapters) {
-    const next = adapter.parse(result.content)
-    if (!next) continue
-    const previous = result
-    result = {
-      content: next.content,
-      serialize: (content) => previous.serialize(next.serialize(content)),
-      readOnly: Boolean(previous.readOnly || next.readOnly),
-    }
-  }
-  return result
-}
+export { projectMarkdown } from './markdown-projection.ts'
 
-export function editorExtensions(flavors: readonly MarkdownFlavor[]) {
+const NativeStarterKit = StarterKit.extend({
+  addExtensions() {
+    return (
+      this.parent?.()
+        .map(guardNativeListTokenizer)
+        .map(guardNativeInputRules) ?? []
+    )
+  },
+})
+
+/** Shared declarations for the visual editor and native schema-only conversion. */
+export function markdownConfiguration(
+  flavors: readonly MarkdownFlavor[],
+  history?: Extension,
+) {
   const options = Object.assign(
     { gfm: false, breaks: false },
     ...flavors.map((flavor) => flavor.markedOptions),
   )
-  // Tiptap types this as the callable singleton, but its manager uses the
-  // instance methods. A separate parser prevents disabled syntax leaking in.
-  const parser = new Marked(options) as unknown as NonNullable<
-    MarkdownExtensionOptions['marked']
-  >
+  const parser = installSyntaxPreferences(new Marked(options))
+  for (const flavor of flavors)
+    for (const extension of flavor.export?.extensions ?? [])
+      parser.use(extension)
+  const enabled = (id: string) => markdownSyntax.enabled(`core.${id}`)
+  const levels = ([1, 2, 3, 4, 5, 6] as const).filter((level) =>
+    enabled(`heading-${level}`),
+  )
+  const core = [
+    NativeStarterKit.configure({
+      ...(history ? { undoRedo: false as const } : {}),
+      strike: false,
+      underline: false,
+      trailingNode: false,
+      bold: enabled('bold') ? {} : false,
+      italic: enabled('italic') ? {} : false,
+      code: enabled('inline-code') ? {} : false,
+      codeBlock: enabled('code-blocks') ? {} : false,
+      blockquote: enabled('quotes') ? {} : false,
+      bulletList: enabled('bullet-lists') ? {} : false,
+      orderedList: enabled('numbered-lists') ? {} : false,
+      horizontalRule: enabled('dividers') ? {} : false,
+      hardBreak: enabled('line-breaks') ? {} : false,
+      heading: levels.length ? { levels } : false,
+      link: enabled('links') ? { openOnClick: false } : false,
+    }),
+    ...(history ? [history] : []),
+    ...literalMarkdown,
+  ]
+  const addons = flavors
+    .flatMap((flavor) => flavor.richExtensions ?? [])
+    .filter((extension) => markdownSyntax.extensionEnabled(extension.name))
+    .map(guardNativeListTokenizer)
+    .map(guardNativeInputRules)
+  return { parser, options, core, addons }
+}
+
+export function editorExtensions(
+  flavors: readonly MarkdownFlavor[],
+  history?: Extension,
+) {
+  const { parser, options, core, addons } = markdownConfiguration(
+    flavors,
+    history,
+  )
   return [
     Extension.create({
       name: 'findInNote',
       addProseMirrorPlugins: () => [search()],
     }),
-    StarterKit.configure({
-      strike: false,
-      underline: false,
-      trailingNode: false,
-      link: { openOnClick: false },
+    ...core,
+    Markdown.configure({
+      // Tiptap types this as the callable singleton, but uses instance methods.
+      marked: parser as unknown as NonNullable<
+        MarkdownExtensionOptions['marked']
+      >,
+      markedOptions: options,
     }),
-    Markdown.configure({ marked: parser, markedOptions: options }),
     CodeHighlight,
     BlockExit,
-    ...flavors.flatMap((flavor) => flavor.richExtensions ?? []),
-    Placeholder.configure({ placeholder: 'start typing' }),
+    MarkdownMarkExit,
+    ...addons,
+    Placeholder.configure({ placeholder: 'Start typing' }),
   ]
-}
-
-// Preserve source constructs the rich editor cannot round-trip without loss.
-export function needsSourceEditing(source: string): boolean {
-  if (readFrontmatter(source) || /^\s{0,3}\[[^\]]+\]:/m.test(source))
-    return true
-  let unsupported = false
-  marked.walkTokens(marked.lexer(source), (token) => {
-    if (
-      token.type === 'def' ||
-      (token.type === 'html' && !/^<br\s*\/?>$/i.test(token.raw.trim()))
-    )
-      unsupported = true
-  })
-  return unsupported
 }

@@ -2,7 +2,7 @@
 export const profiles = [
   {
     id: 'alpaca',
-    name: 'alpacas',
+    name: 'Alpacas',
     press: {
       SPACE: 'alpaca/press/SPACE.mp3',
       ENTER: 'alpaca/press/ENTER.mp3',
@@ -22,7 +22,7 @@ export const profiles = [
   },
   {
     id: 'alpsblue',
-    name: 'skcm blue alps',
+    name: 'SKCM Blue Alps',
     press: {
       SPACE: 'bluealps/press/SPACE.mp3',
       ENTER: 'bluealps/press/ENTER.mp3',
@@ -42,7 +42,7 @@ export const profiles = [
   },
   {
     id: 'boxnavy',
-    name: 'kailh box navies',
+    name: 'Kailh Box Navies',
     press: {
       SPACE: 'boxnavy/press/SPACE.mp3',
       ENTER: 'boxnavy/press/ENTER.mp3',
@@ -62,7 +62,7 @@ export const profiles = [
   },
   {
     id: 'buckling',
-    name: 'buckling spring',
+    name: 'Buckling spring',
     press: {
       SPACE: 'buckling/press/SPACE.mp3',
       ENTER: 'buckling/press/ENTER.mp3',
@@ -82,7 +82,7 @@ export const profiles = [
   },
   {
     id: 'creams',
-    name: 'novelkeys creams',
+    name: 'NovelKeys Creams',
     press: {
       SPACE: 'cream/press/SPACE.mp3',
       ENTER: 'cream/press/ENTER.mp3',
@@ -102,7 +102,7 @@ export const profiles = [
   },
   {
     id: 'holypanda',
-    name: 'holy pandas',
+    name: 'Holy Pandas',
     press: {
       SPACE: 'holypanda/press/SPACE.mp3',
       ENTER: 'holypanda/press/ENTER.mp3',
@@ -122,7 +122,7 @@ export const profiles = [
   },
   {
     id: 'inkblack',
-    name: 'gateron black inks',
+    name: 'Gateron Black Inks',
     press: {
       SPACE: 'blackink/press/SPACE.mp3',
       ENTER: 'blackink/press/ENTER.mp3',
@@ -142,7 +142,7 @@ export const profiles = [
   },
   {
     id: 'inkred',
-    name: 'gateron red inks',
+    name: 'Gateron Red Inks',
     press: {
       SPACE: 'redink/press/SPACE.mp3',
       ENTER: 'redink/press/ENTER.mp3',
@@ -162,7 +162,7 @@ export const profiles = [
   },
   {
     id: 'mxblack',
-    name: 'cherry mx blacks',
+    name: 'Cherry MX Blacks',
     press: {
       SPACE: 'mxblack/press/SPACE.mp3',
       ENTER: 'mxblack/press/ENTER.mp3',
@@ -182,7 +182,7 @@ export const profiles = [
   },
   {
     id: 'mxblue',
-    name: 'cherry mx blues',
+    name: 'Cherry MX Blues',
     press: {
       GENERICR0: 'mxblue/press/GENERIC_R0.mp3',
       GENERICR1: 'mxblue/press/GENERIC_R1.mp3',
@@ -196,7 +196,7 @@ export const profiles = [
   },
   {
     id: 'mxbrown',
-    name: 'cherry mx browns',
+    name: 'Cherry MX Browns',
     press: {
       SPACE: 'mxbrown/press/SPACE.mp3',
       ENTER: 'mxbrown/press/ENTER.mp3',
@@ -216,7 +216,7 @@ export const profiles = [
   },
   {
     id: 'topre',
-    name: 'topre',
+    name: 'Topre',
     press: {
       SPACE: 'topre/press/SPACE.mp3',
       ENTER: 'topre/press/ENTER.mp3',
@@ -236,7 +236,7 @@ export const profiles = [
   },
   {
     id: 'turquoise',
-    name: 'turquoise tealios',
+    name: 'Turquoise Tealios',
     press: {
       SPACE: 'turquoise/press/SPACE.mp3',
       ENTER: 'turquoise/press/ENTER.mp3',

@@ -1,0 +1,101 @@
+import type { Token } from 'marked'
+import type { SourceOwnerPage } from './markdown-source-model.ts'
+import type { DocumentKey, SourceOperation } from './source-operations.ts'
+import type { ReferenceValue } from './source-references.ts'
+import type { SearchLocation } from './source-search-index.ts'
+
+export type MetadataDialect = 'commonmark' | 'gfm'
+export type MarkdownReferenceSyntax = Readonly<{
+  gfm: boolean
+  alerts: boolean
+  textExtras: boolean
+  math?: boolean
+}>
+export type MarkdownReferenceRequest = MarkdownReferenceSyntax & {
+  label: string
+}
+export type MarkdownSemanticRow = Readonly<{
+  slot: number
+  revision: number
+  from: number
+  to: number
+  contentFrom: number
+  endIndex: number
+  tokens: readonly Token[]
+  nonSpace: boolean
+}>
+export type MarkdownSemanticResult =
+  | Readonly<{
+      status: 'available'
+      rows: readonly MarkdownSemanticRow[]
+      next: number | null
+      /** Conservatively accounted UTF-8 JSON bytes, including the result envelope. */
+      bytes: number
+    }>
+  | Readonly<{
+      status: 'unavailable'
+      reason: 'syntax-context' | 'too-large'
+      slot?: number
+    }>
+
+export type DocumentWorkerRequest =
+  | {
+      type: 'load'
+      epoch: string
+      document: DocumentKey
+      version: number
+      chunks: readonly string[]
+    }
+  | { type: 'edit'; epoch: string; operation: SourceOperation }
+  | {
+      type: 'find'
+      epoch: string
+      id: number
+      version: number
+      query: string
+      from: number
+      to: number
+    }
+  | { type: 'cancel-find'; epoch: string; id: number }
+  | {
+      type: 'metadata'
+      epoch: string
+      id: number
+      version: number
+      dialect: MetadataDialect
+      frontmatter?: boolean
+      reference?: MarkdownReferenceRequest
+      semantic?: MarkdownReferenceSyntax
+      from: number
+      to: number
+      limit: number
+    }
+  | { type: 'cancel-metadata'; epoch: string; id: number; release: boolean }
+
+export type DocumentWorkerReply =
+  | { type: 'ack'; epoch: string; version: number }
+  | { type: 'canceled'; epoch: string; id: number }
+  | { type: 'metadata-canceled'; epoch: string; id: number; release: boolean }
+  | {
+      type: 'metadata'
+      epoch: string
+      id: number
+      version: number
+      page: SourceOwnerPage
+      reference?: ReferenceValue | null
+      semantic?: MarkdownSemanticResult
+    }
+  | {
+      type: 'find'
+      epoch: string
+      id: number
+      version: number
+      location: SearchLocation
+    }
+  | {
+      type: 'error'
+      epoch: string
+      id?: number
+      stage: 'replica' | 'find' | 'metadata'
+      message: string
+    }

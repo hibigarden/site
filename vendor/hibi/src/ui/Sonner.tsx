@@ -11,6 +11,7 @@ import {
   useSyncExternalStore,
 } from 'react'
 import { createPortal } from 'react-dom'
+import { sentenceCase } from '../shared/ui-case'
 import { IconButton } from './Controls'
 import {
   createToastService,
@@ -87,7 +88,7 @@ export function Sonner() {
       popover="manual"
       className="sonner"
       data-position={preferences.position}
-      aria-label="notifications"
+      aria-label="Notifications"
     >
       {items.map((item) => {
         const Icon =
@@ -116,12 +117,12 @@ export function Sonner() {
               role={item.variant === 'error' ? 'alert' : 'status'}
               aria-atomic="true"
             >
-              <span>{item.message}</span>
-              {item.description && <p>{item.description}</p>}
+              <span>{sentenceCase(item.message)}</span>
+              {item.description && <p>{sentenceCase(item.description)}</p>}
             </div>
             <IconButton
               aria-label={
-                item.variant === 'error' ? 'dismiss error' : 'dismiss notice'
+                item.variant === 'error' ? 'Dismiss error' : 'Dismiss notice'
               }
               onClick={() => service.dismiss(item.id)}
             >

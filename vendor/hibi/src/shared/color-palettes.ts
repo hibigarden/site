@@ -4,7 +4,7 @@ import { themeLicenses } from './theme-licenses.ts'
 const palettes: ColorschemeInput[] = [
   {
     id: 'hibi-light',
-    name: 'hibi light',
+    name: 'Hibi light',
     appearance: 'light',
     colors: {
       background: '#ffffff',
@@ -16,13 +16,13 @@ const palettes: ColorschemeInput[] = [
     },
     author: 'may',
     license: {
-      name: 'hibi',
+      name: 'Hibi',
       text: 'Original hibi palette. Included with hibi; no third-party palette is used.',
     },
   },
   {
     id: 'hibi-dark',
-    name: 'hibi dark',
+    name: 'Hibi dark',
     appearance: 'dark',
     colors: {
       background: '#181818',
@@ -34,13 +34,13 @@ const palettes: ColorschemeInput[] = [
     },
     author: 'may',
     license: {
-      name: 'hibi',
+      name: 'Hibi',
       text: 'Original hibi palette. Included with hibi; no third-party palette is used.',
     },
   },
   {
     id: 'vscode-light',
-    name: 'vscode light modern',
+    name: 'Vscode light modern',
     appearance: 'light',
     author: 'microsoft',
     license: themeLicenses.vscode,
@@ -61,7 +61,7 @@ const palettes: ColorschemeInput[] = [
   },
   {
     id: 'vscode-dark',
-    name: 'vscode dark modern',
+    name: 'Vscode dark modern',
     appearance: 'dark',
     author: 'microsoft',
     license: themeLicenses.vscode,
@@ -82,7 +82,7 @@ const palettes: ColorschemeInput[] = [
   },
   {
     id: 'catppuccin-latte',
-    name: 'catppuccin latte',
+    name: 'Catppuccin latte',
     appearance: 'light',
     author: 'catppuccin',
     license: themeLicenses.catppuccin,
@@ -108,7 +108,7 @@ const palettes: ColorschemeInput[] = [
   },
   {
     id: 'catppuccin-frappe',
-    name: 'catppuccin frappé',
+    name: 'Catppuccin frappé',
     appearance: 'dark',
     author: 'catppuccin',
     license: themeLicenses.catppuccin,
@@ -134,7 +134,7 @@ const palettes: ColorschemeInput[] = [
   },
   {
     id: 'catppuccin-macchiato',
-    name: 'catppuccin macchiato',
+    name: 'Catppuccin macchiato',
     appearance: 'dark',
     author: 'catppuccin',
     license: themeLicenses.catppuccin,
@@ -160,7 +160,7 @@ const palettes: ColorschemeInput[] = [
   },
   {
     id: 'catppuccin-mocha',
-    name: 'catppuccin mocha',
+    name: 'Catppuccin mocha',
     appearance: 'dark',
     author: 'catppuccin',
     license: themeLicenses.catppuccin,
@@ -186,7 +186,7 @@ const palettes: ColorschemeInput[] = [
   },
   {
     id: 'nord',
-    name: 'nord',
+    name: 'Nord',
     appearance: 'dark',
     author: 'sven greb',
     license: themeLicenses.nord,

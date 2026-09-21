@@ -1,13 +1,6 @@
-import { EditorView } from '@codemirror/view'
-import {
-  type CSSProperties,
-  type RefObject,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react'
+import { type CSSProperties, type RefObject, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { sourceView } from './source-view'
 
 export type CursorSettings = {
   style: 'bar' | 'outline' | 'block' | 'underline'
@@ -60,7 +53,6 @@ export function EditorCursor({
   settings: CursorSettings
 }) {
   const [position, setPosition] = useState<Position | null>(null)
-  const cursor = useRef<HTMLSpanElement>(null)
   useEffect(() => {
     let frame = 0
     let move = true
@@ -107,7 +99,7 @@ export function EditorCursor({
       const fallback = anchor.getBoundingClientRect()
       const fontSize = Number.parseFloat(getComputedStyle(anchor).fontSize)
       const source = active.classList.contains('cm-content')
-        ? EditorView.findFromDOM(active)
+        ? sourceView(active)
         : null
       // DOM ranges around CodeMirror's empty-line placeholder have line-box
       // geometry, not caret geometry. Let the editor resolve its own position.
@@ -202,16 +194,9 @@ export function EditorCursor({
       window.removeEventListener('focus', update)
     }
   }, [root])
-  useLayoutEffect(() => {
-    if (!position) return
-    for (const animation of cursor.current?.getAnimations() ?? []) {
-      if (animation instanceof CSSAnimation) animation.currentTime = 0
-    }
-  }, [position])
   if (!position) return null
   return createPortal(
     <span
-      ref={cursor}
       className="editor-cursor"
       aria-hidden="true"
       data-style={settings.style}

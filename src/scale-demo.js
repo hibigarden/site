@@ -73,7 +73,7 @@ function watchEditor() {
       }),
     );
   };
-  contentObserver = new MutationObserver(reveal);
+  contentObserver = new demoDocument.defaultView.MutationObserver(reveal);
   contentObserver.observe(demoRoot, { childList: true, subtree: true });
   reveal();
 }

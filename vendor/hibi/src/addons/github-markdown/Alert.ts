@@ -1,6 +1,6 @@
 import { mergeAttributes, Node } from '@tiptap/core'
 import { TextSelection } from '@tiptap/pm/state'
-import { alertMarker, alertToken, alertType } from './alerts'
+import { alertMarker, alertStart, alertToken, alertType } from './alerts.ts'
 
 export const GithubAlert = Node.create({
   name: 'githubAlert',
@@ -35,10 +35,7 @@ export const GithubAlert = Node.create({
   markdownTokenizer: {
     name: 'githubAlert',
     level: 'block',
-    start: (source) =>
-      source.search(
-        /^ {0,3}>[ \t]*\[!(?:NOTE|TIP|IMPORTANT|WARNING|CAUTION)\][ \t]*(?:\n|$)/im,
-      ),
+    start: alertStart,
     tokenize(source, _tokens, lexer) {
       const token = alertToken(source)
       if (token) return { ...token, tokens: lexer.blockTokens(token.text) }

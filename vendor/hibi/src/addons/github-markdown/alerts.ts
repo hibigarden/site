@@ -15,6 +15,13 @@ export function alertType(value: unknown): AlertType | undefined {
 export function alertMarker(text: string) {
   return /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\][ \t]*(?:\n|$)/i.exec(text)
 }
+export function alertStart(source: string) {
+  return source.includes('[!')
+    ? source.search(
+        /^ {0,3}>[ \t]*\[!(?:NOTE|TIP|IMPORTANT|WARNING|CAUTION)\][ \t]*(?:\n|$)/im,
+      )
+    : -1
+}
 
 export function alertToken(source: string) {
   if (!/^ {0,3}>[ \t]*\[!/i.test(source)) return

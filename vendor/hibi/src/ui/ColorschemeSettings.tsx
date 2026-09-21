@@ -19,8 +19,8 @@ export function ColorschemeSettings({
       <div className="settings-group">
         <SettingRow
           id="theme-mode"
-          label="appearance"
-          description="follow your system, or keep one appearance."
+          label="Appearance"
+          description="Match your computer’s appearance or choose light or dark."
         >
           <Select
             id="theme-mode"
@@ -29,9 +29,9 @@ export function ColorschemeSettings({
               store.set({ mode: event.target.value as typeof preferences.mode })
             }
           >
-            <option value="system">system</option>
-            <option value="light">light</option>
-            <option value="dark">dark</option>
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
           </Select>
         </SettingRow>
         {(['light', 'dark'] as const).map((mode) => {
@@ -47,7 +47,7 @@ export function ColorschemeSettings({
               description={
                 selected
                   ? `${selected.author} · ${selected.license.name}`
-                  : 'selected addon unavailable; using hibi.'
+                  : 'Hibi is using its default colors because this theme is unavailable.'
               }
             >
               <div className="colorscheme-choice">

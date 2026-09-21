@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { FileText } from "lucide-react";
 import { Titlebar } from "../vendor/hibi/src/renderer/src/Titlebar";
@@ -8,6 +8,8 @@ import { onEditorKeyEvent } from "../vendor/hibi/src/renderer/src/editor-events"
 import { toolbar } from "../vendor/hibi/src/renderer/src/toolbar";
 import { StatusBar } from "../vendor/hibi/src/renderer/src/StatusBar";
 import { defaultCursor } from "../vendor/hibi/src/renderer/src/EditorCursor";
+import { editorDocument } from "../vendor/hibi/src/renderer/src/document-formats";
+import { documentRuntime } from "../vendor/hibi/src/renderer/src/document-runtime";
 import {
   defaultHotkeys,
   shortcutFromEvent,
@@ -30,6 +32,8 @@ import "./demo.css";
 
 // The browser never resolves desktop paths or fetches remote document images.
 window.hibi = {
+  admitSourceOperation: () => {},
+  appendSourceOperation: async () => {},
   readDocumentMedia: async () => null,
   onWorkspaceChanged: () => () => {},
 };
@@ -43,7 +47,9 @@ if (site) {
     if (mode === "light" || mode === "dark") colors.set({ mode });
   };
   followSiteTheme();
-  const observer = new MutationObserver(followSiteTheme);
+  const observer = new site.ownerDocument.defaultView.MutationObserver(
+    followSiteTheme,
+  );
   observer.observe(site, { attributes: true, attributeFilter: ["data-theme"] });
   if (import.meta.hot) import.meta.hot.dispose(() => observer.disconnect());
 }
@@ -53,6 +59,15 @@ const platform = /Mac|iPhone|iPad/.test(navigator.platform)
 const hotkeys = defaultHotkeys(platform);
 const empty = [];
 const flavors = [...githubMarkdown.flavors, ...textExtras.flavors];
+const markdownFormat = {
+  id: "markdown.markdown",
+  name: "Markdown",
+  extensions: ["md"],
+  editing: "markdown",
+  views: ["normal", "side-by-side", "markdown"],
+  formatting: "markdown",
+  Preview: () => null,
+};
 const examples = [
   {
     name: "welcome.md",
@@ -63,11 +78,18 @@ const examples = [
 const initialDocuments = examples.map((example, index) => ({
   ...example,
   id: String(index),
+  tabId: String(index),
+  tabs: [{ id: String(index), name: example.name, dirty: false }],
+  tabsEnabled: false,
   savedMarkdown: example.markdown,
   dirty: false,
   ephemeral: false,
   revision: index,
+  contentVersion: 0,
+  canAutosave: false,
 }));
+initialDocuments[0] = documentRuntime.activate(initialDocuments[0]);
+editorDocument.publish(initialDocuments[0]);
 
 function Demo() {
   const [documents, setDocuments] = useState(initialDocuments);
@@ -82,6 +104,24 @@ function Demo() {
   const resize = useSidebarResize(196);
   const dialogs = useDialogs();
   const toasts = useToasts();
+
+  useLayoutEffect(
+    () =>
+      documentRuntime.subscribe((next, changes) => {
+        editorDocument.publish(next, changes);
+        setDocuments((entries) =>
+          entries.map((entry) => (entry.tabId === next.tabId ? next : entry)),
+        );
+      }),
+    [],
+  );
+  useLayoutEffect(() => {
+    const active = documentRuntime.activate(current);
+    editorDocument.publish(active);
+    setDocuments((entries) =>
+      entries.map((entry) => (entry.id === selected ? active : entry)),
+    );
+  }, [selected]);
 
   useEffect(() => {
     let disposed = false;
@@ -132,12 +172,17 @@ function Demo() {
     const revision = counter.current++;
     const entry = {
       id: String(revision),
+      tabId: String(revision),
+      tabs: [{ id: String(revision), name, dirty: false }],
+      tabsEnabled: false,
       name,
       markdown,
       savedMarkdown: markdown,
       dirty: false,
       ephemeral: false,
       revision,
+      contentVersion: 0,
+      canAutosave: false,
     };
     setDocuments((entries) => [...entries, entry]);
     setSelected(entry.id);
@@ -242,19 +287,26 @@ function Demo() {
         document={current}
         settingsOpen={false}
         onSettings={() => {}}
-        onPalette={() => {}}
         mode={mode}
+        availableViews={["normal", "side-by-side", "markdown"]}
         onMode={setMode}
-        onCommand={command}
-        disabled={false}
         busy={false}
         hotkeys={hotkeys}
         platform={platform}
         sidebarOpen={sidebar}
         onSidebar={() => setSidebar(!sidebar)}
-        onRename={async (name) => {
-          if (name.trim()) update({ name: name.trim() });
-        }}
+        onBack={() => {}}
+        sidebarOverlay={resize.overlay}
+        sidebarView="workspace"
+        sidebarViews={[]}
+        onSidebarView={() => {}}
+        rightSidebarOpen={false}
+        rightSidebarView=""
+        onRightSidebar={() => {}}
+        onRightSidebarView={() => {}}
+        onSelectTab={() => {}}
+        onCloseTab={() => {}}
+        onMoveTab={() => {}}
       />
       <Sidebar
         className="workspace-sidebar"
@@ -279,11 +331,11 @@ function Demo() {
           <MarkdownEditor
             key={current.id}
             document={current}
-            format={undefined}
+            format={markdownFormat}
             formatName="markdown"
             value={current.markdown}
-            onChange={(markdown) =>
-              update({ markdown, dirty: markdown !== current.savedMarkdown })
+            onChange={(markdown, historyGroup) =>
+              documentRuntime.replace(markdown, "visual", historyGroup)
             }
             mode={mode}
             disabled={false}
@@ -294,6 +346,8 @@ function Demo() {
             richExtensions={empty}
             cursorSettings={defaultCursor}
             showLineNumbers={false}
+            spellCheck={true}
+            showMarkdownMarkers={true}
             documentRevision={current.revision}
             flavors={flavors}
             unsupportedFlavor={false}
@@ -309,6 +363,11 @@ function Demo() {
               if (/^https?:\/\//i.test(href))
                 window.open(href, "_blank", "noopener,noreferrer");
             }}
+            onOutline={() => {}}
+            onOutlineUnavailable={() => {}}
+            onActiveOutline={() => {}}
+            outlineTarget={null}
+            outlineActive={false}
           />
           <StatusBar
             items={[{ id: "format", label: "markdown", tooltip: "markdown" }]}

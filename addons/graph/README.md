@@ -2,7 +2,9 @@
 
 The graph shows how your notes connect through Markdown links. Turn on **Graph** in **Settings → Addons**, open a workspace, then choose **Open workspace graph** from the command palette or sidebar view menu.
 
-The graph fits the available space when opened or filtered. Click a dot to open its note. Drag the background to move around, scroll to zoom, or choose **Expand** for a larger view. **Fit graph** returns to the overview. Zoom in or filter a dense graph to see note labels.
+The graph opens close to the current note. Change **Default zoom** in Graph's addon settings to choose the starting scale; the default is 8× the fitted overview. The setting applies when you next open the graph. **Fit graph** shows the whole graph and keeps it fitted as the view resizes.
+
+Click a dot to open its note. The graph moves smoothly to the selected note; reduced-motion settings make that move immediate. Drag the background to pan, scroll to zoom, or choose **Expand** to open a larger graph in a tab. Zoom in or filter a dense graph to see note labels.
 
 Hover over a dot for its full note path and connection count. Connection rows also show the full path on hover. Hints close when you move away or move the graph.
 

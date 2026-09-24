@@ -4,6 +4,8 @@ Enable Mermaid in Settings → Addons to edit `.mmd` and `.mermaid` files. Use s
 
 Mermaid code blocks also render in Markdown. Click the pencil on a diagram to edit its source.
 
+Open **Settings → Mermaid** to set the maximum diagram height. Taller diagrams scale proportionally to fit the editor pane and exported HTML.
+
 ```mermaid
 flowchart LR
   Idea --> Draft --> Publish

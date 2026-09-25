@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowUpRight,
@@ -21,6 +21,9 @@ import {
 import addons from "virtual:hibi-addons";
 import { Button } from "../vendor/hibi/src/ui/Controls";
 import "../vendor/hibi/src/ui/controls.css";
+
+const gardenCatalog =
+  "https://raw.githubusercontent.com/hibigarden/addons-repository/main/catalog.json";
 
 const icons = {
   "github-markdown": FileText,
@@ -66,25 +69,69 @@ function Authors({ authors }) {
 
 function AddonGrid() {
   const [query, setQuery] = useState("");
+  const [garden, setGarden] = useState([]);
+  const [gardenError, setGardenError] = useState(false);
   const search = useRef(null);
   const [selected, setSelected] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
   const dialog = useRef(null);
   const Icon = icons[selected?.id] ?? Puzzle;
-  const matching = addons.filter((addon) =>
-    [
-      addon.id,
-      addon.name,
-      addon.description,
-      addon.kind,
-      addon.version,
-      "built in",
-      ...addon.authors.map((author) => author.displayName),
-    ]
-      .join(" ")
-      .toLowerCase()
-      .includes(query.trim().toLowerCase()),
-  );
+  useEffect(() => {
+    let active = true;
+    fetch(gardenCatalog)
+      .then((response) => {
+        if (!response.ok) throw new Error("catalog unavailable");
+        return response.json();
+      })
+      .then((entries) => {
+        if (!Array.isArray(entries)) throw new Error("invalid catalog");
+        if (active)
+          setGarden(
+            entries.filter(
+              (entry) =>
+                entry &&
+                /^[a-z][a-z0-9-]*$/.test(entry.id) &&
+                entry.path === `addons/${entry.id}` &&
+                [entry.name, entry.description, entry.version].every(
+                  (value) => typeof value === "string" && value.trim(),
+                ) &&
+                ["extension", "theme"].includes(entry.kind) &&
+                Number.isInteger(entry.apiVersion) &&
+                Array.isArray(entry.authors) &&
+                entry.authors.every(
+                  (author) =>
+                    author && typeof author.displayName === "string",
+                ) &&
+                !addons.some((addon) => addon.id === entry.id),
+            ),
+          );
+      })
+      .catch(() => {
+        if (active) setGardenError(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+  const matching = [
+    ...addons,
+    ...garden.map((addon) => ({ ...addon, garden: true })),
+  ]
+    .filter((addon) =>
+      [
+        addon.id,
+        addon.name,
+        addon.description,
+        addon.kind,
+        addon.version,
+        addon.garden ? "garden" : "built in",
+        ...addon.authors.map((author) => author.displayName),
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(query.trim().toLowerCase()),
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <>
@@ -113,7 +160,10 @@ function AddonGrid() {
           </Button>
         </div>
       </div>
-      <ul className="addon-grid" aria-label="built-in addons">
+      {gardenError && (
+        <p className="addon-empty">garden addons are unavailable right now.</p>
+      )}
+      <ul className="addon-grid" aria-label="addons">
         {matching.map((addon) => {
           const Glyph = icons[addon.id] ?? Puzzle;
           return (
@@ -216,15 +266,29 @@ function AddonGrid() {
             <div className="addon-availability">
               <span>v{selected.version}</span>
               <span>
-                {selected.defaultEnabled
-                  ? "enabled by default"
-                  : "enable in settings → addons"}
+                {selected.garden
+                  ? "find in hibi → settings → addons"
+                  : selected.defaultEnabled
+                    ? "enabled by default"
+                    : "enable in settings → addons"}
               </span>
             </div>
-            <div
-              className="addon-readme"
-              dangerouslySetInnerHTML={{ __html: selected.html }}
-            />
+            {selected.garden ? (
+              <p className="addon-readme">
+                <a
+                  href={`https://github.com/hibigarden/addons-repository/tree/main/${selected.path}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  view source and readme ↗
+                </a>
+              </p>
+            ) : (
+              <div
+                className="addon-readme"
+                dangerouslySetInnerHTML={{ __html: selected.html }}
+              />
+            )}
           </div>
         )}
       </dialog>

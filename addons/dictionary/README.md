@@ -24,15 +24,9 @@ Type any word in **Look up a word** and press Enter to look it up, online if nee
 
 ## Suggestions as you type
 
-Turn on **Suggest words as you type** in the addon's settings to see word completions from installed offline packs while you type. Suggestions appear in the editor's completion list after you type three letters of a word in Latin letters. Chinese and Japanese text is not completed because it has no spaces to mark where a word starts.
+Enable the separate [Autocomplete addon](../autocomplete/README.md) for word and phrase suggestions while typing. It uses this addon's installed offline packs and custom words, then learns local word patterns from normal editing. Its settings include suggestion languages, Tab acceptance, learning, exclusions, and clearing learned words. Existing dictionary suggestion and Tab preferences are preserved.
 
-**Suggestion languages** chooses which installed packs suggest words. Only English is on at first. Turn on more languages for writing that mixes them, such as English and Filipino or German and English; every keystroke asks all of them in one request. Words that match what you typed best come first: a word that starts with exactly the letters you typed, accents included, comes before one that matches only without accents, and single words come before phrases. Languages then follow the order you turned them on, and shorter words come first. A word found in several languages appears once. When more than one language is on, each suggestion names its language. Your custom words come before pack words.
-
-Suggestions stay out of the way of other typing: none are offered for slash commands, tags, mentions, emoji codes, escapes, links, web addresses, paths, inline code, or fenced code blocks. Code is recognized from at most the 256 characters before the cursor. Inline code follows Markdown's backtick rules on the current line: a backtick run is closed only by a run of the same length, and an escaped backtick does not open code. Backticks inside raw HTML tags or `<https://…>` links still count as code. Because of that window, suggestions can still appear in code when a fenced block opened more than 256 characters back or inline code started on an earlier line, and can stay hidden in prose after a fence that opened outside the window closes, or after a backtick that is never closed, even past a later pair of backticks. While the slash command menu is open, it keeps Enter, Tab, and the arrow keys.
-
-Press Enter to insert the highlighted suggestion, or Escape to dismiss the list. **Accept suggestions with Tab** is on by default, so Tab also inserts the highlighted suggestion. When no suggestions are showing, Tab works as it normally does in the editor. Turn the setting off to keep Tab for the editor even while suggestions are showing.
-
-Suggestions never send anything online. They work in the formatted editor and in Source view. In the formatted editor, suggestions are offered in top-level paragraphs and headings but not inside lists, quotes, or tables.
+The dictionary keeps lookups and the side view. Autocomplete never requests an online lookup or downloads a pack.
 
 ## Custom words
 

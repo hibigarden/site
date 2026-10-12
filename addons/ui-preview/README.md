@@ -4,6 +4,8 @@ Open **UI preview** from the command palette to inspect Hibi's buttons, fields, 
 
 Choose **Open addon window preview** to see a separate addon window with Hibi's title bar, as an addon would open it.
 
+Choose **Open editor window preview** to see Hibi's editor and formatting toolbar in a separate addon window, as an addon would show them. Text you type there is not saved.
+
 Enter CSS in **Custom CSS** and turn on **Enable custom CSS** to preview it across Hibi. Changes take effect as you type. Choose **Save CSS** to keep the CSS and its enabled state after restarting Hibi. Choose **Revert** or close the preview tab to discard unsaved changes. Saved CSS can be up to 64 KiB.
 
 Wait for **Custom CSS saved.** before disabling the addon. Disabling it cancels a save that is still in progress.

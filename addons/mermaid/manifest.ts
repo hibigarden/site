@@ -9,6 +9,8 @@ export default {
   version: '1.0.0',
   kind: 'extension',
   defaultEnabled: false,
+  // Markdown documents need it before editing, as well as its own diagram files.
+  capabilities: ['ui', 'rich', 'source', 'markdown'],
   fileExtensions: fileAssociations.mermaid.ext,
   authors: [authors.may],
 } satisfies AddonManifest

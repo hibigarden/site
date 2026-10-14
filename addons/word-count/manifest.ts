@@ -1,13 +1,16 @@
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
-
 export default {
-  id: 'word-count',
-  name: 'Word count',
-  version: '1.1.1',
-  apiVersion: 2,
-  description: 'See word and character counts for your current document.',
-  defaultEnabled: false,
-  startup: 'background',
-  authors: [authors.may],
-} satisfies AddonManifest
+  "id": "word-count",
+  "name": "Word count",
+  "description": "See word and character counts for your current document.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "1.1.1",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": false,
+  "startup": "background"
+}

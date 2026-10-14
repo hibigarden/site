@@ -1,15 +1,31 @@
-import { gitDependency } from '../_shared/tool-dependencies'
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
 export default {
-  id: 'git',
-  name: 'Git',
-  kind: 'extension',
-  version: '1.1.1',
-  dependencies: [gitDependency],
-  apiVersion: 2,
-  description: 'Review changes, commit notes, switch branches, pull, and push.',
-  defaultEnabled: false,
-  startup: 'background',
-  authors: [authors.may],
-} satisfies AddonManifest
+  "id": "git",
+  "name": "Git",
+  "description": "Review changes, commit notes, switch branches, pull, and push.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "1.1.1",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": false,
+  "dependencies": [
+    {
+      "id": "git",
+      "name": "Git",
+      "command": "git",
+      "homepage": "https://git-scm.com/downloads",
+      "reason": "Read repository state, review changes, commit, and synchronize notes.",
+      "install": {
+        "brew": {
+          "package": "git"
+        },
+        "winget": "Git.Git"
+      }
+    }
+  ],
+  "startup": "background"
+}

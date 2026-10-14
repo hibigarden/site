@@ -1,12 +1,15 @@
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
-
 export default {
-  id: 'slash-commands',
-  name: 'Slash commands',
-  version: '0.1.1',
-  authors: [authors.may],
-  description: 'Type / at the start of a line to insert a block.',
-  apiVersion: 2,
-  defaultEnabled: true,
-} satisfies AddonManifest
+  "id": "slash-commands",
+  "name": "Slash commands",
+  "description": "Type / at the start of a line to insert a block.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "0.1.1",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": true
+}

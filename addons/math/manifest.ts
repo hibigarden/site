@@ -1,18 +1,36 @@
-import { fileAssociations } from '../../shared/file-associations'
-import { tectonicDependency } from '../_shared/tool-dependencies'
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
 export default {
-  id: 'math',
-  name: 'LaTeX',
-  kind: 'extension',
-  version: '1.1.4',
-  dependencies: [tectonicDependency],
-  settings: { icon: 'sigma' },
-  apiVersion: 2,
-  description:
-    'Write LaTeX documents, export PDFs, and add equations to Markdown.',
-  defaultEnabled: false,
-  fileExtensions: fileAssociations.math.ext,
-  authors: [authors.may],
-} satisfies AddonManifest
+  "id": "math",
+  "name": "LaTeX",
+  "description": "Write LaTeX documents, export PDFs, and add equations to Markdown.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "1.1.4",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": false,
+  "dependencies": [
+    {
+      "id": "tectonic",
+      "name": "Tectonic",
+      "command": "tectonic",
+      "homepage": "https://tectonic-typesetting.github.io/book/latest/installation/",
+      "reason": "Compile LaTeX documents to PDF. Inline Markdown equations use the bundled renderer.",
+      "optional": true,
+      "install": {
+        "brew": {
+          "package": "tectonic"
+        }
+      }
+    }
+  ],
+  "settings": {
+    "icon": "sigma"
+  },
+  "fileExtensions": [
+    "tex"
+  ]
+}

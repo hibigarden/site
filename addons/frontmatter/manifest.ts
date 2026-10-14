@@ -1,13 +1,18 @@
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
-
 export default {
-  id: 'frontmatter',
-  name: 'Frontmatter',
-  version: '0.1.1',
-  authors: [authors.may],
-  description: 'Edit note properties stored in YAML, such as titles and dates.',
-  settings: { icon: 'tags' },
-  apiVersion: 2,
-  defaultEnabled: true,
-} satisfies AddonManifest
+  "id": "frontmatter",
+  "name": "Frontmatter",
+  "description": "Edit note properties stored in YAML, such as titles and dates.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "0.1.1",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": true,
+  "settings": {
+    "icon": "tags"
+  }
+}

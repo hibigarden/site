@@ -1,19 +1,47 @@
-import { fileAssociations } from '../../shared/file-associations'
-import {
-  pandocDependency,
-  quartoDependency,
-} from '../_shared/tool-dependencies'
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
 export default {
-  id: 'quarto',
-  name: 'Quarto Markdown',
-  apiVersion: 2,
-  version: '1.0.3',
-  dependencies: [pandocDependency, quartoDependency],
-  kind: 'extension',
-  description: 'Edit and preview Quarto; run embedded code when you choose.',
-  fileExtensions: fileAssociations.quarto.ext,
-  defaultEnabled: false,
-  authors: [authors.may],
-} satisfies AddonManifest
+  "id": "quarto",
+  "name": "Quarto Markdown",
+  "description": "Edit and preview Quarto; run embedded code when you choose.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "1.0.3",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": false,
+  "dependencies": [
+    {
+      "id": "pandoc",
+      "name": "Pandoc",
+      "command": "pandoc",
+      "homepage": "https://pandoc.org/installing.html",
+      "reason": "Convert document source for previews and HTML exports. Requires Pandoc 3.11 or newer.",
+      "install": {
+        "brew": {
+          "package": "pandoc"
+        },
+        "winget": "JohnMacFarlane.Pandoc"
+      }
+    },
+    {
+      "id": "quarto",
+      "name": "Quarto",
+      "command": "quarto",
+      "homepage": "https://quarto.org/docs/get-started/",
+      "reason": "Run Quarto documents with embedded code when you choose Run.",
+      "optional": true,
+      "install": {
+        "brew": {
+          "package": "quarto",
+          "cask": true
+        }
+      }
+    }
+  ],
+  "fileExtensions": [
+    "qmd"
+  ]
+}

@@ -1,13 +1,16 @@
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
-
 export default {
-  id: 'block-drag',
-  name: 'Block dragging',
-  version: '1.0.0',
-  apiVersion: 2,
-  description: 'Drag paragraphs, headings, and list items to move them.',
-  defaultEnabled: false,
-  startup: 'background',
-  authors: [authors.may],
-} satisfies AddonManifest
+  "id": "block-drag",
+  "name": "Block dragging",
+  "description": "Drag paragraphs, headings, and list items to move them.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": false,
+  "startup": "background"
+}

@@ -1,15 +1,19 @@
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
-
 export default {
-  id: 'discord-presence',
-  name: 'Discord Rich Presence',
-  version: '1.1.0',
-  apiVersion: 2,
-  kind: 'extension',
-  description: 'Show your Hibi activity in the Discord desktop app.',
-  settings: { icon: 'activity' },
-  defaultEnabled: false,
-  startup: 'background',
-  authors: [authors.may],
-} satisfies AddonManifest
+  "id": "discord-presence",
+  "name": "Discord Rich Presence",
+  "description": "Show your Hibi activity in the Discord desktop app.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "1.1.0",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": false,
+  "settings": {
+    "icon": "activity"
+  },
+  "startup": "background"
+}

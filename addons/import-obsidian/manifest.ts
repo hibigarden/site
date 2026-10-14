@@ -1,16 +1,21 @@
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
 export default {
-  id: 'import-obsidian',
-  name: 'Import from Obsidian',
-  description: 'Bring notes and attachments from an Obsidian vault.',
-  apiVersion: 2,
-  version: '1.0.0',
-  kind: 'extension',
-  defaultEnabled: false,
-  authors: [authors.may],
-  importer: {
-    sources: ['folder'],
-    instructions: 'Choose your Obsidian vault folder.',
-  },
-} satisfies AddonManifest
+  "id": "import-obsidian",
+  "name": "Import from Obsidian",
+  "description": "Bring notes and attachments from an Obsidian vault.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": false,
+  "importer": {
+    "instructions": "Choose your Obsidian vault folder.",
+    "sources": [
+      "folder"
+    ]
+  }
+}

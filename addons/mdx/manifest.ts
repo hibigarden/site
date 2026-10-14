@@ -1,14 +1,18 @@
-import { fileAssociations } from '../../shared/file-associations'
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
 export default {
-  id: 'mdx',
-  name: 'MDX',
-  apiVersion: 2,
-  version: '1.0.1',
-  kind: 'extension',
-  description: 'Edit and preview MDX; run embedded code when you choose.',
-  fileExtensions: fileAssociations.mdx.ext,
-  defaultEnabled: false,
-  authors: [authors.may],
-} satisfies AddonManifest
+  "id": "mdx",
+  "name": "MDX",
+  "description": "Edit and preview MDX; run embedded code when you choose.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "1.0.1",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": false,
+  "fileExtensions": [
+    "mdx"
+  ]
+}

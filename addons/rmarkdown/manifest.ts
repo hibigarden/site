@@ -1,17 +1,46 @@
-import { fileAssociations } from '../../shared/file-associations'
-import { pandocDependency, rDependency } from '../_shared/tool-dependencies'
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
 export default {
-  id: 'rmarkdown',
-  name: 'R Markdown',
-  apiVersion: 2,
-  version: '1.0.3',
-  dependencies: [pandocDependency, rDependency],
-  kind: 'extension',
-  description:
-    'Edit and preview R Markdown; run embedded code when you choose.',
-  fileExtensions: fileAssociations.rmarkdown.ext,
-  defaultEnabled: false,
-  authors: [authors.may],
-} satisfies AddonManifest
+  "id": "rmarkdown",
+  "name": "R Markdown",
+  "description": "Edit and preview R Markdown; run embedded code when you choose.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "1.0.3",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": false,
+  "dependencies": [
+    {
+      "id": "pandoc",
+      "name": "Pandoc",
+      "command": "pandoc",
+      "homepage": "https://pandoc.org/installing.html",
+      "reason": "Convert document source for previews and HTML exports. Requires Pandoc 3.11 or newer.",
+      "install": {
+        "brew": {
+          "package": "pandoc"
+        },
+        "winget": "JohnMacFarlane.Pandoc"
+      }
+    },
+    {
+      "id": "rscript",
+      "name": "R",
+      "command": "Rscript",
+      "homepage": "https://cran.r-project.org/",
+      "reason": "Run R Markdown documents. Install the rmarkdown package separately in R.",
+      "optional": true,
+      "install": {
+        "brew": {
+          "package": "r"
+        }
+      }
+    }
+  ],
+  "fileExtensions": [
+    "rmd"
+  ]
+}

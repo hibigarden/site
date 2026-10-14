@@ -1,16 +1,34 @@
-import { fileAssociations } from '../../shared/file-associations'
-import { pandocDependency } from '../_shared/tool-dependencies'
-import type { AddonManifest } from '../api'
-import { authors } from '../authors'
 export default {
-  id: 'asciidoc',
-  name: 'AsciiDoc',
-  apiVersion: 2,
-  version: '1.0.2',
-  dependencies: [pandocDependency],
-  kind: 'extension',
-  description: 'Edit, preview, and export AsciiDoc documents.',
-  fileExtensions: fileAssociations.asciidoc.ext,
-  defaultEnabled: false,
-  authors: [authors.may],
-} satisfies AddonManifest
+  "id": "asciidoc",
+  "name": "AsciiDoc",
+  "description": "Edit, preview, and export AsciiDoc documents.",
+  "apiVersion": 2,
+  "kind": "extension",
+  "version": "1.0.2",
+  "authors": [
+    {
+      "discordId": "1262793452236570667",
+      "displayName": "may"
+    }
+  ],
+  "defaultEnabled": false,
+  "dependencies": [
+    {
+      "id": "pandoc",
+      "name": "Pandoc",
+      "command": "pandoc",
+      "homepage": "https://pandoc.org/installing.html",
+      "reason": "Convert document source for previews and HTML exports. Requires Pandoc 3.11 or newer.",
+      "install": {
+        "brew": {
+          "package": "pandoc"
+        },
+        "winget": "JohnMacFarlane.Pandoc"
+      }
+    }
+  ],
+  "fileExtensions": [
+    "adoc",
+    "asciidoc"
+  ]
+}

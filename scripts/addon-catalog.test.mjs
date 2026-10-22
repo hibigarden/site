@@ -316,6 +316,20 @@ test("fetches the public directory without credentials and with bounds", async (
   );
 });
 
+test("directory byte limits cancel chunked and multibyte downloads", async () => {
+  let canceled = false;
+  const body = new ReadableStream({
+    pull(controller) {
+      controller.enqueue(new TextEncoder().encode("é".repeat(300000)));
+    },
+    cancel() { canceled = true; },
+  });
+  await assert.rejects(fetchDirectory([], {
+    fetch: async () => new Response(body),
+  }), /too large/);
+  assert.equal(canceled, true);
+});
+
 test("readme links to moved guides use the public help site", () => {
   assert.equal(
     publicDocsUrl(

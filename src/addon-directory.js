@@ -188,8 +188,24 @@ export async function fetchDirectory(
     throw new Error(`The addon directory returned ${response.status}.`);
   if (Number(response.headers.get("content-length")) > MAX_BYTES)
     throw new Error("The addon directory is too large.");
-  const body = await response.text();
-  if (body.length > MAX_BYTES)
-    throw new Error("The addon directory is too large.");
+  const reader = response.body?.getReader();
+  if (!reader) throw new Error("The addon directory is empty.");
+  const decoder = new TextDecoder();
+  let body = "", bytes = 0;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > MAX_BYTES) {
+        await reader.cancel();
+        throw new Error("The addon directory is too large.");
+      }
+      body += decoder.decode(value, { stream: true });
+    }
+    body += decoder.decode();
+  } finally {
+    reader.releaseLock();
+  }
   return parseDirectory(JSON.parse(body), builtinIds);
 }

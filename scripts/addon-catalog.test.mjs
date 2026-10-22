@@ -5,6 +5,8 @@ import path from "node:path";
 import test from "node:test";
 import {
   DIRECTORY_URL,
+  addonIdFromPath,
+  addonPageLink,
   fetchDirectory,
   installLink,
   matchesAddon,
@@ -250,6 +252,7 @@ test("the directory cannot add signing or endorsement claims", () => {
     "name",
     "origin",
     "readmeUrl",
+    "repositoryUrl",
     "source",
     "sourceUrl",
     "version",
@@ -276,6 +279,45 @@ test("search matches metadata, origin, and kind", () => {
   assert.equal(matchesAddon(community, "", "theme"), true);
   assert.equal(matchesAddon(builtin, "", "theme"), false);
   assert.equal(matchesAddon(builtin, "", "all"), true);
+});
+
+test("addon pages keep valid IDs and reject unrelated or unsafe paths", () => {
+  assert.equal(addonPageLink("hibi-doom"), "/addons/hibi-doom");
+  assert.equal(addonIdFromPath("/addons/hibi-doom"), "hibi-doom");
+  assert.equal(addonIdFromPath("/addons/vim/"), "vim");
+  for (const pathname of [
+    "/addons/",
+    "/addons/index.html",
+    "/addons/revocations.json",
+    "/addons/../vim",
+    "/addons/%2e%2e",
+    "/addons/vim/extra",
+    "/addons/Bad",
+    "/addons/" + "a".repeat(49),
+    "/other/vim",
+  ]) assert.equal(addonIdFromPath(pathname), null, pathname);
+});
+
+test("repository links stay separate from author credits and pinned source folders", () => {
+  const { entries } = parseDirectory([
+    entry({}),
+    entry({
+      id: "doom",
+      path: undefined,
+      authors: [{ displayName: "Hibi Doom contributors" }],
+      repository: { url: "https://github.com/ralphbibera/hibi-doom", commit, path: "addon" },
+    }),
+    entry({
+      id: "archive",
+      path: undefined,
+      download: { url: "https://example.com/addon.zip", sha256, size: 10 },
+    }),
+  ]);
+  assert.equal(entries[0].repositoryUrl, "https://github.com/hibigarden/addons-repository");
+  assert.equal(entries[1].repositoryUrl, "https://github.com/ralphbibera/hibi-doom");
+  assert.equal(entries[1].sourceUrl, `https://github.com/ralphbibera/hibi-doom/tree/${commit}/addon`);
+  assert.deepEqual(entries[1].authors, [{ displayName: "Hibi Doom contributors" }]);
+  assert.equal(entries[2].repositoryUrl, null);
 });
 
 test("addon links use the hibi protocol with an encoded ID", () => {

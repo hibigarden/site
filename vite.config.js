@@ -1,10 +1,25 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import addonCatalog from "./scripts/addon-catalog.mjs";
+import { addonIdFromPath } from "./src/addon-directory.js";
+
+function addonPages(server) {
+  server.middlewares.use((request, _response, next) => {
+    const url = new URL(request.url, "http://localhost");
+    if (addonIdFromPath(url.pathname))
+      request.url = `/addons/index.html${url.search}`;
+    next();
+  });
+}
 
 export default defineConfig({
   plugins: [
     addonCatalog(),
+    {
+      name: "hibi-addon-pages",
+      configureServer: addonPages,
+      configurePreviewServer: addonPages,
+    },
     {
       name: "hibi-embedded-focus",
       enforce: "pre",

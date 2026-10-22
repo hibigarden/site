@@ -1049,6 +1049,41 @@ summary:focus-visible {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+.addon-detail {
+  max-width: 720px;
+  margin-inline: auto;
+  padding-top: 28px;
+}
+.addon-detail .page-intro {
+  padding-block: 28px 0;
+}
+.addon-detail .page-intro > svg {
+  margin-bottom: 16px;
+  color: var(--muted);
+}
+.addon-repository {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  margin-top: 14px;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.addon-repository svg {
+  flex-shrink: 0;
+}
+.addon-repository span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.addon-detail .addon-install-note {
+  margin-block: 12px 26px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
 .addon-search {
   --field-background: var(--background);
   --field-border: var(--border);

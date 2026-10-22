@@ -53,12 +53,13 @@ function repositoryLinks(url, ref, folder) {
   const match =
     url.hostname === "github.com" &&
     url.pathname.match(/^\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/);
-  if (!match) return { source: url.href, readme: null };
+  if (!match) return { source: url.href, readme: null, repository: null };
   const base = `https://github.com/${match[1]}/${match[2]}`;
   const path = folder ? `/${folder}` : "";
   return {
     source: `${base}/tree/${ref}${path}`,
     readme: `${base}/blob/${ref}${path}/README.md`,
+    repository: base,
   };
 }
 
@@ -141,6 +142,7 @@ export function parseDirectory(value, builtinIds = []) {
       source: location.type,
       sourceUrl: location.source,
       readmeUrl: location.readme,
+      repositoryUrl: location.repository ?? null,
       homepage: homepage?.href ?? null,
     });
   }
@@ -166,6 +168,10 @@ export function matchesAddon(addon, query, kind = "all") {
     .toLowerCase()
     .includes(query.trim().toLowerCase());
 }
+
+export const addonPageLink = (id) => `/addons/${encodeURIComponent(id)}`;
+export const addonIdFromPath = (pathname) =>
+  pathname.match(/^\/addons\/([a-z][a-z0-9-]{0,47})\/?$/)?.[1] ?? null;
 
 export const installLink = (id) =>
   `hibi://addons/install?id=${encodeURIComponent(id)}`;

@@ -169,6 +169,16 @@ export function matchesAddon(addon, query, kind = "all") {
     .includes(query.trim().toLowerCase());
 }
 
+export function bundledAddons(catalog) {
+  const repository = "https://github.com/schmayterling/hibi";
+  return catalog.map((addon) => ({
+    ...addon,
+    origin: "built-in",
+    repositoryUrl: repository,
+    sourceUrl: `${repository}/tree/main/src/addons/${addon.id}`,
+  }));
+}
+
 export const addonPageLink = (id) => `/addons/${encodeURIComponent(id)}`;
 export const addonIdFromPath = (pathname) =>
   pathname.match(/^\/addons\/([a-z][a-z0-9-]{0,47})\/?$/)?.[1] ?? null;

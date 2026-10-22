@@ -22,11 +22,13 @@ import bundled from "virtual:hibi-addons";
 import {
   addonIdFromPath,
   addonPageLink,
+  bundledAddons,
   fetchDirectory,
   installLink,
   matchesAddon,
   openLink,
 } from "./addon-directory.js";
+import { addonPageTitle } from "./addon-seo.js";
 import { Button } from "../vendor/hibi/src/ui/Controls";
 import "../vendor/hibi/src/ui/controls.css";
 
@@ -46,13 +48,7 @@ const icons = {
   "text-extras": Subscript,
 };
 
-const repository = "https://github.com/schmayterling/hibi";
-const builtins = bundled.map((addon) => ({
-  ...addon,
-  origin: "built-in",
-  repositoryUrl: repository,
-  sourceUrl: `${repository}/tree/main/src/addons/${addon.id}`,
-}));
+const builtins = bundledAddons(bundled);
 const builtinIds = builtins.map((addon) => addon.id);
 const kinds = [
   ["all", "all"],
@@ -196,12 +192,10 @@ function AddonGrid() {
   const matching = addons.filter((addon) => matchesAddon(addon, query, kind));
 
   useEffect(() => {
-    if (!detailPage) return;
+    if (!detailPage || (!selected && directory.status === "loading")) return;
     document.title = selected
-      ? `${selected.name} | hibi addons`
-      : directory.status === "loading"
-        ? "loading addon | hibi"
-        : "addon unavailable | hibi";
+      ? addonPageTitle(selected)
+      : "addon unavailable | hibi";
     if (selected)
       document.querySelector('meta[name="description"]').content =
         selected.description;

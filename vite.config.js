@@ -1,14 +1,33 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
-import addonCatalog from "./scripts/addon-catalog.mjs";
-import { addonIdFromPath } from "./src/addon-directory.js";
+import addonCatalog, { readCatalog } from "./scripts/addon-catalog.mjs";
+import { addonIdFromPath, bundledAddons } from "./src/addon-directory.js";
+import { addonPageResponse, readAddonPages } from "./server/addon-pages.js";
 
 function addonPages(server) {
-  server.middlewares.use((request, _response, next) => {
-    const url = new URL(request.url, "http://localhost");
-    if (addonIdFromPath(url.pathname))
-      request.url = `/addons/index.html${url.search}`;
-    next();
+  server.middlewares.use(async (request, response, next) => {
+    const { pathname } = new URL(request.url, "http://localhost");
+    if (!addonIdFromPath(pathname) && pathname !== "/sitemap.xml") return next();
+    try {
+      const root = server.config.root;
+      const assets = server.transformIndexHtml
+        ? {
+            template: await server.transformIndexHtml(
+              "/addons/index.html",
+              await readFile(join(root, "addons/index.html"), "utf8"),
+            ),
+            addons: bundledAddons(readCatalog(join(root, "addons"))),
+          }
+        : await readAddonPages(root);
+      const result = await addonPageResponse(pathname, assets);
+      response.statusCode = result.status;
+      for (const [name, value] of result.headers) response.setHeader(name, value);
+      response.end(request.method === "HEAD" ? "" : await result.text());
+    } catch (error) {
+      next(error);
+    }
   });
 }
 

@@ -5,6 +5,18 @@ import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
 
 const repository = "https://github.com/schmayterling/hibi";
+const docsSource = `${repository}/blob/main/docs/`;
+
+// Public help moved to docs.hibi.garden; license sources and agent notes stay in the app repository.
+export function publicDocsUrl(href) {
+  if (!href.startsWith(docsSource)) return href;
+  const url = new URL(href);
+  const page = decodeURIComponent(
+    url.pathname.slice("/schmayterling/hibi/blob/main/docs/".length),
+  );
+  if (/^(?:licenses|ai-agents)\//.test(page)) return href;
+  return `https://docs.hibi.garden/#page=${encodeURIComponent(page)}`;
+}
 const fields = [
   "id",
   "name",
@@ -96,7 +108,8 @@ export function renderReadme(markdown, id) {
       a: (tagName, attributes) => {
         let href;
         try {
-          if (attributes.href) href = new URL(attributes.href, base).href;
+          if (attributes.href)
+            href = publicDocsUrl(new URL(attributes.href, base).href);
         } catch {
           /* Leave invalid links inert. */
         }

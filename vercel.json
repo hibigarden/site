@@ -1,7 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/addon-seo.js": {
+      "includeFiles": "dist/addons/{index.html,catalog.json}"
+    }
+  },
   "rewrites": [
-    { "source": "/addons/:id([a-z][a-z0-9-]{0,47})", "destination": "/addons/index.html" },
-    { "source": "/addons/:id([a-z][a-z0-9-]{0,47})/", "destination": "/addons/index.html" }
+    { "source": "/addons/:id([a-z][a-z0-9-]{0,47})", "destination": "/api/addon-seo?id=:id" },
+    { "source": "/addons/:id([a-z][a-z0-9-]{0,47})/", "destination": "/api/addon-seo?id=:id" },
+    { "source": "/sitemap.xml", "destination": "/api/addon-seo?sitemap=1" }
   ]
 }

@@ -200,6 +200,13 @@ export default function addonCatalog() {
     configResolved(config) {
       directory = path.join(config.root, "addons");
     },
+    generateBundle() {
+      this.emitFile({
+        type: "asset",
+        fileName: "addons/catalog.json",
+        source: JSON.stringify(readCatalog(directory)),
+      });
+    },
     resolveId(source) {
       if (source === "virtual:hibi-addons") return id;
     },

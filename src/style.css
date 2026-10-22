@@ -1072,6 +1072,27 @@ summary:focus-visible {
   font-size: 14px;
   color: var(--muted);
 }
+.addon-kinds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: 10px;
+}
+.addon-directory-status {
+  --control-padding-x: var(--space-2);
+  --control-padding-y: var(--space-1);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.addon-directory-status:empty {
+  display: none;
+}
 .addon-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1246,6 +1267,32 @@ summary:focus-visible {
   border-block: 1px solid var(--border);
   color: var(--muted);
   font-size: 11px;
+}
+.addon-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  font-size: 13px;
+}
+.addon-actions a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.addon-actions .addon-action {
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+}
+.addon-actions .addon-action:hover {
+  background: var(--border);
+}
+.addon-modal .addon-install-note {
+  margin-block: 12px 26px;
+  font-size: 12px;
 }
 .addon-readme {
   font-size: 14px;

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowUpRight,
@@ -10,6 +10,7 @@ import {
   GitBranch,
   Keyboard,
   Network,
+  Palette,
   Puzzle,
   Sigma,
   Slash,
@@ -18,7 +19,13 @@ import {
   Volume2,
   X,
 } from "lucide-react";
-import addons from "virtual:hibi-addons";
+import bundled from "virtual:hibi-addons";
+import {
+  fetchDirectory,
+  installLink,
+  matchesAddon,
+  openLink,
+} from "./addon-directory.js";
 import { Button } from "../vendor/hibi/src/ui/Controls";
 import "../vendor/hibi/src/ui/controls.css";
 
@@ -37,6 +44,34 @@ const icons = {
   "typing-speed": Gauge,
   "text-extras": Subscript,
 };
+
+const builtins = bundled.map((addon) => ({ ...addon, origin: "built-in" }));
+const builtinIds = builtins.map((addon) => addon.id);
+const kinds = [
+  ["all", "all"],
+  ["extension", "extensions"],
+  ["theme", "themes"],
+];
+const glyph = (addon) =>
+  icons[addon.id] ?? (addon.kind === "theme" ? Palette : Puzzle);
+
+function useDirectory() {
+  const [state, setState] = useState({ status: "loading", entries: [] });
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    setState((previous) => ({ ...previous, status: "loading" }));
+    fetchDirectory(builtinIds, { signal: controller.signal }).then(
+      ({ entries }) => setState({ status: "ready", entries }),
+      () => {
+        if (!controller.signal.aborted)
+          setState((previous) => ({ ...previous, status: "error" }));
+      },
+    );
+    return () => controller.abort();
+  }, [attempt]);
+  return [state, () => setAttempt((count) => count + 1)];
+}
 
 function Authors({ authors }) {
   return (
@@ -66,24 +101,15 @@ function Authors({ authors }) {
 
 function AddonGrid() {
   const [query, setQuery] = useState("");
+  const [kind, setKind] = useState("all");
   const search = useRef(null);
   const [selected, setSelected] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
   const dialog = useRef(null);
-  const Icon = icons[selected?.id] ?? Puzzle;
-  const matching = addons.filter((addon) =>
-    [
-      addon.id,
-      addon.name,
-      addon.description,
-      addon.kind,
-      addon.version,
-      "built in",
-      ...addon.authors.map((author) => author.displayName),
-    ]
-      .join(" ")
-      .toLowerCase()
-      .includes(query.trim().toLowerCase()),
+  const [directory, retry] = useDirectory();
+  const Icon = selected ? glyph(selected) : Puzzle;
+  const matching = [...builtins, ...directory.entries].filter((addon) =>
+    matchesAddon(addon, query, kind),
   );
 
   return (
@@ -103,19 +129,32 @@ function AddonGrid() {
             onChange={(event) => setQuery(event.target.value)}
           />
           <Button
-            disabled={!query}
+            disabled={!query && kind === "all"}
             onClick={() => {
               setQuery("");
+              setKind("all");
               search.current.focus();
             }}
           >
             reset all
           </Button>
         </div>
+        <div className="addon-kinds" role="group" aria-label="addon type">
+          {kinds.map(([value, label]) => (
+            <Button
+              key={value}
+              data-variant="ghost"
+              aria-pressed={kind === value}
+              onClick={() => setKind(value)}
+            >
+              {label}
+            </Button>
+          ))}
+        </div>
       </div>
-      <ul className="addon-grid" aria-label="built-in addons">
+      <ul className="addon-grid" aria-label="addons">
         {matching.map((addon) => {
-          const Glyph = icons[addon.id] ?? Puzzle;
+          const Glyph = glyph(addon);
           return (
             <li key={addon.id}>
               <button
@@ -148,16 +187,33 @@ function AddonGrid() {
                       .map((author) => author.displayName)
                       .join(", ")}
                   </span>
-                  <span>v{addon.version}</span>
+                  <span>
+                    {addon.origin === "built-in" ? "built in" : "community"} · v
+                    {addon.version}
+                  </span>
                 </span>
               </button>
             </li>
           );
         })}
       </ul>
-      {!matching.length && (
+      {!matching.length && directory.status !== "loading" && (
         <p className="addon-empty">no addons match your search.</p>
       )}
+      <div className="addon-directory-status" aria-live="polite">
+        {directory.status === "loading" && <p>loading community addons…</p>}
+        {directory.status === "error" && (
+          <>
+            <p>
+              community addons couldn't load. built-in addons are still listed.
+            </p>
+            <Button onClick={retry}>try again</Button>
+          </>
+        )}
+        {directory.status === "ready" && !directory.entries.length && (
+          <p>no community addons yet.</p>
+        )}
+      </div>
       <dialog
         ref={dialog}
         className="addon-modal"
@@ -213,18 +269,76 @@ function AddonGrid() {
             <h2 id="addon-title">{selected.name}</h2>
             <p id="addon-description">{selected.description}</p>
             <Authors authors={selected.authors} />
-            <div className="addon-availability">
-              <span>v{selected.version}</span>
-              <span>
-                {selected.defaultEnabled
-                  ? "enabled by default"
-                  : "enable in settings → addons"}
-              </span>
-            </div>
-            <div
-              className="addon-readme"
-              dangerouslySetInnerHTML={{ __html: selected.html }}
-            />
+            {selected.origin === "built-in" ? (
+              <>
+                <div className="addon-availability">
+                  <span>built in · v{selected.version}</span>
+                  <span>
+                    {selected.defaultEnabled
+                      ? "enabled by default"
+                      : "enable in settings → addons"}
+                  </span>
+                </div>
+                <div className="addon-actions">
+                  <a className="addon-action" href={openLink(selected.id)}>
+                    open in hibi
+                  </a>
+                </div>
+                <p className="addon-install-note">
+                  opening addons from this page needs a version of hibi that
+                  supports addon links.
+                </p>
+                <div
+                  className="addon-readme"
+                  dangerouslySetInnerHTML={{ __html: selected.html }}
+                />
+              </>
+            ) : (
+              <>
+                <div className="addon-availability">
+                  <span>
+                    community {selected.kind} · v{selected.version}
+                  </span>
+                  <span>{selected.license}</span>
+                </div>
+                <div className="addon-actions">
+                  <a className="addon-action" href={installLink(selected.id)}>
+                    install in hibi
+                  </a>
+                  {selected.readmeUrl && (
+                    <a
+                      href={selected.readmeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      readme
+                    </a>
+                  )}
+                  <a
+                    href={selected.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {selected.source === "download" ? "download" : "source"}
+                  </a>
+                  {selected.homepage && (
+                    <a
+                      href={selected.homepage}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      website
+                    </a>
+                  )}
+                </div>
+                <p className="addon-install-note">
+                  installing from this page needs a version of hibi that
+                  supports addon links. hibi checks the package and asks before
+                  installing it. community addons are made by their authors, not
+                  by hibi.
+                </p>
+              </>
+            )}
           </div>
         )}
       </dialog>

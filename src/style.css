@@ -342,7 +342,7 @@ summary:focus-visible {
 .demo[data-ready="true"] .demo-loader-wordmark::after {
   animation-play-state: paused;
 }
-.alpha-notice {
+.beta-notice {
   display: grid;
   grid-template-columns: 24px minmax(0, 1fr);
   gap: 16px;
@@ -352,21 +352,21 @@ summary:focus-visible {
   border-radius: 12px;
   background: color-mix(in oklab, var(--hero-orange) 7%, var(--background));
 }
-#alpha-icon {
+#beta-icon {
   color: var(--hero-orange);
 }
-.alpha-notice h2 {
+.beta-notice h2 {
   font-size: 18px;
   font-weight: 500;
   line-height: 1.4;
 }
-.alpha-notice p {
+.beta-notice p {
   margin-top: 12px;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.8;
 }
-.alpha-notice a {
+.beta-notice a {
   color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -1521,7 +1521,7 @@ summary:focus-visible {
   .feature-copy {
     padding: 22px;
   }
-  .alpha-notice,
+  .beta-notice,
   .feature-free {
     padding: 18px 22px;
   }

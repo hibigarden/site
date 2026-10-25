@@ -11,7 +11,7 @@ export default {
       "displayName": "may"
     }
   ],
-  "defaultEnabled": false,
+  "defaultEnabled": true,
   "capabilities": [
     "ui",
     "rich",

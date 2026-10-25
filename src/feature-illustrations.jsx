@@ -130,7 +130,7 @@ for (const [id, Illustration] of [
   ["editor-icon", FilePenLine],
   ["developer-icon", CodeXml],
   ["ai-user-icon", Bot],
-  ["alpha-icon", TriangleAlert],
+  ["beta-icon", TriangleAlert],
 ]) {
   createRoot(document.getElementById(id)).render(<Illustration />);
 }

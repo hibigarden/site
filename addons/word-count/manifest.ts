@@ -4,7 +4,7 @@ export default {
   "description": "See word and character counts for your current document.",
   "apiVersion": 3,
   "kind": "extension",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "authors": [
     {
       "discordId": "1262793452236570667",

@@ -2,7 +2,7 @@ export default {
   "id": "rmarkdown",
   "name": "R Markdown",
   "description": "Edit and preview R Markdown; run embedded code when you choose.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.3",
   "authors": [

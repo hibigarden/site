@@ -2,7 +2,7 @@ export default {
   "id": "mediawiki",
   "name": "MediaWiki",
   "description": "Edit, preview, and export MediaWiki documents.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.2",
   "authors": [

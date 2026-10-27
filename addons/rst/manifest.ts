@@ -2,7 +2,7 @@ export default {
   "id": "rst",
   "name": "reStructuredText",
   "description": "Edit, preview, and export reStructuredText documents.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.2",
   "authors": [

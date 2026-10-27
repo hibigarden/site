@@ -2,7 +2,7 @@ export default {
   "id": "graph",
   "name": "Graph",
   "description": "See links between your notes and open them from a graph.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.2",
   "authors": [

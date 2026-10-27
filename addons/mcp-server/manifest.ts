@@ -2,7 +2,7 @@ export default {
   "id": "mcp-server",
   "name": "MCP Server",
   "description": "Let AI tools such as Claude Code read, search, and optionally edit your workspace over the Model Context Protocol.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.0",
   "authors": [

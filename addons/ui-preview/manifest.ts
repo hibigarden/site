@@ -2,7 +2,7 @@ export default {
   "id": "ui-preview",
   "name": "UI preview",
   "description": "Inspect Hibi controls and preview custom CSS across the app.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.0",
   "authors": [

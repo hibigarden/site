@@ -2,7 +2,7 @@ export default {
   "id": "mermaid",
   "name": "Mermaid",
   "description": "Write and preview diagrams.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.0",
   "authors": [

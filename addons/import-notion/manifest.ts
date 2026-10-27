@@ -2,7 +2,7 @@ export default {
   "id": "import-notion",
   "name": "Import from Notion",
   "description": "Bring pages and databases from a Notion export.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.0",
   "authors": [

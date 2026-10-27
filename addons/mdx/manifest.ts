@@ -2,7 +2,7 @@ export default {
   "id": "mdx",
   "name": "MDX",
   "description": "Edit and preview MDX; run embedded code when you choose.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.1",
   "authors": [

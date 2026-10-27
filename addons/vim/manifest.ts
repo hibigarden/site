@@ -2,7 +2,7 @@ export default {
   "id": "vim",
   "name": "Vim",
   "description": "Use Vim keys and commands in source views.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "0.3.2",
   "authors": [

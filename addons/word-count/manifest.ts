@@ -2,7 +2,7 @@ export default {
   "id": "word-count",
   "name": "Word count",
   "description": "See word and character counts for your current document.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.1.1",
   "authors": [

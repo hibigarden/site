@@ -2,7 +2,7 @@ export default {
   "id": "frontmatter",
   "name": "Frontmatter",
   "description": "Edit note properties stored in YAML, such as titles and dates.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "0.1.1",
   "authors": [

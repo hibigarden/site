@@ -2,7 +2,7 @@ export default {
   "id": "quick-note",
   "name": "Quick note",
   "description": "Capture a note from anywhere into a workspace folder.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.0",
   "authors": [

@@ -2,7 +2,7 @@ export default {
   "id": "slash-commands",
   "name": "Slash commands",
   "description": "Type / at the start of a line to insert a block.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "0.1.1",
   "authors": [

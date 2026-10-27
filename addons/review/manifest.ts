@@ -2,7 +2,7 @@ export default {
   "id": "review",
   "name": "Review",
   "description": "Find repeated words and common English typos.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.0",
   "authors": [

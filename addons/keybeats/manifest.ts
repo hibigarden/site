@@ -2,7 +2,7 @@ export default {
   "id": "keybeats",
   "name": "keyBeats",
   "description": "Play mechanical keyboard sounds while you write.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.1",
   "authors": [

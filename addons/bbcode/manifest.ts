@@ -2,7 +2,7 @@ export default {
   "id": "bbcode",
   "name": "BBCode",
   "description": "Edit and preview BBCode documents.",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "kind": "extension",
   "version": "1.0.0",
   "authors": [

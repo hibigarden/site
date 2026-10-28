@@ -623,7 +623,7 @@ a:hover {
   text-align: center;
 }
 .title-card h1 {
-  font: 500 clamp(46px, 6vw, 88px) / 1.02 var(--serif);
+  font: 500 clamp(40px, 5vw, 68px) / 1.04 var(--serif);
   letter-spacing: -0.022em;
 }
 .ink-word {
@@ -697,29 +697,12 @@ a:hover {
   display: block;
   visibility: hidden;
 }
+/* the live editor sits straight on the scene as its own window: rounded corners and a layered drop shadow (a
+   tight contact shadow under a wide soft one) part it from the park */
 .demo-print {
   position: relative;
-  isolation: isolate;
-  width: min(932px, 100%);
-  margin-top: 52px;
-  padding: 16px;
-}
-.demo-print::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--edge);
-  clip-path: var(--cut-1);
-}
-.demo-print::after {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  z-index: -2;
-  box-shadow:
-    0 2px 3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
-    0 30px 50px -18px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.5));
+  width: min(900px, 100%);
+  margin-top: 44px;
 }
 .demo {
   position: relative;
@@ -727,8 +710,20 @@ a:hover {
   aspect-ratio: 900 / 520;
   text-align: left;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 12px;
   background: var(--card-white);
+  box-shadow:
+    0 0 0 1px rgb(40 30 16 / 0.1),
+    0 1px 2px rgb(40 30 16 / 0.2),
+    0 6px 14px -4px rgb(40 30 16 / 0.22),
+    0 34px 70px -18px rgb(24 32 56 / 0.5);
+}
+[data-theme="dark"] .demo {
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.5),
+    0 1px 3px rgb(0 0 0 / 0.5),
+    0 8px 18px -4px rgb(0 0 0 / 0.5),
+    0 40px 80px -16px rgb(0 0 8 / 0.8);
 }
 .demo-shell {
   display: none;
@@ -3161,8 +3156,10 @@ a:hover {
     font-size: 13px;
   }
   .demo-print {
-    margin-top: 36px;
-    padding: 10px;
+    margin-top: 32px;
+  }
+  .demo {
+    border-radius: 8px;
   }
   .section-title {
     padding: 12px 22px 14px;

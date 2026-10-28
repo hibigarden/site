@@ -261,19 +261,17 @@
 .hero .demo-print {
   align-self: start;
   width: auto;
-  height: calc(100% - 28px);
+  height: calc(100% - 36px);
   max-width: 100%;
-  aspect-ratio: 932 / 552;
-  margin-top: 28px;
+  aspect-ratio: 900 / 520;
+  margin-top: 36px;
 }
 .hero .demo {
   height: 100%;
 }
 
-/* below desktop, and on short laptop screens where the headline and the download fill most of the panel, the panel
-   grows with its content past the fold (keeping at least a screen, so the park shows under it) and the live
-   editor keeps a usable size */
-@media (max-width: 1024px), (max-height: 800px) {
+/* below desktop the panel grows with its content and keeps at least a screen, so the park shows under it */
+@media (max-width: 1024px) {
   [data-page="home"] .hero {
     grid-template-rows: auto auto;
     align-content: start;
@@ -281,7 +279,7 @@
     min-height: calc(100svh - 2 * var(--hero-inset));
   }
   .hero .demo-print {
-    width: min(932px, 100%);
+    width: min(900px, 100%);
     height: auto;
     aspect-ratio: auto;
   }

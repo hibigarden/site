@@ -101,10 +101,12 @@ export function renderDownload(release, choice = DEFAULT) {
     <span class="download-group" role="group" aria-label="platform">${options("os", PLATFORMS.map((p) => [p.os, p.label]), file.os)}</span>
     <span data-choices>${choices(release, { ...choice, os: file.os, arch: file.arch, type: file.type })}</span>
   </div>
-  <p class="download-facts" data-facts><span data-version>${escape(release.tag)}</span> · <span data-size>${formatSize(file.size)}</span><span data-sha${hash ? "" : " hidden"}> · sha256 <code class="download-hash" data-hash title="${hash}">${hash && shortHash(hash)}</code></span><button type="button" class="download-copy" data-copy hidden>copy</button><span class="sr-only" aria-live="polite" data-copied></span></p>
+  <div class="download-meta">
+  <p class="download-facts" data-facts><span data-version>${escape(release.tag)}</span> · <span data-size>${formatSize(file.size)}</span><span data-sha${hash ? "" : " hidden"}> · <span class="download-sha">sha256 <code class="download-hash" data-hash title="${hash}">${hash && shortHash(hash)}</code></span></span><button type="button" class="download-copy" data-copy hidden>copy</button><span class="sr-only" aria-live="polite" data-copied></span></p>
   <p class="download-links">
     <a href="${escape(release.url)}" data-notes>release notes</a>${release.sums ? ` · <a href="${escape(release.sums)}" data-sums>SHA256SUMS.txt</a>` : ""} · <a href="${RELEASES}">all downloads</a> · <a href="${escape(release.nightly)}" data-nightly>nightly builds</a>
   </p>
+  </div>
   <script type="application/json" data-release>${JSON.stringify(release).replace(/</g, "\\u003c")}</script>
 </div>`;
 }

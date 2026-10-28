@@ -148,20 +148,21 @@ export function renderReadme(markdown, id) {
  * a sync without dates, or an unreadable entry, leaves those addons undated.
  */
 export function readDates(directory) {
-  let dates = {};
   try {
-    dates = JSON.parse(readFileSync(path.join(directory, "dates.json"), "utf8"));
+    return validDates(JSON.parse(readFileSync(path.join(directory, "dates.json"), "utf8")));
   } catch {
     return {};
   }
-  return Object.fromEntries(
-    Object.entries(dates ?? {}).flatMap(([id, entry]) =>
+}
+
+const validDates = (dates) =>
+  Object.fromEntries(
+    Object.entries(dates && typeof dates === "object" ? dates : {}).flatMap(([id, entry]) =>
       addonDay(entry?.released) && addonDay(entry?.updated)
         ? [[id, { released: entry.released, updated: entry.updated }]]
         : [],
     ),
   );
-}
 
 export function readCatalog(directory) {
   const dates = readDates(directory);
@@ -217,7 +218,24 @@ export function readCatalog(directory) {
     );
 }
 
-const EMPTY_SNAPSHOT = { head: null, dates: {}, addons: [] };
+const DEPLOYED_SNAPSHOT = "https://www.hibi.garden/addons/community-snapshot.json";
+/**
+ * The deployed snapshot's head and days. Builds share rate-limited addresses,
+ * so a build that cannot reach GitHub keeps them, and an unchanged directory
+ * costs one request.
+ */
+export async function deployedSnapshot({ fetch = globalThis.fetch } = {}) {
+  try {
+    const response = await fetch(DEPLOYED_SNAPSHOT, { signal: AbortSignal.timeout(5000) });
+    const { head, dates } = response.ok ? await response.json() : {};
+    if (typeof head === "string" && /^[0-9a-f]{40}$/.test(head))
+      return { head, dates: validDates(dates), addons: [] };
+  } catch {
+    /* Start without days. */
+  }
+  return { head: null, dates: {}, addons: [] };
+}
+
 let snapshot;
 /**
  * Community entries and days as of the build (or, in dev, the last five
@@ -226,7 +244,8 @@ let snapshot;
 export async function communitySnapshot(directory, options) {
   if (snapshot && Date.now() - snapshot.at < 300_000) return snapshot.value;
   const builtinIds = readCatalog(directory).map((addon) => addon.id);
-  const { head, dates, addons } = await communityFeed(EMPTY_SNAPSHOT, builtinIds, options);
+  const seed = snapshot?.value ?? (await deployedSnapshot(options));
+  const { head, dates, addons } = await communityFeed(seed, builtinIds, options);
   snapshot = { at: Date.now(), value: { head, dates, addons } };
   return snapshot.value;
 }

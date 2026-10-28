@@ -7,7 +7,7 @@ import { communityDates, communityFeed, resetCommunityCache } from "../server/ad
 import { addonPageResponse } from "../server/addon-pages.js";
 import { DIRECTORY_URL, addonDay, sortAddons } from "../src/addon-directory.js";
 import { renderShowcase } from "../src/addon-showcase.js";
-import { injectShowcase, readCatalog } from "./addon-catalog.mjs";
+import { deployedSnapshot, injectShowcase, readCatalog } from "./addon-catalog.mjs";
 
 const API = "https://api.github.com/repos/hibigarden/addons-repository";
 const entry = (id, extra = {}) => ({
@@ -167,4 +167,17 @@ test("the landing page keeps its marker or the build fails", () => {
   const html = injectShowcase("<div><!-- addon-showcase --></div>", [{ id: "a", name: "</script>", description: "d", authors: [], released: "2026-10-01", updated: "2026-10-01", html: "<p>readme</p>" }], []);
   assert.ok(!html.includes("readme"), "candidates carry only card fields");
   assert.equal(html.match(/<\/script>/g).length, 1, "names cannot close the data script");
+});
+
+test("builds start from the deployed snapshot's days and ignore anything malformed", async () => {
+  const head = "a".repeat(40);
+  const serve = (value, status = 200) => async () => new Response(JSON.stringify(value), { status });
+  assert.deepEqual(
+    await deployedSnapshot({ fetch: serve({ head, dates: { night: { released: "2026-10-01", updated: "2026-10-02", extra: 1 }, doom: { released: "soon" } }, addons: [{ id: "x" }] }) }),
+    { head, dates: { night: { released: "2026-10-01", updated: "2026-10-02" } }, addons: [] },
+  );
+  const empty = { head: null, dates: {}, addons: [] };
+  assert.deepEqual(await deployedSnapshot({ fetch: serve({ head: "main", dates: {} }) }), empty);
+  assert.deepEqual(await deployedSnapshot({ fetch: serve({ head, dates: {} }, 404) }), empty);
+  assert.deepEqual(await deployedSnapshot({ fetch: async () => { throw new Error("offline"); } }), empty);
 });

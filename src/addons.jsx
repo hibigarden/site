@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import bundled from "virtual:hibi-addons";
 import {
+  addonDay,
   addonIdFromPath,
   addonPageLink,
   bundledAddons,
@@ -27,6 +28,7 @@ import {
   installLink,
   matchesAddon,
   openLink,
+  sortAddons,
 } from "./addon-directory.js";
 import { addonPageTitle, addonSpecimen } from "./addon-seo.js";
 import { Button } from "../vendor/hibi/src/ui/Controls";
@@ -55,6 +57,11 @@ const kinds = [
   ["extension", "extensions"],
   ["theme", "themes"],
 ];
+const sorts = [
+  ["name", "a–z"],
+  ["released", "recently released"],
+  ["updated", "recently updated"],
+];
 const glyph = (addon) =>
   icons[addon.id] ?? (addon.kind === "theme" ? Palette : Puzzle);
 const requestedId = addonIdFromPath(window.location.pathname);
@@ -78,6 +85,26 @@ function useDirectory() {
     return () => controller.abort();
   }, [attempt]);
   return [state, () => setAttempt((count) => count + 1)];
+}
+
+/** Community release and update days from the site's cached feed; none when it fails. */
+function useCommunityDates() {
+  const [dates, setDates] = useState({});
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/addons/community.json", { signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : { addons: [] }))
+      .then(({ addons }) =>
+        setDates(
+          Object.fromEntries(
+            addons.map(({ id, released, updated }) => [id, { released, updated }]),
+          ),
+        ),
+      )
+      .catch(() => {});
+    return () => controller.abort();
+  }, []);
+  return dates;
 }
 
 function Authors({ authors }) {
@@ -189,11 +216,19 @@ function AddonDetails({ addon }) {
 function AddonGrid() {
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState("all");
+  const [sort, setSort] = useState("name");
   const search = useRef(null);
   const [directory, retry] = useDirectory();
-  const addons = [...builtins, ...directory.entries];
+  const dates = useCommunityDates();
+  const addons = [
+    ...builtins,
+    ...directory.entries.map((entry) => ({ ...entry, ...dates[entry.id] })),
+  ];
   const selected = addons.find((addon) => addon.id === requestedId);
-  const matching = addons.filter((addon) => matchesAddon(addon, query, kind));
+  const matching = sortAddons(
+    addons.filter((addon) => matchesAddon(addon, query, kind)),
+    sort,
+  );
 
   useEffect(() => {
     if (!detailPage || (!selected && directory.status === "loading")) return;
@@ -284,10 +319,23 @@ function AddonGrid() {
             </Button>
           ))}
         </div>
+        <div className="addon-kinds" role="group" aria-label="sort addons">
+          {sorts.map(([value, label]) => (
+            <Button
+              key={value}
+              data-variant="ghost"
+              aria-pressed={sort === value}
+              onClick={() => setSort(value)}
+            >
+              {label}
+            </Button>
+          ))}
+        </div>
       </div>
       <ul className="addon-grid" aria-label="addons">
         {matching.map((addon) => {
           const Glyph = glyph(addon);
+          const day = sort !== "name" && addonDay(addon[sort]);
           return (
             <li key={addon.id}>
               <a
@@ -313,8 +361,8 @@ function AddonGrid() {
                       .join(", ")}
                   </span>
                   <span>
-                    {addon.origin === "built-in" ? "built in" : "community"} · v
-                    {addon.version}
+                    {addon.origin === "built-in" ? "built in" : "community"} ·{" "}
+                    {day ? `${sort} ${day}` : `v${addon.version}`}
                   </span>
                 </span>
               </a>

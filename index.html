@@ -418,34 +418,72 @@
               </p>
             </details>
           </div>
-          <h3 class="compare-title" id="comparison-title">how hibi compares.</h3>
-          <dl class="compare" aria-labelledby="comparison-title">
-            <div>
-              <dt><a href="https://www.notion.com/help/export-your-content">notion</a></dt>
-              <dd>notion organizes pages and databases in a workspace. <strong>hibi edits documents directly in your local folders.</strong></dd>
-            </div>
-            <div>
-              <dt><a href="https://obsidian.md/">obsidian</a></dt>
-              <dd>obsidian connects local markdown notes with links and plugins. <strong>hibi focuses on writing across document formats, with open source code.</strong></dd>
-            </div>
-            <div>
-              <dt><a href="https://typora.io/">typora</a></dt>
-              <dd>typora focuses on markdown editing and live previews. <strong>hibi adds other document formats and writing tools through addons.</strong></dd>
-            </div>
-            <div>
-              <dt><a href="https://code.visualstudio.com/">vscode</a></dt>
-              <dd>vscode is built around software development. <strong>hibi brings a customizable editor to writing and working with documents.</strong></dd>
-            </div>
-            <div>
-              <dt><a href="https://www.microsoft.com/en-us/microsoft-365/word">word</a></dt>
-              <dd>word focuses on formatted documents and collaboration. <strong>hibi gives you a customizable workspace for markdown and other text-based formats.</strong></dd>
-            </div>
-            <div>
-              <dt><a href="https://www.overleaf.com/about/features-overview">overleaf</a></dt>
-              <dd>overleaf is an online latex editor built for collaboration. <strong>hibi is a local writing app for markdown, typst, and other document formats.</strong></dd>
-            </div>
-          </dl>
         </div>
+        <!-- compare: rendered from launch/research/site-comparison/comparison.json -->
+        <div class="compare">
+          <h3 class="compare-title" id="comparison-title">how hibi compares.</h3>
+          <div class="compare-scroll" role="region" aria-labelledby="comparison-title" tabindex="0">
+            <table class="compare-table">
+              <thead>
+                <tr><td></td><th scope="col" class="is-hibi">hibi</th><th scope="col"><a href="https://www.notion.com/help/export-your-content">notion</a></th><th scope="col"><a href="https://obsidian.md/">obsidian</a></th><th scope="col"><a href="https://typora.io/">typora</a></th><th scope="col"><a href="https://code.visualstudio.com/">vs code</a></th><th scope="col"><a href="https://www.microsoft.com/en-us/microsoft-365/word">word</a></th><th scope="col"><a href="https://www.overleaf.com/about/features-overview">overleaf</a></th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">price</th><td class="is-hibi">free</td><td>free plan; plus $10/mo<sup>1</sup></td><td>free<sup>2</sup></td><td>$14.99 once<sup>3</sup></td><td>free</td><td>free on web; $9.99/mo<sup>4</sup></td><td>free plan; $199/yr<sup>5</sup></td></tr>
+                <tr><th scope="row">open source</th><td class="is-hibi">gpl-3.0</td><td>no<sup>6</sup></td><td>no</td><td>no<sup>7</sup></td><td>mit<sup>8</sup></td><td>no<sup>9</sup></td><td>agpl-3.0<sup>10</sup></td></tr>
+                <tr><th scope="row">files are plain text on your disk</th><td class="is-hibi">yes</td><td>no<sup>11</sup></td><td>yes</td><td>yes</td><td>yes</td><td>no<sup>12</sup></td><td>no<sup>13</sup></td></tr>
+                <tr><th scope="row">works offline</th><td class="is-hibi">yes</td><td>pages you download</td><td>yes</td><td>yes</td><td>yes<sup>14</sup></td><td>yes<sup>15</sup></td><td>2–10 min<sup>16</sup></td></tr>
+                <tr><th scope="row">account required</th><td class="is-hibi">no</td><td>yes</td><td>no<sup>17</sup></td><td>no<sup>18</sup></td><td>no<sup>19</sup></td><td>yes</td><td>yes</td></tr>
+                <tr><th scope="row">markdown</th><td class="is-hibi">yes</td><td>import/export</td><td>yes</td><td>yes</td><td>yes</td><td>via add-in<sup>20</sup></td><td>import/export</td></tr>
+                <tr><th scope="row">typst</th><td class="is-hibi">yes<sup>21</sup></td><td>no</td><td>via plugin<sup>22</sup></td><td>no</td><td>via extension<sup>23</sup></td><td>no</td><td>no<sup>24</sup></td></tr>
+                <tr><th scope="row">latex</th><td class="is-hibi">yes<sup>25</sup></td><td>math only</td><td>math only</td><td>math only</td><td>via extension<sup>26</sup></td><td>math only</td><td>yes</td></tr>
+                <tr><th scope="row">addons</th><td class="is-hibi">yes<sup>27</sup></td><td>connections<sup>28</sup></td><td>yes</td><td>themes only</td><td>yes</td><td>yes<sup>29</sup></td><td>no<sup>30</sup></td></tr>
+                <tr><th scope="row">platforms</th><td class="is-hibi">macOS, windows, linux</td><td>macOS, windows, web, iOS, android</td><td>macOS, windows, linux, iOS, android</td><td>macOS, windows, linux</td><td>macOS, windows, linux, web</td><td>macOS, windows, web, iOS, android</td><td>web<sup>31</sup></td></tr>
+                <tr><th scope="row">real-time collaboration</th><td class="is-hibi">no</td><td>yes</td><td>no<sup>32</sup></td><td>no</td><td>via extension<sup>33</sup></td><td>yes</td><td>yes</td></tr>
+                <tr><th scope="row">sync between devices</th><td class="is-hibi">coming soon</td><td>yes</td><td>$4/mo add-on<sup>34</sup></td><td>your own cloud folder<sup>35</sup></td><td>settings only</td><td>onedrive</td><td>yes<sup>36</sup></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <ol class="compare-notes">
+            <li>per member, billed yearly</li>
+            <li>sync $4/mo, publish $8/mo (billed yearly) are optional</li>
+            <li>15-day trial; up to 3 devices</li>
+            <li>microsoft 365 personal, or $99.99/yr; office home 2024 $179.99 once</li>
+            <li>standard plan; $25/mo billed monthly</li>
+            <li>no source release found</li>
+            <li>no source release found</li>
+            <li>source (code - oss); the microsoft build has its own license</li>
+            <li>no source release found</li>
+            <li>community edition</li>
+            <li>stored in notion's cloud; export to markdown/html</li>
+            <li>.docx files</li>
+            <li>projects stored online; download as zip</li>
+            <li>desktop app</li>
+            <li>desktop apps</li>
+            <li>then editing pauses until you reconnect</li>
+            <li>only for paid services</li>
+            <li>license code by email</li>
+            <li>only for settings sync, live share</li>
+            <li>third-party add-in</li>
+            <li>built-in addon, off by default; compiler included</li>
+            <li>community plugins</li>
+            <li>community extension</li>
+            <li>compilers: pdflatex, latex, xelatex, lualatex</li>
+            <li>built-in addon, off by default; pdf needs tectonic installed</li>
+            <li>community extension; needs a tex install</li>
+            <li>built-in + community directory</li>
+            <li>integrations via notion's api</li>
+            <li>office add-ins</li>
+            <li>paid plans link git, github, dropbox, zotero, mendeley</li>
+            <li>or self-hosted</li>
+            <li>shared vaults via sync merge edits when syncing</li>
+            <li>live share, by microsoft</li>
+            <li>billed yearly; or any folder sync service</li>
+            <li>icloud drive, dropbox, onedrive…</li>
+            <li>projects live online</li>
+          </ol>
+          <p class="compare-asof">as of oct 2026. prices in usd as each vendor's page lists them.</p>
+        </div>
+        <!-- /compare -->
       </section>
       <section class="cta" aria-labelledby="cta-title" data-scene="liftoff">
         <!-- the hero's park again, down to its horizon: the treeline and the top of its lamppost -->

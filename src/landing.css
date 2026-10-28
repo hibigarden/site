@@ -1172,27 +1172,32 @@ svg.button-icon,
   font: 500 var(--h3) / 1.1 var(--serif);
   letter-spacing: -0.01em;
 }
-.compare {
-  margin: 22px 0 0;
-  border-top: 1px solid var(--rule-strong);
+.compare-scroll {
+  margin-top: 22px;
+  overflow-x: auto;
 }
-.compare > div {
-  display: grid;
-  grid-template-columns: 124px minmax(0, 1fr);
-  gap: 4px 20px;
-  padding: 15px 0 14px;
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  line-height: 1.4;
+  text-align: left;
+}
+.compare-table :is(th, td) {
+  padding: 11px 12px 10px;
   border-bottom: 1px solid var(--rule);
+  vertical-align: top;
 }
-.compare dt a {
-  font: italic 500 21px/1.35 var(--serif);
-}
-.compare dd {
-  margin: 0;
+.compare-table thead :is(th, td) {
+  padding-top: 0;
+  border-bottom-color: var(--rule-strong);
   color: var(--ink-faint);
   font-size: 18px;
   line-height: 1.45;
 }
-.compare strong {
+.compare-table tbody th {
+  width: 17%;
+  padding-left: 0;
   color: var(--ink);
   font-weight: 500;
 }
@@ -1265,6 +1270,13 @@ svg.button-icon,
   }
   .diary li {
     display: grid;
+/* how hibi compares: a plain table of checkable facts (every cell sourced; generated from the research lane's
+   comparison.json), clean type with hairlines, the hibi column only tinted. phones scroll it in its own box with
+   the facts held at the left */
+.compare {
+  grid-column: 1 / -1;
+  margin-top: 72px;
+}
     grid-template-columns: 96px minmax(0, 1fr);
     align-items: baseline;
     padding: 13px 16px;
@@ -1286,12 +1298,50 @@ svg.button-icon,
   .qa summary {
     font-size: 21px;
   }
-  .compare > div {
-    grid-template-columns: 1fr;
+  .compare-table {
+    min-width: 760px;
+    font-size: 15px;
   }
-  .compare dd {
-    font-size: 17px;
+  .compare-table :is(tbody, thead) > tr > :first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 118px;
+    min-width: 118px;
+    background: var(--page);
   }
+}
+.compare-table td {
+  color: var(--ink-soft);
+}
+.compare-table .is-hibi {
+  background: color-mix(in srgb, var(--card-white) 60%, transparent);
+  color: var(--ink);
+}
+.compare-table sup {
+  margin-left: 1px;
+  color: var(--ink-faint);
+  font: 400 0.68em/0 var(--mono);
+}
+.compare-notes {
+  columns: 3 240px;
+  column-gap: 36px;
+  margin: 22px 0 0;
+  padding-left: 2.4em;
+  color: var(--ink-faint);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.compare-notes li {
+  break-inside: avoid;
+}
+.compare-notes li::marker {
+  font: 400 11px var(--mono);
+}
+.compare-asof {
+  margin-top: 14px;
+  color: var(--ink-faint);
+  font: 400 12.5px/1.5 var(--mono);
 }
 @media (min-width: 601px) and (max-width: 960px) {
   .addon-grid {

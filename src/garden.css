@@ -281,7 +281,7 @@
 }
 /* the closing park: the hero's sky down to its horizon, the treeline and the top of its lamppost */
 .park-horizon .g-scene {
-  --horizon: 0.96;
+  --horizon: 1;
 }
 @media (max-width: 600px) {
   .park-path .g-scene {
@@ -293,7 +293,7 @@
      words fill its sky) */
   .park-horizon .g-scene {
     --cx: 1220;
-    --horizon: 0.95;
+    --horizon: 1;
     --c: calc(100cqw / 980);
   }
   .park-horizon .g-lamp {

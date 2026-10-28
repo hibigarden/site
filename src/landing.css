@@ -1505,9 +1505,9 @@ svg.button-icon,
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: calc(100% - 2 * var(--hero-inset, 16px));
+  width: min(1120px, calc(100% - 64px));
   height: 380px;
-  margin: var(--gap) var(--hero-inset, 16px) 0;
+  margin: var(--gap) auto 0;
   padding: 64px 24px 0;
   border-radius: 16px;
   text-align: center;
@@ -1672,6 +1672,12 @@ svg.button-icon,
 @media (max-width: 900px) {
   .footer-top {
     grid-template-columns: 1fr;
+  }
+}
+/* phones keep the hero's inset */
+@media (max-width: 720px) {
+  .cta {
+    width: calc(100% - 2 * var(--hero-inset));
   }
 }
 @media (max-width: 600px) {

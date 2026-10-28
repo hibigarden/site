@@ -1332,10 +1332,10 @@ svg.button-icon,
   text-underline-offset: 3px;
 }
 
-/* ---------------------------------------------------------------- the close: the hero's park at the end of the day
+/* ---------------------------------------------------------------- the close: the hero's sky, down to its horizon
 
-   a rounded panel inset like the hero, the park behind it (garden.css .park-bench), the words on its sky. one
-   action: the download; github and discord live in the footer. */
+   a rounded panel inset like the hero, the park's sky and horizon behind it (garden.css .park-horizon), the words on
+   its sky. one action: the download; github and discord live in the footer. */
 .cta {
   position: relative;
   isolation: isolate;
@@ -1343,7 +1343,7 @@ svg.button-icon,
   flex-direction: column;
   align-items: center;
   width: calc(100% - 2 * var(--hero-inset, 16px));
-  height: 680px;
+  height: 380px;
   margin: var(--gap) var(--hero-inset, 16px) 0;
   padding: 64px 24px 0;
   border-radius: 16px;
@@ -1479,8 +1479,7 @@ svg.button-icon,
 .bigword-text {
   position: relative;
   color: var(--ink);
-  --size: clamp(150px, 26vw, 380px);
-  font: 500 var(--size) / 0.8 var(--serif);
+  font: 500 clamp(150px, 26vw, 380px) / 0.8 var(--serif);
   letter-spacing: -0.035em;
   user-select: none;
 }
@@ -1506,25 +1505,15 @@ svg.button-icon,
 [data-theme="dark"] .bigword .sprig {
   filter: saturate(0.68) brightness(0.86) drop-shadow(2px 3px 3px rgb(0 0 0 / 0.45));
 }
-.bigword-label {
-  position: absolute;
-  left: calc(100% + 0.4 * var(--size));
-  bottom: calc(0.03 * var(--size));
-  margin: 0;
-  white-space: nowrap;
-}
 
 @media (max-width: 900px) {
   .footer-top {
     grid-template-columns: 1fr;
   }
-  .bigword-label {
-    display: none;
-  }
 }
 @media (max-width: 600px) {
   .cta {
-    height: 640px;
+    height: 440px;
     padding-top: 52px;
     border-radius: 12px;
   }

@@ -262,7 +262,7 @@
    closing call to action), layer for layer, in the hero's canvas geometry with the hero's files. each panel picks
    the stretch of canvas it shows (--span canvas px across around column --cx) and where its horizon sits. on phones
    they take the hero's narrow files (every phone stretch lies inside their middle 60%), so a panel downloads
-   nothing the hero hasn't (but the bench and lamp the hero hides on phones). */
+   nothing the hero hasn't (but the lamp the hero hides on phones). */
 .park {
   position: absolute;
   inset: 0;
@@ -279,32 +279,9 @@
   --horizon: 0.62;
   --c: calc(100cqw / 1440);
 }
-/* the closing park: the hero's bench and lamp where the hero has them, over the painted ones, an open notebook
-   left on the bench */
-.park-bench .g-scene {
-  --horizon: 0.52;
-  --bx: 10.8333%;
-}
-.park-bench .g-bench {
-  left: var(--bx);
-}
-.notebook {
-  position: absolute;
-  left: calc(var(--bx) + 7.4%);
-  top: 58.6%;
-  width: 7.4%;
-  height: auto;
-  transform: scaleY(0.46) skewX(-12deg);
-  transform-origin: 50% 100%;
-  filter: drop-shadow(0 3px 3px rgb(0 0 0 / 0.25));
-}
-[data-theme="dark"] .notebook {
-  filter: brightness(0.78) drop-shadow(0 3px 3px rgb(0 0 0 / 0.4));
-}
-@media (max-width: 900px) {
-  .park-bench .g-scene {
-    --cx: 1000;
-  }
+/* the closing park: the hero's sky down to its horizon, the treeline and the top of its lamppost */
+.park-horizon .g-scene {
+  --horizon: 0.96;
 }
 @media (max-width: 600px) {
   .park-path .g-scene {
@@ -312,25 +289,21 @@
     --horizon: 0.67;
     --c: calc(100cqw / 1160);
   }
-  /* a phone's close shows the middle of the park: bench and lamp stand nearer, the trees stay out */
-  .park-bench .g-scene {
+  /* a phone's close shows the middle of the horizon: the lamp stands nearer, the trees and the moon stay out (the
+     words fill its sky) */
+  .park-horizon .g-scene {
     --cx: 1220;
-    --horizon: 0.6;
-    --bx: 31%;
+    --horizon: 0.95;
     --c: calc(100cqw / 980);
   }
-  .park-bench .g-lamp {
+  .park-horizon .g-lamp {
     left: 63%;
   }
-  .park-bench .g-glow {
+  .park-horizon .g-glow {
     left: 48.8%;
   }
-  .park-bench .g-trees {
+  .park-horizon :is(.g-trees, .g-moon) {
     display: none;
-  }
-  .park-bench .g-moon {
-    left: calc(var(--pl) + 8cqw);
-    top: calc(var(--pt) + 44cqh);
   }
   /* the hero's narrow files (garden.css's generated block, for phones) */
   .park :is(.g-sky, .g-far, .g-lawn, .g-lavender) { left: 20%; width: 60%; }

@@ -315,27 +315,8 @@ a:hover {
   display: block;
 }
 
-@media (max-width: 720px) {
-  .wrap {
-    width: calc(100% - 40px);
-  }
-  body {
-    font-size: 19px;
-  }
-  .site-header {
-    height: 76px;
-  }
-  .site-header nav {
-    gap: 10px;
-    font-size: 13px;
-  }
-  .wordmark {
-    font-size: 28px;
-  }
-  .wordmark-icon {
-    width: 30px;
-    height: 30px;
-  }
+/* the links fold into the menu before they can run into the wordmark (sync and publish made the row longer) */
+@media (max-width: 900px) {
   .menu-toggle {
     display: block;
     min-height: 44px;
@@ -368,6 +349,28 @@ a:hover {
   .site-header .nav-links a:hover {
     background: var(--card-tan);
   }
+}
+@media (max-width: 720px) {
+  .wrap {
+    width: calc(100% - 40px);
+  }
+  body {
+    font-size: 19px;
+  }
+  .site-header {
+    height: 76px;
+  }
+  .site-header nav {
+    gap: 10px;
+    font-size: 13px;
+  }
+  .wordmark {
+    font-size: 28px;
+  }
+  .wordmark-icon {
+    width: 30px;
+    height: 30px;
+  }
   .theme-toggle {
     width: 44px;
     height: 44px;
@@ -389,7 +392,7 @@ a:hover {
   summary {
     transition: color var(--motion-fast) var(--ease-out);
   }
-  @media (max-width: 720px) {
+  @media (max-width: 900px) {
     .nav-links {
       opacity: 0;
       transform: translateY(-3px);

@@ -215,6 +215,19 @@
 }
 /* layers end */
 
+/* the standalone tree stands with its trunk base at canvas (190, 863) (44.6% across its image). on short, wide
+   panels the canvas sits high and its crown would reach the header, so its height is capped to end 96 px below the
+   panel top; it then shrinks around the trunk base, which stays where it stands */
+.g-tree {
+  top: auto;
+  bottom: 36.0741%;
+  left: calc(190 * var(--c));
+  width: auto;
+  height: min(87.1111%, calc(303 * var(--c) + 100cqh * var(--horizon) - 96px));
+  aspect-ratio: 735 / 1176;
+  translate: -44.59% 0;
+}
+
 @container garden (aspect-ratio < 0.55) {
   .g-companion {
     --x: 53%;

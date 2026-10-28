@@ -1,0 +1,393 @@
+@import "../vendor/hibi/src/ui/tokens.css";
+
+@font-face {
+  font-family: "EB Garamond";
+  src: url("/fonts/eb-garamond-latin-500.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "EB Garamond";
+  src: url("/fonts/eb-garamond-latin-500-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: Geist;
+  src: url("../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2")
+    format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: Geist;
+  src: url("../node_modules/geist/dist/fonts/geist-sans/Geist-Italic[wght].woff2")
+    format("woff2");
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../node_modules/geist/dist/fonts/geist-mono/GeistMono-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* hibi's colours and type, shared by every page. day = the film's page; night = the dark app icon's
+   amber-brown paper with cream type. */
+:root {
+  color-scheme: light;
+  --page: #ebe1cc;
+  --card: #fcf6ed;
+  --card-white: #fffdf8;
+  --card-tan: #f1e4c6;
+  --card-sage: #eef0e1;
+  --card-blush: #f7e9dd;
+  --butter: #f6e3b4;
+  --kraft: #b99a6c;
+  --kraft-ink: #241b10;
+  --ink: #1f1b16;
+  --ink-soft: #4a4033;
+  --ink-faint: #6b5c47;
+  --hibi-blue: #203676;
+  --accent: #203676;
+  --on-blue: #fbf1e2;
+  --highlight: rgb(246 227 180 / 0.9);
+  --rule: rgb(32 54 118 / 0.15);
+  --rule-strong: rgb(32 54 118 / 0.32);
+  --margin-line: rgb(196 76 82 / 0.45);
+  --edge: #fffcf4;
+  --shadow-rgb: 64 44 20;
+  --shadow-a: 0.2;
+  --icon: url("/scrapbook/icon-day.webp");
+  --pen: #2f3349;
+  --pen-lavender: #6c5f88;
+  --serif: "EB Garamond", "Iowan Old Style", Georgia, serif;
+  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* the vendored hibi controls (addon search) read these */
+  --background: var(--card-white);
+  --surface: var(--card);
+  --muted: var(--ink-soft);
+  --border: rgb(31 27 22 / 0.2);
+  --field-background: var(--card-white);
+  --field-border: rgb(31 27 22 / 0.28);
+  --field-placeholder: var(--ink-faint);
+  --selection: color-mix(in oklch, var(--hibi-blue) 16%, var(--card-white));
+  --selection-ink: var(--ink);
+  --caret: var(--ink);
+  --hover: var(--card-tan);
+  color: var(--ink);
+  background: var(--page);
+  font-family: var(--serif);
+  font-weight: 500;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #1d1810;
+  --card: #2c2419;
+  --card-white: #30281c;
+  --card-tan: #342a1b;
+  --card-sage: #272a1f;
+  --card-blush: #33261f;
+  --butter: #3b301c;
+  --kraft: #15100a;
+  --kraft-ink: #ead9b6;
+  --ink: #f4e8cf;
+  --ink-soft: #d8c8a6;
+  --ink-faint: #b9a682;
+  --accent: #aebaf2;
+  --highlight: rgb(110 126 196 / 0.32);
+  --rule: rgb(174 186 242 / 0.12);
+  --rule-strong: rgb(174 186 242 / 0.26);
+  --margin-line: rgb(240 150 168 / 0.32);
+  --edge: #3a3124;
+  --shadow-rgb: 0 0 0;
+  --shadow-a: 0.5;
+  --icon: url("/scrapbook/icon-night.webp");
+  --pen: #d3d6ea;
+  --pen-lavender: #c2b6da;
+  --border: rgb(244 232 207 / 0.18);
+  --field-border: rgb(244 232 207 / 0.28);
+  --selection: color-mix(in oklch, #aebaf2 22%, var(--card-white));
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-padding-top: 24px;
+}
+body {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.55;
+}
+/* scraps may hang off the page edge, but never widen it (body overflow would only reach the viewport) */
+main,
+.site-footer {
+  overflow-x: clip;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+  font-weight: 500;
+}
+h1,
+h2 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  color: var(--accent);
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+::selection {
+  background: color-mix(in oklch, var(--accent) 24%, transparent);
+}
+.wrap {
+  width: min(1120px, calc(100% - 64px));
+  margin-inline: auto;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 20;
+  transform: translateY(-150%);
+  padding: 10px 14px;
+  background: var(--card-white);
+  color: var(--ink);
+  font: 400 14px/1 var(--mono);
+  box-shadow: 0 6px 18px rgb(var(--shadow-rgb) / 0.25);
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------------------------------------------------------------- header */
+
+.site-header {
+  position: relative;
+  z-index: 8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 92px;
+}
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  font: 500 32px/1 var(--serif);
+  letter-spacing: -0.015em;
+}
+.wordmark-icon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  background: var(--icon) center / contain no-repeat;
+  rotate: -6deg;
+  filter: drop-shadow(0 3px 3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.2)));
+}
+.site-header nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font: 400 13.5px/1 var(--mono);
+  letter-spacing: 0.01em;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+.site-header nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+}
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+.menu-toggle {
+  display: none;
+}
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--ink);
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 1px var(--border),
+    0 3px 8px -2px rgb(var(--shadow-rgb) / var(--shadow-a));
+  cursor: pointer;
+}
+.theme-toggle:hover {
+  color: var(--accent);
+}
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.theme-toggle[hidden],
+.theme-sun,
+[data-theme="dark"] .theme-moon {
+  display: none;
+}
+[data-theme="dark"] .theme-sun {
+  display: block;
+}
+
+@media (max-width: 720px) {
+  .wrap {
+    width: calc(100% - 40px);
+  }
+  body {
+    font-size: 19px;
+  }
+  .site-header {
+    height: 76px;
+  }
+  .site-header nav {
+    gap: 10px;
+    font-size: 13px;
+  }
+  .wordmark {
+    font-size: 28px;
+  }
+  .wordmark-icon {
+    width: 30px;
+    height: 30px;
+  }
+  .menu-toggle {
+    display: block;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+  }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: calc(100% - 6px);
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background: var(--card-white);
+    box-shadow: 0 16px 30px -12px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
+  }
+  .nav-links[data-open="true"] {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+  .site-header .nav-links a {
+    padding-inline: 12px;
+  }
+  .site-header .nav-links a:hover {
+    background: var(--card-tan);
+  }
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+  }
+}
+@media (max-width: 440px) {
+  .wrap {
+    width: calc(100% - 32px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  button,
+  summary {
+    transition: color var(--motion-fast) var(--ease-out);
+  }
+  @media (max-width: 720px) {
+    .nav-links {
+      opacity: 0;
+      transform: translateY(-3px);
+      transition:
+        opacity var(--motion-fast) var(--ease-out),
+        transform var(--motion-fast) var(--ease-out),
+        display var(--motion-fast) allow-discrete;
+    }
+    .nav-links[data-open="true"] {
+      opacity: 1;
+      transform: none;
+    }
+    .nav-links:not([data-open="true"]) {
+      pointer-events: none;
+    }
+    @starting-style {
+      .nav-links[data-open="true"] {
+        opacity: 0;
+        transform: translateY(-3px);
+      }
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/* Use hibi's shared timings and easing for interaction feedback. */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--motion-pane);
+  animation-timing-function: var(--ease-out);
+}

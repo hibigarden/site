@@ -1,18 +1,19 @@
 import "./garden.css";
 import { FRAME, onMotion, tick } from "./clock.js";
 
-// The hero's park moves like the films, on the site's 12 fps clock (every frame held, like stop motion). On a fresh
-// load it assembles itself like a pop-up book; then the clouds drift in seamless loops, the stars twinkle out of
-// step, the moon's halo, the sun and the lamp breathe, and the scene's butterflies hover over the lavender. The
-// layers shift with the pointer (the foreground most) and sink as the hero scrolls away, so more sky shows. Nothing
-// runs while the hero is off screen, the tab is hidden, or motion is stilled; then the park rests, composed.
+// The hero's park moves like the films, on the site's 12 fps clock (every frame held, like stop motion): the clouds
+// drift in seamless loops, the stars twinkle out of step, the moon's halo, the sun and the lamp breathe, and the
+// scene's butterflies hover over the lavender. The view shifts behind the panel's edge with the pointer (the far
+// scene most, data-depth) and, as the hero scrolls
+// away, the terrain folds down from the back like a pop-up book (data-sink): the far treeline sinks most, behind the
+// lawn, which sinks behind the lavender and the bench, so no gap ever opens and the sky grows. Nothing runs while the
+// hero is off screen, the tab is hidden, or motion is stilled; then the park rests, composed.
 const hero = document.querySelector(".hero");
 const garden = hero?.querySelector(".garden");
 
-const PER_FRAME = FRAME / (1000 / 60); // film frames (60 fps) per held frame
-const SHIFT_X = 14; // pointer shift of the nearest layer, css px
+const SHIFT_X = 14; // pointer shift of the farthest layer (data-depth 1), css px
 const SHIFT_Y = 6;
-const SINK = 0.32; // the nearest layer sinks by this share of the scroll
+const SINK = 0.39; // the far treeline (data-sink 1) sinks by this share of the scroll
 
 // the films' GO curve, Easing.bezier(0.42, 0, 0.25, 1): x(t) solved by Newton, y(t) = 3t² - 2t³
 function go(u) {
@@ -23,36 +24,9 @@ function go(u) {
 // 0 → 1 → 0 once per period, eased at both turns
 const breathe = (t, period, phase = 0) => go(1 - Math.abs(2 * ((t / period + phase) % 1) - 1));
 
-// The films' landing (Butterfly.tsx land()): offsets shrink by 1 - u² until contact, then a damped settle whose
-// swing carries the scale (a pop-up flap springing upright) and the turn. Offsets are in canvas px; the second
-// number is the held frame each part starts on (or later, once its image has decoded).
-const ENTER = [
-  [".g-sun, .g-moon", 1, { lead: 3, dy: 40, sc: -0.45, w: 0.9 }],
-  [".g-clouds-far", 2, { lead: 4, dx: 260, w: 0.5 }],
-  [".g-clouds-mid", 3, { lead: 4, dx: 340, w: 0.5 }],
-  [".g-clouds-near", 4, { lead: 4, dx: 420, w: 0.5 }],
-  [".g-far", 3, { lead: 3, dy: 90, w: 0.6 }],
-  [".g-lawn", 5, { lead: 3, dy: 180, w: 0.6 }],
-  [".g-trees", 7, { lead: 3, dy: 220, sc: -0.18, w: 0.7 }],
-  [".g-lamp, .g-glow", 7, { lead: 3, dy: 220, sc: -0.22, w: 0.8 }],
-  [".g-lavender", 9, { lead: 3, dy: 200, sc: -0.3, w: 0.9 }],
-  [".g-bench", 11, { lead: 3, dy: 150, sc: -0.25, rot: 3, w: 0.8 }],
-];
-const FLICKER = [0, 0.9, 0.15, 0, 0.75, 0.3, 1]; // the lamp catching, held frame by held frame
 const FLAP = [1, 0.5, 0.14, 0.5]; // wing widths through one beat (4 held frames)
 
-function land(m, n) {
-  const contact = m.lead * PER_FRAME;
-  const t = n * PER_FRAME;
-  const u = Math.min(1, t / contact);
-  const q = 1 - u * u;
-  const tau = Math.max(0, t - contact);
-  const kk = q - (tau > 0 ? Math.exp(-tau / 6) * Math.sin(m.w * tau) * (1.4 / (contact * m.w)) : 0);
-  return { dx: (m.dx ?? 0) * q, dy: (m.dy ?? 0) * q, rot: (m.rot ?? 0) * kk, sc: 1 + (m.sc ?? 0) * kk };
-}
-
 // Runs `frame` on the clock while `root` is on screen and motion is on; `rest` returns it to its composed state.
-// Returns whether motion is stilled.
 function animate(root, frame, rest) {
   let still = true;
   let seen = false;
@@ -74,7 +48,6 @@ function animate(root, frame, rest) {
     if (still) rest();
     update();
   });
-  return () => still;
 }
 
 // a panel at rest: every inline motion removed (its custom properties stay)
@@ -135,21 +108,15 @@ const idle = (fn) => {
 
 if (garden) {
   const scene = garden.querySelector(".g-scene");
-  const layers = [...garden.querySelectorAll("[data-depth]")].map((el) => ({ el, depth: +el.dataset.depth }));
-  layers
-    .filter((l) => l.el.matches(".g-bf"))
-    .forEach((l, i) => Object.assign(l, { flyer: true, seed: i * 2.1 + 0.7, start: 12 + i }));
-  for (const [selector, start, motion] of ENTER) {
-    for (const l of layers) if (l.el.matches(selector)) Object.assign(l, { motion, start });
-  }
-  // the companion's resting butterfly stays put (companion.js reads its box); it only flies in and basks
-  const resting = { el: garden.querySelector(".g-companion"), flyer: true, start: 14 };
+  const layers = [...garden.querySelectorAll("[data-depth]")].map((el) => ({ el, depth: +el.dataset.depth, sink: +el.dataset.sink }));
+  layers.filter((l) => l.el.matches(".g-bf")).forEach((l, i) => Object.assign(l, { flyer: true, seed: i * 2.1 + 0.7 }));
+  // the companion's resting butterfly stays put (companion.js reads its box and hides it while it is out)
+  const resting = garden.querySelector(".g-companion");
   const glow = garden.querySelector(".g-glow");
   const ambient = sky(garden);
   const time = clock();
   const fine = matchMedia("(hover: hover) and (pointer: fine)");
 
-  let t = 0;
   let tx = 0; // pointer target, -1..1 across the viewport
   let ty = 0;
   let px = 0;
@@ -157,43 +124,23 @@ if (garden) {
   let sink = 0;
   let c = 1; // css px per canvas px
   let height = 0;
-  let entrance = null; // { n: held frames since it began, ready: Map(el -> the frame its image was ready on) }
 
   function measure() {
     c = scene.offsetWidth / 2400 || 1;
     height = hero.offsetHeight;
   }
 
-  // where one part is in the entrance (null once it has settled)
-  function entering(l) {
-    if (!entrance || l.start == null) return null;
-    const n = entrance.n - Math.max(l.start, entrance.ready.get(l.el) ?? Infinity);
-    if (l.flyer) return n < 0 ? { away: true } : n < 6 ? { fly: n / 6 } : null;
-    return n < 0 ? land(l.motion, 0) : n <= l.motion.lead + 7 ? land(l.motion, n) : null;
-  }
-
-  // a butterfly flying in along a falling curve (1 - u²) from (dx, dy) canvas px
-  const flyIn = (e, dx, dy) => {
-    const q = 1 - e.fly * e.fly;
-    return [dx * q * c, dy * q * c, 30 * q];
-  };
-
   function frame(now) {
-    t = time(now);
+    const t = time(now);
     ambient(t);
     const k = fine.matches ? 1 : 0;
     px += (tx * k - px) * 0.3;
     py += (ty * k - py) * 0.3;
-    sink += (Math.min(Math.max(scrollY, 0), height) * SINK * k - sink) * 0.5;
-    if (entrance) entrance.n++;
-    let busy = false;
+    sink += (Math.min(Math.max(scrollY, 0), height) * SINK - sink) * 0.5;
     for (const l of layers) {
-      const e = entering(l);
-      if (e) busy = true;
-      let x = -px * SHIFT_X * l.depth + (e?.dx ?? 0) * c;
-      let y = -py * SHIFT_Y * l.depth + sink * l.depth + (e?.dy ?? 0) * c;
-      let rot = e?.rot ?? 0;
-      let scale = e?.sc ?? 1;
+      let x = px * SHIFT_X * l.depth;
+      let y = py * SHIFT_Y * l.depth + sink * l.sink;
+      let turn = "";
       if (l.flyer) {
         // a slow loop around its spot over the lavender, a bob on each downstroke, turned into its drift
         const a = t * 0.8 + l.seed;
@@ -201,40 +148,17 @@ if (garden) {
         const beat = Math.floor(t * 12 + l.seed * 5) % 4;
         x += (55 * Math.sin(a) + 18 * Math.sin(2.3 * b)) * c;
         y += (26 * Math.sin(b) - 10 * FLAP[beat]) * c;
-        rot = 14 * Math.cos(a);
-        if (e?.away) scale = 0;
-        else if (e?.fly != null) {
-          const [fx, fy, fr] = flyIn(e, l.seed > 3 ? 420 : -420, -260);
-          x += fx;
-          y += fy;
-          rot += fr;
-        }
+        turn = ` rotate(${(14 * Math.cos(a)).toFixed(2)}deg)`;
         l.el.children[0].style.transform = l.el.children[1].style.transform = `scaleX(${FLAP[beat]})`;
       }
-      l.el.style.transform =
-        `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0)` +
-        (rot ? ` rotate(${rot.toFixed(2)}deg)` : "") +
-        (scale !== 1 ? ` scale(${scale ? scale.toFixed(4) : 0})` : "");
+      l.el.style.transform = `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0)${turn}`;
     }
-    if (glow) {
-      const n = entrance ? entrance.n - Math.max(10, entrance.ready.get(glow) ?? Infinity) : FLICKER.length;
-      const b = 0.7 * breathe(t, 5.2) + 0.3 * breathe(t, 2.3, 0.4);
-      glow.style.opacity = n < 0 ? "0" : n < FLICKER.length ? `${FLICKER[n]}` : (0.84 + 0.16 * b).toFixed(3);
-      if (n < FLICKER.length) busy = true;
-    }
+    if (glow) glow.style.opacity = (0.84 + 0.16 * (0.7 * breathe(t, 5.2) + 0.3 * breathe(t, 2.3, 0.4))).toFixed(3);
     // the companion basks with its wings open, now and then two slow beats
-    if (resting.el && !resting.el.hidden) {
-      const e = entering(resting);
+    if (resting && !resting.hidden) {
       const slow = Math.floor(t * 6) % 40;
-      resting.el.children[0].style.transform = resting.el.children[1].style.transform = `scaleX(${slow < 4 && !e ? FLAP[slow] : 1})`;
-      if (e?.away) resting.el.style.transform = "scale(0)";
-      else if (e?.fly != null) {
-        const [fx, fy, fr] = flyIn(e, 380, -300);
-        resting.el.style.transform = `translate3d(${fx.toFixed(2)}px,${fy.toFixed(2)}px,0) rotate(${(-fr).toFixed(2)}deg)`;
-      } else resting.el.style.removeProperty("transform");
-      if (e) busy = true;
+      resting.children[0].style.transform = resting.children[1].style.transform = `scaleX(${slow < 4 ? FLAP[slow] : 1})`;
     }
-    if (entrance && !busy) entrance = null;
   }
 
   // the composed state: what reduced motion and a stilled garden show
@@ -242,41 +166,11 @@ if (garden) {
     compose(garden);
     time();
     px = py = sink = 0;
-    entrance = null;
-  }
-
-  // A fresh load (not back/forward, not opened mid-page) assembles the park like a pop-up book. Each part starts
-  // once its image has decoded, or after 1.2 s regardless; the headline and the editor never wait.
-  function assemble() {
-    const nav = performance.getEntriesByType("navigation")[0];
-    if (nav?.type === "back_forward" || location.hash || scrollY > height / 3) return;
-    entrance = { n: 0, ready: new Map() };
-    const parts = [...layers.map((l) => l.el), resting.el].filter(Boolean);
-    const ready = (el) => entrance && !entrance.ready.has(el) && entrance.ready.set(el, entrance.n);
-    setTimeout(() => parts.forEach(ready), 1200);
-    for (const el of parts) {
-      const src = getComputedStyle(el.matches(".g-bf") ? el.firstElementChild : el).backgroundImage.match(/url\(["']?([^"')]+)/)?.[1];
-      if (!src || !el.getClientRects().length) {
-        ready(el);
-        continue;
-      }
-      const img = new Image();
-      img.src = src;
-      img.decode().then(
-        () => ready(el),
-        () => ready(el),
-      );
-    }
-    frame(performance.now()); // pose everything now, so nothing shows assembled before the clock's first frame
   }
 
   measure();
   new ResizeObserver(measure).observe(garden);
-  const stilled = animate(garden, frame, rest);
-  if (!stilled()) assemble();
-  addEventListener("pageshow", (event) => {
-    if (event.persisted) entrance = null;
-  });
+  animate(garden, frame, rest);
   addEventListener(
     "pointermove",
     (event) => {
@@ -289,19 +183,20 @@ if (garden) {
   document.documentElement.addEventListener("pointerleave", () => {
     tx = ty = 0;
   });
-  // garden.css hides the bench, lamp and glow on narrow panels
-  idle(() => warm(garden, garden.clientWidth / garden.clientHeight < 0.55 ? ":not(.g-bench, .g-lamp, .g-glow)" : ""));
+  // garden.css hides the bench, lamp, glow and trees on narrow panels
+  idle(() => warm(garden, garden.clientWidth / garden.clientHeight < 0.55 ? ":not(.g-bench, .g-lamp, .g-glow, .g-trees, .g-tree)" : ""));
 }
 
 // Sky panels ([data-sky], e.g. behind the closing call to action): the hero's sky without the ground, built here so
-// the markup stays one element. They use the hero's files (its wide or narrow choice), so they download nothing new.
+// the markup stays one element. Apart from their own haze-free sky base they use the hero's files (its wide or narrow
+// choice), so they download almost nothing new.
 const SKY =
   '<i class="g-layer g-sky"></i><i class="g-sun g-day"></i>' +
   '<i class="g-free g-stars g-night" data-twinkle="4.3,0"></i><i class="g-free g-stars-2 g-night" data-twinkle="6.1,0.45"></i>' +
   '<i class="g-free g-moon g-night"><i class="g-halo"></i></i>' +
   '<i class="g-layer g-clouds g-clouds-far" data-drift="640"></i><i class="g-layer g-clouds g-clouds-mid" data-drift="460"></i>' +
   '<i class="g-layer g-clouds g-clouds-near" data-drift="330"></i><i class="g-layer g-lavender"></i>';
-const TWINS = ["g-sky", "g-clouds-far", "g-clouds-mid", "g-clouds-near", "g-lavender"];
+const TWINS = ["g-clouds-far", "g-clouds-mid", "g-clouds-near", "g-lavender"];
 
 for (const panel of document.querySelectorAll("[data-sky]")) {
   panel.innerHTML = SKY;

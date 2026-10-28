@@ -373,16 +373,6 @@ a:hover {
   height: auto;
   overflow: visible;
 }
-.doodle path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: var(--pen-w, 2.4);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.doodle[data-doodle="trail"] path {
-  stroke-dasharray: 0.012 0.022;
-}
 .lavender-ink {
   color: var(--pen-lavender);
 }
@@ -586,9 +576,6 @@ a:hover {
   width: 130%;
   rotate: -3deg;
   color: var(--pen-lavender);
-}
-.ink-word .doodle path {
-  stroke-width: 2.6;
 }
 .ink-word .sparkle-a {
   left: auto;
@@ -1850,82 +1837,106 @@ a:hover {
   font: 400 14px/1.4 var(--mono);
 }
 
-/* addon catalog (restyled in its own pass) */
-.addon-detail {
-  max-width: 720px;
-  margin-inline: auto;
-  padding-top: 28px;
-}
-.addon-detail .page-intro {
-  padding-block: 28px 0;
-}
-.addon-detail .page-intro > svg {
-  margin-bottom: 16px;
-  color: var(--muted);
-}
-.addon-repository {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+/* addon catalog: specimen index cards, pinned or taped to the page */
+.addons-intro {
+  --deckle: var(--deckle-2);
+  width: fit-content;
   max-width: 100%;
-  margin-top: 14px;
-  font-size: 13px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  margin-top: 28px;
+  padding: 40px 52px 30px;
+  rotate: -0.8deg;
 }
-.addon-repository svg {
-  flex-shrink: 0;
+.addons-intro h1 {
+  font: 500 clamp(48px, 6.6vw, 84px) / 1.02 var(--serif);
+  letter-spacing: -0.02em;
 }
-.addon-repository span {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-.addon-detail .addon-install-note {
-  margin-block: 12px 26px;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.8;
+.addons-intro .tape-tl {
+  left: -34px;
 }
 .addon-search {
-  --field-background: var(--background);
-  --field-border: var(--border);
-  --field-placeholder: var(--muted);
-  --control-padding-x: var(--space-2);
-  --control-padding-y: var(--space-1);
-  margin-bottom: 24px;
+  --control-height: 46px;
+  --control-padding-x: 16px;
+  --control-padding-y: 10px;
+  max-width: 760px;
+  margin: 44px 0 34px;
 }
 .addon-search .settings-filter-bar {
   margin-bottom: 0;
 }
-.addon-result-count {
-  margin-bottom: 10px;
-  font-size: 11px;
-  color: var(--muted);
-  text-align: left;
+.addon-search input.ui-input {
+  border: 0;
+  border-radius: 0;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(var(--shadow-rgb) / 0.32),
+    0 6px 14px -6px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.3));
+  font: 400 15px/1.4 var(--mono);
+  rotate: -0.3deg;
 }
-.addon-empty {
-  padding-block: 40px;
-  text-align: center;
-  font-size: 14px;
-  color: var(--muted);
+[data-theme="dark"] .addon-search input.ui-input {
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(244 232 207 / 0.24),
+    0 6px 14px -6px rgb(0 0 0 / 0.6);
+}
+.addon-search input.ui-input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.addons-page button.ui-button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 400 13.5px/1 var(--mono);
+}
+.addons-page button.ui-button:not([data-variant="ghost"]) {
+  background: var(--card-white);
+  box-shadow:
+    0 0 0 1px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
+    0 4px 10px -3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.2));
+}
+.addons-page button.ui-button:hover:not(:disabled) {
+  background: var(--card-tan);
+}
+.addon-result-count {
+  margin-bottom: 12px;
+  color: var(--ink-faint);
+  font: 400 13px/1.4 var(--mono);
+  text-align: left;
 }
 .addon-kinds {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1);
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 16px;
+}
+.addon-kinds button.ui-button[data-variant="ghost"] {
+  color: var(--ink-soft);
+}
+.addon-kinds button.ui-button[aria-pressed="true"] {
+  background: var(--butter);
+  color: var(--ink);
+  box-shadow: 0 4px 10px -4px rgb(var(--shadow-rgb) / var(--shadow-a));
+  rotate: -1.5deg;
+}
+.addon-empty {
+  padding-block: 40px;
+  text-align: center;
+  color: var(--ink-soft);
 }
 .addon-directory-status {
-  --control-padding-x: var(--space-2);
-  --control-padding-y: var(--space-1);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 12px;
-  margin-top: 24px;
-  font-size: 13px;
-  color: var(--muted);
+  margin-top: 36px;
+  color: var(--ink-soft);
+  font: 400 13.5px/1.5 var(--mono);
 }
 .addon-directory-status:empty {
   display: none;
@@ -1933,7 +1944,7 @@ a:hover {
 .addon-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 40px 30px;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -1943,32 +1954,118 @@ a:hover {
   min-width: 0;
 }
 .addon-card {
+  --paper: var(--card-white);
+  --deckle: var(--deckle-1);
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 23px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface);
+  padding: 30px 26px 20px;
   color: var(--ink);
-  font: inherit;
   text-align: left;
-  cursor: pointer;
+  rotate: var(--tilt, -0.5deg);
+}
+.addon-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--paper);
+  clip-path: var(--deckle);
+}
+.addon-card::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: -2;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
+    0 14px 26px -12px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.addon-grid > li:nth-child(4n + 2) .addon-card {
+  --paper: var(--card-tan);
+  --deckle: var(--deckle-2);
+  --tilt: 0.6deg;
+}
+.addon-grid > li:nth-child(4n + 3) .addon-card {
+  --paper: var(--card-sage);
+  --deckle: var(--deckle-3);
+  --tilt: -0.3deg;
+}
+.addon-grid > li:nth-child(4n + 4) .addon-card {
+  --paper: var(--card-blush);
+  --deckle: var(--deckle-4);
+  --tilt: 0.4deg;
 }
 .addon-card:hover {
-  background: var(--background);
+  color: var(--ink);
+}
+/* each card is held down by a strip of tape or a pin; every seventh carries a pressed butterfly */
+.addon-card-hold {
+  position: absolute;
+  z-index: 2;
+  top: -11px;
+  left: 50%;
+  width: 96px;
+  aspect-ratio: 320 / 47;
+  translate: -50% 0;
+  rotate: -3deg;
+  background: url("/scrapbook/tape-periwinkle.webp") center / 100% 100% no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+}
+.addon-grid > li:nth-child(3n + 2) .addon-card-hold {
+  background-image: url("/scrapbook/tape-butter.webp");
+  rotate: 4deg;
+}
+.addon-grid > li:nth-child(2n + 3) .addon-card-hold {
+  top: 9px;
+  width: 15px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  rotate: none;
+  background: radial-gradient(circle at 34% 30%, #fff 0 9%, #b8322c 34%, #74201b 100%);
+  box-shadow: 3px 4px 4px rgb(40 28 14 / 0.32);
+  opacity: 1;
+}
+.addon-grid > li:nth-child(2n + 3):nth-child(5n + 4) .addon-card-hold {
+  background: radial-gradient(circle at 34% 30%, #fff 0 9%, #203676 34%, #111d40 100%);
+}
+.addon-grid > li:nth-child(7n + 3) .addon-card-hold,
+.addon-grid > li:nth-child(7n + 6) .addon-card-hold {
+  top: -26px;
+  left: auto;
+  right: -22px;
+  width: 70px;
+  aspect-ratio: 220 / 168;
+  translate: none;
+  rotate: 14deg;
+  border-radius: 0;
+  background: url("/scrapbook/bf-small-blue.webp") center / contain no-repeat;
+  box-shadow: none;
+  filter: drop-shadow(0 4px 4px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.2)));
+}
+.addon-grid > li:nth-child(7n + 6) .addon-card-hold {
+  aspect-ratio: 200 / 142;
+  rotate: -12deg;
+  background-image: url("/scrapbook/bf-brimstone.webp");
+}
+.addon-grid > li:nth-child(14n + 10) .addon-card-hold {
+  aspect-ratio: 200 / 131;
+  background: url("/scrapbook/bf-cabbage-white.webp") center / contain no-repeat;
 }
 .addon-card-heading {
   display: flex;
   align-items: center;
   gap: 11px;
   width: 100%;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 25px;
+  line-height: 1.15;
 }
 .addon-card-heading svg {
   flex-shrink: 0;
-  color: var(--muted);
+  color: var(--accent);
 }
 .addon-card-arrow {
   margin-left: auto;
@@ -1980,179 +2077,202 @@ a:hover {
 }
 .addon-description {
   flex: 1;
-  margin-block: 19px 25px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.8;
+  margin-block: 12px 22px;
+  color: var(--ink-soft);
+  font-size: 18.5px;
+  line-height: 1.5;
 }
 .addon-card-footer {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   width: 100%;
-  font-size: 10px;
-  color: var(--muted);
-  line-height: 1.6;
+  padding-top: 12px;
+  border-top: 1px dashed rgb(var(--shadow-rgb) / 0.3);
+  color: var(--ink-faint);
+  font: 400 12px/1.5 var(--mono);
+}
+[data-theme="dark"] .addon-card-footer {
+  border-top-color: rgb(244 232 207 / 0.2);
 }
 .addon-card-footer > :last-child {
   flex-shrink: 0;
 }
-.addon-modal {
-  width: min(720px, calc(100% - 32px));
-  max-height: calc(100svh - 40px);
-  padding: 0;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--background);
-  color: var(--ink);
+
+/* addon page: a specimen sheet pinned to the page */
+.addon-detail {
+  position: relative;
+  isolation: isolate;
+  max-width: 780px;
+  margin: 26px auto 0;
+  padding: 18px 56px 52px;
+  rotate: -0.3deg;
 }
-.addon-modal::backdrop {
-  background: oklch(0 0 0 / 0.55);
+.addon-detail::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--deckle-3);
 }
-.addon-modal-content {
-  padding: 28px 32px 32px;
+.addon-detail::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  z-index: -2;
+  box-shadow:
+    0 2px 3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
+    0 26px 44px -18px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.4));
 }
-.addon-modal-header {
-  display: flex;
-  justify-content: space-between;
+.addon-detail > .addon-guide-link {
+  margin-top: 10px;
+}
+.addon-detail .page-intro {
+  padding-block: 18px 0;
+}
+.addon-detail .page-intro > svg {
+  margin-bottom: 14px;
+  color: var(--accent);
+}
+.addon-detail .page-intro h1 {
+  font-size: clamp(48px, 6vw, 72px);
+}
+.addon-detail .page-intro > p {
+  margin-top: 14px;
+  font-size: 22px;
+}
+.addon-repository {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  margin: -28px -32px 0;
-  padding: 16px 32px;
-  border-bottom: 1px solid transparent;
-  background: var(--background);
+  gap: 8px;
+  max-width: 100%;
+  min-height: 44px;
+  margin-top: 10px;
+  font: 400 14px/1.4 var(--mono);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
 }
-.addon-modal-icon {
-  color: var(--muted);
-  display: flex;
+.addon-repository svg {
+  flex-shrink: 0;
 }
-.addon-modal-compact-title {
-  flex: 1;
+.addon-repository span {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 14px;
-  font-weight: 500;
-  opacity: 0;
-  transform: translateY(4px);
-}
-.addon-modal[data-collapsed="true"] .addon-modal-header {
-  border-bottom-color: var(--border);
-}
-.addon-modal[data-collapsed="true"] .addon-modal-compact-title {
-  opacity: 1;
-  transform: none;
-}
-.addon-modal[data-collapsed="true"] .addon-modal-icon svg {
-  transform: scale(0.8);
-}
-.modal-close {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-control);
-  color: var(--ink);
-  background: var(--surface);
-  cursor: pointer;
-}
-.modal-close:hover {
-  background: var(--border);
-}
-.addon-modal h2 {
-  margin-block: 22px 12px;
-  font-family: "EB Garamond", Georgia, serif;
-  font-size: 38px;
-  font-weight: 500;
-  letter-spacing: -0.025em;
-}
-.addon-modal p {
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.8;
+  overflow-wrap: anywhere;
 }
 .addon-authors {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 24px;
+  gap: 12px 14px;
   padding: 0;
-  margin: 20px 0 0;
+  margin: 22px 0 0;
   list-style: none;
-  font-size: 12px;
+  font-size: 18px;
 }
+/* authors are typed onto little specimen labels */
 .addon-authors li {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
+  padding: 8px 14px 7px;
+  background: var(--card);
+  box-shadow:
+    inset 0 0 0 3px var(--card),
+    inset 0 0 0 4px rgb(var(--shadow-rgb) / 0.3),
+    0 3px 8px -3px rgb(var(--shadow-rgb) / var(--shadow-a));
+  rotate: -0.8deg;
+}
+.addon-authors li:nth-child(even) {
+  rotate: 0.9deg;
+}
+[data-theme="dark"] .addon-authors li {
+  box-shadow:
+    inset 0 0 0 3px var(--card),
+    inset 0 0 0 4px rgb(244 232 207 / 0.2),
+    0 3px 8px -3px rgb(0 0 0 / 0.5);
 }
 .addon-authors small {
-  color: var(--muted);
-  font-size: 11px;
+  color: var(--ink-faint);
+  font: 400 11.5px/1.4 var(--mono);
 }
 .addon-availability {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 8px;
-  margin-block: 26px;
-  padding-block: 15px;
-  border-block: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 11px;
+  gap: 8px 16px;
+  margin-block: 30px 26px;
+  padding-block: 13px 12px;
+  border-block: 3px double var(--rule-strong);
+  color: var(--ink-soft);
+  font: 400 13px/1.5 var(--mono);
 }
 .addon-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 20px;
-  font-size: 13px;
+  gap: 12px 22px;
+  font: 400 14px/1.4 var(--mono);
 }
 .addon-actions a {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 .addon-actions .addon-action {
-  padding: 7px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-control);
-  background: var(--surface);
-  color: var(--ink);
+  position: relative;
+  isolation: isolate;
+  padding: 12px 22px 11px;
+  color: var(--on-blue);
   text-decoration: none;
 }
-.addon-actions .addon-action:hover {
-  background: var(--border);
+.addon-actions .addon-action::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--hibi-blue);
+  clip-path: var(--cut-2);
 }
-.addon-modal .addon-install-note {
-  margin-block: 12px 26px;
-  font-size: 12px;
+.addon-actions .addon-action::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -2;
+  box-shadow: 0 5px 12px -3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.4));
+}
+.addon-actions .addon-action:hover {
+  color: var(--on-blue);
+}
+.addon-actions .addon-action:hover::before {
+  background: color-mix(in oklch, var(--hibi-blue) 86%, #fff);
+}
+.addon-install-note,
+.addon-detail .addon-install-note {
+  max-width: 60ch;
+  margin-block: 16px 30px;
+  color: var(--ink-soft);
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.5;
 }
 .addon-readme {
-  font-size: 14px;
-  line-height: 1.8;
+  padding-top: 26px;
+  border-top: 1px dashed rgb(var(--shadow-rgb) / 0.3);
+  font-size: 19px;
+  line-height: 1.6;
   overflow-wrap: anywhere;
 }
 .addon-readme > * + * {
   margin-top: 16px;
 }
 .addon-readme :is(h1, h2, h3, h4, h5, h6) {
-  font-family: var(--font-ui);
-  font-size: 18px;
-  font-weight: 500;
-  margin-block: 26px 12px;
-  letter-spacing: -0.02em;
+  margin-block: 30px 10px;
+  font: 500 26px/1.2 var(--serif);
+  letter-spacing: -0.01em;
 }
 .addon-readme > :is(h1, h2, h3):first-child {
   margin-top: 0;
-}
-.addon-readme a,
-.addon-authors a {
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 .addon-readme :is(ul, ol) {
   padding-left: 24px;
@@ -2161,26 +2281,28 @@ a:hover {
   margin-top: 5px;
 }
 .addon-readme code {
-  font-family: ui-monospace, monospace;
-  font-size: 0.86em;
-  padding: 2px 4px;
-  border-radius: 3px;
-  background: var(--surface);
+  padding: 1px 5px;
+  background: var(--highlight);
+  font: 400 0.78em/1 var(--mono);
 }
 .addon-readme pre {
-  padding: 16px;
+  padding: 16px 18px;
   overflow: auto;
-  border-radius: 6px;
-  background: var(--surface);
+  background: var(--card-sage);
+  box-shadow: inset 3px 0 0 var(--rule-strong);
 }
 .addon-readme pre code {
   padding: 0;
+  background: none;
   white-space: pre;
+  font-size: 13.5px;
+  line-height: 1.6;
 }
 .addon-readme blockquote {
   margin-inline: 0;
   padding-left: 16px;
-  border-left: 1px solid var(--border);
+  border-left: 3px double var(--margin-line);
+  color: var(--ink-soft);
 }
 .addon-readme img {
   max-width: 100%;
@@ -2190,16 +2312,61 @@ a:hover {
   display: block;
   overflow-x: auto;
   border-collapse: collapse;
+  font-size: 17px;
 }
 .addon-readme :is(th, td) {
   padding: 8px 12px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--rule-strong);
   text-align: left;
 }
-
+.addon-specimen {
+  position: absolute;
+  z-index: 3;
+  top: -34px;
+  right: -36px;
+  width: 112px;
+  rotate: 14deg;
+  pointer-events: none;
+}
+.addon-specimen img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 6px 6px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.2)));
+}
+.addon-specimen::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 7px);
+  top: 38%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #fff 0 9%, #203676 34%, #111d40 100%);
+  box-shadow: 3px 4px 4px rgb(40 28 14 / 0.32);
+}
 @media (max-width: 960px) {
   .addon-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 720px) {
+  .addons-intro {
+    padding: 32px 26px 24px;
+  }
+  .addon-detail {
+    padding: 14px 24px 36px;
+  }
+  .addon-specimen {
+    top: -30px;
+    right: -14px;
+    width: 84px;
+  }
+  .addon-grid {
+    gap: 30px 20px;
+  }
+  .addon-card {
+    padding: 26px 20px 18px;
   }
 }
 @media (max-width: 540px) {
@@ -2512,37 +2679,25 @@ a:hover {
 /* ---------------------------------------------------------------- motion: pieces settle as they arrive */
 
 @media (prefers-reduced-motion: no-preference) {
+  /* content is never hidden: a piece only hovers a little above its place until it lands */
   .settle.will-land {
     transition:
-      opacity 0.32s var(--ease-out),
-      translate 0.75s cubic-bezier(0.2, 1.25, 0.35, 1),
-      scale 0.75s cubic-bezier(0.2, 1.25, 0.35, 1);
+      translate 0.8s cubic-bezier(0.2, 1.25, 0.35, 1),
+      scale 0.8s cubic-bezier(0.2, 1.25, 0.35, 1);
   }
   .settle.will-land:not(.is-landed) {
-    opacity: 0;
-    translate: 0 -16px;
-    scale: 1.03;
+    translate: 0 -14px;
+    scale: 1.025;
   }
   /* pen doodles draw themselves in, stroke by stroke; margin notes are written left to right */
-  .doodle.will-land path {
+  .doodle.will-land .reveal {
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
-    transition: stroke-dashoffset 0.75s cubic-bezier(0.45, 0, 0.25, 1)
-      calc(var(--delay, 0.15s) + var(--i, 0) * 0.16s);
+    transition: stroke-dashoffset 0.7s cubic-bezier(0.45, 0, 0.25, 1)
+      calc(var(--delay, 0.15s) + var(--i, 0) * 0.18s);
   }
-  .doodle.will-land.is-landed path {
+  .doodle.will-land.is-landed .reveal {
     stroke-dashoffset: 0;
-  }
-  .doodle[data-doodle="trail"].will-land path {
-    stroke-dasharray: 0.012 0.022;
-    stroke-dashoffset: 0;
-  }
-  .doodle[data-doodle="trail"].will-land {
-    opacity: 0;
-    transition: opacity 0.9s var(--ease-out) 0.3s;
-  }
-  .doodle[data-doodle="trail"].will-land.is-landed {
-    opacity: 1;
   }
   .note.will-land {
     clip-path: inset(-30% 100% -30% -10%);
@@ -2595,6 +2750,17 @@ a:hover {
         transform: translateY(-3px);
       }
     }
+  }
+}
+@media print {
+  .will-land {
+    translate: none !important;
+    scale: none !important;
+    clip-path: none !important;
+    opacity: 1 !important;
+  }
+  .will-land :is(path, .reveal) {
+    stroke-dashoffset: 0 !important;
   }
 }
 @media (prefers-reduced-motion: reduce) {

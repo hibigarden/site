@@ -1030,14 +1030,85 @@ a:hover {
   grid-column: 7 / 13;
   width: 100%;
 }
-/* an app of their own: the headline set wide, one pressed sprig beside it */
+/* an app of their own: the headline set wide, the newest addons pinned below it */
 .own-app .spread-head {
   max-width: 880px;
   margin-left: auto;
 }
-.own-sprig {
-  --x: 2%;
-  --y: 130px;
+.showcase {
+  margin-top: 64px;
+}
+.showcase-sort {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 34px;
+  padding: 0;
+  border: 0;
+}
+.showcase-sort label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  color: var(--ink-soft);
+  font: 400 13.5px/1 var(--mono);
+  cursor: pointer;
+}
+.showcase-sort input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.showcase-sort label:has(:checked) {
+  background: var(--butter);
+  color: var(--ink);
+  box-shadow: 0 4px 10px -4px rgb(var(--shadow-rgb) / var(--shadow-a));
+  rotate: -1.5deg;
+}
+.showcase-sort label:has(:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+/* the switch works without javascript: the unchecked order's list is hidden */
+.own-app:has([value="released"]:checked) .showcase-grid[data-sort="updated"],
+.own-app:has([value="updated"]:checked) .showcase-grid[data-sort="released"] {
+  display: none;
+}
+.showcase-grid {
+  gap: 36px 28px;
+}
+.showcase-grid .addon-card {
+  padding: 26px 22px 18px;
+}
+.showcase-grid .addon-card-heading {
+  font-size: 21px;
+}
+.showcase-grid .addon-description {
+  margin-block: 10px 18px;
+  font-size: 16px;
+}
+/* pressed butterflies stay on the catalog page, so the headline keeps the eye */
+.showcase-grid > li:is(:nth-child(7n + 3), :nth-child(7n + 6)) .addon-card-hold {
+  display: none;
+}
+.addon-card-kind {
+  margin-top: 6px;
+  color: var(--ink-faint);
+  font: 400 12px/1.4 var(--mono);
+}
+.showcase-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: 30px;
+  font: 400 14px/1 var(--mono);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 /* features: specimens pressed into a drawer */
 .features-spread .drawer-title {
@@ -1157,11 +1228,6 @@ a:hover {
   margin-top: 18px;
 }
 
-@media (max-width: 1239px) {
-  .own-sprig {
-    display: none;
-  }
-}
 @media (max-width: 900px) {
   .intro-writing {
     grid-template-columns: 1fr;
@@ -1174,7 +1240,6 @@ a:hover {
     height: 300px;
     margin-top: 40px;
   }
-  .own-sprig,
   .pair-sprig {
     display: none;
   }
@@ -2760,8 +2825,9 @@ a:hover {
 }
 .addon-card-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 12px;
+  gap: 2px 12px;
   width: 100%;
   padding-top: 12px;
   border-top: 1px dashed rgb(var(--shadow-rgb) / 0.3);
@@ -2773,6 +2839,7 @@ a:hover {
 }
 .addon-card-footer > :last-child {
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 /* addon page: a specimen sheet pinned to the page */
@@ -3048,6 +3115,9 @@ a:hover {
 @media (max-width: 540px) {
   .addon-grid {
     grid-template-columns: 1fr;
+  }
+  .showcase-grid > li:nth-child(n + 4) {
+    display: none;
   }
 }
 

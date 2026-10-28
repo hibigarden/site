@@ -225,3 +225,24 @@ export async function fetchDirectory(
   }
   return parseDirectory(JSON.parse(body), builtinIds);
 }
+
+const MONTHS = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii"];
+/** "2026-10-12" → "12.x.2026", the site's label style; null for anything else. */
+export function addonDay(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value ?? "");
+  return match && MONTHS[match[2] - 1] && +match[3]
+    ? `${+match[3]}.${MONTHS[match[2] - 1]}.${match[1]}`
+    : null;
+}
+
+/** Sorts by name, or newest first by `released`/`updated` with undated entries last. */
+export function sortAddons(addons, order = "name") {
+  const byName = (a, b) =>
+    a.name.localeCompare(b.name, "en", { sensitivity: "base" });
+  const date = (addon) => (addonDay(addon[order]) ? addon[order] : "");
+  return [...addons].sort((a, b) =>
+    order === "name"
+      ? byName(a, b)
+      : date(b).localeCompare(date(a)) || byName(a, b),
+  );
+}

@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
-import addonCatalog, { readCatalog } from "./scripts/addon-catalog.mjs";
+import addonCatalog, { communitySnapshot, readCatalog } from "./scripts/addon-catalog.mjs";
 import { addonIdFromPath, bundledAddons } from "./src/addon-directory.js";
 import { addonPageResponse, readAddonPages } from "./server/addon-pages.js";
 import { releasePlugin } from "./server/release.js";
@@ -10,7 +10,7 @@ import { releasePlugin } from "./server/release.js";
 function addonPages(server) {
   server.middlewares.use(async (request, response, next) => {
     const { pathname } = new URL(request.url, "http://localhost");
-    if (!addonIdFromPath(pathname) && pathname !== "/sitemap.xml") return next();
+    if (!addonIdFromPath(pathname) && !["/sitemap.xml", "/addons/community.json"].includes(pathname)) return next();
     try {
       const root = server.config.root;
       const assets = server.transformIndexHtml
@@ -20,6 +20,7 @@ function addonPages(server) {
               await readFile(join(root, "addons/index.html"), "utf8"),
             ),
             addons: bundledAddons(readCatalog(join(root, "addons"))),
+            snapshot: await communitySnapshot(join(root, "addons")),
           }
         : await readAddonPages(root);
       const result = await addonPageResponse(pathname, assets);

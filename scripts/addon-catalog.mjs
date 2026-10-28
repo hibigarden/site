@@ -3,6 +3,9 @@ import path from "node:path";
 import { parse } from "@babel/parser";
 import { marked } from "marked";
 import sanitizeHtml from "sanitize-html";
+import { communityFeed, datedAddons } from "../server/addon-dates.js";
+import { addonDay, bundledAddons } from "../src/addon-directory.js";
+import { renderShowcase, showcaseCandidates } from "../src/addon-showcase.js";
 
 const repository = "https://github.com/schmayterling/hibi";
 const docsSource = `${repository}/blob/main/docs/`;
@@ -140,7 +143,28 @@ export function renderReadme(markdown, id) {
   });
 }
 
+/**
+ * Release and update days from the synced dates.json. The file is optional:
+ * a sync without dates, or an unreadable entry, leaves those addons undated.
+ */
+export function readDates(directory) {
+  let dates = {};
+  try {
+    dates = JSON.parse(readFileSync(path.join(directory, "dates.json"), "utf8"));
+  } catch {
+    return {};
+  }
+  return Object.fromEntries(
+    Object.entries(dates ?? {}).flatMap(([id, entry]) =>
+      addonDay(entry?.released) && addonDay(entry?.updated)
+        ? [[id, { released: entry.released, updated: entry.updated }]]
+        : [],
+    ),
+  );
+}
+
 export function readCatalog(directory) {
+  const dates = readDates(directory);
   const declarations = statements(
     readFileSync(path.join(directory, "authors.ts"), "utf8"),
   );
@@ -181,6 +205,7 @@ export function readCatalog(directory) {
       if (!readme) throw new Error(`missing addon readme: ${name}`);
       return {
         ...manifest,
+        ...dates[name],
         html: renderReadme(
           readFileSync(path.join(folder, readme), "utf8"),
           name,
@@ -192,6 +217,31 @@ export function readCatalog(directory) {
     );
 }
 
+const EMPTY_SNAPSHOT = { head: null, dates: {}, addons: [] };
+let snapshot;
+/**
+ * Community entries and days as of the build (or, in dev, the last five
+ * minutes). The production function falls back to this file.
+ */
+export async function communitySnapshot(directory, options) {
+  if (snapshot && Date.now() - snapshot.at < 300_000) return snapshot.value;
+  const builtinIds = readCatalog(directory).map((addon) => addon.id);
+  const { head, dates, addons } = await communityFeed(EMPTY_SNAPSHOT, builtinIds, options);
+  snapshot = { at: Date.now(), value: { head, dates, addons } };
+  return snapshot.value;
+}
+
+/** Fills the landing page's showcase marker with built-ins and the snapshot. */
+export function injectShowcase(html, builtins, community) {
+  const marker = "<!-- addon-showcase -->";
+  if (!html.includes(marker)) throw new Error("index.html is missing the addon showcase marker");
+  const data = JSON.stringify(showcaseCandidates(builtins)).replace(/</g, "\\u003c");
+  return html.replace(
+    marker,
+    () => `${renderShowcase([...builtins, ...community])}<script type="application/json" id="addon-showcase-data">${data}</script>`,
+  );
+}
+
 export default function addonCatalog() {
   const id = "\0hibi-addon-catalog";
   let directory;
@@ -200,11 +250,24 @@ export default function addonCatalog() {
     configResolved(config) {
       directory = path.join(config.root, "addons");
     },
-    generateBundle() {
+    transformIndexHtml: {
+      order: "pre",
+      async handler(html, { filename }) {
+        if (path.relative(path.dirname(directory), filename) !== "index.html") return;
+        const community = await communitySnapshot(directory);
+        return injectShowcase(html, bundledAddons(readCatalog(directory)), datedAddons(community));
+      },
+    },
+    async generateBundle() {
       this.emitFile({
         type: "asset",
         fileName: "addons/catalog.json",
         source: JSON.stringify(readCatalog(directory)),
+      });
+      this.emitFile({
+        type: "asset",
+        fileName: "addons/community-snapshot.json",
+        source: JSON.stringify(await communitySnapshot(directory)),
       });
     },
     resolveId(source) {
@@ -219,7 +282,7 @@ export default function addonCatalog() {
       server.watcher.on("all", (event, file) => {
         if (
           !file.startsWith(`${directory}${path.sep}`) ||
-          !/\.(md|ts)$/i.test(file)
+          !/\.(md|ts|json)$/i.test(file)
         )
           return;
         const module = server.moduleGraph.getModuleById(id);

@@ -29,7 +29,7 @@
   width: calc(100% - 2 * var(--hero-inset));
   min-height: var(--panel-h);
   margin: var(--hero-inset);
-  padding: 100px 32px 0;
+  padding: 128px 32px 0;
 }
 
 :is(.garden, [data-sky]) {
@@ -269,7 +269,7 @@
    css, so it is reserved from the first paint; scale-demo.js fits the editor into whatever shape it gets) */
 .hero .demo-print {
   align-self: start;
-  width: min(1180px, 84%);
+  width: min(1000px, 74%);
   aspect-ratio: 16 / 10;
   margin-top: 28px;
 }
@@ -284,7 +284,7 @@
   }
   /* below desktop the editor is its snapshot, at the snapshot's own shape */
   .hero .demo-print {
-    width: min(900px, 84%);
+    width: min(900px, 74%);
     aspect-ratio: 900 / 520;
   }
 }
@@ -293,7 +293,7 @@
     --hero-inset: 10px;
   }
   [data-page="home"] .hero {
-    padding: 84px 12px 0;
+    padding: 100px 12px 0;
   }
   .garden {
     border-radius: 12px;

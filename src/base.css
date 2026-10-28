@@ -233,8 +233,8 @@ a:hover {
   gap: 5px;
   min-height: 44px;
 }
-.nav-links a:hover,
-.nav-links a[aria-current="page"] {
+/* only the label is underlined: the link is a flex row, so its pill or arrow would get a line of its own */
+.nav-links a:is(:hover, [aria-current="page"]) .nav-label {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 6px;
@@ -242,6 +242,7 @@ a:hover {
 /* sync and publish are on their way */
 .soon-tag {
   display: inline-block;
+  text-decoration: none;
   padding: 2px 5px 1px;
   border-radius: 4px;
   background: color-mix(in oklch, var(--accent) 14%, transparent);

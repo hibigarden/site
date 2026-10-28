@@ -1315,7 +1315,7 @@ svg.button-icon,
 }
 /* batteries included: the git panel, vim in the status bar, export in the palette */
 .mk-git {
-  width: min(54%, 280px);
+  width: min(46%, 200px);
   background: var(--m-sidebar);
 }
 .mk-git-head {
@@ -1364,7 +1364,7 @@ svg.button-icon,
 .mk-palette {
   flex: 1 1 0;
   min-width: 0;
-  max-width: 300px;
+  max-width: 280px;
   margin-top: 34px;
 }
 .mk-search {
@@ -1394,6 +1394,10 @@ svg.button-icon,
   margin-left: auto;
   color: var(--m-muted);
   font-size: 10.5px;
+}
+/* the card is narrow: the command name matters more than its category */
+.stage-batteries .mk-option small {
+  display: none;
 }
 /* quick notes: the capture window over another app */
 .mk-other {
@@ -1858,12 +1862,60 @@ svg.button-icon,
   font: 400 12.5px/1.5 var(--mono);
 }
 
+@media (max-width: 1100px) {
+  .stage-batteries {
+    gap: 12px;
+    padding-inline: 16px;
+  }
+  .stage-batteries .mk-git {
+    width: 42%;
+  }
+  .stage-batteries .mk-option {
+    font-size: 12.5px;
+  }
+}
 @media (max-width: 1024px) {
   .feats > li {
     grid-column: span 3;
   }
-  .mk-option small {
-    display: none;
+}
+/* below 900 px a card is too narrow to share a row: one column, each drawing at its own height */
+@media (max-width: 900px) {
+  .feats {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .feats > li {
+    grid-column: auto;
+    padding: 22px 20px 18px;
+  }
+  .feat-stage {
+    padding-inline: 14px;
+    height: auto;
+    padding-bottom: 18px;
+  }
+  .stage-quick {
+    height: 236px;
+  }
+  .mk-capture {
+    right: 14px;
+    width: 84%;
+  }
+  .stage-batteries {
+    flex-direction: column;
+    align-items: center;
+  }
+  .stage-batteries .mk-git,
+  .stage-batteries .mk-palette {
+    flex: none;
+    width: min(100%, 460px);
+    max-width: none;
+    margin-top: 0;
+  }
+}
+@media (max-width: 600px) {
+  .feats {
+    margin-top: 80px;
   }
 }
 @media (max-width: 900px) {
@@ -1922,39 +1974,6 @@ svg.button-icon,
   .who-caption {
     grid-template-columns: 1fr;
     margin-top: 28px;
-  }
-  .feats {
-    grid-template-columns: 1fr;
-    gap: 22px;
-    margin-top: 80px;
-  }
-  .feats > li {
-    grid-column: auto;
-    padding: 22px 20px 18px;
-  }
-  .feat-stage {
-    padding-inline: 14px;
-    height: auto;
-    padding-bottom: 18px;
-  }
-  .stage-quick {
-    height: 236px;
-  }
-  .mk-capture {
-    right: 14px;
-    width: 84%;
-  }
-  .stage-batteries {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .stage-batteries .mk-git {
-    width: auto;
-  }
-  .stage-batteries .mk-palette {
-    flex: none;
-    max-width: none;
-    margin-top: 0;
   }
   .feats h3 {
     font-size: 19px;

@@ -197,12 +197,6 @@ a:hover {
   white-space: nowrap;
 }
 /* the day's light over the page (scrapbook.js), behind every piece */
-.daylight {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
 /* typed labels: characters appear a few per held frame, then the caret rests and goes */
 .typed > span {
   visibility: hidden;

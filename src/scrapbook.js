@@ -126,42 +126,6 @@ function release(spread) {
   dispatchEvent(new Event("butterflies:release"));
 }
 
-// the day goes by as you read: dawn at the top, golden hour by the lift-off, night at the close
-const LIGHT = [
-  [0, [255, 190, 140, 0.11]],
-  [0.18, [255, 236, 205, 0.03]],
-  [0.5, [255, 236, 205, 0]],
-  [0.64, [255, 176, 92, 0.09]],
-  [0.74, [140, 110, 170, 0.1]],
-  [0.84, [32, 54, 118, 0.14]],
-  [1, [20, 30, 70, 0.18]],
-];
-const sky = document.createElement("div");
-sky.className = "daylight";
-sky.setAttribute("aria-hidden", "true");
-document.body.prepend(sky);
-let lightShown = -1;
-function light() {
-  // only the landing's day passes, and only in daylight: the night theme is already night
-  if (document.documentElement.dataset.page !== "home" || document.documentElement.dataset.theme === "dark") {
-    if (lightShown !== -2) sky.style.backgroundColor = "";
-    lightShown = -2;
-    return false;
-  }
-  const max = document.documentElement.scrollHeight - innerHeight;
-  const q = Math.round((max > 0 ? Math.min(1, scrollY / max) : 0) * 120) / 120;
-  if (q === lightShown) return false;
-  lightShown = q;
-  let i = 0;
-  while (i < LIGHT.length - 2 && q > LIGHT[i + 1][0]) i++;
-  const [p0, c0] = LIGHT[i];
-  const [p1, c1] = LIGHT[i + 1];
-  const u = Math.min(1, Math.max(0, (q - p0) / (p1 - p0)));
-  const c = c0.map((v, k) => v + (c1[k] - v) * u);
-  sky.style.backgroundColor = `rgb(${c[0].toFixed(0)} ${c[1].toFixed(0)} ${c[2].toFixed(0)} / ${c[3].toFixed(3)})`;
-  return false;
-}
-
 const observer = new IntersectionObserver(
   (entries) => {
     for (const entry of entries) {
@@ -191,17 +155,10 @@ const beats = new IntersectionObserver(
   { threshold: [0.5] },
 );
 
-addEventListener("scroll", () => still() || tick(light), { passive: true });
 let started = false;
 onMotion((isStill) => {
   document.documentElement.classList.toggle("story-motion", !isStill);
-  if (isStill) {
-    lightShown = -1;
-    sky.style.backgroundColor = "";
-    return;
-  }
-  tick(light);
-  if (started) return;
+  if (isStill || started) return;
   started = true;
   // a page opened on a #section skips the entrances above it
   for (const el of document.querySelectorAll(".settle, .doodle, .note, .specimen-label")) {

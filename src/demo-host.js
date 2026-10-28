@@ -43,6 +43,13 @@ function compileTypst({ source, block }) {
   });
 }
 
+// The graph opens on the whole workspace, as with its default zoom setting at 1.5, rather than close on one note.
+try {
+  if (localStorage.getItem("graph:default-zoom") === null) localStorage.setItem("graph:default-zoom", "1.5");
+} catch {
+  // The graph falls back to its own default.
+}
+
 const states = catalog.map(({ manifest }) => ({ id: manifest.id, enabled: true, activation: 1 }));
 const storage = new Map();
 const unsubscribe = () => () => {};

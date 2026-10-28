@@ -1,6 +1,7 @@
 // The built-in addons the demo runs. Stands in for the catalog hibi generates while it builds
 // (virtual:hibi-addon-catalog/renderer, see vite.config.js); every one starts enabled.
 import frontmatter from "../vendor/hibi/src/addons/frontmatter/hibi-addon.json";
+import graph from "../vendor/hibi/src/addons/graph/hibi-addon.json";
 import keybeats from "../vendor/hibi/src/addons/keybeats/hibi-addon.json";
 import markdown from "../vendor/hibi/src/addons/markdown/hibi-addon.json";
 import markdownFlavors from "../vendor/hibi/src/addons/markdown/flavor-info";
@@ -24,6 +25,7 @@ function bundled(details, load, flavors) {
 
 export default [
   bundled(frontmatter, () => import("../vendor/hibi/src/addons/frontmatter/index.ts")),
+  bundled(graph, () => import("../vendor/hibi/src/addons/graph/index.tsx")),
   bundled(keybeats, () => import("../vendor/hibi/src/addons/keybeats/index.ts")),
   bundled(markdown, () => import("../vendor/hibi/src/addons/markdown/index.tsx"), markdownFlavors),
   bundled(math, () => import("../vendor/hibi/src/addons/math/index.ts"), mathFlavors),

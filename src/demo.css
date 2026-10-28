@@ -5,8 +5,8 @@
   font-display: swap;
 }
 
-/* Settings, sidebar views and the right sidebar stay on the desktop. */
-.titlebar :is([aria-label="Settings"], .right-sidebar-toolbar, .sidebar-view-controls) {
+/* Settings and the left sidebar's other views stay on the desktop. */
+.titlebar :is([aria-label="Settings"], .sidebar-view-controls) {
   display: none;
 }
 .titlebar .view-switch {

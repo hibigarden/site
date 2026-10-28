@@ -11,7 +11,9 @@ import {
 } from "react";
 import { createRoot } from "react-dom/client";
 import { FileText, Folder } from "lucide-react";
+import { createNoteGraph } from "../vendor/hibi/src/addons/graph/model";
 import { ActiveDocumentEditor } from "../vendor/hibi/src/renderer/src/ActiveDocumentEditor";
+import { AddonSidebar, viewShortcut } from "../vendor/hibi/src/renderer/src/AddonSidebar";
 // The formatted view hibi ships today. To show the CodeMirror one instead, import MarkdownEditor from
 // FormattedEditor, run scripts/vendor-hibi.mjs and set localStorage hibi:formatted-engine to codemirror.
 import { MarkdownEditor } from "../vendor/hibi/src/renderer/src/Editor";
@@ -117,6 +119,48 @@ const activate = (tabId, ids) =>
   });
 activate(initialNotes[0].tabId, [...opening.keys()]);
 
+// The workspace queries the app answers from its index, answered from the demo's notes by hibi's own
+// graph code. The workspace never changes underneath the demo, so subscribers hear nothing.
+window.hibi.subscribeWorkspaceChanges = async () => ({ snapshot: null, dispose() {} });
+// The easter egg in misc/ stays out of the graph, where its notes would float unlinked and give it away.
+function workspaceGraph() {
+  const notes = [...opening.keys()].filter(
+    (id) => documentFormats.isMarkdown(noteFor(id).name) && !pathOf(id).startsWith("misc/"),
+  );
+  const graph = createNoteGraph(notes.map(pathOf));
+  for (const id of notes) graph.add({ path: pathOf(id), markdown: noteFor(id).markdown });
+  return graph.finish();
+}
+// The graph frames the note open beside it; a note without links, like the welcome note, would leave
+// the graph out of view, so the whole workspace shows instead.
+const graphFocus = (path) =>
+  workspaceGraph().edges.some((edge) => edge.source === path || edge.target === path) ? path : null;
+window.hibi.queryWorkspaceReferences = async (request) => {
+  if (request.kind !== "graph")
+    return { ok: false, code: "unavailable", message: "This is available in the desktop app." };
+  const { nodes, edges } = workspaceGraph();
+  return {
+    ok: true,
+    value: {
+      target: request.target,
+      syntax: "gfm+wikilinks+hashtags",
+      flavorAware: false,
+      unsupportedSyntax: false,
+      sequence: 0,
+      stale: false,
+      complete: true,
+      capReached: false,
+      kind: "graph",
+      items: [
+        ...nodes.map((node) => ({ kind: "node", path: node.id })),
+        ...edges.map((edge) => ({ kind: "edge", ...edge })),
+      ],
+      hasMore: false,
+      nextCursor: null,
+    },
+  };
+};
+
 const names = new Intl.Collator(undefined, { numeric: true });
 // The workspace as hibi's explorer lists it: folders first, then by name.
 function workspaceTree(ids) {
@@ -186,11 +230,15 @@ function Demo() {
   const shell = useRef(current);
   const [mode, setMode] = useState("normal");
   const [sidebar, setSidebar] = useState(() => innerWidth >= 650);
+  // The graph of the writer's notes stays open beside them where there is room for both.
+  const [rightSidebar, setRightSidebar] = useState(() => innerWidth >= 880);
+  const [rightView, setRightView] = useState("graph.workspace");
   const [find, setFind] = useState(false);
   // In the landing page the editor waits for a visitor before it takes focus.
   const [focusEditor, setFocusEditor] = useState(window.parent === window);
   const [reset, setReset] = useState(0);
-  const resize = useSidebarResize(196);
+  const resize = useSidebarResize(196, "sidebar-width", rightSidebar ? 0.35 : 0.6);
+  const rightResize = useSidebarResize(240, "right-sidebar-width", sidebar ? 0.35 : 0.6);
   const dialogs = useDialogs();
   const tree = useMemo(() => workspaceTree(noteIds), [noteIds]);
 
@@ -219,9 +267,20 @@ function Demo() {
       workspace: {
         index: unavailable,
         snapshot: unavailable,
-        get: async () => null,
+        get: async () => ({
+          id: "demo",
+          workspaceGeneration: 1,
+          name: "garden",
+          entries: [],
+          activePath: graphFocus(pathOf(selected)),
+        }),
         open: async () => null,
-        openFile: async () => {},
+        openFile: async (path) => {
+          const id = noteIds.find((note) => pathOf(note) === path);
+          if (!id) return;
+          setFocusEditor(true);
+          setSelected(id);
+        },
       },
       invoke: unavailable,
       error: (error) => console.error(error),
@@ -240,7 +299,10 @@ function Demo() {
       runCommand: async () => false,
       runAction: (id) => run(id),
       getEditorDocument: () => documentRuntime.get(selected),
-      openSidebar: () => {},
+      openSidebar: (id) => {
+        setRightView(id);
+        setRightSidebar(true);
+      },
       closeSidebar: () => {},
       openTab: () => {},
       focusDocument: async () => true,
@@ -304,8 +366,9 @@ function Demo() {
       data-platform={platform}
       data-screen="editor"
       data-sidebar={sidebar}
+      data-right-sidebar={rightSidebar}
       data-sidebar-overlay={resize.overlay}
-      style={{ "--sidebar-width": `${resize.width}px` }}
+      style={{ "--sidebar-width": `${resize.width}px`, "--right-sidebar-width": `${rightResize.width}px` }}
       onKeyDownCapture={(event) => {
         if (event.key === "Escape") setFind(false);
         if (dialogs.isOpen()) return;
@@ -335,12 +398,12 @@ function Demo() {
         onBack={() => {}}
         sidebarOverlay={resize.overlay}
         sidebarView="workspace"
-        sidebarViews={[]}
+        sidebarViews={host.sidebarViews.map(viewShortcut)}
         onSidebarView={() => {}}
-        rightSidebarOpen={false}
-        rightSidebarView="none"
-        onRightSidebar={() => {}}
-        onRightSidebarView={() => {}}
+        rightSidebarOpen={rightSidebar}
+        rightSidebarView={rightView}
+        onRightSidebar={() => setRightSidebar(!rightSidebar)}
+        onRightSidebarView={setRightView}
         onSelectTab={() => {}}
         onCloseTab={() => {}}
         onCloseTabs={() => {}}
@@ -459,6 +522,16 @@ function Demo() {
           />
         </div>
       </div>
+      <AddonSidebar
+        side="right"
+        overlay={rightResize.overlay}
+        onDismiss={() => setRightSidebar(false)}
+        view={host.sidebarViews.find((view) => view.id === rightView)}
+        input={undefined}
+        open={rightSidebar}
+        empty={rightView === "none"}
+        resize={{ ...rightResize, onCollapse: () => setRightSidebar(false) }}
+      />
       <WindowControls />
       <MenuHost />
     </div>

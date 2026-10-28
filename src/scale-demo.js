@@ -37,13 +37,25 @@ function scaleDemo() {
   shell.style.transform = `translate(-50%, -50%) scale(${scale})`;
 }
 
+// The editor starts loading once the landing page has loaded and gone idle, so it never competes
+// with the hero for the network or the main thread, and the page's load event never waits for it.
+let editorRequested = false;
+function loadEditor() {
+  if (editorRequested) return;
+  editorRequested = true;
+  const idle = window.requestIdleCallback ?? ((callback) => setTimeout(callback, 200));
+  const start = () => idle(() => (frame.src = frame.dataset.src), { timeout: 2000 });
+  if (document.readyState === "complete") start();
+  else addEventListener("load", start, { once: true });
+}
+
 function updateMode() {
   stage.dataset.live = String(desktop.matches);
   if (desktop.matches) {
     resizeObserver ??= new ResizeObserver(scaleDemo);
     resizeObserver.observe(stage);
     scaleDemo();
-    if (!frame.hasAttribute("src")) frame.src = frame.dataset.src;
+    loadEditor();
   } else {
     // Keep an already-loaded editor mounted so resizing does not discard writing.
     resizeObserver?.disconnect();

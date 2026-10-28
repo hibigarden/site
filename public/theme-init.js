@@ -11,12 +11,4 @@
       : "light";
   }
   document.documentElement.dataset.theme = theme;
-  if (document.documentElement.dataset.page === "home") {
-    const image = document.createElement("link");
-    image.rel = "preload";
-    image.as = "image";
-    image.href =
-      theme === "dark" ? "/hero-garden-dark.webp" : "/hero-garden.webp";
-    document.head.append(image);
-  }
 })();

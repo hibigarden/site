@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#ebe1cc" />
     <meta
       name="description"
       content="hibi is a fast, customizable writing app for documents that stay on your computer."
@@ -41,12 +41,15 @@
     <script type="module" src="/src/navigation.js"></script>
     <script type="module" src="/src/scale-demo.js"></script>
     <script type="module" src="/src/feature-illustrations.jsx"></script>
+    <script type="module" src="/src/scrapbook.js"></script>
     <title>hibi | a place for your words</title>
   </head>
   <body>
     <a class="skip-link" href="#main">skip to content</a>
     <header class="site-header wrap">
-      <a class="wordmark" href="#" aria-label="hibi home">hibi</a>
+      <a class="wordmark" href="#" aria-label="hibi home"
+        ><span class="wordmark-icon" aria-hidden="true"></span>hibi</a
+      >
       <nav aria-label="main navigation">
         <button
           class="menu-toggle"
@@ -85,144 +88,194 @@
       </nav>
     </header>
     <main id="main">
-      <section class="hero" aria-labelledby="hero-title">
-        <h1 id="hero-title">
-          one app for<br />everything you <span>write.</span>
-        </h1>
-        <div class="hero-actions">
-          <a
-            class="button cta-primary"
-            href="https://github.com/schmayterling/hibi/releases"
-            ><span class="button-icon" data-button-icon="download" aria-hidden="true"></span>download hibi</a
-          >
-          <a class="button" href="https://github.com/schmayterling/hibi"
-            ><span class="button-icon" data-button-icon="star" aria-hidden="true"></span>star on github</a
-          >
-          <a class="button" href="https://discord.gg/v9r4cABUP2"
-            ><span class="button-icon" data-button-icon="chat" aria-hidden="true"></span>join discord</a
-          >
-        </div>
-        <section
-          class="demo"
-          id="editor"
-          aria-label="hibi editor"
-          aria-busy="false"
-        >
-          <picture class="demo-snapshot">
-            <source srcset="/editor-preview-dark.webp" media="(prefers-color-scheme: dark)" />
-            <img
-              src="/editor-preview-light.webp"
-              width="900"
-              height="520"
-              alt="hibi editor showing welcome.md."
-              decoding="async"
-            />
-          </picture>
-          <div class="demo-shell">
-            <iframe
-              data-src="/demo/"
-              width="900"
-              height="520"
-              title="hibi markdown editor | interactive demo"
-              loading="lazy"
-              inert
-              aria-hidden="true"
-              sandbox="allow-scripts allow-same-origin allow-downloads allow-modals allow-popups allow-popups-to-escape-sandbox"
-              referrerpolicy="no-referrer"
-            ></iframe>
-            <div
-              class="demo-loader"
-              role="status"
-              aria-label="loading hibi editor"
+      <section class="hero wrap" aria-labelledby="hero-title">
+        <div class="title-card paper">
+          <span class="tape tape-blue tape-tl" aria-hidden="true"></span>
+          <span class="tape tape-periwinkle tape-tr" aria-hidden="true"></span>
+          <h1 id="hero-title">
+            one app for<br />everything you <span>write.</span>
+          </h1>
+          <div class="hero-actions">
+            <a
+              class="button cta-primary"
+              href="https://github.com/schmayterling/hibi/releases"
+              ><span class="button-icon" data-button-icon="download" aria-hidden="true"></span>download hibi</a
             >
-              <span class="demo-loader-wordmark" aria-hidden="true">hibi</span>
-            </div>
+            <a class="button" href="https://github.com/schmayterling/hibi"
+              ><span class="button-icon" data-button-icon="star" aria-hidden="true"></span>star on github</a
+            >
+            <a class="button" href="https://discord.gg/v9r4cABUP2"
+              ><span class="button-icon" data-button-icon="chat" aria-hidden="true"></span>join discord</a
+            >
           </div>
-        </section>
+        </div>
+        <div class="hero-icon" aria-hidden="true" data-perch="0.5,0.45">
+          <span class="pin"></span>
+        </div>
+        <div class="specimen hero-specimen" aria-hidden="true">
+          <img
+            src="/scrapbook/specimen-clearwing.webp"
+            width="150"
+            height="95"
+            alt=""
+            decoding="async"
+          />
+          <span class="pin"></span>
+          <span class="label">clearwing · no. 1</span>
+        </div>
+        <div class="demo-print">
+          <span class="tape tape-cream tape-tl" aria-hidden="true"></span>
+          <span class="tape tape-dots tape-tr" aria-hidden="true"></span>
+          <section
+            class="demo"
+            id="editor"
+            aria-label="hibi editor"
+            aria-busy="false"
+          >
+            <picture class="demo-snapshot">
+              <source srcset="/editor-preview-dark.webp" media="(prefers-color-scheme: dark)" />
+              <img
+                src="/editor-preview-light.webp"
+                width="900"
+                height="520"
+                alt="hibi editor showing welcome.md."
+                decoding="async"
+              />
+            </picture>
+            <div class="demo-shell">
+              <iframe
+                data-src="/demo/"
+                width="900"
+                height="520"
+                title="hibi markdown editor | interactive demo"
+                loading="lazy"
+                inert
+                aria-hidden="true"
+                sandbox="allow-scripts allow-same-origin allow-downloads allow-modals allow-popups allow-popups-to-escape-sandbox"
+                referrerpolicy="no-referrer"
+              ></iframe>
+              <div
+                class="demo-loader"
+                role="status"
+                aria-label="loading hibi editor"
+              >
+                <span class="demo-loader-wordmark" aria-hidden="true">hibi</span>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="sprig hero-sprig-left" aria-hidden="true">
+          <img src="/scrapbook/lavender-1.webp" width="75" height="299" alt="" decoding="async" data-perch="0.5,0.12" />
+          <span class="tape tape-periwinkle"></span>
+        </div>
+        <div class="sprig hero-sprig-right" aria-hidden="true">
+          <img src="/scrapbook/lavender-2.webp" width="150" height="279" alt="" decoding="async" data-perch="0.5,0.12" />
+          <span class="tape tape-cream"></span>
+          <span class="label">lavender · no. 2</span>
+        </div>
       </section>
       <section class="beta-notice wrap" aria-labelledby="beta-title">
-        <span id="beta-icon" aria-hidden="true"></span>
-        <div>
-          <h2 id="beta-title">hibi is <strong>beta</strong> software.</h2>
-          <p>
-            bugs, slowdowns, and crashes can happen. addons are especially
-            experimental and still being improved. if something breaks, please
-            <a href="https://github.com/schmayterling/hibi/issues">file an issue</a>
-            so i can keep track and work on a fix.
-          </p>
-          <p>
-            if you need a stable app, please check back later. this is a hobby
-            project, so i can’t promise immediate fixes or new features.
-            <a href="https://github.com/schmayterling/hibi/pulls">contributions and pull requests</a>
-            are always welcome.
-          </p>
+        <div class="letter paper settle">
+          <span id="beta-icon" aria-hidden="true"></span>
+          <div>
+            <h2 id="beta-title">hibi is <strong>beta</strong> software.</h2>
+            <p>
+              bugs, slowdowns, and crashes can happen. addons are especially
+              experimental and still being improved. if something breaks, please
+              <a href="https://github.com/schmayterling/hibi/issues">file an issue</a>
+              so i can keep track and work on a fix.
+            </p>
+            <p>
+              if you need a stable app, please check back later. this is a hobby
+              project, so i can’t promise immediate fixes or new features.
+              <a href="https://github.com/schmayterling/hibi/pulls">contributions and pull requests</a>
+              are always welcome.
+            </p>
+          </div>
+        </div>
+        <div class="postcard settle" aria-hidden="true" data-perch="0.8,0.08">
+          <span class="postcard-photo"></span>
+          <img class="paperclip" src="/scrapbook/paperclip.webp" width="90" height="27" alt="" loading="lazy" decoding="async" />
         </div>
       </section>
-      <section class="product-intro wrap" aria-labelledby="about-title">
-        <h2 class="section-title" id="about-title">built around writing.</h2>
-        <p>
-          hibi gives you one fast place to write, edit, preview, and organize
-          documents, with the flexibility of a code editor.
-        </p>
-      </section>
-      <section class="product-intro wrap" aria-labelledby="control-title">
-        <h2 class="section-title" id="control-title">for writers who want control.</h2>
-        <p>
-          start with a simple writing app, then add the tools and formats you
-          need. your files stay in your own folders.
-        </p>
-      </section>
+      <div class="intro-spread wrap">
+        <section class="product-intro statement paper settle" aria-labelledby="about-title">
+          <span class="tape tape-blue tape-top" aria-hidden="true"></span>
+          <h2 class="statement-title" id="about-title">built around writing.</h2>
+          <p>
+            hibi gives you one fast place to write, edit, preview, and organize
+            documents, with the flexibility of a code editor.
+          </p>
+          <span class="statement-no" aria-hidden="true">no. 01</span>
+        </section>
+        <section class="product-intro statement paper settle" aria-labelledby="control-title">
+          <span class="tape tape-periwinkle tape-top" aria-hidden="true"></span>
+          <h2 class="statement-title" id="control-title">for writers who want control.</h2>
+          <p>
+            start with a simple writing app, then add the tools and formats you
+            need. your files stay in your own folders.
+          </p>
+          <span class="statement-no" aria-hidden="true">no. 02</span>
+        </section>
+        <img class="scrap intro-pen" src="/scrapbook/pen.webp" width="230" height="135" alt="" loading="lazy" decoding="async" />
+      </div>
       <section class="comparison wrap" aria-labelledby="comparison-title">
-        <h2 class="section-title" id="comparison-title">how hibi compares.</h2>
-        <table class="comparison-table" aria-labelledby="comparison-title">
-          <thead>
-            <tr><th scope="col">app</th><th scope="col">how hibi differs</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row"><a href="https://www.notion.com/help/export-your-content">notion</a></th>
-              <td>notion organizes pages and databases in a workspace. <strong>hibi edits documents directly in your local folders.</strong></td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://obsidian.md/">obsidian</a></th>
-              <td>obsidian connects local markdown notes with links and plugins. <strong>hibi focuses on writing across document formats, with open source code.</strong></td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://typora.io/">typora</a></th>
-              <td>typora focuses on markdown editing and live previews. <strong>hibi adds other document formats and writing tools through addons.</strong></td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://code.visualstudio.com/">vscode</a></th>
-              <td>vscode is built around software development. <strong>hibi brings a customizable editor to writing and working with documents.</strong></td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://www.microsoft.com/en-us/microsoft-365/word">word</a></th>
-              <td>word focuses on formatted documents and collaboration. <strong>hibi gives you a customizable workspace for markdown and other text-based formats.</strong></td>
-            </tr>
-            <tr>
-              <th scope="row"><a href="https://www.overleaf.com/about/features-overview">overleaf</a></th>
-              <td>overleaf is an online latex editor built for collaboration. <strong>hibi is a local writing app for markdown, typst, and other document formats.</strong></td>
-            </tr>
-          </tbody>
-        </table>
+        <h2 class="section-title settle" id="comparison-title">how hibi compares.</h2>
+        <div class="ledger paper settle">
+          <table class="comparison-table" aria-labelledby="comparison-title">
+            <thead>
+              <tr><th scope="col">app</th><th scope="col">how hibi differs</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><a href="https://www.notion.com/help/export-your-content">notion</a></th>
+                <td>notion organizes pages and databases in a workspace. <strong>hibi edits documents directly in your local folders.</strong></td>
+              </tr>
+              <tr>
+                <th scope="row"><a href="https://obsidian.md/">obsidian</a></th>
+                <td>obsidian connects local markdown notes with links and plugins. <strong>hibi focuses on writing across document formats, with open source code.</strong></td>
+              </tr>
+              <tr>
+                <th scope="row"><a href="https://typora.io/">typora</a></th>
+                <td>typora focuses on markdown editing and live previews. <strong>hibi adds other document formats and writing tools through addons.</strong></td>
+              </tr>
+              <tr>
+                <th scope="row"><a href="https://code.visualstudio.com/">vscode</a></th>
+                <td>vscode is built around software development. <strong>hibi brings a customizable editor to writing and working with documents.</strong></td>
+              </tr>
+              <tr>
+                <th scope="row"><a href="https://www.microsoft.com/en-us/microsoft-365/word">word</a></th>
+                <td>word focuses on formatted documents and collaboration. <strong>hibi gives you a customizable workspace for markdown and other text-based formats.</strong></td>
+              </tr>
+              <tr>
+                <th scope="row"><a href="https://www.overleaf.com/about/features-overview">overleaf</a></th>
+                <td>overleaf is an online latex editor built for collaboration. <strong>hibi is a local writing app for markdown, typst, and other document formats.</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sprig comparison-sprig" aria-hidden="true">
+          <img src="/scrapbook/lavender-3.webp" width="130" height="198" alt="" loading="lazy" decoding="async" data-perch="0.5,0.14" />
+          <span class="tape tape-blue"></span>
+        </div>
       </section>
       <section class="features wrap" id="features" aria-label="features">
-        <h2 class="section-title">features</h2>
-        <article class="feature-card feature-files">
+        <h2 class="section-title settle">features</h2>
+        <article class="feature-card feature-files paper settle">
           <div class="feature-art workspace-art" id="workspace-illustration" aria-hidden="true"></div>
           <div class="feature-copy">
             <h3>your files, your folders.</h3>
             <p>keep your notes on your computer.</p>
           </div>
         </article>
-        <article class="feature-card feature-formats">
+        <article class="feature-card feature-formats paper settle">
           <div class="feature-art formats-art" id="formats-illustration" aria-hidden="true"></div>
           <div class="feature-copy">
             <h3>beyond markdown.</h3>
             <p>write in typst, latex, mdx, and more.</p>
           </div>
         </article>
-        <article class="feature-card feature-customize">
+        <article class="feature-card feature-customize paper settle">
           <div class="feature-art themes-art" id="themes-illustration" aria-hidden="true"></div>
           <div class="feature-copy">
             <h3>make it yours.</h3>
@@ -232,21 +285,21 @@
             >
           </div>
         </article>
-        <article class="feature-card feature-addons">
+        <article class="feature-card feature-addons paper settle">
           <div class="feature-art addons-art" id="addons-illustration" role="img" aria-label="bundled addons for git, latex, vim, and exporting"></div>
           <div class="feature-copy">
             <h3>batteries included.</h3>
             <a href="/addons/">browse addons <span aria-hidden="true">↗</span></a>
           </div>
         </article>
-        <article class="feature-free">
+        <article class="feature-free paper settle">
           <h3>free and open source.</h3>
           <a href="https://github.com/schmayterling/hibi">view source</a>
         </article>
       </section>
       <section class="writing-roles wrap" aria-label="who hibi is for">
-        <article class="writing-role">
-          <span class="role-icon" id="writer-icon" aria-hidden="true"></span>
+        <article class="writing-role role-writers paper settle">
+          <img class="role-object" src="/scrapbook/pen.webp" width="230" height="135" alt="" loading="lazy" decoding="async" />
           <h2>for writers.</h2>
           <p>
             write stories, essays, and notes. keep your drafts and research
@@ -254,8 +307,8 @@
           </p>
           <a href="https://docs.hibi.garden/#page=guides%2Fediting.md">writing guide</a>
         </article>
-        <article class="writing-role">
-          <span class="role-icon" id="editor-icon" aria-hidden="true"></span>
+        <article class="writing-role role-editors paper settle">
+          <img class="role-object" src="/scrapbook/pencil.webp" width="230" height="146" alt="" loading="lazy" decoding="async" />
           <h2>for editors.</h2>
           <p>
             revise in formatted or source view. review changes with git and
@@ -263,8 +316,10 @@
           </p>
           <a href="https://docs.hibi.garden/#page=editing%2Fversion-history.md">version history</a>
         </article>
-        <article class="writing-role">
-          <span class="role-icon" id="developer-icon" aria-hidden="true"></span>
+        <article class="writing-role role-developers paper settle">
+          <span class="role-object role-braces" aria-hidden="true"
+            ><img src="/scrapbook/brace-left.webp" width="64" height="76" alt="" loading="lazy" decoding="async" /><img src="/scrapbook/brace-right.webp" width="64" height="74" alt="" loading="lazy" decoding="async"
+          /></span>
           <h2>for developers.</h2>
           <p>
             write documentation and export it as a site you can host. edit your
@@ -272,8 +327,8 @@
           </p>
           <a href="https://docs.hibi.garden/#page=guides%2Fexporting.md">export documentation</a>
         </article>
-        <article class="writing-role">
-          <span class="role-icon" id="ai-user-icon" aria-hidden="true"></span>
+        <article class="writing-role role-ai paper settle">
+          <img class="role-object" src="/scrapbook/keycap.webp" width="104" height="94" alt="" loading="lazy" decoding="async" />
           <h2>for ai power users.</h2>
           <p>
             write and organize prompts, agent instructions, and context files
@@ -283,88 +338,101 @@
         </article>
       </section>
       <section class="faq wrap" id="faq" aria-labelledby="faq-title">
-        <h2 class="section-title" id="faq-title">frequently asked questions</h2>
+        <h2 class="section-title settle" id="faq-title">frequently asked questions</h2>
         <div class="faq-list">
-          <details>
+          <details class="index-card paper settle">
             <summary>is hibi free?</summary>
             <p>yes.</p>
           </details>
-          <details>
+          <details class="index-card paper settle">
             <summary>where are my notes stored?</summary>
             <p>
               your notes are saved as markdown files on your computer.
             </p>
           </details>
-          <details>
+          <details class="index-card paper settle">
             <summary>how do i enable addons?</summary>
             <p>
               open settings → addons and turn on the ones you want.
             </p>
           </details>
-          <details>
+          <details class="index-card paper settle">
             <summary>what stage is hibi in?</summary>
             <p>hibi is in beta.</p>
           </details>
         </div>
+        <div class="sprig faq-sprig" aria-hidden="true">
+          <img src="/scrapbook/lavender-bundle.webp" width="130" height="280" alt="" loading="lazy" decoding="async" data-perch="0.5,0.12" />
+          <span class="tape tape-dots"></span>
+        </div>
       </section>
       <section class="cta wrap" aria-labelledby="cta-title">
-        <h2 id="cta-title">a place for your <em>words</em>.</h2>
-        <div class="cta-actions">
-          <a
-            class="button cta-primary"
-            href="https://github.com/schmayterling/hibi/releases"
-            ><span class="button-icon" data-button-icon="download" aria-hidden="true"></span>download hibi</a
-          >
-          <a class="button" href="https://github.com/schmayterling/hibi"
-            ><span class="button-icon" data-button-icon="star" aria-hidden="true"></span>star on github</a
-          >
-          <a class="button" href="https://discord.gg/v9r4cABUP2"
-            ><span class="button-icon" data-button-icon="chat" aria-hidden="true"></span>join discord</a
-          >
+        <div class="end-card paper settle">
+          <span class="tape tape-cream tape-tl" aria-hidden="true"></span>
+          <span class="tape tape-cream tape-br" aria-hidden="true"></span>
+          <span class="end-perch end-perch-a" aria-hidden="true" data-perch></span>
+          <span class="end-perch end-perch-b" aria-hidden="true" data-perch></span>
+          <h2 id="cta-title">a place for your <em>words</em>.</h2>
+          <div class="cta-actions">
+            <a
+              class="button cta-primary"
+              href="https://github.com/schmayterling/hibi/releases"
+              ><span class="button-icon" data-button-icon="download" aria-hidden="true"></span>download hibi</a
+            >
+            <a class="button" href="https://github.com/schmayterling/hibi"
+              ><span class="button-icon" data-button-icon="star" aria-hidden="true"></span>star on github</a
+            >
+            <a class="button" href="https://discord.gg/v9r4cABUP2"
+              ><span class="button-icon" data-button-icon="chat" aria-hidden="true"></span>join discord</a
+            >
+          </div>
         </div>
       </section>
     </main>
-    <footer class="site-footer wrap">
-      <div class="footer-wordmark" aria-hidden="true">
-        <span>h</span><span>i</span><span>b</span><span>i</span>
-      </div>
-      <div class="footer-details">
-        <div>
-          <a class="footer-brand wordmark" href="/" aria-label="hibi home">
-            <img src="/favicon.png" width="32" height="32" alt="" />
-            hibi
-          </a>
-          <p class="footer-tagline">a place for your words</p>
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-wordmark" aria-hidden="true">
+          <span>h</span><span>i</span><span>b</span><span>i</span>
         </div>
-        <div class="footer-groups">
-          <div class="footer-group">
-            <h2>hibi</h2>
-            <nav aria-label="footer hibi">
-              <a href="https://github.com/schmayterling/hibi/releases">download</a>
-              <a href="/#features">features</a>
-              <a href="/addons/">addons</a>
-            </nav>
+        <div class="footer-details">
+          <div>
+            <a class="footer-brand wordmark" href="/" aria-label="hibi home">
+              <span class="wordmark-icon" aria-hidden="true"></span>
+              hibi
+            </a>
+            <p class="footer-tagline">a place for your words</p>
           </div>
-          <div class="footer-group">
-            <h2>resources</h2>
-            <nav aria-label="footer resources">
-              <a href="https://docs.hibi.garden">documentation</a>
-              <a href="https://github.com/schmayterling/hibi/releases">changelog</a>
-              <a href="/#faq">faq</a>
-            </nav>
-          </div>
-          <div class="footer-group">
-            <h2>community</h2>
-            <nav aria-label="footer community">
-              <a href="https://github.com/schmayterling/hibi">github</a>
-              <a href="https://discord.gg/v9r4cABUP2">discord</a>
-            </nav>
+          <div class="footer-groups">
+            <div class="footer-group">
+              <h2>hibi</h2>
+              <nav aria-label="footer hibi">
+                <a href="https://github.com/schmayterling/hibi/releases">download</a>
+                <a href="/#features">features</a>
+                <a href="/addons/">addons</a>
+              </nav>
+            </div>
+            <div class="footer-group">
+              <h2>resources</h2>
+              <nav aria-label="footer resources">
+                <a href="https://docs.hibi.garden">documentation</a>
+                <a href="https://github.com/schmayterling/hibi/releases">changelog</a>
+                <a href="/#faq">faq</a>
+                <a href="/credits/">credits</a>
+              </nav>
+            </div>
+            <div class="footer-group">
+              <h2>community</h2>
+              <nav aria-label="footer community">
+                <a href="https://github.com/schmayterling/hibi">github</a>
+                <a href="https://discord.gg/v9r4cABUP2">discord</a>
+              </nav>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="footer-bottom">
-        <span>© 2026 <a href="https://github.com/schmayterling">schmayterling</a></span>
-        <a href="#">back to top <span aria-hidden="true">↑</span></a>
+        <div class="footer-bottom">
+          <span>© 2026 <a href="https://github.com/schmayterling">schmayterling</a></span>
+          <a href="#">back to top <span aria-hidden="true">↑</span></a>
+        </div>
       </div>
     </footer>
   </body>

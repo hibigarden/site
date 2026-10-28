@@ -17,7 +17,7 @@ function apply(theme) {
   toggle.setAttribute("aria-label", label);
   toggle.title = label;
   document.querySelector('meta[name="theme-color"]').content =
-    theme === "dark" ? "#181818" : "#ffffff";
+    theme === "dark" ? "#1d1810" : "#ebe1cc";
 }
 
 function changeTheme(theme) {
@@ -52,16 +52,3 @@ system.addEventListener("change", (event) => {
 reducedMotion.addEventListener("change", () => {
   if (reducedMotion.matches) transition?.skipTransition();
 });
-
-// Warm the other garden after page load so its first theme switch can crossfade.
-if (root.dataset.page === "home") {
-  window.addEventListener("load", () => {
-    const image = new Image();
-    image.decoding = "async";
-    image.fetchPriority = "low";
-    image.src =
-      root.dataset.theme === "dark"
-        ? "/hero-garden.webp"
-        : "/hero-garden-dark.webp";
-  });
-}

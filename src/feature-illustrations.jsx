@@ -1,14 +1,11 @@
 import { createRoot } from "react-dom/client";
 import {
   Bold,
-  Bot,
   CaseSensitive,
   ChevronDown,
   ChevronRight,
-  CodeXml,
   Download,
   FileDown,
-  FilePenLine,
   FileText,
   Folder,
   FolderOpen,
@@ -20,7 +17,6 @@ import {
   List,
   MessageCircle,
   PanelLeft,
-  PenLine,
   Search,
   Sigma,
   Star,
@@ -28,9 +24,20 @@ import {
   Undo2,
 } from "lucide-react";
 
-function EditorPreview({ label = "welcome.md", className = "" }) {
+// hibi's real ui, printed and cut out: a white cut edge, a warm wash, a shadow, sometimes a strip of tape.
+function Print({ className, tape, children }) {
   return (
-    <div className={`editor-preview ${className}`}>
+    <div className={`print ${className}`}>
+      <span className="print-shadow" />
+      {children}
+      {tape && <span className={`tape ${tape}`} />}
+    </div>
+  );
+}
+
+function EditorPreview({ label = "welcome.md" }) {
+  return (
+    <div className="editor-preview">
       <div className="preview-titlebar">
         <PanelLeft />
         <span>{label}</span>
@@ -68,16 +75,22 @@ function EditorPreview({ label = "welcome.md", className = "" }) {
 }
 
 function WorkspaceIllustration() {
-  return <EditorPreview className="workspace-preview" />;
+  return (
+    <Print className="workspace-print" tape="tape-blue">
+      <EditorPreview />
+    </Print>
+  );
 }
 
-function FormatPage({ extension, icon: Icon, className }) {
+function FormatPage({ extension, icon: Icon, className, tape }) {
   return (
-    <div className={`format-page ${className}`}>
-      <span className="format-extension">{extension}</span>
-      <Icon className="format-symbol" />
-      <div className="format-lines"><i /><i /><i /></div>
-    </div>
+    <Print className={`format-page ${className}`} tape={tape}>
+      <div className="format-page-inner">
+        <span className="format-extension">{extension}</span>
+        <Icon className="format-symbol" />
+        <div className="format-lines"><i /><i /><i /></div>
+      </div>
+    </Print>
   );
 }
 
@@ -86,7 +99,7 @@ function FormatsIllustration() {
     <div className="format-stack">
       <FormatPage extension=".md" icon={Hash} className="format-markdown" />
       <FormatPage extension=".tex" icon={Sigma} className="format-latex" />
-      <FormatPage extension=".typ" icon={CaseSensitive} className="format-typst" />
+      <FormatPage extension=".typ" icon={CaseSensitive} className="format-typst" tape="tape-periwinkle" />
     </div>
   );
 }
@@ -94,30 +107,36 @@ function FormatsIllustration() {
 function ThemesIllustration() {
   return (
     <div className="theme-stack">
-      <EditorPreview label="nord" className="theme-nord" />
-      <EditorPreview label="catppuccin" className="theme-catppuccin" />
+      <Print className="theme-print theme-nord">
+        <EditorPreview label="nord" />
+      </Print>
+      <Print className="theme-print theme-catppuccin" tape="tape-cream">
+        <EditorPreview label="catppuccin" />
+      </Print>
     </div>
   );
 }
 
 function AddonsIllustration() {
   return (
-    <div className="addon-preview">
-      <strong>addons</strong>
-      <div className="preview-filter"><Search /><span>filter addons…</span></div>
-      {[
-        ["git", GitBranch],
-        ["latex", Sigma],
-        ["vim", Keyboard],
-        ["export", FileDown],
-      ].map(([name, Icon]) => (
-        <div className="preview-addon-row" key={name}>
-          <Icon />
-          <span>{name}</span>
-          <span className="preview-switch" />
-        </div>
-      ))}
-    </div>
+    <Print className="addon-print" tape="tape-dots">
+      <div className="addon-preview">
+        <strong>addons</strong>
+        <div className="preview-filter"><Search /><span>filter addons…</span></div>
+        {[
+          ["git", GitBranch],
+          ["latex", Sigma],
+          ["vim", Keyboard],
+          ["export", FileDown],
+        ].map(([name, Icon]) => (
+          <div className="preview-addon-row" key={name}>
+            <Icon />
+            <span>{name}</span>
+            <span className="preview-switch" />
+          </div>
+        ))}
+      </div>
+    </Print>
   );
 }
 
@@ -126,10 +145,6 @@ for (const [id, Illustration] of [
   ["formats-illustration", FormatsIllustration],
   ["themes-illustration", ThemesIllustration],
   ["addons-illustration", AddonsIllustration],
-  ["writer-icon", PenLine],
-  ["editor-icon", FilePenLine],
-  ["developer-icon", CodeXml],
-  ["ai-user-icon", Bot],
   ["beta-icon", TriangleAlert],
 ]) {
   createRoot(document.getElementById(id)).render(<Illustration />);

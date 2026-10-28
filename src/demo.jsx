@@ -166,7 +166,7 @@ function WindowControls() {
 
 // An easter egg: the x profile in this note and its caption follow on a plain click, or Enter on the
 // selected image, unlike other links. The rich view shows the linked image without its link.
-const egg = "misc/found on my phone.md";
+const egg = "misc/follow me.md";
 const eggImage = 'img[src="/found/x-profile.webp"]';
 const eggTarget = (target) =>
   target.closest?.(".tiptap .document-media")?.querySelector(eggImage) ??

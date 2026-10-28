@@ -1,8 +1,6 @@
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
-import { marked } from "marked";
-import sanitizeHtml from "sanitize-html";
-import { RELEASES, fromGitHub, nightlyFromFeed, renderDownloadPage, renderFallback } from "../src/release.js";
+import { RELEASES, fromGitHub, renderDownloadPage, renderFallback } from "../src/release.js";
 
 const API = "https://api.github.com/repos/schmayterling/hibi/releases";
 const NIGHTLY_FEED = `${RELEASES}/download/nightly/feed.json`;
@@ -27,19 +25,8 @@ async function nightlyFeed(fetch, signal) {
   }
 }
 
-/** the release body (markdown written by the release workflow) as safe html: no raw html, links open as links */
-export function renderNotes(markdown) {
-  if (typeof markdown !== "string" || !markdown.trim()) return "";
-  return sanitizeHtml(marked.parse(markdown.slice(0, 20000)), {
-    allowedTags: ["p", "ul", "ol", "li", "strong", "em", "code", "pre", "a", "h3", "h4", "blockquote", "br"],
-    allowedAttributes: { a: ["href"] },
-    allowedSchemes: ["https"],
-    transformTags: { h1: "h3", h2: "h3", h3: "h4", h4: "h4", h5: "h4", h6: "h4" },
-  });
-}
-
 /**
- * the latest release from GitHub's api (sizes, sha256 digests, notes), earlier releases and the newest nightly.
+ * the latest release and the newest nightly from GitHub's api (installers, sizes, sha256 digests).
  * one api request (the release list) unless the latest release is older than the last 30 builds.
  */
 export async function fetchRelease({ fetch = globalThis.fetch, token = process.env.GITHUB_TOKEN, timeout = 8000 } = {}) {
@@ -57,23 +44,21 @@ export async function fetchRelease({ fetch = globalThis.fetch, token = process.e
     releases.find((entry) => tag && entry.tag_name === tag) ??
     (tag ? null : releases.find((entry) => !entry.draft && !entry.prerelease)) ??
     (await api("/latest"));
-  return fromGitHub(latest, { notes: renderNotes(latest.body), list: releases, nightly });
+  return fromGitHub(latest, { list: releases, nightly });
 }
 
 /**
- * /api/release: the build's snapshot while it is still the latest release (github.com's redirect says so
- * without spending the api's 60 requests an hour) with a fresh nightly, the api when a newer release is out,
- * the snapshot again when GitHub can't be reached. CDN-cached for five minutes either way.
+ * /api/release: the build's snapshot while its release and nightly are still the newest (github.com's redirect
+ * and the nightly feed say so without spending the api's 60 requests an hour), the api when a newer one is out
+ * (a nightly's installers are only in the api), the snapshot again when GitHub can't be reached. CDN-cached for
+ * five minutes either way.
  */
 export async function releaseResponse(snapshot, { fetch = globalThis.fetch, token, timeout = 6000 } = {}) {
   const signal = AbortSignal.timeout(timeout);
   try {
-    const tag = await latestTag(fetch, signal);
-    let release;
-    if (snapshot && tag === snapshot.tag) {
-      const nightly = nightlyFromFeed(await nightlyFeed(fetch, signal));
-      release = { ...snapshot, nightly: nightly ?? snapshot.nightly };
-    } else release = await fetchRelease({ fetch, token, timeout });
+    const [tag, feed] = await Promise.all([latestTag(fetch, signal), nightlyFeed(fetch, signal)]);
+    const current = snapshot && tag === snapshot.tag && (!feed?.tag || feed.tag === snapshot.nightly?.tag);
+    const release = current ? snapshot : await fetchRelease({ fetch, token, timeout });
     return { status: 200, cache: "public, max-age=0, s-maxage=300, stale-while-revalidate=86400", body: release };
   } catch (error) {
     if (!snapshot) throw error;

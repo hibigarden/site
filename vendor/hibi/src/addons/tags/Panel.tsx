@@ -1,0 +1,253 @@
+import { CircleAlert, FileText, Tags } from 'lucide-react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import type { WorkspaceTagSummary } from '../../shared/workspace-query'
+import { workspaceSyntaxEvents } from '../../shared/workspace-syntax-events.ts'
+import type { AddonContext } from '../api'
+import { Button, ControlRow, Panel, PanelMessage, TextInput } from '../ui'
+import { useSerialRead, useWorkspaceQueryTarget } from '../use-workspace-query'
+
+export function TagsPanel({
+  context,
+  selection,
+}: {
+  context: AddonContext
+  selection: unknown
+}) {
+  const {
+    target,
+    workspace,
+    revision,
+    loading: targetLoading,
+    error: targetError,
+  } = useWorkspaceQueryTarget(context)
+  const [query, setQuery] = useState('')
+  const [selected, select] = useState('')
+  const syntaxRevision = useSyncExternalStore(
+    workspaceSyntaxEvents.subscribe,
+    workspaceSyntaxEvents.snapshot,
+  )
+  const [summary, setSummary] = useState<{
+    workspaceId: string
+    generation: number
+    syntaxRevision: number
+    tags: readonly WorkspaceTagSummary[]
+    complete: boolean
+  } | null>(null)
+  const [selectedFiles, setSelectedFiles] = useState<{
+    workspaceId: string
+    generation: number
+    syntaxRevision: number
+    tag: string
+    files: readonly string[]
+  } | null>(null)
+  const [tagsError, setTagsError] = useState('')
+  const [filesError, setFilesError] = useState('')
+  const readTags = useSerialRead()
+  const readFiles = useSerialRead()
+  const latest = useRef(target)
+  useEffect(() => {
+    const tag =
+      selection && typeof selection === 'object' && 'tag' in selection
+        ? selection.tag
+        : undefined
+    if (typeof tag === 'string') {
+      select(tag)
+      setQuery('')
+    }
+  }, [selection])
+  useEffect(() => {
+    void revision
+    latest.current = target
+    if (!target) {
+      setSummary(null)
+      readTags(null)
+      return
+    }
+    readTags(async (alive, retry) => {
+      // Each read reports its own outcome; a read for an older workspace stays quiet.
+      setTagsError('')
+      try {
+        const tags: WorkspaceTagSummary[] = []
+        let offset = 0
+        let complete = false
+        do {
+          const response = await context.workspace.query({
+            target,
+            kind: 'tags',
+            offset,
+            limit: 100,
+          })
+          // The workspace changed while paging, such as opening a note.
+          if (!response.ok && response.code === 'stale') return retry()
+          if (!response.ok) throw new Error(response.message)
+          if (response.value.kind !== 'tags')
+            throw new Error('Invalid tags query.')
+          tags.push(...response.value.items)
+          complete = response.value.complete
+          if (!response.value.hasMore) break
+          if (response.value.nextOffset <= offset)
+            throw new Error('Tags query stopped early.')
+          offset = response.value.nextOffset
+        } while (alive())
+        if (alive())
+          setSummary({
+            workspaceId: target.workspaceId,
+            generation: target.workspaceGeneration,
+            syntaxRevision,
+            tags,
+            complete,
+          })
+      } catch (error) {
+        if (alive() && latest.current === target)
+          setTagsError(error instanceof Error ? error.message : String(error))
+      }
+    })
+  }, [context, target, revision, syntaxRevision, readTags])
+  useEffect(() => {
+    void revision
+    if (!target || !selected) {
+      setSelectedFiles(null)
+      readFiles(null)
+      return
+    }
+    readFiles(async (alive, retry) => {
+      setFilesError('')
+      try {
+        const files: string[] = []
+        let offset = 0
+        do {
+          const response = await context.workspace.query({
+            target,
+            kind: 'tag',
+            tag: selected,
+            offset,
+            limit: 100,
+          })
+          if (!response.ok && response.code === 'stale') return retry()
+          if (!response.ok) throw new Error(response.message)
+          if (response.value.kind !== 'tag')
+            throw new Error('Invalid tag query.')
+          files.push(...response.value.items)
+          if (!response.value.hasMore) break
+          if (response.value.nextOffset <= offset)
+            throw new Error('Tag query stopped early.')
+          offset = response.value.nextOffset
+        } while (alive())
+        if (alive())
+          setSelectedFiles({
+            workspaceId: target.workspaceId,
+            generation: target.workspaceGeneration,
+            syntaxRevision,
+            tag: selected,
+            files,
+          })
+      } catch (error) {
+        if (alive() && latest.current === target)
+          setFilesError(error instanceof Error ? error.message : String(error))
+      }
+    })
+  }, [context, target, selected, revision, syntaxRevision, readFiles])
+  const current =
+    summary?.workspaceId === target?.workspaceId &&
+    summary?.generation === target?.workspaceGeneration &&
+    summary?.syntaxRevision === syntaxRevision
+      ? summary
+      : null
+  const index = current?.tags ?? []
+  const matches = index.filter(({ tag }) =>
+    tag.includes(query.trim().replace(/^#/, '').toLowerCase()),
+  )
+  const files =
+    selectedFiles?.workspaceId === target?.workspaceId &&
+    selectedFiles?.generation === target?.workspaceGeneration &&
+    selectedFiles?.syntaxRevision === syntaxRevision &&
+    selectedFiles?.tag === selected
+      ? selectedFiles.files
+      : []
+  const error = targetError || tagsError || filesError
+  return (
+    <Panel className="tags-panel">
+      <ControlRow className="tags-controls">
+        <TextInput
+          type="search"
+          aria-label="Filter tags"
+          placeholder="Filter tags…"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
+      </ControlRow>
+      {error ? (
+        <PanelMessage
+          icon={<CircleAlert size={24} />}
+          title="Tags unavailable"
+          role="alert"
+        >
+          {error}
+        </PanelMessage>
+      ) : (targetLoading || target) && !current ? (
+        <PanelMessage icon={<Tags size={24} />} title="Reading tags…" loading />
+      ) : !workspace ? (
+        <PanelMessage icon={<Tags size={24} />} title="No workspace open">
+          Open a workspace to browse tags across your notes.
+        </PanelMessage>
+      ) : !matches.length ? (
+        <PanelMessage
+          icon={<Tags size={24} />}
+          title={index.length ? 'No matching tags' : 'No tags yet'}
+        >
+          {current && !current.complete && (
+            <span role="status">Tag index incomplete. </span>
+          )}
+          {index.length
+            ? 'Try another filter.'
+            : 'Write #tag in a note to organize it here.'}
+        </PanelMessage>
+      ) : (
+        <div className="tags-browser">
+          <section className="tags-list" aria-label="Workspace tags">
+            {!current?.complete && <p role="status">Tag index incomplete.</p>}
+            {matches.map(({ tag, count }) => (
+              <Button
+                variant="row"
+                key={tag}
+                aria-pressed={selected === tag}
+                onClick={() => select(tag)}
+              >
+                <span>#{tag}</span>
+                <span>{count}</span>
+              </Button>
+            ))}
+          </section>
+          {files.length > 0 && (
+            <section
+              className="tags-files"
+              aria-label={
+                selected ? `Notes tagged #${selected}` : 'Tagged notes'
+              }
+            >
+              <p>
+                {selected
+                  ? `#${selected} · ${files.length} ${files.length === 1 ? 'note' : 'notes'}`
+                  : 'Select a tag to see its notes.'}
+              </p>
+              {files.map((path) => (
+                <Button
+                  variant="row"
+                  key={path}
+                  onClick={() => {
+                    void context.workspace.openFile(path)
+                  }}
+                >
+                  <FileText size={14} aria-hidden="true" />
+                  <span data-tooltip={path} data-verbatim="true">
+                    {path}
+                  </span>
+                </Button>
+              ))}
+            </section>
+          )}
+        </div>
+      )}
+    </Panel>
+  )
+}

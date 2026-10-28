@@ -670,7 +670,8 @@
   overflow: hidden;
 }
 svg.button-icon,
-.feats svg {
+.feats > li > svg,
+.feat-stage svg {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.75;
@@ -956,17 +957,63 @@ svg.button-icon,
   min-height: 44px;
   margin-top: 4px;
 }
-/* what comes with it: an icon, three words, one line */
+/* what comes with it: six cards of the page's paper, each with a small drawing of hibi in its own themes
+   (catppuccin latte by day, hibsy by night, like the windows above). the drawings are html, aria-hidden. */
 .feats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 44px 56px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 28px;
   margin: 96px 0 0;
-  padding: 52px 0 0;
-  border-top: 1px solid var(--rule);
+  padding: 0;
   list-style: none;
 }
-.feats svg {
+.feats > li {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 26px 28px 22px;
+}
+.feats > li::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--deckle, var(--deckle-2));
+}
+.feats > li::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: -2;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
+    0 12px 22px -12px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.feats > li:nth-child(4n + 1) {
+  --deckle: var(--deckle-1);
+}
+.feats > li:nth-child(4n + 3) {
+  --deckle: var(--deckle-3);
+}
+.feats > li:nth-child(4n + 4) {
+  --deckle: var(--deckle-4);
+}
+.feat-files,
+.feat-license {
+  grid-column: span 2;
+}
+.feat-typst,
+.feat-quick {
+  grid-column: span 4;
+}
+.feat-yours,
+.feat-batteries {
+  grid-column: span 3;
+}
+.feats > li > svg {
   display: block;
   width: 22px;
   height: 22px;
@@ -986,6 +1033,459 @@ svg.button-icon,
 .feats a {
   font-size: 13px;
   white-space: nowrap;
+}
+.feat-stage {
+  --m-bg: #eff1f5;
+  --m-surface: #e6e9ef;
+  --m-sidebar: #e6e9ef;
+  --m-ink: #4c4f69;
+  --m-muted: #5c5f77;
+  --m-accent: #8435e8;
+  --m-border: #ccd0da;
+  --m-active: #dce0e8;
+  --m-shadow: 40 30 16;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 14px;
+  height: 236px;
+  margin-top: auto;
+  padding: 22px 20px 0;
+  overflow: clip;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--card-tan) 55%, var(--card-white));
+  color: var(--m-ink);
+  font: 400 13px/1.4 var(--font-ui);
+  user-select: none;
+}
+[data-theme="dark"] .feat-stage {
+  background: color-mix(in srgb, var(--page) 60%, var(--card-white));
+  --m-bg: #18181b;
+  --m-surface: #201f25;
+  --m-sidebar: #111114;
+  --m-ink: #dedde0;
+  --m-muted: #8e8e94;
+  --m-accent: #a78bfa;
+  --m-border: #262629;
+  --m-active: #2a243a;
+  --m-shadow: 0 0 0;
+}
+.feats > li > p {
+  margin-bottom: 22px;
+}
+.feat-stage .mk-icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: var(--m-muted);
+  stroke-width: 1.5;
+}
+.mk-window {
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid var(--m-border);
+  border-radius: 8px;
+  background: var(--m-bg);
+  box-shadow:
+    0 1px 2px rgb(var(--m-shadow) / 0.12),
+    0 12px 26px -14px rgb(var(--m-shadow) / 0.38);
+}
+.mk-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 12px 0 calc(12px + var(--depth, 0) * 18px);
+  white-space: nowrap;
+}
+.mk-row > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mk-row.is-active {
+  background: var(--m-active);
+}
+.mk-label {
+  display: block;
+  padding: 8px 14px 4px;
+  color: var(--m-muted);
+  font-size: 11px;
+}
+.mk-button {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--m-border);
+  border-radius: 6px;
+  font-size: 11.5px;
+}
+.mk-button.is-primary {
+  border-color: var(--m-ink);
+  background: var(--m-ink);
+  color: var(--m-bg);
+}
+.mk-caret {
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  margin-left: 1px;
+  vertical-align: -2px;
+  background: var(--m-accent);
+}
+.mk-tab {
+  display: flex;
+  height: 32px;
+  padding: 6px 8px 0;
+  border-bottom: 1px solid var(--m-border);
+  background: var(--m-surface);
+}
+.mk-tab span {
+  padding: 4px 12px;
+  border: 1px solid var(--m-border);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: var(--m-bg);
+  font-size: 11.5px;
+}
+/* your files: the workspace sidebar */
+.mk-sidebar {
+  width: min(100%, 250px);
+  padding-bottom: 6px;
+  background: var(--m-sidebar);
+}
+.mk-side-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px;
+  color: var(--m-muted);
+  font-size: 12px;
+}
+/* beyond markdown: typst source beside its preview */
+.mk-split {
+  width: min(100%, 560px);
+}
+.mk-panes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.mk-source {
+  margin: 0;
+  padding: 14px;
+  overflow: hidden;
+  border-right: 1px solid var(--m-border);
+  font: 400 12px/1.75 var(--mono);
+  white-space: pre;
+}
+.mk-source b,
+.mk-source i {
+  color: var(--m-accent);
+  font-style: normal;
+  font-weight: 400;
+}
+.mk-source em {
+  color: var(--m-muted);
+  font-style: normal;
+}
+.mk-preview {
+  padding: 14px 16px;
+  background: var(--m-surface);
+}
+.mk-page {
+  padding: 14px 16px 18px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.16);
+  color: #1d1d1f;
+  font-family: var(--serif);
+}
+.mk-page strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+}
+.mk-page p {
+  margin-top: 6px;
+  color: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.mk-page .mk-math {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 13px;
+}
+.mk-page sup {
+  font-size: 0.65em;
+}
+/* make it yours: colorscheme, an addon and a shortcut */
+.mk-settings {
+  width: min(100%, 420px);
+  padding-bottom: 4px;
+}
+.mk-scheme .mk-swatch {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--m-border);
+  border-radius: 999px;
+  background: #eff1f5;
+}
+.mk-scheme.is-hibsy .mk-swatch {
+  background: #18181b;
+}
+.mk-swatch i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4c4f69;
+}
+.mk-swatch i + i {
+  margin-left: 2px;
+  background: #8435e8;
+}
+.mk-scheme.is-hibsy .mk-swatch i {
+  background: #dedde0;
+}
+.mk-scheme.is-hibsy .mk-swatch i + i {
+  background: #a78bfa;
+}
+:root:not([data-theme="dark"]) .mk-scheme.is-latte,
+[data-theme="dark"] .mk-scheme.is-hibsy {
+  background: var(--m-active);
+}
+:root:not([data-theme="dark"]) .mk-scheme.is-latte::after,
+[data-theme="dark"] .mk-scheme.is-hibsy::after {
+  content: "✓" / "";
+  margin-left: auto;
+  color: var(--m-accent);
+}
+.mk-set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  padding: 9px 14px;
+  border-top: 1px solid var(--m-border);
+}
+.mk-addon {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.mk-addon b {
+  font-weight: 600;
+}
+.mk-addon small {
+  overflow: hidden;
+  color: var(--m-muted);
+  font-size: 11.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mk-switch {
+  flex-shrink: 0;
+  width: 30px;
+  height: 18px;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--m-accent);
+}
+.mk-switch i {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: #fff;
+}
+.mk-keys {
+  display: inline-flex;
+  gap: 3px;
+}
+.mk-keys kbd {
+  min-width: 20px;
+  padding: 1px 5px;
+  border: 1px solid var(--m-border);
+  border-radius: 4px;
+  font: 11px/1.4 var(--font-ui);
+  text-align: center;
+}
+/* batteries included: the git panel, vim in the status bar, export in the palette */
+.mk-git {
+  width: min(54%, 280px);
+  background: var(--m-sidebar);
+}
+.mk-git-head {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px 8px;
+}
+.mk-git-head small {
+  color: var(--m-muted);
+  font-size: 11px;
+}
+.mk-select,
+.mk-input {
+  display: block;
+  padding: 4px 10px;
+  border: 1px solid var(--m-border);
+  border-radius: 6px;
+  background: var(--m-bg);
+  font-size: 12px;
+}
+.mk-input {
+  margin: 0 12px;
+  color: var(--m-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mk-git-file code {
+  width: 18px;
+  color: var(--m-accent);
+  font: 400 11.5px var(--mono);
+  white-space: pre;
+}
+.mk-git-file .mk-icon:last-child {
+  margin-left: auto;
+}
+.mk-status {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  padding: 6px 12px;
+  border-top: 1px solid var(--m-border);
+  color: var(--m-muted);
+  font-size: 11px;
+}
+.mk-palette {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 300px;
+  margin-top: 34px;
+}
+.mk-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--m-border);
+}
+.mk-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 5px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.mk-option.is-on {
+  background: var(--m-active);
+}
+.mk-option > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mk-option small {
+  margin-left: auto;
+  color: var(--m-muted);
+  font-size: 10.5px;
+}
+/* quick notes: the capture window over another app */
+.mk-other {
+  position: absolute;
+  top: 22px;
+  left: 20px;
+  width: 62%;
+  height: 210px;
+  padding: 38px 22px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--card-white) 70%, #d7d2c6);
+  box-shadow: 0 1px 2px rgb(var(--m-shadow) / 0.12);
+}
+[data-theme="dark"] .mk-other {
+  background: #2c2924;
+}
+.mk-other i {
+  display: block;
+  height: 7px;
+  margin-top: 12px;
+  border-radius: 4px;
+  background: rgb(var(--shadow-rgb) / 0.12);
+}
+[data-theme="dark"] .mk-other i {
+  background: rgb(255 255 255 / 0.08);
+}
+.mk-other i.short {
+  width: 55%;
+}
+.mk-capture {
+  position: absolute;
+  top: 46px;
+  right: 24px;
+  width: min(62%, 340px);
+}
+.mk-toolbar {
+  display: flex;
+  gap: 14px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--m-border);
+  color: var(--m-muted);
+  font: 12px/1 var(--font-ui);
+}
+.mk-capture-text {
+  padding: 12px 14px 16px;
+}
+.mk-capture-text strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.mk-capture-text p {
+  margin: 4px 0 0;
+  color: var(--m-ink);
+  font-size: 12.5px;
+}
+.mk-capture-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 8px 14px;
+  border-top: 1px solid var(--m-border);
+  background: var(--m-surface);
+}
+.mk-capture-bar > span:first-child {
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--m-muted);
+  font-size: 11px;
+}
+/* free and open source: hibi's licence, open in hibi */
+.mk-doc {
+  width: min(100%, 300px);
+}
+.mk-doc-body {
+  padding: 14px 16px;
+}
+.mk-doc-body strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.mk-doc-body p {
+  margin: 6px 0 0;
+  color: var(--m-ink);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.mk-doc-body .mk-faint {
+  margin-top: 10px;
+  color: var(--m-muted);
+  font: 400 10.5px/1.6 var(--mono);
 }
 
 /* an app of their own: the newest addons on six plain cards (built into the page, so it never opens a hole) */
@@ -1358,11 +1858,15 @@ svg.button-icon,
   font: 400 12.5px/1.5 var(--mono);
 }
 
-@media (max-width: 900px) {
-  .feats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 34px 28px;
+@media (max-width: 1024px) {
+  .feats > li {
+    grid-column: span 3;
   }
+  .mk-option small {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
   .faq {
     grid-template-columns: 1fr;
   }
@@ -1420,9 +1924,37 @@ svg.button-icon,
     margin-top: 28px;
   }
   .feats {
-    gap: 30px 20px;
+    grid-template-columns: 1fr;
+    gap: 22px;
     margin-top: 80px;
-    padding-top: 36px;
+  }
+  .feats > li {
+    grid-column: auto;
+    padding: 22px 20px 18px;
+  }
+  .feat-stage {
+    padding-inline: 14px;
+    height: auto;
+    padding-bottom: 18px;
+  }
+  .stage-quick {
+    height: 236px;
+  }
+  .mk-capture {
+    right: 14px;
+    width: 84%;
+  }
+  .stage-batteries {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .stage-batteries .mk-git {
+    width: auto;
+  }
+  .stage-batteries .mk-palette {
+    flex: none;
+    max-width: none;
+    margin-top: 0;
   }
   .feats h3 {
     font-size: 19px;

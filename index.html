@@ -320,12 +320,49 @@
           </article>
         </div>
         <ul class="feats" id="features" aria-label="features">
-          <li><svg aria-hidden="true"><use href="#i-folder" /></svg><h3>your files, your folders.</h3><p>keep your notes on your computer.</p></li>
-          <li><svg aria-hidden="true"><use href="#i-file-text" /></svg><h3>beyond markdown.</h3><p>write in typst, latex, mdx, and more.</p></li>
-          <li><svg aria-hidden="true"><use href="#i-sliders" /></svg><h3>make it yours.</h3><p>add tools, choose a theme, and set up your shortcuts. <a href="https://docs.hibi.garden/#page=guides%2Fsettings.md">settings</a></p></li>
-          <li><svg aria-hidden="true"><use href="#i-battery" /></svg><h3>batteries included.</h3><p>git, latex, vim, and export come built in.</p></li>
-          <li><svg aria-hidden="true"><use href="#i-feather" /></svg><h3>quick notes.</h3><p>catch a thought from any app.</p></li>
-          <li><svg aria-hidden="true"><use href="#i-code" /></svg><h3>free and open source.</h3><p>gpl-3.0. <a href="https://github.com/schmayterling/hibi">view source</a></p></li>
+          <li class="feat-files"><svg aria-hidden="true"><use href="#i-folder" /></svg><h3>your files, your folders.</h3><p>keep your notes on your computer.</p>
+          <div class="feat-stage stage-files" aria-hidden="true"><div class="mk-window mk-sidebar"><span class="mk-side-head"><svg class="mk-icon" viewBox="0 0 24 24"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg><span>garden</span></span><span class="mk-row is-folder"><svg class="mk-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg><span>journal</span></span><span class="mk-row" style="--depth: 1"><svg class="mk-icon" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg><span>monday.md</span></span><span class="mk-row is-active" style="--depth: 1"><svg class="mk-icon" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg><span>tuesday.md</span></span><span class="mk-row is-folder"><svg class="mk-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg><span>plants</span></span><span class="mk-row" style="--depth: 1"><svg class="mk-icon" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg><span>lavender.md</span></span><span class="mk-row"><svg class="mk-icon" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg><span>reading list.md</span></span></div></div></li>
+          <li class="feat-typst"><svg aria-hidden="true"><use href="#i-file-text" /></svg><h3>beyond markdown.</h3><p>write in typst, latex, mdx, and more.</p>
+          <div class="feat-stage stage-typst" aria-hidden="true"><div class="mk-window mk-split">
+            <div class="mk-tab"><span>field-notes.typ</span></div>
+            <div class="mk-panes">
+              <pre class="mk-source"><b>= Field notes</b>
+The lavender opened on <i>*Monday*</i>.
+
+<em>$ a^2 + b^2 = c^2 $</em></pre>
+              <div class="mk-preview"><div class="mk-page"><strong>Field notes</strong><p>The lavender opened on <b>Monday</b>.</p><p class="mk-math"><i>a</i><sup>2</sup> + <i>b</i><sup>2</sup> = <i>c</i><sup>2</sup></p></div></div>
+            </div>
+          </div></div></li>
+          <li class="feat-yours"><svg aria-hidden="true"><use href="#i-sliders" /></svg><h3>make it yours.</h3><p>add tools, choose a theme, and set up your shortcuts. <a href="https://docs.hibi.garden/#page=guides%2Fsettings.md">settings</a></p>
+          <div class="feat-stage stage-yours" aria-hidden="true"><div class="mk-window mk-settings">
+            <small class="mk-label">Colorscheme</small>
+            <span class="mk-row mk-scheme is-latte"><span class="mk-swatch"><i></i><i></i></span><span>Catppuccin latte</span></span>
+            <span class="mk-row mk-scheme is-hibsy"><span class="mk-swatch"><i></i><i></i></span><span>hibsy</span></span>
+            <div class="mk-set-row"><span class="mk-addon"><b>Vim</b><small>Use Vim keys and commands in source views.</small></span><span class="mk-switch is-on"><i></i></span></div>
+            <div class="mk-set-row"><span>Command palette</span><span class="mk-keys"><kbd>⌘</kbd><kbd>K</kbd></span></div>
+          </div></div></li>
+          <li class="feat-batteries"><svg aria-hidden="true"><use href="#i-battery" /></svg><h3>batteries included.</h3><p>git, latex, vim, and export come built in.</p>
+          <div class="feat-stage stage-batteries" aria-hidden="true"><div class="mk-window mk-git">
+            <div class="mk-git-head"><small>Branch</small><span class="mk-select">main</span></div>
+            <span class="mk-input">Describe your changes…</span>
+            <small class="mk-label">Changes · 2</small>
+            <span class="mk-row mk-git-file"><code>&nbsp;M</code><span>tuesday.md</span><svg class="mk-icon" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
+            <span class="mk-row mk-git-file"><code>??</code><span>lavender.md</span><svg class="mk-icon" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span>
+            <div class="mk-status"><span>Vim · normal</span></div>
+          </div>
+          <div class="mk-window mk-palette"><div class="mk-search"><svg class="mk-icon" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg><span>export</span></div><div class="mk-option is-on"><svg class="mk-icon" viewBox="0 0 24 24"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg><span>Export workspace to HTML</span><small>Addons</small></div></div></div></li>
+          <li class="feat-quick"><svg aria-hidden="true"><use href="#i-feather" /></svg><h3>quick notes.</h3><p>catch a thought from any app.</p>
+          <div class="feat-stage stage-quick" aria-hidden="true"><div class="mk-other"><i></i><i></i><i class="short"></i><i></i><i class="short"></i></div>
+          <div class="mk-window mk-capture">
+            <div class="mk-toolbar"><b>B</b><i>I</i><s>S</s><span>“</span><span>•</span></div>
+            <div class="mk-capture-text"><strong>lavender</strong><p>opens on monday, by the bench.<i class="mk-caret"></i></p></div>
+            <div class="mk-capture-bar"><span>garden / inbox</span><span class="mk-button">Cancel</span><span class="mk-button is-primary">Save</span></div>
+          </div></div></li>
+          <li class="feat-license"><svg aria-hidden="true"><use href="#i-code" /></svg><h3>free and open source.</h3><p>gpl-3.0. <a href="https://github.com/schmayterling/hibi">view source</a></p>
+          <div class="feat-stage stage-license" aria-hidden="true"><div class="mk-window mk-doc">
+            <div class="mk-tab"><span>LICENSE.md</span></div>
+            <div class="mk-doc-body"><strong>hibi license</strong><p>Hibi is licensed under the GNU General Public License, version 3 only.</p><p class="mk-faint">GNU GENERAL PUBLIC LICENSE<br />Version 3, 29 June 2007</p></div>
+          </div></div></li>
         </ul>
       </section>
       <section class="s own-app wrap" aria-labelledby="control-title" data-scene="chase">

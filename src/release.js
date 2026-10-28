@@ -137,12 +137,12 @@ function buildTable(files) {
       </div>`;
 }
 
-const STABLE = `<details class="download-question">
+const STABLE = `<details class="faq-item">
         <summary>is hibi stable?</summary>
         <p>bugs, slowdowns, and crashes can happen. addons are especially experimental and still being improved. if something breaks, please <a href="${REPOSITORY}/issues">file an issue</a> so i can keep track and work on a fix.</p>
         <p>if you need a stable app, please check back later. this is a hobby project, so i can’t promise immediate fixes or new features. <a href="${REPOSITORY}/pulls">contributions and pull requests</a> are always welcome.</p>
       </details>`;
-const questions = (...items) => `<section class="download-section download-faq" aria-labelledby="download-faq">
+const questions = (...items) => `<section class="download-section faq" aria-labelledby="download-faq">
       <h2 class="section-title" id="download-faq">questions</h2>
       ${items.join("\n      ")}
     </section>`;
@@ -168,7 +168,7 @@ export function renderDownloadPage(release) {
     </section>` : ""}
     <p class="download-releases"><a href="${RELEASES}">earlier versions and what changed in each, on github</a></p>
     ${questions(
-      `<details class="download-question">
+      `<details class="faq-item">
         <summary>how do i install hibi?</summary>
         <h3>macOS</h3>
         <p>open the .dmg and move hibi to Applications. the macOS builds are signed and notarized, and hibi updates itself from there.</p>
@@ -183,7 +183,7 @@ export function renderDownloadPage(release) {
 flatpak install --user ./${escape(example("linux", "x64", "flatpak"))}</code></pre>
         <p>use the arm64 files on 64-bit arm computers. more in the <a href="https://docs.hibi.garden/">user guide</a>.</p>
       </details>`,
-      `<details class="download-question">
+      `<details class="faq-item">
         <summary>how do i check a download?</summary>
         <p>compare the file’s sha256 with the one in the table${release.sums ? ` or in <a href="${escape(release.sums)}">SHA256SUMS.txt</a>` : ""}.</p>
         <h3>macOS</h3>
@@ -193,7 +193,7 @@ flatpak install --user ./${escape(example("linux", "x64", "flatpak"))}</code></p
         <h3>linux</h3>
         <pre><code>sha256sum ${escape(example("linux", "x64", "AppImage"))}</code></pre>
       </details>`,
-      `<details class="download-question">
+      `<details class="faq-item">
         <summary>what are beta and nightly?</summary>
         <h3>beta</h3>
         <p>numbered releases that passed every check on every platform. this page offers the newest one, ${escape(release.tag)}.</p>

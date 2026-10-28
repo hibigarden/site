@@ -91,7 +91,7 @@ test("renders every build and the nightly's without javascript, and an honest fa
   assert.match(html, /<h2 class="section-title" id="download-nightly">the newest nightly<\/h2>/);
   assert.match(html, /<code>c{64}<\/code>/, "the nightly's builds have their own table");
   assert.match(html, new RegExp(`<a href="${RELEASES}">earlier versions`));
-  assert.match(html, /<details class="download-question">\s*<summary>is hibi stable\?<\/summary>/);
+  assert.match(html, /<details class="faq-item">\s*<summary>is hibi stable\?<\/summary>/);
   assert.doesNotMatch(renderDownloadPage(fromGitHub(github, { nightly })), /download-nightly/, "no nightly table without its installers");
   assert.doesNotMatch(html, /<\/script><script/);
   const plain = renderFallback();

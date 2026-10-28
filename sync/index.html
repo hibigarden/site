@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" data-page="sync">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fffdf8" />
+    <meta name="description" content="keep the same hibi workspace on all your computers. coming soon." />
+    <meta property="og:title" content="sync | hibi" />
+    <meta property="og:description" content="keep the same hibi workspace on all your computers. coming soon." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://www.hibi.garden/opengraph.png?v=2" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="a place for your words. hibi's editor in dark mode."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://www.hibi.garden/opengraph.png?v=2" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-dark-32.png" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon-dark.png" media="(prefers-color-scheme: dark)" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script src="/theme-init.js"></script>
+    <link rel="stylesheet" href="/src/base.css" />
+    <link rel="stylesheet" href="/src/pages.css" />
+    <script type="module" src="/src/theme.js"></script>
+    <script type="module" src="/src/navigation.js"></script>
+    <title>sync | hibi</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">skip to content</a>
+    <header class="site-header page-header wrap">
+      <a class="wordmark" href="/" aria-label="hibi home"
+        ><span class="wordmark-icon" aria-hidden="true"></span>hibi</a
+      >
+      <nav aria-label="main navigation">
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-links"
+        >
+          menu
+        </button>
+        <div class="nav-links" id="site-links">
+          <a href="/addons/">addons</a>
+          <a href="/sync/" aria-current="page">sync <span class="soon-tag">soon</span></a>
+          <a href="/publish/">publish <span class="soon-tag">soon</span></a>
+          <a href="https://docs.hibi.garden"
+            >documentation <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <a class="nav-download" href="/download/">download</a>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="switch to dark mode"
+          title="switch to dark mode"
+          hidden
+        >
+          <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z" />
+          </svg>
+          <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42m0-14.14-1.42 1.42m-11.3 11.3-1.42 1.42"
+            />
+          </svg>
+        </button>
+      </nav>
+    </header>
+    <main id="main" class="product-page wrap">
+      <header class="page-intro">
+        <p class="product-soon"><span class="soon-tag">coming soon</span></p>
+        <h1>hibi sync</h1>
+        <p>the same workspace on all your computers, with your notes still plain files in your own folders.</p>
+      </header>
+      <section class="product-section" aria-labelledby="sync-what">
+        <h2 id="sync-what">what it does</h2>
+        <ul class="product-features">
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+            <h3>your notes stay files</h3>
+            <p>each computer keeps an ordinary folder. sync copies the files you’ve saved between them through a hibi addon.</p>
+          </li>
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <h3>nothing is overwritten</h3>
+            <p>when two computers change the same file, your copy stays as it is and the other version is saved beside it, so you choose which to keep.</p>
+          </li>
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <h3>deletions sync too</h3>
+            <p>a file you delete goes to the trash on your other computers. if one of them edited it in the meantime, that edit stays.</p>
+          </li>
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            <h3>you choose when</h3>
+            <p>choose sync workspace now and hibi sends and fetches what changed. the first version doesn’t run in the background.</p>
+          </li>
+        </ul>
+      </section>
+      <section class="product-section" aria-labelledby="sync-ways">
+        <h2 id="sync-ways">two ways to run it</h2>
+        <div class="product-columns">
+          <div>
+            <h3>host it yourself</h3>
+            <p>an open-source server under the MIT license, for your own workspace. run it on a computer or server you control, behind https.</p>
+          </div>
+          <div>
+            <h3>a hosted service</h3>
+            <p>planned: an account on a service that runs the server for you, with the same rules for conflicts and deletions.</p>
+          </div>
+        </div>
+      </section>
+      <section class="product-section" aria-labelledby="sync-today">
+        <h2 id="sync-today">what you can do today</h2>
+        <p>hibi is free and works without sync. a workspace is an ordinary folder, so you can already keep it in a git repository and use the built-in <a href="/addons/git">git addon</a> to commit, pull and push your notes between computers.</p>
+      </section>
+      <section class="product-section faq" aria-labelledby="sync-faq">
+        <h2 id="sync-faq">questions</h2>
+        <details class="faq-item">
+          <summary>is it end-to-end encrypted?</summary>
+          <p>no. files travel over https, and whoever runs the server can read what is stored on it. when you host it yourself, that’s only you.</p>
+        </details>
+        <details class="faq-item">
+          <summary>does it merge changes?</summary>
+          <p>no. when the same file changed on two computers, you get both versions and pick the one to keep.</p>
+        </details>
+        <details class="faq-item">
+          <summary>do i need it to use hibi?</summary>
+          <p>no. hibi stays free and works the same without sync. your notes are plain files either way.</p>
+        </details>
+        <details class="faq-item">
+          <summary>when is it coming?</summary>
+          <p>there’s no date yet.</p>
+        </details>
+      </section>
+      <section class="product-section" aria-labelledby="sync-follow">
+        <h2 id="sync-follow">hear about it first</h2>
+        <p>sync will be announced in <a href="https://discord.gg/v9r4cABUP2">hibi’s discord</a> and in the <a href="https://github.com/schmayterling/hibi/releases">releases on github</a>.</p>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-details">
+          <div>
+            <a class="footer-brand wordmark" href="/" aria-label="hibi home">
+              <span class="wordmark-icon" aria-hidden="true"></span>
+              hibi
+            </a>
+            <p class="footer-tagline">a place for your words</p>
+          </div>
+          <div class="footer-groups">
+            <div class="footer-group">
+              <h2>hibi</h2>
+              <nav aria-label="footer hibi">
+                <a href="/download/">download</a>
+                <a href="/#features">features</a>
+                <a href="/addons/">addons</a>
+                <a href="/sync/" aria-current="page">sync</a>
+                <a href="/publish/">publish</a>
+              </nav>
+            </div>
+            <div class="footer-group">
+              <h2>resources</h2>
+              <nav aria-label="footer resources">
+                <a href="https://docs.hibi.garden">documentation</a>
+                <a href="https://github.com/schmayterling/hibi/releases">changelog</a>
+                <a href="/#faq">faq</a>
+                <a href="/credits/">credits</a>
+              </nav>
+            </div>
+            <div class="footer-group">
+              <h2>community</h2>
+              <nav aria-label="footer community">
+                <a href="https://github.com/schmayterling/hibi">github</a>
+                <a href="https://discord.gg/v9r4cABUP2">discord</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 <a href="https://github.com/schmayterling">schmayterling</a></span>
+          <a href="#">back to top <span aria-hidden="true">↑</span></a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

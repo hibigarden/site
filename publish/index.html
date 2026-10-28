@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en" data-page="publish">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fffdf8" />
+    <meta name="description" content="turn a hibi workspace into a website, from inside hibi. coming soon." />
+    <meta property="og:title" content="publish | hibi" />
+    <meta property="og:description" content="turn a hibi workspace into a website, from inside hibi. coming soon." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://www.hibi.garden/opengraph.png?v=2" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="a place for your words. hibi's editor in dark mode."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://www.hibi.garden/opengraph.png?v=2" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-dark-32.png" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon-dark.png" media="(prefers-color-scheme: dark)" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script src="/theme-init.js"></script>
+    <link rel="stylesheet" href="/src/base.css" />
+    <link rel="stylesheet" href="/src/pages.css" />
+    <script type="module" src="/src/theme.js"></script>
+    <script type="module" src="/src/navigation.js"></script>
+    <title>publish | hibi</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">skip to content</a>
+    <header class="site-header page-header wrap">
+      <a class="wordmark" href="/" aria-label="hibi home"
+        ><span class="wordmark-icon" aria-hidden="true"></span>hibi</a
+      >
+      <nav aria-label="main navigation">
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-links"
+        >
+          menu
+        </button>
+        <div class="nav-links" id="site-links">
+          <a href="/addons/">addons</a>
+          <a href="/sync/">sync <span class="soon-tag">soon</span></a>
+          <a href="/publish/" aria-current="page">publish <span class="soon-tag">soon</span></a>
+          <a href="https://docs.hibi.garden"
+            >documentation <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <a class="nav-download" href="/download/">download</a>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="switch to dark mode"
+          title="switch to dark mode"
+          hidden
+        >
+          <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z" />
+          </svg>
+          <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42m0-14.14-1.42 1.42m-11.3 11.3-1.42 1.42"
+            />
+          </svg>
+        </button>
+      </nav>
+    </header>
+    <main id="main" class="product-page wrap">
+      <header class="page-intro">
+        <p class="product-soon"><span class="soon-tag">coming soon</span></p>
+        <h1>hibi publish</h1>
+        <p>turn a workspace into a website, for docs, notes or a digital garden, without leaving hibi.</p>
+      </header>
+      <section class="product-section" aria-labelledby="publish-what">
+        <h2 id="publish-what">what it does</h2>
+        <ul class="product-features">
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+            <h3>publish from hibi</h3>
+            <p>choose publish workspace from the command palette. hibi asks you to confirm before anything is uploaded.</p>
+          </li>
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="7" x="3" y="3" rx="1"/><rect width="9" height="7" x="3" y="14" rx="1"/><rect width="5" height="7" x="16" y="14" rx="1"/></svg>
+            <h3>built on the site export</h3>
+            <p>it publishes the site hibi’s export already makes, with your themes, navigation and search, and only swaps it in once the whole site checks out.</p>
+          </li>
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
+            <h3>roll back</h3>
+            <p>if a new version isn’t right, switch the site back to the one before it.</p>
+          </li>
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>
+            <h3>take it offline</h3>
+            <p>take a site down whenever you like. your workspace files are never touched.</p>
+          </li>
+        </ul>
+      </section>
+      <section class="product-section" aria-labelledby="publish-today">
+        <h2 id="publish-today">what you can do today</h2>
+        <p>choose export workspace to html from the command palette. you get a single html file, or a folder with a page per document (still experimental), and you can upload either to any web host. the <a href="https://docs.hibi.garden/#page=guides%2Fexporting.md">export guide</a> walks through the options.</p>
+      </section>
+      <section class="product-section faq" aria-labelledby="publish-faq">
+        <h2 id="publish-faq">questions</h2>
+        <details class="faq-item">
+          <summary>what becomes public?</summary>
+          <p>every page and attachment in your export, so look through the export before you publish it.</p>
+        </details>
+        <details class="faq-item">
+          <summary>do i need it to put my notes online?</summary>
+          <p>no. hibi stays free, and the export already makes a site you can host anywhere.</p>
+        </details>
+        <details class="faq-item">
+          <summary>when is it coming?</summary>
+          <p>there’s no date yet.</p>
+        </details>
+      </section>
+      <section class="product-section" aria-labelledby="publish-follow">
+        <h2 id="publish-follow">hear about it first</h2>
+        <p>publish will be announced in <a href="https://discord.gg/v9r4cABUP2">hibi’s discord</a> and in the <a href="https://github.com/schmayterling/hibi/releases">releases on github</a>.</p>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-details">
+          <div>
+            <a class="footer-brand wordmark" href="/" aria-label="hibi home">
+              <span class="wordmark-icon" aria-hidden="true"></span>
+              hibi
+            </a>
+            <p class="footer-tagline">a place for your words</p>
+          </div>
+          <div class="footer-groups">
+            <div class="footer-group">
+              <h2>hibi</h2>
+              <nav aria-label="footer hibi">
+                <a href="/download/">download</a>
+                <a href="/#features">features</a>
+                <a href="/addons/">addons</a>
+                <a href="/sync/">sync</a>
+                <a href="/publish/" aria-current="page">publish</a>
+              </nav>
+            </div>
+            <div class="footer-group">
+              <h2>resources</h2>
+              <nav aria-label="footer resources">
+                <a href="https://docs.hibi.garden">documentation</a>
+                <a href="https://github.com/schmayterling/hibi/releases">changelog</a>
+                <a href="/#faq">faq</a>
+                <a href="/credits/">credits</a>
+              </nav>
+            </div>
+            <div class="footer-group">
+              <h2>community</h2>
+              <nav aria-label="footer community">
+                <a href="https://github.com/schmayterling/hibi">github</a>
+                <a href="https://discord.gg/v9r4cABUP2">discord</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 <a href="https://github.com/schmayterling">schmayterling</a></span>
+          <a href="#">back to top <span aria-hidden="true">↑</span></a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -28,11 +28,13 @@
   border-radius: 8px;
   box-shadow: none;
 }
-.theme-toggle {
+.theme-toggle,
+.site-header nav a.nav-download {
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--line-strong);
 }
-.theme-toggle:hover {
+.theme-toggle:hover,
+.site-header nav a.nav-download:is(:hover, [aria-current="page"]) {
   background: var(--surface);
 }
 
@@ -527,7 +529,7 @@ main noscript a {
 }
 .download-section > .download-other a,
 .download-releases a,
-.download-question a {
+.faq-item a {
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
@@ -536,16 +538,16 @@ main noscript a {
   font: 400 14px/1.5 var(--mono);
 }
 /* the guides read like a faq: one question per line, opened in place */
-.download-faq {
+.faq {
   max-width: 820px;
 }
-.download-question {
+.faq-item {
   border-top: 1px solid var(--line);
 }
-.download-question:last-child {
+.faq-item:last-child {
   border-bottom: 1px solid var(--line);
 }
-.download-question summary {
+.faq-item summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -556,41 +558,41 @@ main noscript a {
   list-style: none;
   cursor: pointer;
 }
-.download-question summary::-webkit-details-marker {
+.faq-item summary::-webkit-details-marker {
   display: none;
 }
-.download-question summary::after {
+.faq-item summary::after {
   content: "+" / "";
   flex-shrink: 0;
   color: var(--ink-faint);
   font: 400 20px/1 var(--mono);
 }
-.download-question[open] summary::after {
+.faq-item[open] summary::after {
   content: "−" / "";
 }
-.download-question summary:hover {
+.faq-item summary:hover {
   color: var(--accent);
 }
-.download-question > :last-child {
+.faq-item > :last-child {
   margin-bottom: 28px;
 }
-.download-question h3 {
+.faq-item h3 {
   margin-top: 20px;
   color: var(--ink-faint);
   font: 400 12.5px/1.2 var(--mono);
   letter-spacing: 0.05em;
 }
-.download-question summary + h3 {
+.faq-item summary + h3 {
   margin-top: 4px;
 }
-.download-question p {
+.faq-item p {
   max-width: 62ch;
   margin-top: 8px;
   color: var(--ink-soft);
   font-size: 18px;
   line-height: 1.55;
 }
-.download-question pre {
+.faq-item pre {
   margin: 10px 0 0;
   padding: 10px 14px;
   overflow-x: auto;
@@ -716,7 +718,7 @@ main noscript a {
   .download-ledger {
     padding-inline: 18px;
   }
-  .download-question summary {
+  .faq-item summary {
     font-size: 21px;
   }
   /* each build is a little block (processor, file, size; its sha256 on the next line) */
@@ -787,5 +789,96 @@ main noscript a {
       color var(--motion-fast) var(--ease-out),
       background-color var(--motion-fast) var(--ease-out),
       border-color var(--motion-fast) var(--ease-out);
+  }
+}
+
+/* ---------------------------------------------------------------- sync and publish: coming soon */
+
+.product-soon {
+  margin-bottom: 14px;
+}
+.product-soon .soon-tag {
+  padding: 4px 9px 3px;
+  font: 400 12.5px/1.2 var(--mono);
+}
+.product-section {
+  max-width: 920px;
+  margin-top: 64px;
+}
+.product-section h2 {
+  font: 500 32px/1.15 var(--serif);
+}
+.product-section > p {
+  max-width: 62ch;
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: 19px;
+  line-height: 1.55;
+}
+.product-section a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.product-features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 40px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.product-features li {
+  display: grid;
+  align-content: start;
+  grid-template-columns: 24px 1fr;
+  gap: 4px 16px;
+  padding-block: 22px;
+  border-top: 1px solid var(--line);
+}
+.feature-icon {
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  color: var(--accent);
+}
+.product-features h3,
+.product-columns h3 {
+  font: 500 23px/1.25 var(--serif);
+}
+.product-features p {
+  grid-column: 2;
+  color: var(--ink-soft);
+  font-size: 18px;
+  line-height: 1.5;
+}
+.product-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 40px;
+  margin-top: 20px;
+}
+.product-columns > div {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.product-columns p {
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-size: 18px;
+  line-height: 1.5;
+}
+.faq h2 {
+  margin-bottom: 18px;
+}
+@media (max-width: 720px) {
+  .product-features,
+  .product-columns {
+    grid-template-columns: 1fr;
+  }
+  .product-columns > div + div {
+    margin-top: 24px;
+  }
+  .product-section h2 {
+    font-size: 28px;
   }
 }

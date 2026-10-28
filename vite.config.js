@@ -74,6 +74,8 @@ export default defineConfig({
         addons: "addons/index.html",
         credits: "credits/index.html",
         download: "download/index.html",
+        sync: "sync/index.html",
+        publish: "publish/index.html",
       },
     },
   },

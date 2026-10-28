@@ -11,6 +11,8 @@ import slashCommands from "../vendor/hibi/src/addons/slash-commands/hibi-addon.j
 import textExtras from "../vendor/hibi/src/addons/text-extras/hibi-addon.json";
 import textExtrasFlavors from "../vendor/hibi/src/addons/text-extras/flavor-info";
 import tags from "../vendor/hibi/src/addons/tags/hibi-addon.json";
+import typst from "../vendor/hibi/src/addons/typst/hibi-addon.json";
+import typstFlavors from "../vendor/hibi/src/addons/typst/flavor-info";
 import { parseAddonManifest } from "../vendor/hibi/src/shared/addon-manifest";
 
 function bundled(details, load, flavors) {
@@ -29,4 +31,5 @@ export default [
   bundled(slashCommands, () => import("../vendor/hibi/src/addons/slash-commands/index.ts")),
   bundled(tags, () => import("../vendor/hibi/src/addons/tags/index.tsx")),
   bundled(textExtras, () => import("../vendor/hibi/src/addons/text-extras/index.ts"), textExtrasFlavors),
+  bundled(typst, () => import("../vendor/hibi/src/addons/typst/index.tsx"), typstFlavors),
 ];

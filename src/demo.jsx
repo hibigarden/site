@@ -1,5 +1,6 @@
 import { freshVisit } from "./demo-host.js";
 import {
+  lazy,
   Suspense,
   useEffect,
   useLayoutEffect,
@@ -37,6 +38,11 @@ import { useSidebarResize } from "../vendor/hibi/src/ui/useSidebarResize";
 import notes from "./demo-notes.js";
 import "../vendor/hibi/src/renderer/src/styles.css";
 import "./demo.css";
+
+// Typst and LaTeX documents open in hibi's format editor, loaded with the first one as in the app.
+const FormatEditor = lazy(() =>
+  import("../vendor/hibi/src/renderer/src/FormatEditor").then(({ FormatEditor }) => ({ default: FormatEditor })),
+);
 
 // Inside the landing page the editor follows the site's theme switch; on its own, the saved site theme.
 const site = window.frameElement?.ownerDocument.documentElement;
@@ -199,9 +205,12 @@ function Demo() {
     );
   }, [selected, noteIds]);
 
-  // As in the app, notes with footnotes open in source or side by side.
-  const footnotes = hasDocumentFootnotes(documentRuntime, documentRuntime.get(current.tabId) ?? current);
-  const noteViews = footnotes ? views.filter((view) => view !== "normal") : views;
+  // As in the app, notes with footnotes open in source or side by side, and other formats in the views they offer.
+  const format = documentFormats.get(current.name);
+  const markdownNote = documentFormats.isMarkdown(current.name);
+  const footnotes =
+    markdownNote && hasDocumentFootnotes(documentRuntime, documentRuntime.get(current.tabId) ?? current);
+  const noteViews = documentFormats.views(current.name).filter((view) => !footnotes || view !== "normal");
   const view = noteViews.includes(mode) ? mode : "side-by-side";
   const host = useAddons(
     {
@@ -385,9 +394,9 @@ function Demo() {
             <Suspense fallback={<LoadingScreen />}>
               <ActiveDocumentEditor
                 key={`${current.tabId}-${reset}`}
-                Component={MarkdownEditor}
+                Component={markdownNote ? MarkdownEditor : FormatEditor}
                 autoFocus={focusEditor}
-                markdown
+                markdown={markdownNote}
                 knownFlavors={knownFlavors}
                 chosenFlavors={chosen}
                 flavorChoice={choice}
@@ -399,8 +408,8 @@ function Demo() {
                 onActiveOutline={() => {}}
                 outlineTarget={null}
                 document={current}
-                format={documentFormats.get(current.name)}
-                formatName="Markdown"
+                format={format}
+                formatName={format?.name ?? "Markdown"}
                 onAttach={async () => {
                   await dialogs.alert({
                     title: "Desktop feature",

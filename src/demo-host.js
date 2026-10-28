@@ -26,6 +26,23 @@ try {
   // keyBeats falls back to its own defaults.
 }
 
+let typst;
+let compiles = 0;
+const pending = new Map();
+function compileTypst({ source, block }) {
+  typst ??= new Worker(new URL("./demo-typst.worker.js", import.meta.url), { type: "module" });
+  typst.onmessage = ({ data: { id, result, error } }) => {
+    const { resolve, reject } = pending.get(id);
+    pending.delete(id);
+    if (error) reject(new Error(error));
+    else resolve(result);
+  };
+  return new Promise((resolve, reject) => {
+    pending.set(++compiles, { resolve, reject });
+    typst.postMessage({ id: compiles, source, block });
+  });
+}
+
 const states = catalog.map(({ manifest }) => ({ id: manifest.id, enabled: true, activation: 1 }));
 const storage = new Map();
 const unsubscribe = () => () => {};
@@ -43,6 +60,13 @@ const host = {
   resolveDocumentMedia: async (source) =>
     /^\/[\w/-]+\.webp$/.test(source) ? { paths: [], media: { kind: "image", url: source } } : null,
   cancelDocumentMedia: async () => {},
+  // The Typst and LaTeX previews the app compiles natively, compiled here in the browser. Each engine
+  // loads the first time its preview renders.
+  queryAddon: async (id, method, input) => {
+    if (id === "typst" && method === "compile") return compileTypst(input);
+    if (id === "math" && method === "render") return (await import("./demo-latex.js")).renderLatex(input);
+    throw new Error("This is available in the desktop app.");
+  },
   // Table sizes live with a workspace; the demo has none, so they last until the page closes.
   readTableLayout: async () => null,
   writeTableLayout: async () => {},

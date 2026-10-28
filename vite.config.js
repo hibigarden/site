@@ -71,6 +71,8 @@ export default defineConfig({
   esbuild: { jsx: "automatic" },
   // hibi's document worker splits into chunks.
   worker: { format: "es" },
+  // latex.js looks for optional document classes with a require that esbuild cannot follow.
+  optimizeDeps: { exclude: ["latex.js"] },
   resolve: {
     alias: [
       {

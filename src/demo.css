@@ -12,6 +12,10 @@
 .titlebar .view-switch {
   margin-left: auto;
 }
+/* The LaTeX preview renders as you type, so its compile button, which runs Tectonic in the app, stays there. */
+.preview-toolbar button:has(> .lucide-play) {
+  display: none;
+}
 
 /* Decorative window controls at each system's place and size: macOS traffic lights where the app puts
    them (trafficLightPosition x 12, y 11), Windows caption buttons and GNOME's round buttons in the

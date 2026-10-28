@@ -714,6 +714,7 @@ svg.button-icon,
 }
 .who-tabs {
   grid-area: tabs;
+  --bar: rgb(251 241 226 / 0.8);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -768,11 +769,25 @@ svg.button-icon,
 .who-tabs label:has(:checked)::before {
   background: var(--hibi-blue);
 }
+/* while the tabs take turns (who.js), the open tab's bar fills along its lower edge, inside the paper */
+.who-tabs label[style*="--p"]::before {
+  background:
+    linear-gradient(var(--bar), var(--bar)) 0 100% / calc(var(--p) * 100%) 3px no-repeat,
+    var(--hibi-blue);
+}
 [data-theme="dark"] .who-tabs label:has(:checked) {
   color: #1f1b16;
 }
 [data-theme="dark"] .who-tabs label:has(:checked)::before {
   background: #f6e3b4;
+}
+[data-theme="dark"] .who-tabs {
+  --bar: rgb(32 54 118 / 0.55);
+}
+[data-theme="dark"] .who-tabs label[style*="--p"]::before {
+  background:
+    linear-gradient(var(--bar), var(--bar)) 0 100% / calc(var(--p) * 100%) 3px no-repeat,
+    #f6e3b4;
 }
 .who-tabs label:has(:focus-visible) {
   outline: 2px solid var(--accent);
@@ -795,38 +810,121 @@ svg.button-icon,
 [data-theme="dark"] .theme-day {
   display: none;
 }
+/* the panel is a Mac's screen: the park as its wallpaper, a menu bar across the top, the window in the middle of
+   what's left. it is drawn at a real Mac's proportions, the window 1400 px of a 1750 px screen (--mb: the menu
+   bar's 24 px line with room above and below, --wh: the window's height) */
 .window-panel {
+  --mb: calc(100cqw * 24 / 1750 + 12px);
+  --wh: 40cqw;
   grid-area: panel;
   position: relative;
   isolation: isolate;
+  container-type: inline-size;
   aspect-ratio: 1120 / 690;
   border-radius: 16px;
   box-shadow:
     0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
     0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
 }
-/* the window rests on the park like the hero's editor: rounded, with the same layered shadow */
+.menubar {
+  --u: calc(100cqw / 1750);
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: calc(20 * var(--u));
+  height: var(--mb);
+  padding: 6px 24px;
+  color: rgb(0 0 0 / 0.86);
+  font: 400 calc(13 * var(--u)) / 1 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  user-select: none;
+}
+/* a transparent menu bar, its corners clear of the panel's; its type adapts to the wallpaper as macOS does: dark
+   over the day sky, light over the night */
+[data-theme="dark"] .menubar {
+  color: rgb(255 255 255 / 0.94);
+}
+.menubar svg {
+  flex-shrink: 0;
+  height: calc(14 * var(--u));
+  fill: currentColor;
+}
+.menubar b {
+  font-weight: 700;
+}
+.mb-menus,
+.mb-status {
+  display: flex;
+  align-items: center;
+  gap: inherit;
+}
+.mb-status {
+  gap: calc(16 * var(--u));
+  margin-left: auto;
+}
+.mb-battery {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(5 * var(--u));
+}
+.mb-clock {
+  min-width: 9.6em;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: pre;
+}
+/* the window rests in the middle of the screen below the menu bar, rounded, with the hero editor's shadow */
 .window {
   position: absolute;
   left: 10%;
-  top: 8.5%;
+  top: calc(var(--mb) + (100% - var(--mb) - var(--wh)) / 2);
   width: 80%;
   aspect-ratio: 2;
   overflow: hidden;
+  container-type: inline-size;
   border-radius: 10px;
   background: var(--card-white);
   box-shadow:
-    0 0 0 1px rgb(40 30 16 / 0.1),
-    0 1px 2px rgb(40 30 16 / 0.2),
-    0 6px 14px -4px rgb(40 30 16 / 0.22),
-    0 34px 70px -18px rgb(24 32 56 / 0.5);
+    0 0 0 1px rgb(40 30 16 / 0.08),
+    0 1px 3px rgb(40 30 16 / 0.12),
+    0 18px 40px -16px rgb(24 32 56 / 0.24);
 }
 [data-theme="dark"] .window {
   box-shadow:
-    0 0 0 1px rgb(0 0 0 / 0.5),
-    0 1px 3px rgb(0 0 0 / 0.5),
-    0 8px 18px -4px rgb(0 0 0 / 0.5),
-    0 40px 80px -16px rgb(0 0 8 / 0.8);
+    0 0 0 1px rgb(0 0 0 / 0.4),
+    0 1px 3px rgb(0 0 0 / 0.3),
+    0 22px 46px -16px rgb(0 0 8 / 0.45);
+}
+/* while a tab switch closes it (who.js), the old window stays drawn until it has faded */
+.who .window.is-leaving {
+  display: block !important;
+}
+/* the window's own traffic lights, where the app puts them (titleBarStyle hiddenInset, trafficLightPosition 12, 11:
+   13 px in, centred in its 36 px title bar); the captures leave that corner empty. --app: one of the app's px */
+.lights {
+  --app: calc(100cqw / 1400);
+  position: absolute;
+  z-index: 1;
+  left: calc(13 * var(--app));
+  top: calc(12 * var(--app));
+  display: flex;
+  gap: calc(8 * var(--app));
+}
+.lights i {
+  width: calc(12 * var(--app));
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ff5f57;
+  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.2);
+}
+.lights i + i {
+  background: #febc2e;
+}
+.lights i + i + i {
+  background: #28c840;
 }
 .window img {
   display: block;
@@ -1167,8 +1265,14 @@ svg.button-icon,
 .qa details p + p {
   margin-top: -6px;
 }
+/* how hibi compares: a plain table of checkable facts (every cell sourced; generated from the research lane's
+   comparison.json), clean type with hairlines, the hibi column only tinted. phones scroll it in its own box with
+   the facts held at the left */
+.compare {
+  grid-column: 1 / -1;
+  margin-top: 72px;
+}
 .compare-title {
-  margin-top: 80px;
   font: 500 var(--h3) / 1.1 var(--serif);
   letter-spacing: -0.01em;
 }
@@ -1192,14 +1296,46 @@ svg.button-icon,
   padding-top: 0;
   border-bottom-color: var(--rule-strong);
   color: var(--ink-faint);
-  font-size: 18px;
-  line-height: 1.45;
+  font: 400 12.5px/1.3 var(--mono);
+  letter-spacing: 0.02em;
 }
 .compare-table tbody th {
   width: 17%;
   padding-left: 0;
   color: var(--ink);
   font-weight: 500;
+}
+.compare-table td {
+  color: var(--ink-soft);
+}
+.compare-table .is-hibi {
+  background: color-mix(in srgb, var(--card-white) 60%, transparent);
+  color: var(--ink);
+}
+.compare-table sup {
+  margin-left: 1px;
+  color: var(--ink-faint);
+  font: 400 0.68em/0 var(--mono);
+}
+.compare-notes {
+  columns: 3 240px;
+  column-gap: 36px;
+  margin: 22px 0 0;
+  padding-left: 2.4em;
+  color: var(--ink-faint);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.compare-notes li {
+  break-inside: avoid;
+}
+.compare-notes li::marker {
+  font: 400 11px var(--mono);
+}
+.compare-asof {
+  margin-top: 14px;
+  color: var(--ink-faint);
+  font: 400 12.5px/1.5 var(--mono);
 }
 
 @media (max-width: 900px) {
@@ -1232,16 +1368,32 @@ svg.button-icon,
     font-size: 12.5px;
     text-align: center;
   }
+  /* a phone's screen: the menu bar keeps the apple, the app's name and the clock at a size that reads */
   .window-panel {
+    --mb: calc(max(18px, 5.2cqw) + 8px);
+    --wh: 70.4cqw;
     aspect-ratio: 350 / 430;
     border-radius: 12px;
   }
+  .menubar {
+    --u: 0.72px;
+    gap: 9px;
+    padding: 4px 18px;
+  }
+  .mb-menus,
+  .mb-status > :not(.mb-clock) {
+    display: none;
+  }
   .window {
     left: 6%;
-    top: 7%;
     width: 88%;
     aspect-ratio: 5 / 4;
     border-radius: 8px;
+  }
+  /* the phone captures are the window narrowed to 583 px */
+  .lights {
+    --app: calc(100cqw / 583);
+    top: calc(14.8 * var(--app));
   }
   .who-caption {
     grid-template-columns: 1fr;
@@ -1270,13 +1422,6 @@ svg.button-icon,
   }
   .diary li {
     display: grid;
-/* how hibi compares: a plain table of checkable facts (every cell sourced; generated from the research lane's
-   comparison.json), clean type with hairlines, the hibi column only tinted. phones scroll it in its own box with
-   the facts held at the left */
-.compare {
-  grid-column: 1 / -1;
-  margin-top: 72px;
-}
     grid-template-columns: 96px minmax(0, 1fr);
     align-items: baseline;
     padding: 13px 16px;
@@ -1310,38 +1455,6 @@ svg.button-icon,
     min-width: 118px;
     background: var(--page);
   }
-}
-.compare-table td {
-  color: var(--ink-soft);
-}
-.compare-table .is-hibi {
-  background: color-mix(in srgb, var(--card-white) 60%, transparent);
-  color: var(--ink);
-}
-.compare-table sup {
-  margin-left: 1px;
-  color: var(--ink-faint);
-  font: 400 0.68em/0 var(--mono);
-}
-.compare-notes {
-  columns: 3 240px;
-  column-gap: 36px;
-  margin: 22px 0 0;
-  padding-left: 2.4em;
-  color: var(--ink-faint);
-  font-size: 13.5px;
-  line-height: 1.45;
-}
-.compare-notes li {
-  break-inside: avoid;
-}
-.compare-notes li::marker {
-  font: 400 11px var(--mono);
-}
-.compare-asof {
-  margin-top: 14px;
-  color: var(--ink-faint);
-  font: 400 12.5px/1.5 var(--mono);
 }
 @media (min-width: 601px) and (max-width: 960px) {
   .addon-grid {

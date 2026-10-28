@@ -204,7 +204,7 @@ function build(rects, perches) {
   map.version++;
 
   // stations: down the whole page, every ~0.45 of a screen, the free spot nearest the right margin with the most
-  // room around it; a [data-perch] point (a sprig) beats bare paper
+  // room around it; a [data-perch] point (a sprig) beats bare paper, wherever it sits across the page
   const side = W - reachMax - 12;
   stations = [];
   const pitch = 0.45 * VH;
@@ -213,10 +213,10 @@ function build(rects, perches) {
     const anchor = lerp(b0, b1, 0.5);
     let best = null;
     let score = Infinity;
-    const consider = (x, y, bonus, room = clearance(x, y)) => {
+    const consider = (x, y, bonus, room = clearance(x, y), perch = false) => {
       if (room < reachMax + 8 || x < reachMax + 4 || x > W - reachMax - 4) return;
       const v = Math.abs(x - side) + 0.6 * Math.abs(y - anchor) - 0.8 * Math.min(room, 2.5 * reachMax) - bonus;
-      if (v < score) [score, best] = [v, { x, y }];
+      if (v < score) [score, best] = [v, { x, y, perch }];
     };
     const need = reachMax + 8 + c / 2;
     for (let j = Math.floor(b0 / c); j < Math.min(rows, Math.ceil(b1 / c)); j++) {
@@ -226,7 +226,7 @@ function build(rects, perches) {
         if (d[j * cols + i] >= need) consider(x, (j + 0.5) * c, 0, d[j * cols + i] - c / 2);
       }
     }
-    for (const q of perches) if (q.y >= b0 && q.y < b1) consider(q.x, q.y, 160);
+    for (const q of perches) if (q.y >= b0 && q.y < b1) consider(q.x, q.y, 160 + Math.abs(q.x - side), undefined, true);
     if (best) stations.push(best);
   }
   if (me && !me.station?.kept) me.station = null;
@@ -582,19 +582,23 @@ let eased = 0; // scroll position with a little lag
 let running = false;
 let reentered = null; // where it came back in this frame, if it did
 
-/** the station beside what the reader is reading: the reading line ~45% down the screen, with hysteresis */
+/** the station beside what the reader is reading: the reading line ~45% down the screen (sliding down to 85% over
+ *  the last half screen, so the page's last perch is where it rests at the end), a perch preferred within 0.3 of a
+ *  screen of it, with hysteresis */
 function pick() {
-  const line = eased + 0.45 * VH;
+  const line = eased + VH * (0.45 + 0.4 * clamp(1 - (H - VH - eased) / (0.5 * VH), 0, 1));
   const m = Math.min(reach(me) + 24, VH * 0.2);
   const inside = (s) => s.y > eased + m && s.y < eased + VH - m;
+  const value = (s) => Math.abs(s.y - line) - (s.perch ? 0.3 * VH : 0);
   let best = null;
   let score = Infinity;
   for (const s of stations) {
-    const v = Math.abs(s.y - line);
+    const v = value(s);
     if (inside(s) && v < score) [score, best] = [v, s];
   }
+  // it stays put unless somewhere is clearly better; a perch on screen beats bare paper at once
   const cur = me.station;
-  if (cur && inside(cur) && (!best || Math.abs(cur.y - line) < score + 0.25 * VH)) return cur;
+  if (cur && inside(cur) && (!best || value(cur) < score + (best.perch && !cur.perch ? 0 : 0.25 * VH))) return cur;
   if (best) return best;
   for (const s of stations) {
     const v = Math.abs(s.y - line);

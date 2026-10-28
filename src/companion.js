@@ -139,7 +139,8 @@ function measure(now = false) {
       if (!node.data.trim()) continue;
       range.selectNodeContents(node);
       const before = rects.length;
-      for (const r of range.getClientRects()) rects.push(page(r));
+      // text wholly beside the screen (a table scrolled inside its own box) is out of sight, not in the way
+      for (const r of range.getClientRects()) if (r.right > 0 && r.left < W) rects.push(page(r));
       if (rects.length === before) continue;
       for (let p = node.parentElement, i = 0; p && p !== el && i < 5; p = p.parentElement, i++) holders.add(p);
     }

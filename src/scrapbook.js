@@ -12,6 +12,7 @@ if (matchMedia("(prefers-reduced-motion: no-preference)").matches && !location.h
         if (!entry.isIntersecting) continue;
         entry.target.classList.add("is-landed");
         observer.unobserve(entry.target);
+        if (entry.target.matches(".settle")) setTimeout(() => dispatchEvent(new Event("scrapbook:settled")), 850);
       }
     },
     { rootMargin: "0px 0px -6% 0px" },

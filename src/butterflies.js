@@ -348,5 +348,6 @@ sync();
 setMotion();
 still.addEventListener("change", setMotion);
 addEventListener("resize", remeasure);
+addEventListener("scrapbook:settled", remeasure); // a card finished landing, so its perches moved
 new ResizeObserver(remeasure).observe(document.body);
 document.fonts.ready.then(remeasure);

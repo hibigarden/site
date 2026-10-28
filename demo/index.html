@@ -8,6 +8,23 @@
     <title>hibi | editor demo</title>
     <link rel="icon" href="/favicon.png" type="image/png" sizes="256x256" />
     <script type="module" src="/src/demo.jsx"></script>
+    <script type="module" src="/src/butterflies.js"></script>
   </head>
-  <body><div id="root"></div></body>
+  <body data-butterflies="2">
+    <header class="demo-header">
+      <a class="demo-home" href="/" aria-label="hibi home"><span class="demo-icon" aria-hidden="true"></span>hibi</a>
+      <span class="demo-label" aria-hidden="true">editor demo</span>
+    </header>
+    <div class="demo-frame">
+      <span class="demo-tape demo-tape-tl" aria-hidden="true"></span>
+      <span class="demo-tape demo-tape-tr" aria-hidden="true"></span>
+      <div id="root"></div>
+    </div>
+    <div class="demo-scraps" aria-hidden="true">
+      <img class="demo-scrap demo-lavender" src="/scrapbook/lavender-2.webp" width="150" height="279" alt="" data-perch="0.5,0.1" />
+      <img class="demo-scrap demo-butterfly" src="/scrapbook/bf-small-blue.webp" width="110" height="84" alt="" />
+      <img class="demo-scrap demo-lavender-left" src="/scrapbook/lavender-1.webp" width="75" height="299" alt="" data-perch="0.5,0.1" />
+      <img class="demo-scrap demo-moth" src="/scrapbook/bf-luna.webp" width="120" height="80" alt="" />
+    </div>
+  </body>
 </html>

@@ -316,7 +316,7 @@ a:hover {
 }
 
 /* the links fold into the menu before they can run into the wordmark (sync and publish made the row longer) */
-@media (max-width: 900px) {
+@media (max-width: 879px) {
   .menu-toggle {
     display: block;
     min-height: 44px;
@@ -392,7 +392,7 @@ a:hover {
   summary {
     transition: color var(--motion-fast) var(--ease-out);
   }
-  @media (max-width: 900px) {
+  @media (max-width: 879px) {
     .nav-links {
       opacity: 0;
       transform: translateY(-3px);

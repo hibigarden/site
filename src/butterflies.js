@@ -1,4 +1,3 @@
-import "./butterflies.css";
 import { onMotion, tick as onFrame } from "./clock.js";
 
 // Desktop display size in css px (phones 0.7×); 2× sprites, body on the centre axis.

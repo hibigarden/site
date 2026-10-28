@@ -11,6 +11,9 @@
       : "light";
   }
   document.documentElement.dataset.theme = theme;
+  // the header's toggles need javascript; marking it here, before the body is parsed, lets css draw them from the
+  // first paint instead of moving the header when the modules reveal them
+  document.documentElement.classList.add("js");
   // ?drafts shows sections still waiting on the owner (e.g. quotes not yet cleared with their authors)
   if (/[?&]drafts\b/.test(location.search)) document.documentElement.dataset.drafts = "";
   try {

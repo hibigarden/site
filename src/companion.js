@@ -22,7 +22,6 @@
 //                                 flies off. Without it a visitor flies in and they circle each other.
 //   data-perch="fx,fy"            anywhere: a landing point (fractions of the element's box) preferred to bare paper
 // species: small-blue, morpho, brimstone, cabbage-white, peacock (SPECIES in butterflies.js).
-import "./butterflies.css";
 import { SPECIES } from "./butterflies.js";
 import { FRAME, onMotion, still, tick } from "./clock.js";
 

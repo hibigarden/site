@@ -1,4 +1,3 @@
-import "./garden.css";
 import { FRAME, onMotion, tick } from "./clock.js";
 
 // The hero's park moves like the films, on the site's 12 fps clock (every frame held, like stop motion): the clouds

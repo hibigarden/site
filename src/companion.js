@@ -121,76 +121,41 @@ let nest = null; // the companion's spot in the hero scene
 const page = (r) => [r.left + scrollX, r.top + scrollY, r.right + scrollX, r.bottom + scrollY];
 const box = (el) => (el?.getClientRects().length ? el.getBoundingClientRect() : null);
 
-function measure() {
+/** reads the layout (text, controls, cards, hooks); the grid and stations are built from it in a later task
+ *  (`now`: at once) so neither half is a long task */
+function measure(now = false) {
   const root = document.documentElement;
   W = root.clientWidth;
   VH = innerHeight;
   H = root.scrollHeight;
   scale = phone.matches ? 0.7 : 1;
   const rects = [];
+  const holders = new Set(); // the few boxes around each text: candidates for cards
   const range = document.createRange();
   for (const el of document.querySelectorAll("main, header, footer")) {
     if (el.parentElement.closest("main, header, footer")) continue;
     const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
     while (walker.nextNode()) {
-      if (!walker.currentNode.data.trim()) continue;
-      range.selectNodeContents(walker.currentNode);
+      const node = walker.currentNode;
+      if (!node.data.trim()) continue;
+      range.selectNodeContents(node);
+      const before = rects.length;
       for (const r of range.getClientRects()) rects.push(page(r));
+      if (rects.length === before) continue;
+      for (let p = node.parentElement, i = 0; p && p !== el && i < 5; p = p.parentElement, i++) holders.add(p);
     }
     for (const c of el.querySelectorAll(CONTROLS)) for (const r of c.getClientRects()) rects.push(page(r));
-    // cards: painted boxes holding text (not whole bands) keep their middles clear; it may cross a card's edge
-    for (const c of el.querySelectorAll("*")) {
-      const r = c.getBoundingClientRect();
-      if (r.width < 80 || r.height < 60 || (r.width > 0.9 * W && r.height > 0.6 * VH)) continue;
-      const style = getComputedStyle(c);
-      const painted = style.backgroundImage !== "none" || style.boxShadow !== "none" || !/^(transparent|rgba\(.*,\s*0\))$/.test(style.backgroundColor);
-      if (!painted || !c.textContent.trim()) continue;
-      const [l, t, rr, b] = page(r);
-      const k = Math.min(r.width, r.height) * 0.22;
-      rects.push([l + k, t + k, rr - k, b - k]);
-    }
   }
-  const c = (map.c = phone.matches ? 12 : 16);
-  const reachMax = REACH * SP["small-blue"].w * scale;
-  map.x0 = -Math.ceil((2.2 * reachMax) / c) * c;
-  const cols = (map.cols = Math.ceil((W - 2 * map.x0) / c));
-  const rows = (map.rows = Math.ceil(H / c));
-  const d = (map.d = new Float32Array(cols * rows).fill(1e6));
-  for (const [l, t, r, b] of rects) {
-    if (r - l < 1 || b - t < 1) continue;
-    const c0 = clamp(Math.floor((l - map.x0) / c), 0, cols - 1);
-    const c1 = clamp(Math.floor((r - map.x0) / c), 0, cols - 1);
-    for (let y = clamp(Math.floor(t / c), 0, rows - 1); y <= clamp(Math.floor(b / c), 0, rows - 1); y++) d.fill(0, y * cols + c0, y * cols + c1 + 1);
+  // cards: painted boxes holding text (not whole bands) keep their middles clear; it may cross a card's edge
+  for (const c of holders) {
+    const r = c.getBoundingClientRect();
+    if (r.width < 80 || r.height < 60 || (r.width > 0.9 * W && r.height > 0.6 * VH)) continue;
+    const style = getComputedStyle(c);
+    if (style.backgroundImage === "none" && style.boxShadow === "none" && /^(transparent|rgba\(.*,\s*0\))$/.test(style.backgroundColor)) continue;
+    const [l, t, rr, b] = page(r);
+    const k = Math.min(r.width, r.height) * 0.22;
+    rects.push([l + k, t + k, rr - k, b - k]);
   }
-  // two-pass chamfer distance transform
-  const D = c * Math.SQRT2;
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      const i = y * cols + x;
-      let v = d[i];
-      if (x > 0) v = Math.min(v, d[i - 1] + c);
-      if (y > 0) {
-        v = Math.min(v, d[i - cols] + c);
-        if (x > 0) v = Math.min(v, d[i - cols - 1] + D);
-        if (x < cols - 1) v = Math.min(v, d[i - cols + 1] + D);
-      }
-      d[i] = v;
-    }
-  }
-  for (let y = rows - 1; y >= 0; y--) {
-    for (let x = cols - 1; x >= 0; x--) {
-      const i = y * cols + x;
-      let v = d[i];
-      if (x < cols - 1) v = Math.min(v, d[i + 1] + c);
-      if (y < rows - 1) {
-        v = Math.min(v, d[i + cols] + c);
-        if (x < cols - 1) v = Math.min(v, d[i + cols + 1] + D);
-        if (x > 0) v = Math.min(v, d[i + cols - 1] + D);
-      }
-      d[i] = v;
-    }
-  }
-  map.version++;
 
   const start = box(document.querySelector("[data-companion-start]"));
   nest = start ? { x: start.left + scrollX + start.width / 2, y: start.top + scrollY + start.height / 2, k: Math.max(0.3, start.width / SP["small-blue"].w) } : null;
@@ -212,15 +177,36 @@ function measure() {
   });
   for (const s of sections) if (s.wake) s.wake.k = s.wake.el.offsetWidth / SP[s.wake.id].w;
 
-  // stations: down the whole page, every ~0.45 of a screen, the free spot nearest the right margin with the most
-  // room around it; a [data-perch] point (a sprig) beats bare paper
-  const side = W - reachMax - 12;
   const perches = [...document.querySelectorAll("[data-perch]")].flatMap((el) => {
     const r = box(el);
     if (!r) return [];
     const [fx, fy] = `${el.dataset.perch},`.split(",").map((v) => (v.trim() && isFinite(v) ? +v : 0.5));
     return [{ x: r.left + scrollX + fx * r.width, y: r.top + scrollY + fy * r.height }];
   });
+  if (now) build(rects, perches);
+  else setTimeout(() => build(rects, perches));
+}
+
+function build(rects, perches) {
+  const c = (map.c = phone.matches ? 12 : 16);
+  const reachMax = REACH * SP["small-blue"].w * scale;
+  map.x0 = -Math.ceil((2.2 * reachMax) / c) * c;
+  const cols = (map.cols = Math.ceil((W - 2 * map.x0) / c));
+  const rows = (map.rows = Math.ceil(H / c));
+  if (map.d.length !== cols * rows) map.d = new Float32Array(cols * rows);
+  const d = map.d.fill(1e6);
+  for (const [l, t, r, b] of rects) {
+    if (r - l < 1 || b - t < 1) continue;
+    const c0 = clamp(Math.floor((l - map.x0) / c), 0, cols - 1);
+    const c1 = clamp(Math.floor((r - map.x0) / c), 0, cols - 1);
+    for (let y = clamp(Math.floor(t / c), 0, rows - 1); y <= clamp(Math.floor(b / c), 0, rows - 1); y++) d.fill(0, y * cols + c0, y * cols + c1 + 1);
+  }
+  chamfer(d, cols, rows, c);
+  map.version++;
+
+  // stations: down the whole page, every ~0.45 of a screen, the free spot nearest the right margin with the most
+  // room around it; a [data-perch] point (a sprig) beats bare paper
+  const side = W - reachMax - 12;
   stations = [];
   const pitch = 0.45 * VH;
   for (let b0 = 0; b0 < H; b0 += pitch) {
@@ -228,17 +214,52 @@ function measure() {
     const anchor = lerp(b0, b1, 0.5);
     let best = null;
     let score = Infinity;
-    const consider = (x, y, bonus) => {
-      const room = clearance(x, y);
+    const consider = (x, y, bonus, room = clearance(x, y)) => {
       if (room < reachMax + 8 || x < reachMax + 4 || x > W - reachMax - 4) return;
       const v = Math.abs(x - side) + 0.6 * Math.abs(y - anchor) - 0.8 * Math.min(room, 2.5 * reachMax) - bonus;
       if (v < score) [score, best] = [v, { x, y }];
     };
-    for (let y = Math.floor(b0 / c) * c + c / 2; y < b1; y += c) for (let x = map.x0 + c / 2; x < W; x += c) consider(x, y, 0);
+    const need = reachMax + 8 + c / 2;
+    for (let j = Math.floor(b0 / c); j < Math.min(rows, Math.ceil(b1 / c)); j++) {
+      for (let i = Math.ceil((reachMax + 4 - map.x0) / c - 0.5); i < cols; i++) {
+        const x = map.x0 + (i + 0.5) * c;
+        if (x > W - reachMax - 4) break;
+        if (d[j * cols + i] >= need) consider(x, (j + 0.5) * c, 0, d[j * cols + i] - c / 2);
+      }
+    }
     for (const q of perches) if (q.y >= b0 && q.y < b1) consider(q.x, q.y, 160);
     if (best) stations.push(best);
   }
   if (me && !me.station?.kept) me.station = null;
+}
+
+/** two-pass chamfer distance transform: each cell's distance (px) to the nearest blocked (0) cell */
+function chamfer(d, cols, rows, c) {
+  const D = c * Math.SQRT2;
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0, i = y * cols; x < cols; x++, i++) {
+      let v = d[i];
+      if (x > 0 && d[i - 1] + c < v) v = d[i - 1] + c;
+      if (y > 0) {
+        if (d[i - cols] + c < v) v = d[i - cols] + c;
+        if (x > 0 && d[i - cols - 1] + D < v) v = d[i - cols - 1] + D;
+        if (x < cols - 1 && d[i - cols + 1] + D < v) v = d[i - cols + 1] + D;
+      }
+      d[i] = v;
+    }
+  }
+  for (let y = rows - 1; y >= 0; y--) {
+    for (let x = cols - 1, i = y * cols + x; x >= 0; x--, i--) {
+      let v = d[i];
+      if (x < cols - 1 && d[i + 1] + c < v) v = d[i + 1] + c;
+      if (y < rows - 1) {
+        if (d[i + cols] + c < v) v = d[i + cols] + c;
+        if (x < cols - 1 && d[i + cols + 1] + D < v) v = d[i + cols + 1] + D;
+        if (x > 0 && d[i + cols - 1] + D < v) v = d[i + cols - 1] + D;
+      }
+      d[i] = v;
+    }
+  }
 }
 
 /** room around (x, y) in px: the distance to the nearest text, control or card core */
@@ -1060,9 +1081,11 @@ function onScroll() {
 }
 
 let measureTimer;
+// read the layout just after a frame has been drawn, while it is still clean (no forced reflow)
+const afterFrame = (fn) => requestAnimationFrame(() => setTimeout(fn));
 const remeasure = () => {
   clearTimeout(measureTimer);
-  measureTimer = setTimeout(() => {
+  measureTimer = setTimeout(() => afterFrame(() => {
     measure();
     for (const a of visitors) {
       const s = sections.find((s) => s.el === a.pair.el)?.pair;
@@ -1070,7 +1093,7 @@ const remeasure = () => {
       else a.op = 0;
       draw(a);
     }
-  }, 150);
+  }), 150);
 };
 onMotion((isStill) => {
   if (isStill) {
@@ -1082,7 +1105,7 @@ onMotion((isStill) => {
     setState("scene");
     return;
   }
-  measure();
+  measure(true);
   onScroll();
 });
 addEventListener("scroll", onScroll, { passive: true });
@@ -1095,7 +1118,7 @@ draw(me);
 
 if (debug) {
   window.companionFlight = {
-    measure,
+    measure: () => measure(true),
     /** advance `n` held frames at the current scroll position; returns their samples */
     step(n = 1) {
       const from = samples.length;

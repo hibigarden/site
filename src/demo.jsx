@@ -1,4 +1,4 @@
-import "./demo-host.js";
+import { freshVisit } from "./demo-host.js";
 import {
   Suspense,
   useEffect,
@@ -26,6 +26,7 @@ import { editorPreferences, useEditorPreference } from "../vendor/hibi/src/rende
 import { flavors, loadFlavor, selectedFlavors } from "../vendor/hibi/src/renderer/src/flavors";
 import { LoadingScreen } from "../vendor/hibi/src/renderer/src/LoadingScreen";
 import { transformMarkdown } from "../vendor/hibi/src/renderer/src/markdown-projection";
+import { toolbar } from "../vendor/hibi/src/renderer/src/toolbar";
 import { defaultHotkeys, shortcutFromEvent } from "../vendor/hibi/src/shared/hotkeys";
 import { wikiTarget } from "../vendor/hibi/src/shared/note-links";
 import { DialogProvider, useDialogs } from "../vendor/hibi/src/ui/DialogProvider";
@@ -57,6 +58,18 @@ if (site) {
   observer.observe(site, { attributes: true, attributeFilter: ["data-theme"] });
   if (import.meta.hot) import.meta.hot.dispose(() => observer.disconnect());
 }
+// hibi's default toolbar, with the buttons of the addons the demo turns on in its menu: the math
+// buttons, and the mute button for the typing sounds that would otherwise have none.
+if (freshVisit)
+  toolbar.setPreferences({
+    placements: {
+      ...toolbar.snapshot().preferences.placements,
+      "math.inline": "menu",
+      "math.block": "menu",
+      "keybeats.mute": "menu",
+    },
+  });
+
 const platform = /Mac|iPhone|iPad/.test(navigator.platform) ? "darwin" : "linux";
 const hotkeys = defaultHotkeys(platform);
 const views = ["normal", "side-by-side", "markdown"];

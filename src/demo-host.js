@@ -2,6 +2,19 @@
 // the editor's: some of them read window.hibi and localStorage as they load.
 import catalog from "./demo-addons.js";
 
+// The toolbar layout and its autohide setting come from hibi's defaults. Earlier demos saved their own
+// under the same key, so a visitor's saved layout is dropped once each time the demo changes.
+const version = "2026-10-29";
+export let freshVisit = false;
+try {
+  if (localStorage.getItem("hibi-demo:version") !== version) {
+    localStorage.removeItem("hibi:toolbar");
+    localStorage.setItem("hibi-demo:version", version);
+    freshVisit = true;
+  }
+} catch {
+  // Without storage every visit starts from the defaults.
+}
 // The demo carries one keyboard's sounds.
 try {
   const keys = JSON.parse(localStorage.getItem("keybeats:preferences") ?? "{}");

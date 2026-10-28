@@ -10,8 +10,10 @@ const fonts = css.match(/@font-face\s*\{[^}]*\}/g) ?? [];
 const rules = css
   .replace(/@font-face\s*\{[^}]*\}/g, "")
   .replace(/:root,\s*:host|(?:html|body),\s*\.page|\bbody(?=\s*\{)/g, ":scope");
-// The preview keeps no inline styles, which KaTeX's HTML layout needs, so the math shows as MathML.
-const mathml = ".katex .katex-mathml { position: static; clip: auto; clip-path: none; width: auto; height: auto; overflow: visible; }";
+// The preview keeps no inline styles: KaTeX's HTML layout needs them, so the math shows as MathML, and
+// latex.js sizes its page grid with them, so the page flows in the preview's width instead.
+const mathml = `:scope { display: block; min-width: 0; max-width: 100%; }
+.katex .katex-mathml { position: static; clip: auto; clip-path: none; width: auto; height: auto; overflow: visible; }`;
 const style = document.createElement("style");
 style.textContent = `${fonts.join("\n")}\n@scope (.latex-page) {\n${rules}\n${mathml}\n}`;
 document.head.append(style);

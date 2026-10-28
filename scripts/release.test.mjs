@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { releaseResponse } from "../server/release.js";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { releasePlugin, releaseResponse } from "../server/release.js";
 import { RELEASES, formatSize, fromGitHub, fromPlatformId, pick, platformId, renderDownloadPage, renderFallback, siteDate } from "../src/release.js";
 
 const asset = (name, size, hash = "a".repeat(64), tag = "v0.2.1") => ({
@@ -136,4 +139,22 @@ test("/api/release reuses the snapshot until a newer release or nightly is out",
   assert.equal(offline.body, snapshot);
   assert.match(offline.cache, /s-maxage=60/);
   await assert.rejects(releaseResponse(null, { fetch: fakeGitHub({ fail: true }).fetch }));
+});
+
+test("a dev server picks up a release published while it runs", async (t) => {
+  const root = mkdtempSync(join(tmpdir(), "hibi-release-"));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  // the server started earlier and saved v0.2.1 (a fresh cache, so startup doesn't ask github)
+  mkdirSync(join(root, "node_modules/.cache"), { recursive: true });
+  writeFileSync(join(root, "node_modules/.cache/hibi-release.json"), JSON.stringify(fromGitHub(github, { list, nightly })));
+  const plugin = releasePlugin();
+  plugin.configResolved({ command: "serve", root });
+  const newer = { ...github, tag_name: "v0.2.3", assets: [asset("hibi-0.2.3-win-x64.exe", 1, undefined, "v0.2.3")] };
+  const { fetch } = fakeGitHub({ latest: "v0.2.3", api: newer });
+  const real = globalThis.fetch;
+  globalThis.fetch = fetch;
+  t.after(() => (globalThis.fetch = real));
+  const html = await plugin.transformIndexHtml("<!--hibi:download-->");
+  assert.match(html, /v0\.2\.3/);
+  assert.doesNotMatch(html, /every build of v0\.2\.1/);
 });

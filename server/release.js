@@ -100,6 +100,25 @@ export function releasePlugin() {
     }
   }
   const load = () => (release ??= snapshot());
+  // a dev server lives for hours: every few minutes it asks the same cheap question /api/release asks in
+  // production (github.com's latest-release redirect and the nightly feed; the api only when something is new) and
+  // replaces what it remembers, so pages and /api/release pick up a release published while it runs
+  let checked = 0;
+  async function current() {
+    const known = await load();
+    if (!dev || Date.now() - checked < 300e3) return known;
+    checked = Date.now();
+    try {
+      const { body } = await releaseResponse(known);
+      if (body && (body.tag !== known?.tag || body.nightly?.tag !== known?.nightly?.tag)) {
+        release = Promise.resolve(body);
+        await writeFile(cache, JSON.stringify(body)).catch(() => {});
+      }
+      return body ?? known;
+    } catch {
+      return known;
+    }
+  }
   return {
     name: "hibi-release",
     configResolved(config) {
@@ -108,7 +127,7 @@ export function releasePlugin() {
     },
     async transformIndexHtml(html) {
       if (!html.includes(MARKER)) return html;
-      const snapshot = await load();
+      const snapshot = await current();
       return html.replace(MARKER, snapshot ? renderDownloadPage(snapshot) : renderFallback());
     },
     async generateBundle() {
@@ -119,7 +138,7 @@ export function releasePlugin() {
       server.middlewares.use("/api/release", async (request, response) => {
         response.setHeader("content-type", "application/json; charset=utf-8");
         response.setHeader("cache-control", "no-store");
-        response.end(JSON.stringify(await load()));
+        response.end(JSON.stringify(await current()));
       });
     },
   };

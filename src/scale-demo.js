@@ -28,12 +28,12 @@ function updateAccessibility() {
   else loader.setAttribute("aria-hidden", "true");
 }
 
+// The editor takes the stage's shape: in a stage at least 900 css px wide it runs at full size and fills it, in a
+// narrower one it lays out 900 px wide and is scaled down to fit.
 function scaleDemo() {
-  const scale = Math.min(
-    stage.clientWidth / Number(frame.width),
-    stage.clientHeight / Number(frame.height),
-    1,
-  );
+  const scale = Math.min(stage.clientWidth / Number(frame.width), 1);
+  shell.style.width = `${stage.clientWidth / scale}px`;
+  shell.style.height = `${stage.clientHeight / scale}px`;
   shell.style.transform = `translate(-50%, -50%) scale(${scale})`;
 }
 

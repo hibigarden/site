@@ -19,14 +19,13 @@
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-rows: auto minmax(0, 580px);
+  grid-template-rows: auto minmax(420px, 1fr);
   justify-items: center;
-  align-content: center;
   width: calc(100% - 2 * var(--hero-inset));
   height: calc(100svh - 2 * var(--hero-inset));
-  min-height: 700px;
+  min-height: 760px;
   margin: var(--hero-inset);
-  padding: 104px 32px 36px;
+  padding: 100px 32px 24px;
   border-radius: 16px;
   box-shadow:
     0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
@@ -260,14 +259,13 @@
   background-position: 50% 100%;
 }
 
-/* the live editor rests below the headline, as large as the panel allows */
+/* the live editor is the hero's focal point: wide, centred, and down to the panel's lower edge (its box is pure
+   css, so it is reserved from the first paint; scale-demo.js fits the editor into whatever shape it gets) */
 .hero .demo-print {
-  align-self: start;
-  width: auto;
-  height: calc(100% - 36px);
-  max-width: 100%;
-  aspect-ratio: 900 / 520;
-  margin-top: 36px;
+  align-self: stretch;
+  width: min(1180px, 84%);
+  aspect-ratio: auto;
+  margin-top: 24px;
 }
 .hero .demo {
   height: 100%;
@@ -282,9 +280,8 @@
     min-height: calc(100svh - 2 * var(--hero-inset));
   }
   .hero .demo-print {
-    width: min(900px, 100%);
-    height: auto;
-    aspect-ratio: auto;
+    align-self: start;
+    width: min(900px, 84%);
   }
   .hero .demo {
     height: auto;
@@ -299,6 +296,7 @@
     border-radius: 12px;
   }
   .hero .demo-print {
+    width: 100%;
     margin-top: 26px;
   }
 }

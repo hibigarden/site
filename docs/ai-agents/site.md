@@ -16,7 +16,7 @@ each addon needs a `manifest.ts` and a `readme.md` or `README.md`. read manifest
 
 ## editor constraints
 
-reuse hibi's components. scale the fixed 900 × 520 editor frame without changing its aspect ratio. keep the hero sized to its content on smaller screens.
+reuse hibi's components. the landing's editor takes the shape of its box, which css sizes from the first paint: in a box at least 900 css px wide the editor runs at full size and fills it, in a narrower one it lays out 900 px wide and is scaled down. keep the hero sized to its content on smaller screens.
 
 theme changes must not remount the editor or discard writing. respect reduced-motion settings and preserve keyboard focus.
 

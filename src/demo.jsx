@@ -125,11 +125,10 @@ activate(initialNotes[0].tabId, [...opening.keys()]);
 // The workspace queries the app answers from its index, answered from the demo's notes by hibi's own
 // graph code. The workspace never changes underneath the demo, so subscribers hear nothing.
 window.hibi.subscribeWorkspaceChanges = async () => ({ snapshot: null, dispose() {} });
-// The easter egg in misc/ stays out of the graph, where its notes would float unlinked and give it away.
+// Every document is a node, as in the app. The easter egg in misc/ stays out, where its notes would float
+// unlinked and give it away.
 function workspaceGraph() {
-  const notes = [...opening.keys()].filter(
-    (id) => documentFormats.isMarkdown(noteFor(id).name) && !pathOf(id).startsWith("misc/"),
-  );
+  const notes = [...opening.keys()].filter((id) => !pathOf(id).startsWith("misc/"));
   const graph = createNoteGraph(notes.map(pathOf));
   for (const id of notes) graph.add({ path: pathOf(id), markdown: noteFor(id).markdown });
   return graph.finish();

@@ -88,8 +88,8 @@ function sky(root) {
   };
 }
 
-// After the page has loaded, fetch and decode the other theme's images so the first toggle cross-fades into a
-// sky that is already there.
+// When the reader reaches for the theme switch (hover, focus or press), fetch and decode the other theme's images
+// so the toggle cross-fades into a sky that is (nearly) there, without every visit paying for both themes.
 function warm(root, skip = "") {
   const other = document.documentElement.dataset.theme === "dark" ? "day" : "night";
   for (const el of root.querySelectorAll(`:is(.g-layer, .g-free)${skip}`)) {
@@ -100,10 +100,14 @@ function warm(root, skip = "") {
     img.decode().catch(() => {});
   }
 }
-const idle = (fn) => {
-  const run = () => (window.requestIdleCallback?.bind(window) ?? setTimeout)(fn);
-  if (document.readyState === "complete") run();
-  else addEventListener("load", run, { once: true });
+const intent = (fn) => {
+  const toggle = document.querySelector(".theme-toggle");
+  const types = ["pointerenter", "focus", "pointerdown"];
+  const once = () => {
+    for (const type of types) toggle.removeEventListener(type, once);
+    fn();
+  };
+  for (const type of types) toggle?.addEventListener(type, once);
 };
 
 if (garden) {
@@ -184,7 +188,7 @@ if (garden) {
     tx = ty = 0;
   });
   // garden.css hides the bench, lamp, glow and trees on narrow panels
-  idle(() => warm(garden, garden.clientWidth / garden.clientHeight < 0.55 ? ":not(.g-bench, .g-lamp, .g-glow, .g-trees, .g-tree)" : ""));
+  intent(() => warm(garden, garden.clientWidth / garden.clientHeight < 0.55 ? ":not(.g-bench, .g-lamp, .g-glow, .g-trees, .g-tree)" : ""));
 }
 
 // Sky panels ([data-sky], e.g. behind the closing call to action): the hero's sky without the ground, built here so
@@ -217,5 +221,5 @@ for (const panel of document.querySelectorAll("[data-sky]")) {
   const ambient = sky(panel);
   const time = clock();
   animate(panel, (now) => ambient(time(now)), () => (compose(panel), time()));
-  idle(() => warm(panel));
+  intent(() => warm(panel));
 }

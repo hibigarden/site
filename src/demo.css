@@ -5,15 +5,82 @@
   font-display: swap;
 }
 
-/* The browser draws no window controls; settings, sidebar views and the right sidebar stay on the desktop. */
-.app[data-platform="linux"] .titlebar {
-  padding-right: var(--titlebar-edge-inset);
-}
+/* Settings, sidebar views and the right sidebar stay on the desktop. */
 .titlebar :is([aria-label="Settings"], .right-sidebar-toolbar, .sidebar-view-controls) {
   display: none;
 }
 .titlebar .view-switch {
   margin-left: auto;
+}
+
+/* Decorative window controls at each system's place and size: macOS traffic lights where the app puts
+   them (trafficLightPosition x 12, y 11), Windows caption buttons and GNOME's round buttons in the
+   132px the app keeps for them on the right of its 36px title bar. */
+.window-controls {
+  position: absolute;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  color: var(--ink);
+}
+.window-controls svg {
+  display: block;
+  fill: none;
+  stroke: currentColor;
+}
+.window-controls[data-platform="darwin"] {
+  left: 13px;
+  gap: 8px;
+  pointer-events: none;
+}
+.window-controls[data-platform="darwin"] span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff5f57;
+  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.18);
+}
+.window-controls[data-platform="darwin"] span:nth-child(2) {
+  background: #febc2e;
+}
+.window-controls[data-platform="darwin"] span:nth-child(3) {
+  background: #28c840;
+}
+.window-controls[data-platform="win32"] {
+  right: 0;
+}
+.window-controls[data-platform="win32"] span {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 36px;
+}
+.window-controls[data-platform="win32"] span:hover {
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+}
+.window-controls[data-platform="win32"] span:last-child:hover {
+  background: #c42b1c;
+  color: #fff;
+}
+.window-controls[data-platform="linux"] {
+  right: 12px;
+  gap: 12px;
+}
+.window-controls[data-platform="linux"] span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.window-controls[data-platform="linux"] span:hover {
+  background: color-mix(in srgb, var(--ink) 15%, transparent);
+}
+.window-controls[data-platform="linux"] svg {
+  stroke-width: 1.5;
 }
 
 /* /demo/ on its own: the editor on a plain page in the editor's own colours */

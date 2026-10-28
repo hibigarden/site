@@ -70,7 +70,15 @@ if (freshVisit)
     },
   });
 
-const platform = /Mac|iPhone|iPad/.test(navigator.platform) ? "darwin" : "linux";
+// The title bar of the visitor's system: hibi leaves room for each one's window controls. macOS when unknown.
+const agent = navigator.userAgentData?.platform || navigator.userAgent;
+const platform = /Android/.test(agent)
+  ? "darwin"
+  : /Windows/.test(agent)
+    ? "win32"
+    : /Linux/.test(agent)
+      ? "linux"
+      : "darwin";
 const hotkeys = defaultHotkeys(platform);
 const views = ["normal", "side-by-side", "markdown"];
 const unavailable = () => Promise.reject(new Error("This is available in the desktop app."));
@@ -125,6 +133,37 @@ function workspaceTree(ids) {
   };
   return sort(root);
 }
+
+// The browser window has the real controls; these show where the app's title bar leaves room for them.
+const glyphs = {
+  win32: [
+    <path key="minimize" d="M0 5.5h10" />,
+    <rect key="maximize" x="0.5" y="0.5" width="9" height="9" rx="1" />,
+    <path key="close" d="m0.5 0.5 9 9m0-9-9 9" />,
+  ],
+  linux: [
+    <path key="minimize" d="M4.5 11.25h7" />,
+    <rect key="maximize" x="4.75" y="4.75" width="6.5" height="6.5" rx="1" />,
+    <path key="close" d="m5 5 6 6m0-6-6 6" />,
+  ],
+};
+function WindowControls() {
+  const size = platform === "win32" ? 10 : 16;
+  return (
+    <div className="window-controls" data-platform={platform} aria-hidden="true">
+      {(glyphs[platform] ?? [null, null, null]).map((glyph, index) => (
+        <span key={index}>
+          {glyph && (
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+              {glyph}
+            </svg>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 
 function Demo() {
   const [noteIds, setNoteIds] = useState(() => initialNotes.map((note) => note.tabId));
@@ -245,7 +284,7 @@ function Demo() {
   return (
     <div
       className="app"
-      data-platform="linux"
+      data-platform={platform}
       data-screen="editor"
       data-sidebar={sidebar}
       data-sidebar-overlay={resize.overlay}
@@ -386,6 +425,7 @@ function Demo() {
           />
         </div>
       </div>
+      <WindowControls />
       <MenuHost />
     </div>
   );

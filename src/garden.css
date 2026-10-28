@@ -220,9 +220,9 @@
     --x: 53%;
     --y: 83%;
   }
+  /* a phone's headline fills its sky; the moon would touch it (stars stay) */
   .g-moon {
-    left: calc(var(--pl) + 74cqw);
-    top: calc(var(--pt) + 70px);
+    display: none;
   }
 }
 
@@ -270,8 +270,10 @@
   height: 100%;
 }
 
-/* below desktop the panel grows with its content and keeps at least a screen, so the park shows under it */
-@media (max-width: 1024px) {
+/* below desktop, and on short laptop screens where the headline and the download fill most of the panel, the panel
+   grows with its content past the fold (keeping at least a screen, so the park shows under it) and the live
+   editor keeps a usable size */
+@media (max-width: 1024px), (max-height: 800px) {
   [data-page="home"] .hero {
     grid-template-rows: auto auto;
     align-content: start;

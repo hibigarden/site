@@ -1,0 +1,31 @@
+import { Marked } from 'marked'
+import { hasFootnoteDefinitions } from '../../shared/markdown-footnotes.ts'
+import type { MarkdownFlavor } from '../api'
+import { alertMarker } from './alert-marker.ts'
+
+export const parser = new Marked({ gfm: true })
+export const flavorInfo: MarkdownFlavor = {
+  id: 'github',
+  name: 'GitHub Markdown',
+  kind: 'dialect',
+  preservation: { level: 'semantic', version: '1', fallback: 'source' },
+  description:
+    'Alerts, footnotes, tables, task lists, strikethrough, and automatic links.',
+  detect(source) {
+    if (hasFootnoteDefinitions(source)) return true
+    // Tables can omit pipes when their delimiter contains an alignment colon.
+    if (!/(?:[|:~@<]|\[|www\.)/i.test(source)) return false
+    let found = false
+    parser.walkTokens(parser.lexer(source), (token) => {
+      found ||=
+        token.type === 'footnoteDef' ||
+        token.type === 'table' ||
+        token.type === 'del' ||
+        (token.type === 'blockquote' && !!alertMarker(token.text)) ||
+        (token.type === 'list_item' && token.task) ||
+        (token.type === 'link' && !token.raw.startsWith('['))
+    })
+    return found
+  },
+}
+export default []

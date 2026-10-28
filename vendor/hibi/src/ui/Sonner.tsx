@@ -11,7 +11,8 @@ import {
   useSyncExternalStore,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { IconButton } from './Controls'
+import { sentenceCase } from '../shared/ui-case'
+import { Button, IconButton } from './Controls'
 import {
   createToastService,
   defaultToastPreferences,
@@ -74,10 +75,38 @@ export function Sonner() {
     service.snapshot,
   )
   const element = useRef<HTMLElement>(null)
+  // Escape and finished actions return focus to where keyboard users came from:
+  // that element, else its nearest connected focusable ancestor, else the open
+  // dialog's first control or the active editor.
+  const returnFocus = useRef<Element[]>([])
+  const restoreFocus = () => {
+    const stack = element.current
+    if (!stack?.contains(document.activeElement)) return
+    const fallback = container
+      ? [
+          ...container.querySelectorAll(
+            'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [href], [tabindex]:not([tabindex="-1"])',
+          ),
+        ].find((control) => !stack.contains(control))
+      : document.querySelector(
+          '.editor-panes .rich-pane:not([inert]) [contenteditable="true"], .editor-panes .source-pane:not([inert]) [contenteditable="true"]',
+        )
+    for (const target of [...returnFocus.current, fallback]) {
+      if (
+        target instanceof HTMLElement &&
+        target.isConnected &&
+        !target.closest('[hidden], [inert]')
+      )
+        target.focus({ preventScroll: true })
+      if (!stack.contains(document.activeElement)) return
+    }
+  }
   // biome-ignore lint/correctness/useExhaustiveDependencies: changing the portal container creates a new popover element.
   useLayoutEffect(() => {
     const node = element.current
-    if (items.length && node && !node.matches(':popover-open'))
+    // A modal container removed in this commit resets the container, which
+    // portals a new element into the body and reruns this effect.
+    if (items.length && node?.isConnected && !node.matches(':popover-open'))
       node.showPopover()
   }, [items.length, container])
   if (!items.length) return null
@@ -87,7 +116,41 @@ export function Sonner() {
       popover="manual"
       className="sonner"
       data-position={preferences.position}
-      aria-label="notifications"
+      aria-label="Notifications"
+      onFocus={(event) => {
+        if (event.currentTarget.contains(event.relatedTarget)) return
+        returnFocus.current = []
+        for (
+          let target = event.relatedTarget as Element | null;
+          target && target !== document.body;
+          target = target.parentElement
+        )
+          returnFocus.current.push(target)
+      }}
+      // Buttons stay out of the Tab order; once Focus notifications enters the
+      // stack, arrows cycle its buttons and Tab past either end returns focus.
+      onKeyDown={(event) => {
+        const step = {
+          ArrowDown: 1,
+          ArrowRight: 1,
+          ArrowUp: -1,
+          ArrowLeft: -1,
+          Tab: event.shiftKey ? -1 : 1,
+        }[event.key]
+        if (!step || event.altKey || event.ctrlKey || event.metaKey) return
+        const buttons = [
+          ...event.currentTarget.querySelectorAll<HTMLElement>(
+            '.toast:not([data-closing="true"]) button',
+          ),
+        ]
+        const index = buttons.indexOf(document.activeElement as HTMLElement)
+        if (index < 0) return
+        event.preventDefault()
+        const next = index + step
+        if (event.key === 'Tab' && (next < 0 || next >= buttons.length))
+          restoreFocus()
+        else buttons[(next + buttons.length) % buttons.length]?.focus()
+      }}
     >
       {items.map((item) => {
         const Icon =
@@ -96,12 +159,33 @@ export function Sonner() {
             : item.variant === 'success'
               ? Check
               : Info
+        const message = sentenceCase(item.message)
         return (
+          // biome-ignore lint/a11y/noStaticElementInteractions: the action button gives keyboard users the same target as clicking the notification.
           <div
             key={item.id}
             className="toast"
             data-closing={item.closing}
             data-variant={item.variant ?? 'info'}
+            data-action={!!item.action}
+            onClick={
+              item.action
+                ? () => {
+                    try {
+                      service.select(item.id)
+                    } finally {
+                      restoreFocus()
+                    }
+                  }
+                : undefined
+            }
+            onKeyDown={(event) => {
+              if (event.key !== 'Escape') return
+              event.preventDefault()
+              event.stopPropagation()
+              service.dismiss(item.id)
+              restoreFocus()
+            }}
             onPointerEnter={() => service.pause(item.id, 'hover', true)}
             onPointerLeave={() => service.pause(item.id, 'hover', false)}
             onFocusCapture={() => service.pause(item.id, 'focus', true)}
@@ -116,14 +200,29 @@ export function Sonner() {
               role={item.variant === 'error' ? 'alert' : 'status'}
               aria-atomic="true"
             >
-              <span>{item.message}</span>
-              {item.description && <p>{item.description}</p>}
+              <span>{message}</span>
+              {item.description && <p>{sentenceCase(item.description)}</p>}
+              {item.action && (
+                <Button
+                  variant="ghost"
+                  className="toast-action"
+                  tabIndex={-1}
+                  aria-label={`${/[.!?…]$/.test(message) ? message : `${message}.`} ${sentenceCase(item.action.label)}.`}
+                >
+                  {sentenceCase(item.action.label)}
+                </Button>
+              )}
             </div>
             <IconButton
+              tabIndex={-1}
               aria-label={
-                item.variant === 'error' ? 'dismiss error' : 'dismiss notice'
+                item.variant === 'error' ? 'Dismiss error' : 'Dismiss notice'
               }
-              onClick={() => service.dismiss(item.id)}
+              onClick={(event) => {
+                event.stopPropagation()
+                service.dismiss(item.id)
+                restoreFocus()
+              }}
             >
               <X aria-hidden="true" />
             </IconButton>

@@ -1,20 +1,13 @@
-import { EditorView } from '@codemirror/view'
-import {
-  type CSSProperties,
-  type RefObject,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react'
+import { type CSSProperties, type RefObject, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { sourceView } from './source-view'
 
 export type CursorSettings = {
   style: 'bar' | 'outline' | 'block' | 'underline'
   speed: 'fast' | 'normal' | 'slow'
   animation: 'smooth' | 'blink'
 }
-export const defaultCursor: CursorSettings = {
+const defaultCursor: CursorSettings = {
   style: 'bar',
   speed: 'normal',
   animation: 'blink',
@@ -60,7 +53,6 @@ export function EditorCursor({
   settings: CursorSettings
 }) {
   const [position, setPosition] = useState<Position | null>(null)
-  const cursor = useRef<HTMLSpanElement>(null)
   useEffect(() => {
     let frame = 0
     let move = true
@@ -101,13 +93,23 @@ export function EditorCursor({
       let rect = range.getBoundingClientRect()
       if (!rect.height && range.startContainer instanceof Element) {
         // Empty paragraphs have no range box; the line break carries the font baseline.
-        const child = range.startContainer.childNodes[range.startOffset]
+        // After exiting final formatting, the caret follows the empty placeholder.
+        const { childNodes } = range.startContainer
+        const child = childNodes[range.startOffset]
+        const before = childNodes[range.startOffset - 1]
         if (child instanceof HTMLBRElement) rect = child.getBoundingClientRect()
+        else if (
+          before instanceof HTMLElement &&
+          before.classList.contains('mark-exit')
+        ) {
+          const box = before.getBoundingClientRect()
+          rect = new DOMRect(box.right, box.top, 0, box.height)
+        }
       }
       const fallback = anchor.getBoundingClientRect()
       const fontSize = Number.parseFloat(getComputedStyle(anchor).fontSize)
       const source = active.classList.contains('cm-content')
-        ? EditorView.findFromDOM(active)
+        ? sourceView(active)
         : null
       // DOM ranges around CodeMirror's empty-line placeholder have line-box
       // geometry, not caret geometry. Let the editor resolve its own position.
@@ -202,16 +204,9 @@ export function EditorCursor({
       window.removeEventListener('focus', update)
     }
   }, [root])
-  useLayoutEffect(() => {
-    if (!position) return
-    for (const animation of cursor.current?.getAnimations() ?? []) {
-      if (animation instanceof CSSAnimation) animation.currentTime = 0
-    }
-  }, [position])
   if (!position) return null
   return createPortal(
     <span
-      ref={cursor}
       className="editor-cursor"
       aria-hidden="true"
       data-style={settings.style}

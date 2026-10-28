@@ -1,0 +1,197 @@
+import { useEffect, useMemo, useSyncExternalStore } from 'react'
+import type { AddonManifest, MarkdownFlavor } from '../../addons/api'
+import { builtInFlavors } from '../../shared/built-in-grammar'
+import type { ViewId } from '../../shared/foundation-contracts'
+import { needsOwnedSource } from '../../shared/preservation'
+import { addonRegistry } from './addon-registry'
+import { documentRuntime } from './document-runtime'
+import {
+  afterDocumentQuiet,
+  editorDocumentUpdates,
+  largeOpening,
+  preferSourceOpening,
+} from './document-shell'
+import type { MarkdownEditor } from './Editor'
+import { type FlavorChoice, flavorMatches } from './flavors'
+import { projectMarkdown } from './markdown-projection'
+import { markdownSyntax } from './markdown-syntax'
+import { mountedDocumentEdits } from './mounted-document-edits'
+
+type EditorProps = Parameters<typeof MarkdownEditor>[0]
+export type DocumentFlavorStatus = { label: string; unsupported: boolean }
+
+/** Keep live content and flavor detection below the app's metadata boundary. */
+export function ActiveDocumentEditor({
+  Component,
+  markdown,
+  knownFlavors,
+  chosenFlavors,
+  flavorChoice,
+  manifests,
+  enabledAddons,
+  onFlavorStatus,
+  ...props
+}: Omit<EditorProps, 'value'> & {
+  Component: typeof MarkdownEditor
+  markdown: boolean
+  knownFlavors: readonly (MarkdownFlavor & { addonId: string })[]
+  chosenFlavors: readonly MarkdownFlavor[]
+  flavorChoice: FlavorChoice
+  manifests: readonly AddonManifest[]
+  enabledAddons: ReadonlySet<string>
+  onFlavorStatus: (status: DocumentFlavorStatus) => void
+}) {
+  const viewId =
+    (props.viewId as ViewId | undefined) ??
+    documentRuntime.primaryViewId(props.document.tabId)
+  const documentTarget = documentRuntime.captureDocument(props.document.tabId)
+  useEffect(() => {
+    if (
+      !viewId ||
+      !documentTarget ||
+      documentRuntime.captureDocument(props.document.tabId) !== documentTarget
+    )
+      return
+    return documentRuntime.registerView(
+      props.document.tabId,
+      viewId,
+      mountedDocumentEdits.bindView,
+    )
+  }, [props.document.tabId, documentTarget, viewId])
+  const protectionFlavors = useMemo(
+    () =>
+      knownFlavors.filter(
+        (flavor) =>
+          flavor.preservation?.level === 'verbatim' ||
+          ((flavor.preservation
+            ? flavor.preservation.fallback === 'source'
+            : flavor.readOnlyWhenDisabled !== false) &&
+            !chosenFlavors.some((chosen) => chosen.id === flavor.id)),
+      ),
+    [knownFlavors, chosenFlavors],
+  )
+  // The strict proof permits only letters/digits/spaces in the changed paragraph.
+  // Built-in grammar detectors require punctuation; arbitrary addon markers do not.
+  const certifiedVisual =
+    !manifests.some((manifest) => manifest.syntax?.length) &&
+    protectionFlavors.every(
+      (flavor) =>
+        addonRegistry.origin(flavor.addonId) === 'built-in' &&
+        builtInFlavors.get(flavor.id)?.owner === flavor.addonId,
+    )
+  const syntaxVersion = useSyncExternalStore(
+    markdownSyntax.subscribe,
+    markdownSyntax.version,
+  )
+  // Identity and grammar changes take a fresh snapshot before visual editing.
+  // Dirty metadata alone must not refresh whole-source props mid-typing.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: these identities invalidate a deferred snapshot.
+  const updates = useMemo(
+    () =>
+      editorDocumentUpdates(
+        documentRuntime,
+        props.mode === 'markdown',
+        certifiedVisual,
+        props.document.tabId,
+      ),
+    [
+      props.mode,
+      props.document.tabId,
+      props.document.revision,
+      props.document.id,
+      props.document.name,
+      certifiedVisual,
+      knownFlavors,
+      chosenFlavors,
+      manifests,
+      enabledAddons,
+      props.markdownExtensions,
+      props.flavors,
+      props.richExtensions,
+      props.sourceExtensions,
+      syntaxVersion,
+    ],
+  )
+  const current = useSyncExternalStore(updates.subscribe, updates.get)
+  const document =
+    current?.tabId === props.document.tabId &&
+    current.revision === props.document.revision
+      ? current
+      : props.document
+  // Checks that read the whole source wait for notes that open in parts.
+  const deferredSource = markdown && largeOpening(documentRuntime, document)
+  const sourceFirst = markdown && preferSourceOpening(documentRuntime, document)
+  const source = markdown && !deferredSource ? document.markdown : ''
+  useEffect(() => {
+    if (!markdown || deferredSource) return
+    // Display-only flavor detection can wait for typing to pause.
+    return afterDocumentQuiet(
+      documentRuntime,
+      document,
+      () => {
+        const body = projectMarkdown(source, props.markdownExtensions).content
+        const detected = knownFlavors.filter((flavor) =>
+          flavorMatches(flavor, body),
+        )
+        const label = [
+          (flavorChoice.dialect === 'auto'
+            ? detected.find((flavor) => flavor.kind === 'dialect')?.name
+            : chosenFlavors.find((flavor) => flavor.kind === 'dialect')
+                ?.name) ?? 'markdown',
+          ...detected
+            .filter((flavor) => flavor.kind === 'syntax')
+            .map((flavor) => flavor.name),
+        ].join(' + ')
+        const unsupported =
+          needsOwnedSource(source, manifests, enabledAddons) ||
+          protectionFlavors.some((flavor) => detected.includes(flavor))
+        onFlavorStatus({ label, unsupported })
+      },
+      document.tabId,
+    )
+  }, [
+    markdown,
+    deferredSource,
+    document,
+    source,
+    props.markdownExtensions,
+    knownFlavors,
+    chosenFlavors,
+    flavorChoice,
+    manifests,
+    enabledAddons,
+    protectionFlavors,
+    onFlavorStatus,
+  ])
+  return (
+    <Component
+      {...props}
+      {...(viewId ? { viewId } : {})}
+      document={document}
+      value={source}
+      mode={sourceFirst ? 'markdown' : props.mode}
+      largePreview={sourceFirst && props.mode !== 'markdown'}
+      previewSupported={
+        certifiedVisual &&
+        chosenFlavors.every(
+          (flavor) =>
+            [
+              'markdown.github',
+              'markdown.obsidian',
+              'github-markdown.github',
+              'text-extras.text-extras',
+              'math.latex',
+            ].includes(flavor.id) &&
+            knownFlavors.some(
+              (known) =>
+                known.id === flavor.id &&
+                addonRegistry.origin(known.addonId) === 'built-in',
+            ),
+        ) &&
+        props.markdownExtensions.every(
+          ({ id }) => id === 'frontmatter.metadata',
+        )
+      }
+    />
+  )
+}

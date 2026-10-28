@@ -1,4 +1,5 @@
 import { Marked, type MarkedExtension } from 'marked'
+import { blockStart } from '../_shared/block-start.ts'
 
 export function subscriptToken(source: string) {
   const match = /^~(?!~)([^\s~](?:[^~\n]*?[^\s~])?)~(?!~)/.exec(source)
@@ -8,6 +9,7 @@ export function subtextToken(source: string) {
   const match = /^-# ([^\n]*)(?:\n|$)/.exec(source)
   return match && { type: 'subtext', raw: match[0], text: match[1]! }
 }
+export const subtextStart = blockStart(/-# /)
 export const textExtrasMarkdown: MarkedExtension = {
   extensions: [
     {
@@ -26,7 +28,7 @@ export const textExtrasMarkdown: MarkedExtension = {
     {
       name: 'subtext',
       level: 'block',
-      start: (source) => source.search(/^-# /m),
+      start: subtextStart,
       tokenizer(source) {
         const token = subtextToken(source)
         if (token)
@@ -38,11 +40,12 @@ export const textExtrasMarkdown: MarkedExtension = {
     },
   ],
 }
-const detector = new Marked(textExtrasMarkdown)
+export const detector = new Marked(textExtrasMarkdown)
 export function detectTextExtras(source: string) {
+  if (!source.includes('~') && !source.includes('-#')) return false
   let found = false
   detector.walkTokens(detector.lexer(source), (token) => {
-    if (token.type === 'subscript' || token.type === 'subtext') found = true
+    found ||= token.type === 'subscript' || token.type === 'subtext'
   })
   return found
 }

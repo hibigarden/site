@@ -1,0 +1,484 @@
+import { X } from 'lucide-react'
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import type { DocumentState } from '../../shared/desktop'
+import { IconButton } from '../../ui/Controls'
+import type { MenuApi } from '../../ui/menus'
+import type { ViewEntry } from './addon-views'
+import { retainClosingTabs } from './retained-tabs'
+
+export function DocumentTabs({
+  document,
+  busy,
+  onSelect,
+  onClose,
+  onCloseTabs,
+  onMove,
+  menus,
+  addonTabs,
+  activeAddonTab,
+  onSelectAddon,
+  onCloseAddon,
+  splitTabs,
+}: {
+  document: DocumentState
+  busy: boolean
+  onSelect: (id: string) => void
+  onClose: (id: string) => void
+  onCloseTabs: (ids: string[], preferredTab: string) => void
+  onMove: (id: string, beforeId: string | null) => void
+  menus: MenuApi
+  addonTabs: ViewEntry[]
+  activeAddonTab: string | null
+  onSelectAddon: (id: string) => void
+  onCloseAddon: (id: string) => void
+  splitTabs: { left: string; right: string } | null
+}) {
+  const strip = useRef<HTMLDivElement>(null)
+  const active = useRef<HTMLDivElement>(null)
+  const positions = useRef(new Map<string, number>())
+  const wasClosing = useRef(false)
+  const dragged = useRef<string | null>(null)
+  const keyboardFocus = useRef<string | null>(null)
+  const navigationFocus = useRef<string | null>(null)
+  const navigationFrame = useRef(0)
+  // A newer key press or click supersedes focus still waiting for a frame.
+  const cancelNavigationFocus = () => {
+    navigationFocus.current = null
+    cancelAnimationFrame(navigationFrame.current)
+  }
+  const [drop, setDrop] = useState<{
+    id: string
+    side: 'before' | 'after'
+  } | null>(null)
+  const [rendered, setRendered] = useState(document.tabs)
+  const tabIds = document.tabs.map((tab) => tab.id).join(',')
+  // One membership set per tab-list change serves retention, closing rows, and cleanup.
+  const currentIds = useMemo(() => new Set(tabIds.split(',')), [tabIds])
+  const ordered = [
+    ...document.tabs.map((tab) => ({ id: tab.id, addon: false })),
+    ...addonTabs.map((tab) => ({ id: tab.id, addon: true })),
+  ]
+  useLayoutEffect(() => {
+    setRendered((previous) =>
+      retainClosingTabs(previous, document.tabs, currentIds),
+    )
+  }, [document.tabs, currentIds])
+  useEffect(() => {
+    const timer = setTimeout(
+      () =>
+        setRendered((tabs) =>
+          tabs.every((tab) => currentIds.has(tab.id))
+            ? tabs
+            : tabs.filter((tab) => currentIds.has(tab.id)),
+        ),
+      matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200,
+    )
+    return () => clearTimeout(timer)
+  }, [currentIds])
+  const revealActive = useCallback(() => {
+    const container = strip.current,
+      tab = active.current
+    if (!container || !tab) return
+    const left = tab.offsetLeft,
+      right = left + tab.offsetWidth
+    const target =
+      left < container.scrollLeft
+        ? left
+        : right > container.scrollLeft + container.clientWidth
+          ? right - container.clientWidth
+          : container.scrollLeft
+    container.scrollTo({
+      left: target,
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'instant'
+        : 'smooth',
+    })
+  }, [])
+  useLayoutEffect(() => {
+    const container = strip.current
+    if (!container) return
+    const resize = new ResizeObserver(revealActive)
+    resize.observe(container)
+    return () => resize.disconnect()
+  }, [revealActive])
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reveal after the retained tab list is mounted, selected, resized, or renamed.
+  useLayoutEffect(() => {
+    const next = new Map<string, number>()
+    const closing = !!strip.current?.querySelector('[data-closing="true"]')
+    // Read every tab before writing widths or starting animations, so the strip lays out once.
+    const geometry = [
+      ...(strip.current?.querySelectorAll<HTMLElement>('[data-tab-key]') ?? []),
+    ].map((tab) => ({
+      tab,
+      left: tab.offsetLeft,
+      width: tab.dataset.closing === 'true' ? null : tab.offsetWidth,
+    }))
+    for (const { tab, left, width } of geometry) {
+      const id = tab.dataset.tabKey!
+      const previous = positions.current.get(id)
+      if (width !== null) tab.style.setProperty('--tab-width', `${width}px`)
+      next.set(id, left)
+      if (
+        previous !== undefined &&
+        previous !== left &&
+        !closing &&
+        !wasClosing.current &&
+        !matchMedia('(prefers-reduced-motion: reduce)').matches
+      ) {
+        tab.animate(
+          [{ translate: `${previous - left}px` }, { translate: '0px' }],
+          { duration: 180, easing: 'ease-out' },
+        )
+      }
+    }
+    positions.current = next
+    wasClosing.current = closing
+    if (keyboardFocus.current) {
+      if (
+        window.document.activeElement === window.document.body ||
+        strip.current?.contains(window.document.activeElement)
+      )
+        strip.current
+          ?.querySelector<HTMLButtonElement>(
+            `[data-tab-id="${CSS.escape(keyboardFocus.current)}"]`,
+          )
+          ?.focus({ preventScroll: true })
+      keyboardFocus.current = null
+    }
+    if (
+      navigationFocus.current &&
+      (navigationFocus.current === activeAddonTab ||
+        (!activeAddonTab && navigationFocus.current === document.tabId))
+    ) {
+      const id = navigationFocus.current
+      navigationFocus.current = null
+      navigationFrame.current = requestAnimationFrame(() => {
+        const focused = window.document.activeElement
+        if (
+          focused === window.document.body ||
+          strip.current?.contains(focused) ||
+          focused?.closest('.editor-panes, .addon-tab-panel')
+        )
+          strip.current
+            ?.querySelector<HTMLButtonElement>(
+              `[data-tab-id="${CSS.escape(id)}"]`,
+            )
+            ?.focus({ preventScroll: true })
+      })
+    }
+    revealActive()
+  }, [
+    rendered,
+    document.tabId,
+    document.name,
+    document.dirty,
+    addonTabs,
+    activeAddonTab,
+  ])
+  const openTabMenu = (
+    id: string,
+    anchor: HTMLElement | { x: number; y: number },
+  ) => {
+    if (busy || !currentIds.has(id)) return
+    const ids = document.tabs.map((tab) => tab.id)
+    const index = ids.indexOf(id)
+    if (index < 0) return
+    const left = ids.slice(0, index)
+    const right = ids.slice(index + 1)
+    menus.open({
+      label: 'Tab actions',
+      anchor,
+      items: [
+        { id: 'close', label: 'Close tab', onSelect: () => onClose(id) },
+        {
+          id: 'close-others',
+          label: 'Close other tabs',
+          separatorBefore: true,
+          disabled: ids.length === 1,
+          onSelect: () => onCloseTabs([...left, ...right], id),
+        },
+        {
+          id: 'close-right',
+          label: 'Close tabs to the right',
+          disabled: right.length === 0,
+          onSelect: () => onCloseTabs(right, id),
+        },
+        {
+          id: 'close-left',
+          label: 'Close tabs to the left',
+          disabled: left.length === 0,
+          onSelect: () => onCloseTabs(left, id),
+        },
+      ],
+    })
+  }
+  return (
+    <div
+      className="document-tabs"
+      ref={strip}
+      role="tablist"
+      aria-label="Open tabs"
+      aria-description="Drag document tabs to reorder, or use Alt+Shift+Left or Right on a focused document tab."
+      onKeyDown={(event) => {
+        if (
+          busy ||
+          !(event.target instanceof HTMLElement) ||
+          event.target.getAttribute('role') !== 'tab'
+        )
+          return
+        const focusedId = event.target.getAttribute('data-tab-id')
+        const index = ordered.findIndex((tab) => tab.id === focusedId)
+        if (
+          event.key === 'ContextMenu' ||
+          (event.shiftKey && event.key === 'F10')
+        ) {
+          const tab = ordered[index]
+          if (!tab || tab.addon) return
+          event.preventDefault()
+          event.stopPropagation()
+          const anchor = event.currentTarget.querySelector<HTMLElement>(
+            `[data-tab-id="${CSS.escape(tab.id)}"]`,
+          )
+          if (anchor) {
+            cancelNavigationFocus()
+            openTabMenu(tab.id, anchor)
+          }
+          return
+        }
+        if (
+          event.altKey &&
+          event.shiftKey &&
+          ['ArrowLeft', 'ArrowRight'].includes(event.key)
+        ) {
+          event.preventDefault()
+          event.stopPropagation()
+          const tab = ordered[index]
+          if (!tab || tab.addon) return
+          if (event.key === 'ArrowLeft' && index > 0) {
+            keyboardFocus.current = tab.id
+            onMove(tab.id, document.tabs[index - 1]!.id)
+          } else if (
+            event.key === 'ArrowRight' &&
+            index < document.tabs.length - 1
+          ) {
+            keyboardFocus.current = tab.id
+            onMove(tab.id, document.tabs[index + 2]?.id ?? null)
+          }
+          return
+        }
+        const last = ordered.length - 1
+        const next =
+          event.key === 'ArrowRight'
+            ? (index + 1) % (last + 1)
+            : event.key === 'ArrowLeft'
+              ? (index + last) % (last + 1)
+              : event.key === 'Home'
+                ? 0
+                : event.key === 'End'
+                  ? last
+                  : null
+        if (next !== null) {
+          event.preventDefault()
+          const tab = ordered[next]
+          if (tab) {
+            cancelNavigationFocus()
+            navigationFocus.current = tab.id
+            if (tab.addon) onSelectAddon(tab.id)
+            else onSelect(tab.id)
+            event.currentTarget
+              .querySelector<HTMLButtonElement>(
+                `[data-tab-id="${CSS.escape(tab.id)}"]`,
+              )
+              ?.focus({ preventScroll: true })
+          }
+        }
+      }}
+    >
+      {rendered.map((tab) => {
+        const closing = !currentIds.has(tab.id)
+        const selected = !activeAddonTab && tab.id === document.tabId
+        const name = selected ? document.name : tab.name
+        const dirty = selected ? document.dirty : tab.dirty
+        return (
+          <div
+            className="document-tab"
+            key={tab.id}
+            data-active={selected}
+            data-closing={closing}
+            data-tab-key={tab.id}
+            data-drop-side={drop?.id === tab.id ? drop.side : undefined}
+            ref={selected ? active : undefined}
+            draggable={!busy && !closing}
+            onDragStart={(event) => {
+              dragged.current = tab.id
+              event.dataTransfer.setData('application/x-hibi-tab', tab.id)
+              event.dataTransfer.effectAllowed = 'move'
+            }}
+            onDragEnd={() => {
+              dragged.current = null
+              setDrop(null)
+            }}
+            onDragOver={(event) => {
+              if (!dragged.current || busy || closing) return
+              event.preventDefault()
+              event.dataTransfer.dropEffect = 'move'
+              const bounds = event.currentTarget.getBoundingClientRect()
+              const side =
+                event.clientX > bounds.x + bounds.width / 2 ? 'after' : 'before'
+              setDrop((old) =>
+                old?.id === tab.id && old.side === side
+                  ? old
+                  : { id: tab.id, side },
+              )
+              const container = strip.current
+              if (container) {
+                const bounds = container.getBoundingClientRect()
+                if (event.clientX < bounds.left + 24)
+                  container.scrollBy({ left: -24, behavior: 'instant' })
+                else if (event.clientX > bounds.right - 24)
+                  container.scrollBy({ left: 24, behavior: 'instant' })
+              }
+            }}
+            onDrop={(event) => {
+              const id = dragged.current
+              if (!id || busy || closing) return
+              event.preventDefault()
+              const bounds = event.currentTarget.getBoundingClientRect()
+              const index = document.tabs.findIndex(
+                (current) => current.id === tab.id,
+              )
+              const beforeId =
+                event.clientX > bounds.x + bounds.width / 2
+                  ? (document.tabs[index + 1]?.id ?? null)
+                  : tab.id
+              dragged.current = null
+              setDrop(null)
+              if (id !== beforeId) onMove(id, beforeId)
+            }}
+            inert={closing}
+            aria-hidden={closing}
+            onAnimationEnd={(event) => {
+              if (closing && event.target === event.currentTarget)
+                setRendered((tabs) => tabs.filter((item) => item.id !== tab.id))
+            }}
+          >
+            <button
+              type="button"
+              role="tab"
+              id={`document-tab-${tab.id}`}
+              aria-controls={
+                splitTabs &&
+                tab.id !== document.tabId &&
+                (tab.id === splitTabs.left || tab.id === splitTabs.right)
+                  ? 'split-document-editor-panel'
+                  : 'document-editor-panel'
+              }
+              className="document-name"
+              data-tab-id={tab.id}
+              aria-label={name}
+              aria-selected={selected}
+              aria-description={dirty ? 'Unsaved changes' : undefined}
+              aria-disabled={busy}
+              tabIndex={selected ? 0 : -1}
+              data-tooltip={name}
+              data-verbatim="true"
+              onMouseDown={(event) => {
+                if (event.button === 1) event.preventDefault()
+                if (event.button === 0)
+                  event.currentTarget.focus({ preventScroll: true })
+              }}
+              onAuxClick={(event) => {
+                if (event.button !== 1) return
+                event.preventDefault()
+                if (!busy && !closing) onClose(tab.id)
+              }}
+              onClick={() => {
+                cancelNavigationFocus()
+                if (!busy && !selected) onSelect(tab.id)
+              }}
+              onContextMenu={(event) => {
+                event.preventDefault()
+                if (busy || closing) return
+                event.currentTarget.focus({ preventScroll: true })
+                openTabMenu(tab.id, {
+                  x: event.clientX,
+                  y: event.clientY,
+                })
+              }}
+            >
+              <span>{name}</span>
+              {dirty && (
+                <span
+                  className="dirty-dot"
+                  role="status"
+                  aria-label={
+                    selected ? 'Unsaved changes' : `Unsaved changes in ${name}`
+                  }
+                >
+                  •
+                </span>
+              )}
+            </button>
+            <IconButton
+              className="tab-close"
+              aria-label={`Close ${name}`}
+              title="Close tab"
+              disabled={busy}
+              onClick={() => onClose(tab.id)}
+            >
+              <X size={12} />
+            </IconButton>
+          </div>
+        )
+      })}
+      {addonTabs.map((tab) => {
+        const selected = tab.id === activeAddonTab
+        const name = tab.definition.label
+        return (
+          <div
+            className="document-tab"
+            key={tab.id}
+            data-active={selected}
+            data-tab-key={tab.id}
+            ref={selected ? active : undefined}
+          >
+            <button
+              type="button"
+              role="tab"
+              id={`addon-tab-${tab.id}`}
+              aria-controls="addon-tab-panel"
+              className="document-name"
+              data-tab-id={tab.id}
+              aria-label={name}
+              aria-selected={selected}
+              aria-disabled={busy}
+              tabIndex={selected ? 0 : -1}
+              data-tooltip={name}
+              onClick={() => {
+                cancelNavigationFocus()
+                if (!busy && !selected) onSelectAddon(tab.id)
+              }}
+            >
+              <span>{name}</span>
+            </button>
+            <IconButton
+              className="tab-close"
+              aria-label={`Close ${name}`}
+              title="Close tab"
+              onClick={() => onCloseAddon(tab.id)}
+            >
+              <X size={12} />
+            </IconButton>
+          </div>
+        )
+      })}
+    </div>
+  )
+}

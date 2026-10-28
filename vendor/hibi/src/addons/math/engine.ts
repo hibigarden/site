@@ -1,0 +1,347 @@
+import { syntaxTree } from '@codemirror/language'
+import { EditorView, ViewPlugin } from '@codemirror/view'
+import { type Editor, InputRule, type NodeViewRenderer } from '@tiptap/core'
+import { BlockMath, InlineMath } from '@tiptap/extension-mathematics'
+import type { Node } from '@tiptap/pm/model'
+import katex from 'katex'
+import { Sigma, SquareRadical } from 'lucide-react'
+import type { MarkedExtension } from 'marked'
+import { formattedSyntaxTree } from '../../renderer/src/formatted-contributions'
+import { formattedRegistry } from '../../renderer/src/formatted-registry'
+import { isMarkdownDocument } from '../../shared/document-types'
+import type { AddonContext } from '../api'
+import type { MathHost } from './formatted'
+import { containerPrefix, mathInsertion } from './insert'
+import { formulaScheduler } from './rendering'
+import { mathStyles } from './styles'
+import {
+  blockMath,
+  blockMathStart,
+  inlineMath,
+  mathFlavor,
+  mathTokens,
+} from './syntax'
+
+const options = {
+  throwOnError: false,
+  trust: false,
+  maxExpand: 500,
+  maxSize: 20,
+}
+export function startMath(context: AddonContext) {
+  const supported = (name: string) =>
+    /\.(?:md|markdown|tex|rmd|qmd|org)$/i.test(name)
+  context.editor.registerSyntax({
+    id: 'inline',
+    label: 'Inline math',
+    group: 'LaTeX',
+    description: '$expression$',
+    level: 'inline',
+    extensions: ['inlineMath'],
+    matches: (token) => token.type === 'inlineMath',
+    slash: {
+      markdown: '$$',
+      cursor: 1,
+      rich: (chain) => chain.insertInlineMath({ latex: '' }),
+    },
+  })
+  context.editor.registerSyntax({
+    id: 'block',
+    label: 'Block math',
+    group: 'LaTeX',
+    description: '$$ expression $$',
+    level: 'block',
+    extensions: ['blockMath'],
+    matches: (token) => token.type === 'blockMath',
+    slash: {
+      markdown: '$$\n\n$$',
+      cursor: 3,
+      rich: (chain) => chain.insertBlockMath({ latex: '' }),
+    },
+  })
+  let rich: Editor | null = null
+  let source: EditorView | null = null
+  let formatted: EditorView | null = null
+  let target: 'rich' | 'source' | 'formatted' = 'rich'
+  context.editor.registerRich({
+    id: 'editing',
+    preview: 'deferred',
+    attach(editor) {
+      rich = editor
+      const focus = () => {
+        target = 'rich'
+      }
+      editor.on('focus', focus)
+      return () => {
+        editor.off('focus', focus)
+        if (rich === editor) rich = null
+      }
+    },
+  })
+  context.editor.registerSource({
+    id: 'editing',
+    create: () => [
+      ViewPlugin.define((view) => {
+        source = view
+        return {
+          destroy() {
+            if (source === view) source = null
+          },
+        }
+      }),
+      EditorView.domEventHandlers({
+        focus() {
+          target = 'source'
+        },
+      }),
+    ],
+  })
+  const prompt = (value = '') =>
+    context.dialogs.prompt({
+      title: 'Math',
+      label: 'LaTeX',
+      defaultValue: value,
+      confirmLabel: 'Apply',
+      validate: (value) =>
+        !value.trim()
+          ? 'Enter an expression.'
+          : value.length > 10000
+            ? 'Use 10,000 characters or fewer.'
+            : null,
+    })
+  async function edit(node: Node, pos: number, block: boolean) {
+    const editor = rich
+    if (!editor?.isEditable) return
+    const doc = editor.state.doc
+    const latex = await prompt(String(node.attrs.latex ?? ''))
+    if (latex === null || editor.isDestroyed || editor.state.doc !== doc) return
+    if (block) editor.chain().focus().updateBlockMath({ pos, latex }).run()
+    else editor.chain().focus().updateInlineMath({ pos, latex }).run()
+  }
+  async function insert(block: boolean) {
+    const document = context.editor.getDocument()
+    if (!document || !supported(document.name)) {
+      context.notify('Math insertion is not available for this format.')
+      return
+    }
+    // The CodeMirror formatted view takes the same source edit as the source view.
+    const codeMirror = () =>
+      target === 'formatted' && formatted ? formatted : source
+    const editor = rich,
+      view = codeMirror(),
+      inSource = target !== 'rich' || !isMarkdownDocument(document.name)
+    const doc = editor?.state.doc,
+      text = view?.state.doc
+    const selection = inSource
+      ? view?.state.selection.main
+      : editor?.state.selection
+    if (
+      !selection ||
+      (!inSource && !editor?.schema.nodes[block ? 'blockMath' : 'inlineMath'])
+    ) {
+      context.notify('Enable math from the format menu in the status bar.')
+      return
+    }
+    const latex = await prompt()
+    if (latex === null) return
+    if (inSource && view && view.state.doc === text && view === codeMirror()) {
+      // Display math keeps the quotes and list items around the caret.
+      const { state } = view
+      const value = mathInsertion(
+        block
+          ? containerPrefix(
+              state.doc,
+              formattedSyntaxTree(state) ?? syntaxTree(state),
+              selection.from,
+            )
+          : '',
+        latex,
+        block,
+      )
+      view.dispatch({
+        changes: { from: selection.from, to: selection.to, insert: value },
+        selection: { anchor: selection.from + value.length },
+        userEvent: 'input.format',
+        scrollIntoView: true,
+      })
+      view.focus()
+    } else if (
+      !inSource &&
+      editor &&
+      !editor.isDestroyed &&
+      editor.state.doc === doc
+    ) {
+      const chain = editor
+        .chain()
+        .focus()
+        .setTextSelection({ from: selection.from, to: selection.to })
+      if (block) chain.insertBlockMath({ latex }).run()
+      else chain.insertInlineMath({ latex }).run()
+    }
+  }
+  const formulas = formulaScheduler((latex, displayMode) =>
+    katex.renderToString(latex, {
+      ...options,
+      displayMode,
+      output: 'htmlAndMathml',
+    }),
+  )
+  /** Same markup as the package views; KaTeX output arrives after mounting. */
+  const view =
+    (display: boolean): NodeViewRenderer =>
+    ({ node, getPos, editor }) => {
+      const latex = String(node.attrs.latex ?? '')
+      const dom: HTMLElement = document.createElement(display ? 'div' : 'span')
+      dom.className = 'tiptap-mathematics-render'
+      if (editor.isEditable)
+        dom.classList.add('tiptap-mathematics-render--editable')
+      dom.dataset.type = display ? 'block-math' : 'inline-math'
+      dom.setAttribute('data-latex', latex)
+      const target = display ? document.createElement('div') : dom
+      if (display) {
+        target.className = 'block-math-inner'
+        dom.append(target)
+      }
+      // Until then the expression stays readable; display spacing, or the
+      // height this formula last rendered at, limits the height change.
+      const pending = display ? document.createElement('span') : target
+      if (display) {
+        pending.className = 'katex-display'
+        target.append(pending)
+      }
+      pending.textContent = latex
+      const reserved = display ? formulas.height(latex) : undefined
+      if (reserved) dom.style.minHeight = `${reserved}px`
+      const click = (event: MouseEvent) => {
+        event.preventDefault()
+        event.stopPropagation()
+        const pos = getPos()
+        if (pos !== undefined) void edit(node, pos, display)
+      }
+      dom.addEventListener('click', click)
+      const cancel = formulas.schedule(dom, latex, display, (html) => {
+        if (reserved) dom.removeAttribute('style')
+        if (html !== null) {
+          // KaTeX builds this markup itself; trust: false admits no author HTML.
+          target.innerHTML = html
+          return
+        }
+        dom.textContent = latex
+        dom.classList.add(display ? 'block-math-error' : 'inline-math-error')
+      })
+      return {
+        dom,
+        destroy() {
+          cancel()
+          dom.removeEventListener('click', click)
+        },
+      }
+    }
+  const inline = InlineMath.extend({
+    markdownTokenizer: {
+      name: 'inlineMath',
+      level: 'inline',
+      start: (source) => source.indexOf('$'),
+      tokenize: inlineMath,
+    },
+    addInputRules() {
+      return [
+        new InputRule({
+          find: /(?:^|[^\\$])(\$(?!\$)(?:\\.|[^$\n])+?\$)$/,
+          handler: ({ state, range, match }) => {
+            const raw = match[1],
+              token = raw && inlineMath(raw)
+            if (!token) return null
+            state.tr.replaceWith(
+              range.to - raw.length,
+              range.to,
+              this.type.create({ latex: token.latex }),
+            )
+          },
+        }),
+      ]
+    },
+    addNodeView: () => view(false),
+  })
+  const block = BlockMath.extend({
+    markdownTokenizer: {
+      name: 'blockMath',
+      level: 'block',
+      start: blockMathStart,
+      tokenize: blockMath,
+    },
+    addInputRules() {
+      return [
+        new InputRule({
+          find: /^\$\$([^$\n]+)\$\$$/,
+          handler: ({ state, range, match }) => {
+            const token = blockMath(match[0])
+            const from = state.doc.resolve(range.from)
+            if (!token || !from.depth || !from.parent.isTextblock) return null
+            state.tr.replaceWith(
+              from.before(),
+              from.after(),
+              this.type.create({ latex: token.latex }),
+            )
+          },
+        }),
+      ]
+    },
+    addNodeView: () => view(true),
+  })
+  const renderers: MarkedExtension = {
+    extensions: ['inlineMath', 'blockMath'].map((name) => ({
+      name,
+      renderer: (token) =>
+        formulas.render(String(token.latex ?? ''), name === 'blockMath'),
+    })),
+  }
+  context.styles.register('math', mathStyles)
+  const host: MathHost = {
+    formulas,
+    prompt,
+    focus(view) {
+      formatted = view
+      target = 'formatted'
+    },
+    close(view) {
+      if (formatted === view) formatted = null
+    },
+  }
+  const formattedEntries = (['inline', 'block', 'editing'] as const).map((id) =>
+    formattedRegistry.register({
+      id: `math.${id}`,
+      load: () =>
+        import('./formatted').then(
+          ({ mathContributions }) => mathContributions(host)[id],
+        ),
+    }),
+  )
+  context.editor.registerFlavor({
+    ...mathFlavor,
+    richExtensions: [inline, block],
+    export: { extensions: [mathTokens, renderers], css: mathStyles },
+  })
+  for (const block of [false, true]) {
+    const id = block ? 'block' : 'inline',
+      label = block ? 'Block math' : 'Inline math'
+    context.commands.register({
+      id,
+      label: `Insert ${label.toLowerCase()}`,
+      run: () => insert(block),
+    })
+    const item = context.toolbar.register({
+      id,
+      label,
+      icon: block ? Sigma : SquareRadical,
+      commandId: id,
+      hidden: true,
+    })
+    context.editor.onDocumentChange((document) =>
+      item.update({ hidden: !supported(document.name) }),
+    )
+  }
+  return () => {
+    for (const remove of formattedEntries) remove()
+  }
+}

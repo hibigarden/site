@@ -113,6 +113,7 @@ export function createToastService(
             if (changes.description !== undefined)
               entry.description = changes.description
             if (changes.variant !== undefined) entry.variant = changes.variant
+            if (changes.action !== undefined) entry.action = changes.action
             if (changes.duration !== undefined) {
               entry.duration = toastPreferences({
                 duration: changes.duration,
@@ -165,6 +166,16 @@ export function createToastService(
     dismiss(id: number) {
       const entry = entries.get(id)
       if (entry) dismiss(entry)
+    },
+    /** Runs the notification's action once, then closes it. */
+    select(id: number) {
+      const entry = entries.get(id)
+      if (!entry?.action || entry.closing) return
+      try {
+        entry.action.run()
+      } finally {
+        dismiss(entry)
+      }
     },
     setContainer(next: HTMLElement | null) {
       if (next === container) return

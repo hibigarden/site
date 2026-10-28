@@ -1,6 +1,7 @@
 import { bundledColorschemes } from '../shared/color-palettes'
 import {
   COLOR_TOKENS,
+  type Colorscheme,
   type ColorschemeInput,
   DEFAULT_THEME,
   defineColorscheme,
@@ -9,16 +10,72 @@ import {
   themePreferences,
 } from '../shared/colorschemes'
 
-export function createColorschemeStore(storageKey: string, initial?: unknown) {
+/** The main window's light and dark colorschemes, including ones registered by addons. */
+export const activePaletteKey = 'hibi:active-palette'
+type Palettes = {
+  mode: ThemePreferences['mode']
+  light: Colorscheme
+  dark: Colorscheme
+}
+
+export function publishActivePalette({ mode, light, dark }: Palettes) {
+  try {
+    localStorage.setItem(
+      activePaletteKey,
+      JSON.stringify({ mode, light: light.colors, dark: dark.colors }),
+    )
+  } catch {
+    /* Other windows keep their bundled colorscheme. */
+  }
+}
+
+/** Apply the published palette for the current appearance; false when none is stored or it is invalid. */
+export function applyActivePalette(style: HTMLStyleElement): boolean {
+  try {
+    const value = JSON.parse(localStorage.getItem(activePaletteKey) ?? 'null')
+    const appearance =
+      value?.mode === 'system'
+        ? matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+        : value?.mode
+    if (appearance !== 'light' && appearance !== 'dark') return false
+    const colors: unknown = value[appearance]
+    if (!colors || typeof colors !== 'object') return false
+    const entries = Object.entries(colors)
+    if (
+      !entries.every(
+        ([token, color]) =>
+          COLOR_TOKENS.includes(token as (typeof COLOR_TOKENS)[number]) &&
+          typeof color === 'string' &&
+          /^#[\da-f]{6}(?:[\da-f]{2})?$/i.test(color),
+      )
+    )
+      return false
+    document.documentElement.dataset.appearance = appearance
+    style.textContent = `:root { color-scheme: ${appearance}; ${entries.map(([token, color]) => `--${token}: ${color};`).join(' ')} }`
+    return true
+  } catch {
+    return false
+  }
+}
+
+export function createColorschemeStore(
+  storageKey: string,
+  initial?: unknown,
+  persistent = true,
+) {
   const schemes = new Map(
     bundledColorschemes.map((scheme) => [scheme.id, scheme]),
   )
   let preferences = themePreferences(initial)
   try {
     preferences = themePreferences(
-      JSON.parse(
-        localStorage.getItem(storageKey) ?? JSON.stringify(preferences),
-      ),
+      persistent
+        ? JSON.parse(
+            localStorage.getItem(storageKey) ?? JSON.stringify(preferences),
+          )
+        : initial,
     )
   } catch {
     /* Use the bundled defaults when storage is unavailable. */
@@ -48,7 +105,13 @@ export function createColorschemeStore(storageKey: string, initial?: unknown) {
     schemes: [...schemes.values()],
     active: current(),
   }
+  let held = 0
+  let changed = false
   const publish = () => {
+    if (held) {
+      changed = true
+      return
+    }
     snapshot = {
       preferences,
       schemes: [...schemes.values()],
@@ -83,7 +146,7 @@ export function createColorschemeStore(storageKey: string, initial?: unknown) {
       started = true
       document.head.append(style)
       media.addEventListener('change', publish)
-      window.addEventListener('storage', storage)
+      if (persistent) window.addEventListener('storage', storage)
       publish()
     },
     stop() {
@@ -102,7 +165,8 @@ export function createColorschemeStore(storageKey: string, initial?: unknown) {
           throw new Error(`choose a ${mode} colorscheme`)
       preferences = next
       try {
-        localStorage.setItem(storageKey, JSON.stringify(preferences))
+        if (persistent)
+          localStorage.setItem(storageKey, JSON.stringify(preferences))
       } catch {
         /* The current session still applies the choice. */
       }
@@ -120,6 +184,26 @@ export function createColorschemeStore(storageKey: string, initial?: unknown) {
         active = false
         schemes.delete(scheme.id)
         publish()
+      }
+    },
+    /** Apply several registrations as one publication, so a replaced selection never shows its fallback. */
+    batch(changes: () => void) {
+      held++
+      try {
+        changes()
+      } finally {
+        if (!--held && changed) {
+          changed = false
+          publish()
+        }
+      }
+    },
+    /** The selected mode and the colorscheme for each appearance. */
+    resolved(): Palettes {
+      return {
+        mode: preferences.mode,
+        light: selected('light'),
+        dark: selected('dark'),
       }
     },
     native(): NativeAppearance {

@@ -9,9 +9,7 @@
   padding-right: var(--titlebar-edge-inset);
 }
 
-.titlebar .palette-trigger,
-.titlebar [aria-label="editor settings"],
-.titlebar [aria-label="open"] {
+.titlebar :is([aria-label="Settings"], .right-sidebar-toolbar, .sidebar-view-controls) {
   display: none;
 }
 

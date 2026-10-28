@@ -43,19 +43,34 @@ export default defineConfig({
       configurePreviewServer: addonPages,
     },
     {
-      name: "hibi-embedded-focus",
+      // hibi generates its addon catalog while it builds; the demo lists the addons it runs.
+      name: "hibi-demo-addon-catalog",
+      resolveId(id) {
+        if (id === "virtual:hibi-addon-catalog/renderer")
+          return fileURLToPath(new URL("./src/demo-addons.js", import.meta.url));
+        // Authors and licences show only in settings, which the demo leaves out.
+        if (id === "virtual:hibi-addon-catalog/details") return "\0hibi-demo-addon-details";
+      },
+      load(id) {
+        if (id === "\0hibi-demo-addon-details") return "export default {}";
+      },
+    },
+    {
+      name: "hibi-demo-katex-fonts",
       enforce: "pre",
       transform(code, id) {
-        if (!id.endsWith("/vendor/hibi/src/renderer/src/Editor.tsx")) return;
-        // Keep the landing page at the top; retain autofocus in the standalone demo.
+        if (!id.endsWith("/vendor/hibi/src/addons/math/styles.ts")) return;
+        // The vendored copy sits deeper than hibi's node_modules path assumes.
         return code.replace(
-          "autofocus: 'end',",
-          "autofocus: window.parent === window ? 'end' : false,",
+          "'../../../node_modules/katex/dist/fonts/*.woff2'",
+          "'/node_modules/katex/dist/fonts/*.woff2'",
         );
       },
     },
   ],
   esbuild: { jsx: "automatic" },
+  // hibi's document worker splits into chunks.
+  worker: { format: "es" },
   resolve: {
     alias: [
       {

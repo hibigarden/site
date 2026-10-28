@@ -257,7 +257,7 @@ export function injectShowcase(html, builtins, community) {
   const data = JSON.stringify(showcaseCandidates(builtins)).replace(/</g, "\\u003c");
   return html.replace(
     marker,
-    () => `${renderShowcase([...builtins, ...community])}<script type="application/json" id="addon-showcase-data">${data}</script>`,
+    () => `<div class="showcase-body">${renderShowcase([...builtins, ...community])}</div><script type="application/json" id="addon-showcase-data">${data}</script>`,
   );
 }
 

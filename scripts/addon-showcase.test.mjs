@@ -36,8 +36,9 @@ test("site dates read as day.roman month.year and reject anything else", () => {
     assert.equal(addonDay(bad), null, String(bad));
 });
 
-test("both date sorts put the newest first, break ties by name, and keep undated addons last", () => {
+test("both date sorts put the newest first, break ties by name, and keep undated addons after them in catalog order", () => {
   const addons = [
+    { name: "zeta" },
     { name: "beta", released: "2026-10-01", updated: "2026-10-20" },
     { name: "Alpha", released: "2026-10-01", updated: "2026-10-02" },
     { name: "gamma", released: "2026-10-05", updated: "2026-10-05" },
@@ -45,11 +46,12 @@ test("both date sorts put the newest first, break ties by name, and keep undated
     { name: "delta", released: "not a day", updated: "2026-10-30" },
   ];
   const names = (order) => sortAddons(addons, order).map((addon) => addon.name);
-  assert.deepEqual(names("released"), ["gamma", "Alpha", "beta", "aardvark", "delta"]);
-  assert.deepEqual(names("updated"), ["delta", "beta", "gamma", "Alpha", "aardvark"]);
-  assert.deepEqual(names("name"), ["aardvark", "Alpha", "beta", "delta", "gamma"]);
-  assert.deepEqual(names(), names("name"));
-  assert.equal(addons[0].name, "beta", "sorting copies");
+  assert.deepEqual(names("released"), ["gamma", "Alpha", "beta", "zeta", "aardvark", "delta"]);
+  assert.deepEqual(names("updated"), ["delta", "beta", "gamma", "Alpha", "zeta", "aardvark"]);
+  const undated = addons.map(({ name }) => ({ name }));
+  for (const order of ["released", "updated"])
+    assert.deepEqual(sortAddons(undated, order), undated, "no dates: every addon, catalog order");
+  assert.equal(addons[0].name, "zeta", "sorting copies");
 });
 
 test("built-in dates come from the synced dates.json and are optional", (t) => {
@@ -159,7 +161,24 @@ test("the showcase mixes built-ins and community addons, newest six per order", 
   assert.match(html, /<span class="addon-card-kind">extension<\/span>/);
   assert.match(html, /<span>may, rin<\/span><span>released 30\.x\.2026<\/span>/);
   assert.match(html, /<input type="radio" name="showcase-sort" value="released" checked \/>recently released/);
-  assert.equal(renderShowcase(addons.filter((addon) => addon.id === "undated")), "");
+  assert.match(renderShowcase(addons, "updated"), /value="updated" checked/);
+});
+
+test("the showcase is never empty: undated addons follow in catalog order, unlabelled", () => {
+  const addon = (id, days = {}) => ({ id, name: id, description: "d", origin: "built-in", authors: [{ displayName: "may" }], ...days });
+  const cards = (html) => [...html.matchAll(/href="\/addons\/([^"]+)"/g)].map((match) => match[1]);
+  // Nothing dated (rate-limited build, no dates.json): one list in catalog order, no switch, no labels.
+  const none = renderShowcase(["math", "vim", "tags", "git", "rst", "org", "mdx"].map((id) => addon(id)));
+  assert.deepEqual(cards(none), ["math", "vim", "tags", "git", "rst", "org"]);
+  assert.ok(!none.includes("showcase-sort") && !none.includes("data-sort"));
+  assert.doesNotMatch(none, /released|updated/);
+  // Some dated: dated first by the order, then undated in catalog order without a date label.
+  const some = renderShowcase([addon("math"), addon("vim", { released: "2026-10-01", updated: "2026-10-03" }), addon("tags"), addon("git", { released: "2026-10-02", updated: "2026-10-02" })]);
+  const list = (order) => some.split(`data-sort="${order}"`)[1].split("</ol>")[0];
+  assert.deepEqual(cards(list("released")), ["git", "vim", "math", "tags"]);
+  assert.deepEqual(cards(list("updated")), ["vim", "git", "math", "tags"]);
+  assert.equal(list("released").match(/released \d/g).length, 2);
+  assert.match(some, /class="showcase-sort"/);
 });
 
 test("the landing page keeps its marker or the build fails", () => {
@@ -167,6 +186,9 @@ test("the landing page keeps its marker or the build fails", () => {
   const html = injectShowcase("<div><!-- addon-showcase --></div>", [{ id: "a", name: "</script>", description: "d", authors: [], released: "2026-10-01", updated: "2026-10-01", html: "<p>readme</p>" }], []);
   assert.ok(!html.includes("readme"), "candidates carry only card fields");
   assert.equal(html.match(/<\/script>/g).length, 1, "names cannot close the data script");
+  const builtins = ["d", "c", "b", "a", "e", "f", "g", "h"].map((id) => ({ id, name: id, description: "d", authors: [] }));
+  const candidates = JSON.parse(injectShowcase("<!-- addon-showcase -->", builtins, []).split('id="addon-showcase-data">')[1].split("</script>")[0]);
+  assert.deepEqual(candidates.map((addon) => addon.id), ["d", "c", "b", "a", "e", "f"], "undated candidates keep catalog order");
 });
 
 test("builds start from the deployed snapshot's days and ignore anything malformed", async () => {

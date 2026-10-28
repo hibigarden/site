@@ -13,26 +13,30 @@ const escape = (value) =>
     (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
   );
 
-/** The newest dated addons for one order; undated addons never appear. */
-export const showcased = (addons, order) =>
-  sortAddons(addons.filter((addon) => addonDay(addon[order])), order).slice(0, LIMIT);
+/** The six newest for one order; undated addons fill the rest in catalog order. */
+export const showcased = (addons, order) => sortAddons(addons, order).slice(0, LIMIT);
 
-export function renderCards(addons, order) {
+function renderCards(addons, order) {
   return showcased(addons, order)
     .map((addon) => {
       const kind = `${addon.origin === "community" ? "community " : ""}${addon.kind === "theme" ? "theme" : "extension"}`;
       const authors = addon.authors.map((author) => author.displayName).join(", ");
-      return `<li><a class="addon-card" href="${escape(addonPageLink(addon.id))}"><span class="addon-card-hold" aria-hidden="true"></span><span class="addon-card-heading"><span>${escape(addon.name)}</span></span><span class="addon-card-kind">${kind}</span><span class="addon-description">${escape(addon.description)}</span><span class="addon-card-footer"><span>${escape(authors)}</span><span>${order} ${addonDay(addon[order])}</span></span></a></li>`;
+      const day = addonDay(addon[order]);
+      return `<li><a class="addon-card" href="${escape(addonPageLink(addon.id))}"><span class="addon-card-hold" aria-hidden="true"></span><span class="addon-card-heading"><span>${escape(addon.name)}</span></span><span class="addon-card-kind">${kind}</span><span class="addon-description">${escape(addon.description)}</span><span class="addon-card-footer"><span>${escape(authors)}</span>${day ? `<span>${order} ${day}</span>` : ""}</span></a></li>`;
     })
     .join("");
 }
 
-/** The sort switch and both lists. Without dated addons, only the catalog link remains. */
-export function renderShowcase(addons) {
-  if (!SHOWCASE_SORTS.some(([order]) => showcased(addons, order).length)) return "";
+/**
+ * The sort switch and one list per order, or a single list in catalog order
+ * (no switch) when nothing is dated. Never empty while there are addons.
+ */
+export function renderShowcase(addons, checked = SHOWCASE_SORTS[0][0]) {
+  if (!SHOWCASE_SORTS.some(([order]) => addons.some((addon) => addonDay(addon[order]))))
+    return `<ol class="addon-grid showcase-grid" aria-label="addons">${renderCards(addons)}</ol>`;
   const radios = SHOWCASE_SORTS.map(
-    ([order, label], index) =>
-      `<label><input type="radio" name="showcase-sort" value="${order}"${index ? "" : " checked"} />${label}</label>`,
+    ([order, label]) =>
+      `<label><input type="radio" name="showcase-sort" value="${order}"${order === checked ? " checked" : ""} />${label}</label>`,
   ).join("");
   const lists = SHOWCASE_SORTS.map(
     ([order, label]) =>
@@ -41,14 +45,16 @@ export function renderShowcase(addons) {
   return `<fieldset class="showcase-sort" aria-label="sort addons">${radios}</fieldset>${lists}`;
 }
 
-/** Built-ins that can still reach the lists, whatever the community adds. */
-export const showcaseCandidates = (builtins) =>
-  [...new Map(SHOWCASE_SORTS.flatMap(([order]) => showcased(builtins, order)).map((addon) => [addon.id, addon])).values()].map(
-    ({ id, name, description, kind, authors, origin, released, updated }) => ({
+/** Built-ins that can still reach the lists, whatever the community adds, in catalog order. */
+export function showcaseCandidates(builtins) {
+  const ids = new Set(SHOWCASE_SORTS.flatMap(([order]) => showcased(builtins, order).map((addon) => addon.id)));
+  return builtins
+    .filter((addon) => ids.has(addon.id))
+    .map(({ id, name, description, kind, authors, origin, released, updated }) => ({
       id, name, description, kind, origin, released, updated,
       authors: authors.map(({ displayName }) => ({ displayName })),
-    }),
-  );
+    }));
+}
 
 const data = typeof document === "object" && document.getElementById("addon-showcase-data");
 if (data) {
@@ -62,9 +68,9 @@ if (data) {
       const response = await fetch("/addons/community.json");
       if (!response.ok) return;
       const { addons } = await response.json();
-      for (const list of section.querySelectorAll(".showcase-grid"))
-        if (!list.contains(document.activeElement))
-          list.innerHTML = renderCards([...builtins, ...addons], list.dataset.sort);
+      const body = section.querySelector(".showcase-body");
+      if (!body.contains(document.activeElement))
+        body.innerHTML = renderShowcase([...builtins, ...addons], body.querySelector(":checked")?.value);
     } catch {
       /* The built snapshot stays in place. */
     }

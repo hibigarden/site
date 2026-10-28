@@ -235,14 +235,18 @@ export function addonDay(value) {
     : null;
 }
 
-/** Sorts by name, or newest first by `released`/`updated` with undated entries last. */
-export function sortAddons(addons, order = "name") {
-  const byName = (a, b) =>
-    a.name.localeCompare(b.name, "en", { sensitivity: "base" });
+/**
+ * Newest first by `released` or `updated`. Undated entries follow in their
+ * given (catalog) order, so a missing date never hides an addon.
+ */
+export function sortAddons(addons, order) {
   const date = (addon) => (addonDay(addon[order]) ? addon[order] : "");
-  return [...addons].sort((a, b) =>
-    order === "name"
-      ? byName(a, b)
-      : date(b).localeCompare(date(a)) || byName(a, b),
-  );
+  return [...addons].sort((a, b) => {
+    const [x, y] = [date(a), date(b)];
+    if (!x || !y) return !x - !y;
+    return (
+      y.localeCompare(x) ||
+      a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+    );
+  });
 }

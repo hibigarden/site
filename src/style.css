@@ -2837,7 +2837,7 @@ a:hover {
 [data-theme="dark"] .addon-card-footer {
   border-top-color: rgb(244 232 207 / 0.2);
 }
-.addon-card-footer > :last-child {
+.addon-card-footer > * + * {
   flex-shrink: 0;
   margin-left: auto;
 }

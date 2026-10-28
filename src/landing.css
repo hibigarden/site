@@ -1711,7 +1711,7 @@ svg.button-icon,
 }
 .wake-me {
   --x: calc(100% + 34px);
-  --y: -34px;
+  --y: -104px;
   --w: 84px;
   --r: 14deg;
 }

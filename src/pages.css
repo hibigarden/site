@@ -247,7 +247,8 @@ main noscript a {
   color: var(--ink-faint);
   font: 400 12px/1.5 var(--mono);
 }
-.addon-card-footer > :last-child {
+/* the date sits at the right; an undated card's author stays at the left */
+.addon-card-footer > * + * {
   flex-shrink: 0;
   margin-left: auto;
 }

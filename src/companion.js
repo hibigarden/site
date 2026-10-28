@@ -644,7 +644,7 @@ function setState(next) {
     place(me, nest.x, nest.y);
     Object.assign(me, { k: nest.k, kb: scale, op: 1, torn: 0, wing: 0, vx: 0, vy: -1.6 * me.w * scale, hd: 0, mode: "takeoff", mt: 0 });
     grow = 0;
-    // hidden tells garden.js to stop flying the scene's copy; it keeps its box (style.css) for the way home
+    // hidden tells garden.js to stop flying the scene's copy; it keeps its box (landing.css) for the way home
     if (start) start.hidden = true;
   }
   run();

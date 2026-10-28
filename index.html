@@ -47,15 +47,25 @@
     <script type="module" src="/src/theme.js"></script>
     <script type="module" src="/src/navigation.js"></script>
     <script type="module" src="/src/scale-demo.js"></script>
-    <script type="module" src="/src/feature-illustrations.jsx"></script>
     <script type="module" src="/src/scrapbook.js"></script>
     <script type="module" src="/src/garden.js"></script>
     <script type="module" src="/src/butterflies.js"></script>
     <script type="module" src="/src/companion.js"></script>
     <script type="module" src="/src/download.js"></script>
+    <script type="module" src="/src/who.js"></script>
     <title>hibi | a place for your words</title>
   </head>
   <body data-butterflies="0">
+    <!-- lucide icons (ISC), drawn once -->
+    <svg class="icon-sprite" aria-hidden="true">
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 15V3" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /></symbol>
+      <symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /></symbol>
+      <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M14 2v5a1 1 0 0 0 1 1h5" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></symbol>
+      <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M10 5H3" /><path d="M12 19H3" /><path d="M14 3v4" /><path d="M16 17v4" /><path d="M21 12h-9" /><path d="M21 19h-5" /><path d="M21 5h-7" /><path d="M8 10v4" /><path d="M8 12H3" /></symbol>
+      <symbol id="i-battery" viewBox="0 0 24 24"><path d="M22 14v-4" /><rect x="2" y="6" width="16" height="12" rx="2" /></symbol>
+      <symbol id="i-feather" viewBox="0 0 24 24"><path d="M14.086 18.412A2 2 0 0 1 12.67 19H5v-7.672a2 2 0 0 1 .586-1.414L11.75 3.75a6 6 0 1 1 8.49 8.49z" /><path d="M16 8 2 22" /><path d="M17.488 15H9" /></symbol>
+      <symbol id="i-code" viewBox="0 0 24 24"><path d="m16 18 6-6-6-6" /><path d="m8 6-6 6 6 6" /></symbol>
+    </svg>
     <a class="skip-link" href="#main">skip to content</a>
     <header class="site-header wrap">
       <a class="wordmark" href="#" aria-label="hibi home"
@@ -149,7 +159,7 @@
           </h1>
           <div class="hero-actions">
             <a class="button cta-primary download-get" href="/download/" data-download-link
-              ><span class="button-icon" data-button-icon="download" aria-hidden="true"></span>download hibi<span class="beta-tag">beta</span></a
+              ><svg class="button-icon" aria-hidden="true"><use href="#i-download" /></svg>download hibi<span class="beta-tag">beta</span></a
             >
             <p class="also-links">
               <a href="https://github.com/schmayterling/hibi"
@@ -201,134 +211,122 @@
           </section>
         </div>
       </section>
-      <section class="spread intro-writing wrap" aria-labelledby="about-title" data-scene="spiral">
-        <header class="spread-head">
-          <h2 class="spread-title" id="about-title">built around writing.</h2>
-          <p class="spread-line">
+      <section class="s writing wrap" aria-labelledby="about-title">
+        <header class="s-head" data-scene="pair">
+          <h2 id="about-title">built around writing.</h2>
+          <p class="lead">
             hibi gives you one fast place to write, edit, preview, and organize
             documents, with the flexibility of a code editor.
           </p>
+          <span class="piece strapped pair-sprig wide gutter-r" aria-hidden="true" style="--w: 92px; --r: 8deg"
+            ><img src="/scrapbook/lavender-1.webp" width="92" height="316" alt="" loading="lazy" decoding="async" data-perch="0.5,0.08" data-pair
+          /></span>
         </header>
-        <div class="notebook print torn" aria-hidden="true">
-          <span class="print-shadow"></span>
-          <div class="editor-preview">
-            <div class="preview-titlebar"><span class="nb-dot"></span><span>today.md</span></div>
-            <div class="preview-body">
-              <div class="preview-sidebar">
-                <span class="preview-workspace-label">workspace</span>
-                <span class="preview-file-row nb-row">notes.md</span>
-                <span class="preview-file-row nb-row">essay.md</span>
-                <span class="preview-file-row nb-row">paper.typ</span>
-                <span class="preview-file-row nb-row">outline.md</span>
-                <span class="preview-file-row nb-row">prompt.md</span>
-              </div>
-              <div class="preview-editor">
-                <div class="nb-doc"><strong>today</strong><i></i><i></i><i></i><i class="short"></i><i></i><i class="short"></i></div>
+        <div class="who" data-scene="spiral">
+          <fieldset class="who-tabs" aria-label="who hibi is for">
+            <label><input type="radio" name="who" value="authors" id="for-authors" aria-controls="who-authors" checked />for authors.</label>
+            <label><input type="radio" name="who" value="academics" id="for-academics" aria-controls="who-academics" />for academics and students.</label>
+            <label><input type="radio" name="who" value="developers" id="for-developers" aria-controls="who-developers" />for developers.</label>
+            <label><input type="radio" name="who" value="note-takers" id="for-note-takers" aria-controls="who-note-takers" />for note-takers.</label>
+          </fieldset>
+          <!-- one window on the hero's park; each tab's capture loads when its tab is shown (or reached for) -->
+          <div class="window-panel" data-perch="0.93,0.06">
+            <div class="park park-path" aria-hidden="true">
+              <div class="g-scene">
+                <i class="g-layer g-sky"></i>
+                <i class="g-layer g-clouds g-clouds-far" data-drift="640"></i>
+                <i class="g-layer g-clouds g-clouds-mid" data-drift="460"></i>
+                <i class="g-layer g-clouds g-clouds-near" data-drift="330"></i>
+                <i class="g-layer g-far"></i>
+                <i class="g-layer g-lawn"></i>
+                <i class="g-layer g-lavender"></i>
               </div>
             </div>
+            <div class="window" data-who="authors">
+              <picture class="theme-day"><source media="(max-width: 600px)" srcset="/windows/authors-light-phone.webp" width="700" height="560" /><img src="/windows/authors-light-desktop.webp" width="1680" height="840" alt="a story, the small blue, open in hibi's rich view, with its stories folder in the explorer." loading="lazy" decoding="async" /></picture>
+              <picture class="theme-night"><source media="(max-width: 600px)" srcset="/windows/authors-dark-phone.webp" width="700" height="560" /><img src="/windows/authors-dark-desktop.webp" width="1680" height="840" alt="a story, the small blue, open in hibi's rich view, with its stories folder in the explorer." loading="lazy" decoding="async" /></picture>
+            </div>
+            <div class="window" data-who="academics">
+              <picture class="theme-day"><source media="(max-width: 600px)" srcset="/windows/academics-light-phone.webp" width="700" height="560" /><img src="/windows/academics-light-desktop.webp" width="1680" height="840" alt="a typst paper beside its compiled one-page preview." loading="lazy" decoding="async" /></picture>
+              <picture class="theme-night"><source media="(max-width: 600px)" srcset="/windows/academics-dark-phone.webp" width="700" height="560" /><img src="/windows/academics-dark-desktop.webp" width="1680" height="840" alt="a typst paper beside its compiled one-page preview." loading="lazy" decoding="async" /></picture>
+            </div>
+            <div class="window" data-who="developers">
+              <picture class="theme-day"><source media="(max-width: 600px)" srcset="/windows/developers-light-phone.webp" width="700" height="560" /><img src="/windows/developers-light-desktop.webp" width="1680" height="840" alt="AGENTS.md for a coding agent, next to a setup note, a review prompt, and the script it describes." loading="lazy" decoding="async" /></picture>
+              <picture class="theme-night"><source media="(max-width: 600px)" srcset="/windows/developers-dark-phone.webp" width="700" height="560" /><img src="/windows/developers-dark-desktop.webp" width="1680" height="840" alt="AGENTS.md for a coding agent, next to a setup note, a review prompt, and the script it describes." loading="lazy" decoding="async" /></picture>
+            </div>
+            <div class="window" data-who="note-takers">
+              <picture class="theme-day"><source media="(max-width: 600px)" srcset="/windows/note-takers-light-phone.webp" width="700" height="560" /><img src="/windows/note-takers-light-desktop.webp" width="1680" height="840" alt="a note on butterflies with its properties and links, beside the workspace graph of sixteen notes." loading="lazy" decoding="async" /></picture>
+              <picture class="theme-night"><source media="(max-width: 600px)" srcset="/windows/note-takers-dark-phone.webp" width="700" height="560" /><img src="/windows/note-takers-dark-desktop.webp" width="1680" height="840" alt="a note on butterflies with its properties and links, beside the workspace graph of sixteen notes." loading="lazy" decoding="async" /></picture>
+            </div>
           </div>
+          <article class="who-caption" id="who-authors" data-who="authors">
+            <h3>for authors.</h3>
+            <div>
+              <p>
+                write stories, essays, and notes. keep your drafts and research
+                together in one workspace.
+              </p>
+              <a href="https://docs.hibi.garden/#page=guides%2Fediting.md">writing guide</a>
+            </div>
+          </article>
+          <article class="who-caption" id="who-academics" data-who="academics">
+            <h3>for academics and students.</h3>
+            <div>
+              <p>
+                write papers in typst or latex with a preview beside your draft,
+                and put equations right in your markdown notes.
+              </p>
+              <a href="https://docs.hibi.garden/#page=editing%2Ftypst.md">typst guide</a>
+            </div>
+          </article>
+          <article class="who-caption" id="who-developers" data-who="developers">
+            <h3>for developers.</h3>
+            <div>
+              <p>
+                write documentation and export it as a site you can host. write and
+                organize prompts, agent instructions, and context files for the ai
+                tools you use.
+              </p>
+              <a href="https://docs.hibi.garden/#page=guides%2Fexporting.md">export documentation</a>
+            </div>
+          </article>
+          <article class="who-caption" id="who-note-takers" data-who="note-takers">
+            <h3>for note-takers.</h3>
+            <div>
+              <p>
+                open an obsidian vault where it is. link notes with [[wiki links]],
+                tag them, and see how they connect on a graph. catch a thought with
+                a quick note from any app.
+              </p>
+              <a href="https://docs.hibi.garden/#page=guides%2Fworkspaces.md">workspace guide</a>
+            </div>
+          </article>
         </div>
+        <ul class="feats" id="features" aria-label="features">
+          <li><svg aria-hidden="true"><use href="#i-folder" /></svg><h3>your files, your folders.</h3><p>keep your notes on your computer.</p></li>
+          <li><svg aria-hidden="true"><use href="#i-file-text" /></svg><h3>beyond markdown.</h3><p>write in typst, latex, mdx, and more.</p></li>
+          <li><svg aria-hidden="true"><use href="#i-sliders" /></svg><h3>make it yours.</h3><p>add tools, choose a theme, and set up your shortcuts. <a href="https://docs.hibi.garden/#page=guides%2Fsettings.md">settings</a></p></li>
+          <li><svg aria-hidden="true"><use href="#i-battery" /></svg><h3>batteries included.</h3><p>git, latex, vim, and export come built in.</p></li>
+          <li><svg aria-hidden="true"><use href="#i-feather" /></svg><h3>quick notes.</h3><p>catch a thought from any app.</p></li>
+          <li><svg aria-hidden="true"><use href="#i-code" /></svg><h3>free and open source.</h3><p>gpl-3.0. <a href="https://github.com/schmayterling/hibi">view source</a></p></li>
+        </ul>
       </section>
-      <section class="spread own-app wrap" aria-labelledby="control-title" data-scene="chase">
-        <header class="spread-head">
-          <h2 class="spread-title" id="control-title">for writers who want an app of their own.</h2>
-          <p class="spread-line">
+      <section class="s own-app wrap" aria-labelledby="control-title" data-scene="chase">
+        <header class="s-head">
+          <h2 id="control-title">for writers who want an app of their own.</h2>
+          <p class="lead">
             start with a simple writing app, then add the tools and formats you
             need. your files stay in your own folders.
           </p>
         </header>
         <div class="showcase">
           <!-- addon-showcase -->
-          <a class="showcase-all" href="/addons/">browse all addons <span aria-hidden="true">→</span></a>
+          <p class="showcase-foot">
+            <a class="showcase-all" href="/addons/">browse all addons <span aria-hidden="true">→</span></a>
+            <span class="label">settings → addons · turn on what you need</span>
+          </p>
         </div>
         <script type="module" src="/src/addon-showcase.js"></script>
-      </section>
-      <section class="spread features-spread wrap" id="features" aria-labelledby="features-title" data-scene="pair">
-        <h2 class="drawer-title" id="features-title">features</h2>
-        <div class="features">
-          <article class="feature-card feature-files settle">
-            <div class="feature-art workspace-art" id="workspace-illustration" aria-hidden="true"></div>
-            <div class="feature-copy">
-              <h3>your files, your folders.</h3>
-              <p>keep your notes on your computer.</p>
-            </div>
-          </article>
-          <article class="feature-card feature-formats settle">
-            <div class="feature-art formats-art" id="formats-illustration" aria-hidden="true"></div>
-            <div class="feature-copy">
-              <h3>beyond markdown.</h3>
-              <p>write in typst, latex, mdx, and more.</p>
-            </div>
-          </article>
-          <article class="feature-card feature-customize settle">
-            <div class="feature-art themes-art" id="themes-illustration" aria-hidden="true"></div>
-            <div class="feature-copy">
-              <h3>make it yours.</h3>
-              <p>add tools, choose a theme, and set up your shortcuts.</p>
-              <a href="https://docs.hibi.garden/#page=guides%2Fsettings.md"
-                >settings <span aria-hidden="true">↗</span></a
-              >
-            </div>
-          </article>
-          <article class="feature-card feature-addons settle">
-            <div class="feature-art addons-art" id="addons-illustration" role="img" aria-label="bundled addons for git, latex, vim, and exporting"></div>
-            <div class="feature-copy">
-              <h3>batteries included.</h3>
-              <a href="/addons/">browse addons <span aria-hidden="true">↗</span></a>
-            </div>
-          </article>
-          <span class="piece strapped pair-sprig wide gutter-r" aria-hidden="true" style="--w: 96px; --r: 8deg"
-            ><img src="/scrapbook/lavender-1.webp" width="92" height="316" alt="" loading="lazy" decoding="async" data-perch="0.5,0.08" data-pair
-          /></span>
-        </div>
-        <article class="feature-free seed-packet settle">
-          <h3>free and open source.</h3>
-          <a href="https://github.com/schmayterling/hibi">view source</a>
-        </article>
-      </section>
-      <section class="personas wrap" aria-label="who hibi is for" data-scene="wake">
-        <article class="writing-role role-writers paper settle">
-          <img class="role-object" src="/scrapbook/pen.webp" width="247" height="152" alt="" loading="lazy" decoding="async" />
-          <h2>for authors.</h2>
-          <p>
-            write stories, essays, and notes. keep your drafts and research
-            together in one workspace.
-          </p>
-          <a href="https://docs.hibi.garden/#page=guides%2Fediting.md">writing guide</a>
-        </article>
-        <article class="writing-role role-academics paper settle">
-          <img class="role-object" src="/scrapbook/pencil.webp" width="247" height="163" alt="" loading="lazy" decoding="async" />
-          <h2>for academics and students.</h2>
-          <p>
-            write papers in typst or latex with a preview beside your draft,
-            and put equations right in your markdown notes.
-          </p>
-          <a href="https://docs.hibi.garden/#page=editing%2Ftypst.md">typst guide</a>
-        </article>
-        <article class="writing-role role-developers paper settle">
-          <span class="role-object role-braces" aria-hidden="true"
-            ><img src="/scrapbook/brace-left.webp" width="81" height="93" alt="" loading="lazy" decoding="async" /><img src="/scrapbook/brace-right.webp" width="81" height="91" alt="" loading="lazy" decoding="async"
-          /></span>
-          <h2>for developers.</h2>
-          <p>
-            write documentation and export it as a site you can host. write and
-            organize prompts, agent instructions, and context files for the ai
-            tools you use.
-          </p>
-          <a href="https://docs.hibi.garden/#page=guides%2Fexporting.md">export documentation</a>
-        </article>
-        <article class="writing-role role-notes paper settle">
-          <span class="piece pinned wake-me" aria-hidden="true" style="--x: calc(100% - 92px); --y: -34px; --w: 84px; --r: 12deg"
-            ><img src="/scrapbook/bf-cabbage-white.webp" width="117" height="83" alt="" loading="lazy" decoding="async" data-wake="cabbage-white"
-          /></span>
-          <h2>for note-takers.</h2>
-          <p>
-            open an obsidian vault where it is. link notes with [[wiki links]],
-            tag them, and see how they connect on a graph. catch a thought with
-            a quick note from any app.
-          </p>
-          <a href="https://docs.hibi.garden/#page=guides%2Fworkspaces.md">workspace guide</a>
-        </article>
       </section>
       <section class="kind-words wrap draft" aria-labelledby="kind-title" hidden>
         <h2 class="drawer-title" id="kind-title">kind words</h2>
@@ -359,82 +357,52 @@
           </li>
         </ul>
       </section>
-      <section class="days wrap" aria-labelledby="days-title">
-        <header class="spread-head">
-          <h2 class="spread-title" id="days-title">day by day.</h2>
+      <section class="s days wrap" aria-labelledby="days-title" data-scene="wake">
+        <header class="days-head">
+          <h2 id="days-title">day by day.</h2>
           <p class="specimen-label name-label">hibi (<span lang="ja">日々</span>) · days; day after day.</p>
         </header>
-        <ol class="day-strip">
-          <li class="day-note settle"><time datetime="2026-09-16">16.ix.2026</time><p>the first lines: workspaces, addons, and exports.</p></li>
-          <li class="day-note settle"><time datetime="2026-09-18">18.ix.2026</time><p>vim and neovim keymaps.</p></li>
-          <li class="day-note settle"><time datetime="2026-09-21">21.ix.2026</time><p>the first nightly build.</p></li>
-          <li class="day-note settle"><time datetime="2026-09-23">23.ix.2026</time><p>quick notes, from any app.</p></li>
-          <li class="day-note settle"><time datetime="2026-10-12">12.x.2026</time><p>a dictionary and thesaurus.</p></li>
-          <li class="day-note settle"><time datetime="2026-10-25">25.x.2026</time><p>hibi 0.2, the first beta.</p></li>
-          <li class="day-note settle"><time datetime="2026-10-28">28.x.2026</time><p>a new icon: a small blue butterfly.</p></li>
-        </ol>
+        <div class="diary-wrap">
+          <ol class="diary">
+            <li><time datetime="2026-09-16">16.ix.2026</time><p>the first lines: workspaces, addons, and exports.</p></li>
+            <li><time datetime="2026-09-18">18.ix.2026</time><p>vim and neovim keymaps.</p></li>
+            <li><time datetime="2026-09-21">21.ix.2026</time><p>the first nightly build.</p></li>
+            <li><time datetime="2026-09-23">23.ix.2026</time><p>quick notes, from any app.</p></li>
+            <li><time datetime="2026-10-12">12.x.2026</time><p>a dictionary and thesaurus.</p></li>
+            <li><time datetime="2026-10-25">25.x.2026</time><p>hibi 0.2, the first beta.</p></li>
+            <li><time datetime="2026-10-28">28.x.2026</time><p>a new icon: a small blue butterfly.</p></li>
+          </ol>
+          <span class="piece pinned wake-me" aria-hidden="true"
+            ><img src="/scrapbook/bf-cabbage-white.webp" width="117" height="83" alt="" loading="lazy" decoding="async" data-wake="cabbage-white"
+          /></span>
+        </div>
         <a class="days-link" href="https://github.com/schmayterling/hibi/releases">changelog <span aria-hidden="true">↗</span></a>
       </section>
-      <section class="comparison wrap" aria-labelledby="comparison-title">
-          <h2 class="section-title settle" id="comparison-title">how hibi compares.</h2>
-          <div class="ledger paper settle">
-            <table class="comparison-table" aria-labelledby="comparison-title">
-              <thead>
-                <tr><th scope="col">app</th><th scope="col">how hibi differs</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row"><a href="https://www.notion.com/help/export-your-content">notion</a></th>
-                  <td>notion organizes pages and databases in a workspace. <strong>hibi edits documents directly in your local folders.</strong></td>
-                </tr>
-                <tr>
-                  <th scope="row"><a href="https://obsidian.md/">obsidian</a></th>
-                  <td>obsidian connects local markdown notes with links and plugins. <strong>hibi focuses on writing across document formats, with open source code.</strong></td>
-                </tr>
-                <tr>
-                  <th scope="row"><a href="https://typora.io/">typora</a></th>
-                  <td>typora focuses on markdown editing and live previews. <strong>hibi adds other document formats and writing tools through addons.</strong></td>
-                </tr>
-                <tr>
-                  <th scope="row"><a href="https://code.visualstudio.com/">vscode</a></th>
-                  <td>vscode is built around software development. <strong>hibi brings a customizable editor to writing and working with documents.</strong></td>
-                </tr>
-                <tr>
-                  <th scope="row"><a href="https://www.microsoft.com/en-us/microsoft-365/word">word</a></th>
-                  <td>word focuses on formatted documents and collaboration. <strong>hibi gives you a customizable workspace for markdown and other text-based formats.</strong></td>
-                </tr>
-                <tr>
-                  <th scope="row"><a href="https://www.overleaf.com/about/features-overview">overleaf</a></th>
-                  <td>overleaf is an online latex editor built for collaboration. <strong>hibi is a local writing app for markdown, typst, and other document formats.</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-      </section>
-      <section class="faq wrap" id="faq" aria-labelledby="faq-title">
-          <h2 class="section-title settle" id="faq-title">frequently asked questions</h2>
-          <div class="faq-list">
-            <details class="index-card paper settle">
+      <section class="s faq wrap" id="faq" aria-labelledby="faq-title">
+        <h2 id="faq-title">frequently asked questions</h2>
+        <div>
+          <div class="qa">
+            <details open>
               <summary>is hibi free?</summary>
               <p>yes.</p>
             </details>
-            <details class="index-card paper settle">
+            <details>
               <summary>where are my notes stored?</summary>
               <p>
                 your notes are saved as markdown files on your computer.
               </p>
             </details>
-            <details class="index-card paper settle">
+            <details>
               <summary>how do i enable addons?</summary>
               <p>
                 open settings → addons and turn on the ones you want.
               </p>
             </details>
-            <details class="index-card paper settle">
+            <details>
               <summary>what stage is hibi in?</summary>
               <p>hibi is in beta.</p>
             </details>
-            <details class="index-card index-card-wide paper settle">
+            <details>
               <summary>is hibi stable?</summary>
               <p>
                 bugs, slowdowns, and crashes can happen. addons are especially
@@ -450,76 +418,114 @@
               </p>
             </details>
           </div>
+          <h3 class="compare-title" id="comparison-title">how hibi compares.</h3>
+          <dl class="compare" aria-labelledby="comparison-title">
+            <div>
+              <dt><a href="https://www.notion.com/help/export-your-content">notion</a></dt>
+              <dd>notion organizes pages and databases in a workspace. <strong>hibi edits documents directly in your local folders.</strong></dd>
+            </div>
+            <div>
+              <dt><a href="https://obsidian.md/">obsidian</a></dt>
+              <dd>obsidian connects local markdown notes with links and plugins. <strong>hibi focuses on writing across document formats, with open source code.</strong></dd>
+            </div>
+            <div>
+              <dt><a href="https://typora.io/">typora</a></dt>
+              <dd>typora focuses on markdown editing and live previews. <strong>hibi adds other document formats and writing tools through addons.</strong></dd>
+            </div>
+            <div>
+              <dt><a href="https://code.visualstudio.com/">vscode</a></dt>
+              <dd>vscode is built around software development. <strong>hibi brings a customizable editor to writing and working with documents.</strong></dd>
+            </div>
+            <div>
+              <dt><a href="https://www.microsoft.com/en-us/microsoft-365/word">word</a></dt>
+              <dd>word focuses on formatted documents and collaboration. <strong>hibi gives you a customizable workspace for markdown and other text-based formats.</strong></dd>
+            </div>
+            <div>
+              <dt><a href="https://www.overleaf.com/about/features-overview">overleaf</a></dt>
+              <dd>overleaf is an online latex editor built for collaboration. <strong>hibi is a local writing app for markdown, typst, and other document formats.</strong></dd>
+            </div>
+          </dl>
+        </div>
       </section>
       <section class="cta" aria-labelledby="cta-title" data-scene="liftoff">
-        <div class="sky-panel" data-sky aria-hidden="true"></div>
-        <h2 id="cta-title">a place for your <em>words</em>.</h2>
-        <div class="cta-actions">
+        <!-- the hero's park at the end of the day: its bench and lamp stand where the hero's do -->
+        <div class="park park-bench" aria-hidden="true">
+          <div class="g-scene">
+            <i class="g-layer g-sky"></i>
+            <i class="g-sun g-day"></i>
+            <i class="g-free g-stars g-night" data-twinkle="4.3,0"></i>
+            <i class="g-free g-stars-2 g-night" data-twinkle="6.1,0.45"></i>
+            <i class="g-free g-moon g-night"><i class="g-halo"></i></i>
+            <i class="g-layer g-clouds g-clouds-far" data-drift="640"></i>
+            <i class="g-layer g-clouds g-clouds-mid" data-drift="460"></i>
+            <i class="g-layer g-clouds g-clouds-near" data-drift="330"></i>
+            <i class="g-layer g-far"></i>
+            <i class="g-layer g-lawn"></i>
+            <i class="g-layer g-trees"></i>
+            <i class="g-layer g-lamp"></i>
+            <i class="g-layer g-glow g-night"></i>
+            <i class="g-layer g-lavender"></i>
+            <i class="g-layer g-bench"></i>
+            <img class="notebook" src="/scrapbook/notebook.webp" width="137" height="92" alt="" loading="lazy" decoding="async" data-perch="0.52,0.42" />
+          </div>
+        </div>
+        <div class="cta-copy">
+          <h2 id="cta-title">a place for your <em>words</em>.</h2>
           <a class="button cta-primary download-get" href="/download/" data-download-link
-              ><span class="button-icon" data-button-icon="download" aria-hidden="true"></span>download hibi<span class="beta-tag">beta</span></a
-            >
-          <p class="also-links">
-            <a href="https://github.com/schmayterling/hibi"
-              ><span class="button-icon" data-button-icon="star" aria-hidden="true"></span>star on github</a
-            >
-            <a href="https://discord.gg/v9r4cABUP2"
-              ><span class="button-icon" data-button-icon="chat" aria-hidden="true"></span>join discord</a
-            >
-          </p>
+            ><svg class="button-icon" aria-hidden="true"><use href="#i-download" /></svg>download hibi<span class="beta-tag">beta</span></a
+          >
+          <p class="facts">free and open source · macOS, windows, linux</p>
         </div>
       </section>
     </main>
     <footer class="site-footer">
-      <div class="wrap">
-        <div class="footer-wordmark" aria-hidden="true">
-          <span>h</span><span>i</span><span>b</span><span>i</span>
+      <div class="wrap footer-top">
+        <div>
+          <a class="footer-brand wordmark" href="/" aria-label="hibi home">
+            <span class="wordmark-icon" aria-hidden="true"></span>
+            hibi
+          </a>
+          <p class="footer-tagline">a place for your words</p>
         </div>
-        <span class="piece taped not-narrow" aria-hidden="true" style="--x: calc(100% - 150px); --y: 0px; --w: 98px; --r: 14deg; --tape-img: url(/scrapbook/tape-blue.webp); --tape-y: 62%"
-          ><img src="/scrapbook/lavender-bundle.webp" width="147" height="298" alt="" loading="lazy" decoding="async"
-        /></span>
-        <div class="footer-details">
-          <span class="piece pinned not-narrow" aria-hidden="true" style="--x: -40px; --y: -40px; --w: 84px; --r: -14deg"
-            ><img src="/scrapbook/bf-rosy-maple.webp" width="127" height="80" alt="" loading="lazy" decoding="async"
-          /></span>
-          <div>
-            <a class="footer-brand wordmark" href="/" aria-label="hibi home">
-              <span class="wordmark-icon" aria-hidden="true"></span>
-              hibi
-            </a>
-            <p class="footer-tagline">a place for your words</p>
+        <div class="footer-groups">
+          <div class="footer-group">
+            <h2>hibi</h2>
+            <nav aria-label="footer hibi">
+              <a href="/download/">download</a>
+              <a href="/#features">features</a>
+              <a href="/addons/">addons</a>
+              <a href="/sync/">sync</a>
+              <a href="/publish/">publish</a>
+            </nav>
           </div>
-          <div class="footer-groups">
-            <div class="footer-group">
-              <h2>hibi</h2>
-              <nav aria-label="footer hibi">
-                <a href="/download/">download</a>
-                <a href="/#features">features</a>
-                <a href="/addons/">addons</a>
-                <a href="/sync/">sync</a>
-                <a href="/publish/">publish</a>
-              </nav>
-            </div>
-            <div class="footer-group">
-              <h2>resources</h2>
-              <nav aria-label="footer resources">
-                <a href="https://docs.hibi.garden">documentation</a>
-                <a href="https://github.com/schmayterling/hibi/releases">changelog</a>
-                <a href="/#faq">faq</a>
-                <a href="/credits/">credits</a>
-              </nav>
-            </div>
-            <div class="footer-group">
-              <h2>community</h2>
-              <nav aria-label="footer community">
-                <a href="https://github.com/schmayterling/hibi">github</a>
-                <a href="https://discord.gg/v9r4cABUP2">discord</a>
-              </nav>
-            </div>
+          <div class="footer-group">
+            <h2>resources</h2>
+            <nav aria-label="footer resources">
+              <a href="https://docs.hibi.garden">documentation</a>
+              <a href="https://github.com/schmayterling/hibi/releases">changelog</a>
+              <a href="/#faq">faq</a>
+              <a href="/credits/">credits</a>
+            </nav>
+          </div>
+          <div class="footer-group">
+            <h2>community</h2>
+            <nav aria-label="footer community">
+              <a href="https://github.com/schmayterling/hibi"><svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg>github</a>
+              <a href="https://discord.gg/v9r4cABUP2"><svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" /></svg>discord</a>
+            </nav>
           </div>
         </div>
-        <div class="footer-bottom">
-          <span>© 2026 <a href="https://github.com/schmayterling">schmayterling</a></span>
-          <a href="#">back to top <span aria-hidden="true">↑</span></a>
+      </div>
+      <div class="wrap colophon">
+        <p>set in eb garamond and geist mono · gpl-3.0 · first lines 16.ix.2026 · © 2026 <a href="https://github.com/schmayterling">schmayterling</a></p>
+        <a href="#">back to top <span aria-hidden="true">↑</span></a>
+      </div>
+      <!-- the name, set large (generated text, so the companion reads it as paper); its last perch is the first i's tittle -->
+      <div class="bigword" aria-hidden="true">
+        <div class="bigword-text">
+          <i class="tittle" data-perch="0.5,0.3"></i>
+          <img class="sprig" src="/scrapbook/lavender-1.webp" width="92" height="316" alt="" loading="lazy" decoding="async" />
+          <p class="specimen-label bigword-label">lavandula · 29.x.2026</p>
         </div>
       </div>
     </footer>

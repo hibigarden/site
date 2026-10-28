@@ -8,7 +8,6 @@
    the landing only; base.css holds the colours and type every page shares. */
 :root {
   --page-tile: url("/scrapbook/page-day.webp");
-  --kraft-tile: url("/scrapbook/kraft-day.webp");
   --hand: Caveat, "Bradley Hand", "Segoe Print", cursive;
   --gutter: max(0px, (100vw - 1120px) / 2);
   --deckle-1: polygon(0% 2.98px, 2.94% 0.28px, 5.88% 1.95px, 8.82% 2.16px, 11.76% 1.65px, 14.71% 1.55px, 17.65% 0.47px, 20.59% 1.18px, 23.53% 1.26px, 26.47% 2.16px, 29.41% 1.88px, 32.35% 3.42px, 35.29% 1.2px, 38.24% 0.49px, 41.18% 3.65px, 44.12% 0.66px, 47.06% 2.14px, 50% 2.01px, 52.94% 1.87px, 55.88% 3.75px, 58.82% 0.71px, 61.76% 0.34px, 64.71% 1.72px, 67.65% 0.91px, 70.59% 1.5px, 73.53% 1.22px, 76.47% 1.7px, 79.41% 3.09px, 82.35% 1.35px, 85.29% 0.2px, 88.24% 1.77px, 91.18% 1.07px, 94.12% 1.56px, 97.06% 0.34px, calc(100% - 1.81px) 0%, calc(100% - 3.24px) 5%, calc(100% - 1.95px) 10%, calc(100% - 1.86px) 15%, calc(100% - 1.05px) 20%, calc(100% - 0.04px) 25%, calc(100% - 0.93px) 30%, calc(100% - 0.25px) 35%, calc(100% - 2.62px) 40%, calc(100% - 1.07px) 45%, calc(100% - 2.11px) 50%, calc(100% - 4.31px) 55%, calc(100% - 2.22px) 60%, calc(100% - 1.91px) 65%, calc(100% - 0.37px) 70%, calc(100% - 3.24px) 75%, calc(100% - 1.56px) 80%, calc(100% - 0.53px) 85%, calc(100% - 2.79px) 90%, calc(100% - 2.75px) 95%, 100% calc(100% - 2.22px), 97.06% calc(100% - 1.56px), 94.12% calc(100% - 1.99px), 91.18% calc(100% - 0.33px), 88.24% calc(100% - 0.89px), 85.29% calc(100% - 3.91px), 82.35% calc(100% - 1.33px), 79.41% calc(100% - 1.95px), 76.47% calc(100% - 2.29px), 73.53% calc(100% - 1.1px), 70.59% calc(100% - 1.66px), 67.65% calc(100% - 0.71px), 64.71% calc(100% - 0.13px), 61.76% calc(100% - 3.73px), 58.82% calc(100% - 3.14px), 55.88% calc(100% - 4.54px), 52.94% calc(100% - 0.12px), 50% calc(100% - 1.81px), 47.06% calc(100% - 1.45px), 44.12% calc(100% - 0.1px), 41.18% calc(100% - 1.22px), 38.24% calc(100% - 1.71px), 35.29% calc(100% - 1.18px), 32.35% calc(100% - 1.74px), 29.41% calc(100% - 2.65px), 26.47% calc(100% - 1.13px), 23.53% calc(100% - 1.9px), 20.59% calc(100% - 2.16px), 17.65% calc(100% - 0.01px), 14.71% calc(100% - 0.73px), 11.76% calc(100% - 0.6px), 8.82% calc(100% - 0.74px), 5.88% calc(100% - 3.43px), 2.94% calc(100% - 1.69px), 0.71px 100%, 3.38px 95%, 2.61px 90%, 3.06px 85%, 1.62px 80%, 0.55px 75%, 0.52px 70%, 0.03px 65%, 4.41px 60%, 2.39px 55%, 0.19px 50%, 1.98px 45%, 2.16px 40%, 2.87px 35%, 4.61px 30%, 1.27px 25%, 0.9px 20%, 0.39px 15%, 0.42px 10%, 1.98px 5%);
@@ -25,7 +24,6 @@
 }
 :root[data-theme="dark"] {
   --page-tile: url("/scrapbook/page-night.webp");
-  --kraft-tile: url("/scrapbook/kraft-night.webp");
 }
 
 /* the day's light over the page (scrapbook.js), behind every piece */
@@ -551,12 +549,10 @@
   animation-play-state: paused;
 }
 
-.chapter-text a,
-.comparison-table a,
-.writing-role > a,
-.feature-copy > a,
-.feature-free a,
-.index-card a,
+.who-caption a,
+.feats a,
+.qa a,
+.compare a,
 .addon-guide-link,
 .addon-readme a,
 .addon-authors a,
@@ -568,117 +564,6 @@
   text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
 }
 
-/* ---------------------------------------------------------------- the landing: what hibi is, for whom, and how it grows */
-
-.spread {
-  position: relative;
-  padding-block: 128px 32px;
-}
-.spread-head {
-  position: relative;
-  z-index: 2;
-  max-width: 760px;
-}
-.spread-title {
-  font: 500 clamp(50px, 7.2vw, 106px) / 0.97 var(--serif);
-  letter-spacing: -0.028em;
-}
-.spread-line {
-  max-width: 44ch;
-  margin-top: 20px;
-  color: var(--ink-soft);
-  font-size: clamp(21px, 1.75vw, 25px);
-  line-height: 1.42;
-}
-.spread-line + .spread-line {
-  margin-top: 4px;
-}
-.notebook {
-  top: 46px;
-  left: 4%;
-  width: 92%;
-  height: 360px;
-  rotate: 1deg;
-}
-.notebook .editor-preview {
-  font-size: 14px;
-}
-.notebook .preview-titlebar {
-  gap: 0.7em;
-}
-.nb-dot {
-  width: 0.7em;
-  height: 0.7em;
-  border-radius: 50%;
-  background: var(--border);
-}
-.nb-row {
-  display: block;
-  min-height: 0;
-  padding: 0.45em 0.8em;
-  color: var(--ink);
-}
-.nb-doc {
-  display: grid;
-  gap: 0.9em;
-  padding: 1.6em 1.8em;
-}
-.nb-doc strong {
-  font-size: 2em;
-  font-weight: 600;
-}
-.nb-doc i {
-  height: 0.5em;
-  border-radius: 2px;
-  background: var(--border);
-}
-.nb-doc i.short {
-  width: 60%;
-}
-/* free and open source, on a kraft seed packet */
-.seed-packet {
-  --paper: #c9a978;
-  grid-column: 8 / 12;
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  margin: 0;
-  padding: 150px 28px 24px;
-  rotate: 2deg;
-}
-.seed-packet::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    url("/scrapbook/lavender-heads.webp") 50% 22px / 120px auto no-repeat,
-    linear-gradient(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.08)) 0 0 / 100% 14px no-repeat,
-    var(--paper);
-  clip-path: var(--cut-1);
-}
-[data-theme="dark"] .seed-packet {
-  --paper: #5a4630;
-}
-.seed-packet::after {
-  content: "";
-  position: absolute;
-  inset: 3px;
-  z-index: -2;
-  box-shadow: 1px 2px 3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.1)), 3px 9px 16px -7px rgb(var(--shadow-rgb) / var(--shadow-a));
-}
-.seed-packet h3 {
-  rotate: -1deg;
-}
-.seed-packet a {
-  color: #1f1b16;
-}
-[data-theme="dark"] .seed-packet a {
-  color: var(--ink);
-}
 /* the beta tag beside the download button */
 .beta-tag {
   align-self: center;
@@ -692,9 +577,6 @@
   font: 400 11.5px/1.2 var(--mono);
   letter-spacing: 0.04em;
   rotate: -4deg;
-}
-.index-card-wide {
-  grid-column: 1 / -1;
 }
 /* product facts sit on typed specimen labels (they type themselves in, with a caret, as they land) */
 .specimen-label {
@@ -769,47 +651,263 @@
   background: #d9ccb0;
 }
 
-/* built around writing: the headline beside one notebook, hibi's own workspace */
-.intro-writing {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: 28px;
-  align-items: center;
+/* ---------------------------------------------------------------- the landing below the hero: one paper, one scale
+
+   four sections on the page's own paper, then the park again at the close. no head outranks the hero's title:
+   section heads stop at 40 px, sub heads at 29 px. decoration recedes: one cut-out per section at most, in a
+   gutter or beside a head, never on text. */
+:root {
+  --h2: clamp(29px, 1.5vw + 19px, 40px);
+  --h3: clamp(23px, 0.6vw + 20px, 29px);
+  --lead: clamp(19px, 0.2vw + 18px, 21px);
+  --body: clamp(17.5px, 0.2vw + 16.5px, 19.5px);
+  --gap: clamp(96px, 8vw + 40px, 168px);
 }
-.intro-writing .spread-head {
-  grid-column: 1 / 6;
+.icon-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
-.intro-writing .notebook {
+svg.button-icon,
+.feats svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.s {
   position: relative;
-  top: auto;
-  left: auto;
-  grid-column: 7 / 13;
+  margin-top: var(--gap);
+}
+.s-head {
+  position: relative;
+  margin-bottom: 56px;
+}
+.s h2 {
+  max-width: 20em;
+  font: 500 var(--h2) / 1.06 var(--serif);
+  letter-spacing: -0.016em;
+}
+.s .lead {
+  max-width: 34em;
+  margin-top: 16px;
+  color: var(--ink-soft);
+  font-size: var(--lead);
+  line-height: 1.45;
+}
+.who-caption a,
+.feats a {
+  font: 400 14px/1.3 var(--mono);
+  color: var(--accent);
+}
+
+/* built around writing: the four people hibi is for, as tabs over one real window on the hero's park. the tabs
+   are radio buttons, so they work without javascript (who.js adds #for-… links and loads a window on intent) */
+.pair-sprig {
+  --y: -12px;
+}
+.who {
+  display: grid;
+  grid-template-areas: "tabs" "panel" "caption";
+}
+.who-tabs {
+  grid-area: tabs;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  margin: 0 0 26px;
+  padding: 0;
+  border: 0;
+}
+.who-tabs label {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 11px 16px 10px;
+  color: var(--ink);
+  font: 400 14px/1.2 var(--mono);
+  cursor: pointer;
+}
+.who-tabs label::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--cut-2);
+}
+.who-tabs label::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -2;
+  box-shadow:
+    0 0 0 1px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.5)),
+    0 4px 10px -3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.1));
+}
+.who-tabs input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.who-tabs label:hover::before {
+  background: var(--card-tan);
+}
+.who-tabs label:has(:checked) {
+  color: var(--on-blue);
+}
+.who-tabs label:has(:checked)::before {
+  background: var(--hibi-blue);
+}
+[data-theme="dark"] .who-tabs label:has(:checked) {
+  color: #1f1b16;
+}
+[data-theme="dark"] .who-tabs label:has(:checked)::before {
+  background: #f6e3b4;
+}
+.who-tabs label:has(:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+/* only the open tab's window and words show; the others' words keep their place (the tallest sets the height) */
+.who:not(:has([value="authors"]:checked)) .window[data-who="authors"],
+.who:not(:has([value="academics"]:checked)) .window[data-who="academics"],
+.who:not(:has([value="developers"]:checked)) .window[data-who="developers"],
+.who:not(:has([value="note-takers"]:checked)) .window[data-who="note-takers"] {
+  display: none;
+}
+.who:not(:has([value="authors"]:checked)) .who-caption[data-who="authors"],
+.who:not(:has([value="academics"]:checked)) .who-caption[data-who="academics"],
+.who:not(:has([value="developers"]:checked)) .who-caption[data-who="developers"],
+.who:not(:has([value="note-takers"]:checked)) .who-caption[data-who="note-takers"] {
+  visibility: hidden;
+}
+:root:not([data-theme="dark"]) .theme-night,
+[data-theme="dark"] .theme-day {
+  display: none;
+}
+.window-panel {
+  grid-area: panel;
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 1120 / 690;
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
+    0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
+}
+/* the window rests on the park like the hero's editor: rounded, with the same layered shadow */
+.window {
+  position: absolute;
+  left: 10%;
+  top: 8.5%;
+  width: 80%;
+  aspect-ratio: 2;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--card-white);
+  box-shadow:
+    0 0 0 1px rgb(40 30 16 / 0.1),
+    0 1px 2px rgb(40 30 16 / 0.2),
+    0 6px 14px -4px rgb(40 30 16 / 0.22),
+    0 34px 70px -18px rgb(24 32 56 / 0.5);
+}
+[data-theme="dark"] .window {
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.5),
+    0 1px 3px rgb(0 0 0 / 0.5),
+    0 8px 18px -4px rgb(0 0 0 / 0.5),
+    0 40px 80px -16px rgb(0 0 8 / 0.8);
+}
+.window img {
+  display: block;
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
 }
-/* an app of their own: the headline set wide, the newest addons pinned below it */
-.own-app .spread-head {
-  max-width: 880px;
-  margin-left: auto;
+.who-caption {
+  grid-area: caption;
+  display: grid;
+  align-content: start;
+  grid-template-columns: minmax(0, 9fr) minmax(0, 17fr);
+  gap: 12px 60px;
+  margin-top: 40px;
 }
-.showcase {
-  margin-top: 64px;
+.who-caption h3 {
+  font: 500 var(--h3) / 1.1 var(--serif);
+  letter-spacing: -0.01em;
 }
+.who-caption p {
+  color: var(--ink-soft);
+  font-size: var(--body);
+  line-height: 1.5;
+}
+.who-caption a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 4px;
+}
+/* what comes with it: an icon, three words, one line */
+.feats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 44px 56px;
+  margin: 96px 0 0;
+  padding: 52px 0 0;
+  border-top: 1px solid var(--rule);
+  list-style: none;
+}
+.feats svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
+  stroke-width: 1.6;
+}
+.feats h3 {
+  margin-top: 12px;
+  font: 500 21px/1.2 var(--serif);
+}
+.feats p {
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-size: 17px;
+  line-height: 1.45;
+}
+.feats a {
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* an app of their own: the newest addons on six plain cards (built into the page, so it never opens a hole) */
 .showcase-sort {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 34px;
+  gap: 6px;
+  margin: 0 0 14px;
   padding: 0;
   border: 0;
 }
 .showcase-sort label {
   position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  padding: 10px 16px;
+  min-height: 40px;
+  padding: 9px 12px 8px;
   color: var(--ink-soft);
-  font: 400 13.5px/1 var(--mono);
+  font: 400 13px/1 var(--mono);
   cursor: pointer;
 }
 .showcase-sort input {
@@ -820,10 +918,15 @@
   cursor: pointer;
 }
 .showcase-sort label:has(:checked) {
-  background: var(--butter);
   color: var(--ink);
-  box-shadow: 0 4px 10px -4px rgb(var(--shadow-rgb) / var(--shadow-a));
-  rotate: -1.5deg;
+}
+.showcase-sort label:has(:checked)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--butter);
+  clip-path: var(--cut-2);
 }
 .showcase-sort label:has(:focus-visible) {
   outline: 2px solid var(--accent);
@@ -834,972 +937,366 @@
 .own-app:has([value="updated"]:checked) .showcase-grid[data-sort="released"] {
   display: none;
 }
-.showcase-grid {
-  gap: 36px 28px;
+.addon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.showcase-grid .addon-card {
-  padding: 26px 22px 18px;
+.addon-grid > li {
+  display: flex;
+  min-width: 0;
 }
-.showcase-grid .addon-card-heading {
-  font-size: 21px;
+.addon-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 22px 24px 18px;
+  color: var(--ink);
 }
-.showcase-grid .addon-description {
-  margin-block: 10px 18px;
-  font-size: 16px;
+.addon-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--deckle-2);
 }
-/* pressed butterflies stay on the catalog page, so the headline keeps the eye */
-.showcase-grid > li:is(:nth-child(7n + 3), :nth-child(7n + 6)) .addon-card-hold {
+.addon-card::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: -2;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
+    0 12px 22px -12px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.addon-card:hover {
+  color: var(--ink);
+}
+.addon-card:hover .addon-card-heading {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.addon-card-hold {
   display: none;
 }
+.addon-card-heading {
+  overflow: hidden;
+  font-size: 22px;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .addon-card-kind {
-  margin-top: 6px;
+  margin-top: 4px;
+  color: var(--ink-faint);
+  font: 400 12px/1.3 var(--mono);
+}
+/* three lines, always: the grid keeps its height whatever the fresh list holds */
+.addon-description {
+  display: -webkit-box;
+  min-height: calc(3 * 1.45em);
+  margin-block: 12px 16px;
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: 16.5px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+.addon-card-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed var(--rule-strong);
   color: var(--ink-faint);
   font: 400 12px/1.4 var(--mono);
+}
+.addon-card-footer > :first-child {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.addon-card-footer > * + * {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.showcase-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 18px;
+  margin-top: 22px;
+}
+.showcase-foot .specimen-label {
+  margin: 0;
 }
 .showcase-all {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-height: 44px;
-  margin-top: 30px;
   font: 400 14px/1 var(--mono);
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
-/* features: specimens pressed into a drawer */
-.features-spread .drawer-title {
+
+/* day by day: one strip of paper, a column a day; the pinned one past its end wakes when the companion lands */
+.days-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 14px 24px;
   margin-bottom: 40px;
 }
-.features-spread .features {
-  gap: 64px 40px;
-  padding-block: 0;
-}
-.features-spread .feature-card {
-  padding: 0;
-  rotate: none;
-}
-.features-spread .feature-files {
-  grid-column: 1 / 8;
-}
-.features-spread .feature-formats {
-  grid-column: 8 / 13;
-  margin-top: 70px;
-}
-.features-spread .feature-customize {
-  grid-column: 1 / 6;
-}
-.features-spread .feature-addons {
-  grid-column: 6 / 13;
-  margin-top: 40px;
-}
-.features-spread .feature-copy {
-  padding: 0 4px;
-}
-.pair-sprig {
-  --y: 26%;
-}
-.features-spread .seed-packet {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: min(300px, 100%);
-  margin: 70px 0 0 auto;
-  padding: 150px 28px 24px;
-  rotate: 2deg;
-}
-/* who it's for: four people, four kinds of paper */
-.personas {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 52px 48px;
-  padding-block: 110px 60px;
-}
-.personas .writing-role {
+.days-head .specimen-label {
   margin: 0;
 }
-/* day by day: dated notes, the way hibi grows */
-.days {
-  padding-block: 40px 60px;
+.diary-wrap {
+  position: relative;
 }
-.day-strip {
+.diary {
+  position: relative;
+  isolation: isolate;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
-  gap: 26px 20px;
-  margin: 44px 0 0;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin: 0;
   padding: 0;
   list-style: none;
 }
-.day-note {
-  position: relative;
-  isolation: isolate;
-  padding: 18px 16px 20px;
-  rotate: -1deg;
-}
-.day-note:nth-child(even) {
-  rotate: 1.2deg;
-  translate: 0 14px;
-}
-.day-note::before {
+.diary::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   background: var(--card-white);
-  clip-path: var(--torn-top);
+  clip-path: var(--deckle-3);
 }
-.day-note:nth-child(3n + 2)::before {
-  background: var(--butter);
-}
-.day-note:nth-child(3n)::before {
-  background: var(--card-sage);
-}
-.day-note::after {
+.diary::after {
   content: "";
   position: absolute;
-  inset: 3px;
+  inset: 5px;
   z-index: -2;
-  box-shadow: 1px 2px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8));
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
+    0 14px 24px -12px rgb(var(--shadow-rgb) / var(--shadow-a));
 }
-.day-note time {
+.diary li {
+  padding: 20px 16px 24px;
+  border-left: 1px solid var(--rule);
+}
+.diary li:first-child {
+  border-left: 0;
+}
+.diary time {
   display: block;
-  color: var(--ink-faint);
-  font: 400 12.5px/1.3 var(--mono);
+  color: var(--accent);
+  font: 400 12.5px/1.2 var(--mono);
+  letter-spacing: 0.02em;
 }
-.day-note p {
-  margin-top: 8px;
-  font-size: 19px;
+.diary p {
+  margin-top: 12px;
+  font-size: 18px;
   line-height: 1.35;
+}
+.wake-me {
+  --x: calc(100% + 34px);
+  --y: -34px;
+  --w: 84px;
+  --r: 14deg;
 }
 .days-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-height: 44px;
-  margin-top: 30px;
+  margin-top: 22px;
   font: 400 14px/1 var(--mono);
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
-.name-label {
-  margin-top: 18px;
+
+/* questions: one ruled list, then how hibi compares as a quiet ruled one */
+.faq {
+  display: grid;
+  grid-template-columns: minmax(0, 9fr) minmax(0, 17fr);
+  gap: 28px 60px;
+  align-items: start;
+}
+.qa {
+  border-top: 1px solid var(--rule-strong);
+}
+.qa details {
+  border-bottom: 1px solid var(--rule);
+}
+.qa summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 0 17px;
+  font: 500 23px/1.25 var(--serif);
+  list-style: none;
+  cursor: pointer;
+}
+.qa summary::-webkit-details-marker {
+  display: none;
+}
+.qa summary::after {
+  content: "+";
+  color: var(--ink-faint);
+  font: 400 18px/1.4 var(--mono);
+}
+.qa details[open] summary::after {
+  content: "\2212";
+}
+.qa details p {
+  max-width: 36em;
+  padding-bottom: 18px;
+  color: var(--ink-soft);
+  font-size: var(--body);
+  line-height: 1.5;
+}
+.qa details p + p {
+  margin-top: -6px;
+}
+.compare-title {
+  margin-top: 80px;
+  font: 500 var(--h3) / 1.1 var(--serif);
+  letter-spacing: -0.01em;
+}
+.compare {
+  margin: 22px 0 0;
+  border-top: 1px solid var(--rule-strong);
+}
+.compare > div {
+  display: grid;
+  grid-template-columns: 124px minmax(0, 1fr);
+  gap: 4px 20px;
+  padding: 15px 0 14px;
+  border-bottom: 1px solid var(--rule);
+}
+.compare dt a {
+  font: italic 500 21px/1.35 var(--serif);
+}
+.compare dd {
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: 18px;
+  line-height: 1.45;
+}
+.compare strong {
+  color: var(--ink);
+  font-weight: 500;
 }
 
 @media (max-width: 900px) {
-  .intro-writing {
+  .feats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 34px 28px;
+  }
+  .faq {
     grid-template-columns: 1fr;
   }
-  .intro-writing .spread-head,
-  .intro-writing .notebook {
-    grid-column: 1;
+}
+@media (max-width: 1359px) {
+  /* no gutter wide enough: the pinned one sits above the strip's last day */
+  .wake-me {
+    --x: calc(100% - 100px);
+    --y: -66px;
   }
-  .intro-writing .notebook {
-    height: 300px;
-    margin-top: 40px;
+}
+@media (max-width: 600px) {
+  .s-head {
+    margin-bottom: 36px;
   }
-  .pair-sprig {
+  .who-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .who-tabs label {
+    padding: 10px 8px 9px;
+    font-size: 12.5px;
+    text-align: center;
+  }
+  .window-panel {
+    aspect-ratio: 350 / 430;
+    border-radius: 12px;
+  }
+  .window {
+    left: 6%;
+    top: 7%;
+    width: 88%;
+    aspect-ratio: 5 / 4;
+    border-radius: 8px;
+  }
+  .who-caption {
+    grid-template-columns: 1fr;
+    margin-top: 28px;
+  }
+  .feats {
+    gap: 30px 20px;
+    margin-top: 80px;
+    padding-top: 36px;
+  }
+  .feats h3 {
+    font-size: 19px;
+  }
+  .feats p {
+    font-size: 15.5px;
+  }
+  .addon-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .showcase-grid > li:nth-child(n + 4) {
     display: none;
   }
-  .features-spread .features > * {
-    grid-column: 1;
-    margin-top: 0;
-  }
-  .personas {
+  .diary {
     grid-template-columns: 1fr;
-    gap: 44px;
+  }
+  .diary li {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: baseline;
+    padding: 13px 16px;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .diary li:first-child {
+    border-top: 0;
+  }
+  .diary p {
+    margin-top: 0;
+    font-size: 17px;
+  }
+  .wake-me {
+    --x: calc(100% - 84px);
+    --y: calc(100% + 6px);
+    --w: 64px;
+  }
+  .qa summary {
+    font-size: 21px;
+  }
+  .compare > div {
+    grid-template-columns: 1fr;
+  }
+  .compare dd {
+    font-size: 17px;
   }
 }
-@media (max-width: 720px) {
-  .spread {
-    padding-top: 90px;
-  }
-  .intro-writing .notebook {
-    height: 260px;
-  }
-  .day-strip {
+@media (min-width: 601px) and (max-width: 960px) {
+  .addon-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .day-note:nth-child(even) {
-    translate: none;
-  }
-}
-
-/* ---------------------------------------------------------------- section titles: torn paper tags */
-
-.section-title {
-  --deckle: var(--deckle-4);
-  position: relative;
-  isolation: isolate;
-  justify-self: start;
-  width: fit-content;
-  padding: 14px 28px 16px;
-  font: 500 clamp(34px, 3.4vw, 46px) / 1.08 var(--serif);
-  letter-spacing: -0.015em;
-  rotate: -1.2deg;
-}
-.section-title::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--card-white);
-  clip-path: var(--deckle);
-}
-.section-title::after {
-  content: "";
-  position: absolute;
-  inset: 5px;
-  z-index: -2;
-  box-shadow: 0 8px 16px -8px rgb(var(--shadow-rgb) / var(--shadow-a));
-}
-
-/* ---------------------------------------------------------------- comparison ledger */
-
-.comparison {
-  position: relative;
-  display: grid;
-  padding-block: 64px 40px;
-}
-.ledger {
-  --paper: var(--card-sage);
-  --deckle: var(--deckle-3);
-  margin-top: 30px;
-  padding: 30px 40px 34px;
-}
-.comparison-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 19px;
-  line-height: 1.55;
-}
-.comparison-table th {
-  font-weight: 500;
-}
-.comparison-table thead th {
-  padding: 0 24px 12px 0;
-  border-bottom: 3px double var(--rule-strong);
-  color: var(--ink-faint);
-  font: 400 12.5px/1.2 var(--mono);
-  letter-spacing: 0.05em;
-}
-.comparison-table :is(th, td) {
-  padding: 18px 24px 17px 0;
-  vertical-align: top;
-}
-.comparison-table tbody tr + tr :is(th, td) {
-  border-top: 1px solid var(--rule);
-}
-.comparison-table :is(th, td):last-child {
-  padding: 18px 0 17px 26px;
-  border-left: 3px double var(--margin-line);
-}
-.comparison-table thead th:last-child {
-  padding: 0 0 12px 26px;
-}
-.comparison-table th[scope="row"] {
-  width: 160px;
-  font-size: 23px;
-  font-style: italic;
-  line-height: 1.3;
-}
-.comparison-table td {
-  color: var(--ink-soft);
-}
-.comparison-table strong {
-  font-weight: 500;
-  color: var(--ink);
-  background: linear-gradient(transparent 58%, var(--highlight) 58% 92%, transparent 92%);
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-
-/* ---------------------------------------------------------------- features: printed ui on cards, typed labels */
-
-.features {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 34px 30px;
-  padding-block: 80px;
-}
-.features > .section-title {
-  grid-column: 1 / -1;
-  margin-bottom: 6px;
-}
-.feature-card {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  padding: 14px 14px 30px;
-}
-.feature-files,
-.feature-addons {
-  grid-column: span 7;
-}
-.feature-formats,
-.feature-customize {
-  grid-column: span 5;
-}
-.feature-files {
-  rotate: -0.5deg;
-}
-.feature-formats {
-  --paper: var(--card-blush);
-  --deckle: var(--deckle-2);
-  rotate: 0.6deg;
-}
-.feature-customize {
-  --paper: var(--card-sage);
-  --deckle: var(--deckle-3);
-  rotate: -0.4deg;
-}
-.feature-addons {
-  --paper: var(--card-tan);
-  --deckle: var(--deckle-4);
-  rotate: 0.4deg;
-}
-.feature-art {
-  position: relative;
-  height: 290px;
-  container-type: inline-size;
-  pointer-events: none;
-  user-select: none;
-}
-.feature-copy {
-  flex: 1;
-  padding: 0 22px;
-}
-/* the feature name, typed on a specimen label */
-.feature-copy h3,
-.feature-free h3 {
-  display: inline-block;
-  margin-top: -6px;
-  padding: 9px 14px 8px;
-  background: var(--card-white);
-  box-shadow:
-    inset 0 0 0 3px var(--card-white),
-    inset 0 0 0 4px rgb(var(--shadow-rgb) / 0.3),
-    0 4px 10px -3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.1));
-  font: 400 16px/1.3 var(--mono);
-  letter-spacing: 0.01em;
-  rotate: -1deg;
-}
-[data-theme="dark"] :is(.feature-copy, .feature-free) h3 {
-  box-shadow:
-    inset 0 0 0 3px var(--card-white),
-    inset 0 0 0 4px rgb(244 232 207 / 0.2),
-    0 4px 10px -3px rgb(0 0 0 / 0.5);
-}
-.feature-copy p {
-  max-width: 44ch;
-  margin-top: 14px;
-  color: var(--ink-soft);
-  font-size: 20px;
-  line-height: 1.5;
-}
-.feature-copy > a,
-.feature-free a,
-.writing-role > a {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 44px;
-  margin-top: 4px;
-  font: 400 14px/1 var(--mono);
-}
-.feature-free {
-  --paper: var(--butter);
-  --deckle: var(--deckle-1);
-  grid-column: 2 / -2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px 24px;
-  margin-top: 10px;
-  padding: 22px 34px;
-  rotate: -0.6deg;
-}
-.feature-free h3 {
-  margin: 0;
-}
-
-/* printed and cut out: hibi's real ui on paper with a white cut edge and a warm wash */
-.print {
-  --background: #fff;
-  --surface: oklch(0.97 0 0);
-  --ink: oklch(0.24 0.008 200);
-  --muted: oklch(0.49 0.012 200);
-  --accent: oklch(0.45 0.075 200);
-  --border: oklch(0.9 0 0);
-  position: absolute;
-  isolation: isolate;
-  padding: 9px;
-  color: var(--ink);
-  font-family: var(--font-ui);
-  font-weight: 400;
-}
-[data-theme="dark"] .print {
-  --background: oklch(0.21 0 0);
-  --surface: oklch(0.25 0 0);
-  --ink: oklch(0.93 0.005 200);
-  --muted: oklch(0.7 0.012 200);
-  --accent: oklch(0.8 0.075 200);
-  --border: oklch(0.33 0 0);
-}
-.print::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--edge);
-  clip-path: var(--cut-3);
-}
-.print::after {
-  content: "";
-  position: absolute;
-  inset: 9px;
-  z-index: 2;
-  background: rgb(232 206 158 / 0.14);
-  pointer-events: none;
-}
-[data-theme="dark"] .print::after {
-  background: rgb(120 88 40 / 0.12);
-}
-.print-shadow {
-  position: absolute;
-  inset: 6px;
-  z-index: -2;
-  box-shadow:
-    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8)),
-    0 12px 22px -10px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.3));
-}
-.print .tape {
-  --tape-w: 92px;
-}
-.feature-art .lucide {
-  width: 1.15em;
-  height: 1.15em;
-  flex-shrink: 0;
-  stroke-width: 1.5;
-}
-.editor-preview {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: var(--background);
-  color: var(--ink);
-  font-size: clamp(9px, 2.1cqw, 13px);
-  line-height: 1.5;
-}
-.workspace-print {
-  top: 26px;
-  bottom: 0;
-  left: 6%;
-  width: 97%;
-  rotate: -2deg;
-}
-.workspace-print .tape {
-  left: 20px;
-  top: -10px;
-  rotate: -8deg;
-}
-.preview-titlebar {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  gap: 1.2em;
-  min-height: 2.8em;
-  padding-inline: 1.2em;
-  border-bottom: 1px solid var(--border);
-}
-.preview-body {
-  display: grid;
-  grid-template-columns: 30% minmax(0, 1fr);
-  flex: 1;
-  min-height: 0;
-}
-.preview-sidebar {
-  overflow: hidden;
-  padding: 1em 0.5em;
-  border-right: 1px solid var(--border);
-}
-.preview-workspace-label {
-  display: block;
-  margin: 0 0.7em 0.6em;
-  color: var(--muted);
-  font-size: 0.85em;
-}
-.preview-file-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  min-height: 2.6em;
-  padding: 0.3em 0.6em;
-  white-space: nowrap;
-}
-.preview-file-row > :first-child:is(.lucide-chevron-down, .lucide-chevron-right) {
-  width: 0.8em;
-}
-.preview-file-selected,
-.preview-file-nested {
-  padding-left: 1.9em;
-}
-.preview-file-selected {
-  border-radius: 4px;
-  background: var(--surface);
-}
-.preview-file-nested {
-  color: var(--muted);
-}
-.preview-editor {
-  min-width: 0;
-  overflow: hidden;
-}
-.preview-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 1.2em;
-  margin: 0.8em;
-  padding: 0.65em 0.85em;
-  border-radius: 4px;
-  background: var(--surface);
-}
-.preview-document {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1em;
-  padding: 1.5em 1.7em;
-  white-space: nowrap;
-}
-.preview-document strong {
-  font-size: 2.2em;
-  font-weight: 550;
-  line-height: 1.1;
-}
-.preview-document hr {
-  width: 100%;
-  margin: 0.1em 0;
-  border: 0;
-  border-top: 1px solid var(--border);
-}
-.preview-document small {
-  color: var(--muted);
-  font-size: 0.85em;
-}
-.format-stack,
-.theme-stack {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  max-width: 440px;
-  margin-inline: auto;
-}
-.format-page {
-  top: 24%;
-  display: flex;
-  flex-direction: column;
-  width: 34%;
-  height: 64%;
-  font-size: clamp(11px, 2.8cqw, 13px);
-}
-.format-page-inner {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 12%;
-  background: var(--background);
-}
-.format-markdown {
-  left: 6%;
-  rotate: -11deg;
-}
-.format-latex {
-  right: 6%;
-  rotate: 10deg;
-}
-.format-latex .format-page-inner {
-  align-items: flex-end;
-}
-.format-typst {
-  top: 9%;
-  left: 33%;
-  height: 72%;
-  rotate: -1deg;
-}
-.format-typst .tape {
-  top: -8px;
-  left: 50%;
-  translate: -50% 0;
-  rotate: 4deg;
-  --tape-w: 84px;
-}
-.format-extension {
-  color: var(--muted);
-}
-.feature-art .format-symbol {
-  width: 4.6em;
-  height: 4.6em;
-  margin-block: auto;
-  color: var(--accent);
-  stroke-width: 1.3;
-}
-.feature-art .format-latex .format-symbol {
-  width: 2.8em;
-  height: 2.8em;
-}
-.format-lines {
-  display: grid;
-  gap: 7px;
-  width: 100%;
-}
-.format-lines i {
-  height: 2px;
-  background: var(--border);
-}
-.format-lines i:nth-child(2) {
-  width: 70%;
-}
-.format-lines i:nth-child(3) {
-  width: 90%;
-}
-.theme-print {
-  width: 62%;
-  height: 58%;
-  font-size: clamp(7px, 1.7cqw, 9px);
-  opacity: 0.86;
-}
-.theme-print .editor-preview {
-  font-size: inherit;
-}
-.theme-nord {
-  --background: #2e3440;
-  --surface: #3b4252;
-  --ink: #eceff4;
-  --muted: #d8dee9;
-  --border: #4c566a;
-  --accent: #88c0d0;
-  top: 10%;
-  left: 6%;
-  rotate: -7deg;
-}
-.theme-catppuccin {
-  --background: #1e1e2e;
-  --surface: #313244;
-  --ink: #cdd6f4;
-  --muted: #bac2de;
-  --border: #45475a;
-  --accent: #cba6f7;
-  top: 34%;
-  left: 28%;
-  rotate: 5deg;
-}
-.theme-catppuccin .tape {
-  top: -10px;
-  right: 18px;
-  rotate: 12deg;
-}
-.theme-stack .preview-workspace-label {
-  display: none;
-}
-.theme-stack .preview-document strong {
-  color: var(--accent);
-}
-.addon-print {
-  top: 8%;
-  left: 50%;
-  width: 76%;
-  max-width: 460px;
-  translate: -50% 0;
-  rotate: 1.5deg;
-}
-.addon-print .tape {
-  top: -10px;
-  left: 50%;
-  translate: -50% 0;
-  rotate: -3deg;
-}
-.addon-preview {
-  padding: 1.5em;
-  background: var(--background);
-  font-size: clamp(9px, 2cqw, 12px);
-  line-height: 1.5;
-}
-.addon-preview > strong {
-  display: block;
-  font-size: 1.25em;
-  font-weight: 550;
-}
-.preview-filter {
-  display: flex;
-  align-items: center;
-  gap: 0.7em;
-  min-height: 2.2em;
-  margin-block: 1em 0.6em;
-  padding: 0.35em 0.65em;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  color: var(--muted);
-  font-size: 0.85em;
-}
-.preview-addon-row {
-  display: flex;
-  align-items: center;
-  gap: 1em;
-  min-height: 3em;
-}
-.preview-addon-row + .preview-addon-row {
-  border-top: 1px solid var(--border);
-}
-.feature-art .preview-addon-row > .lucide {
-  width: 1.6em;
-  height: 1.6em;
-}
-.preview-switch {
-  position: relative;
-  width: 2.667em;
-  height: 1.667em;
-  margin-left: auto;
-  border-radius: 999px;
-  background: var(--accent);
-}
-.preview-switch::after {
-  content: "";
-  position: absolute;
-  top: 0.25em;
-  right: 0.25em;
-  width: 1.167em;
-  height: 1.167em;
-  border-radius: 50%;
-  background: var(--background);
-}
-
-/* ---------------------------------------------------------------- who it's for: four kinds of paper */
-
-.writing-role {
-  --deckle: var(--deckle-2);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-height: 300px;
-  padding: 44px 44px 30px;
-}
-.writing-role h2 {
-  font: 500 clamp(32px, 3vw, 40px) / 1.1 var(--serif);
-  letter-spacing: -0.015em;
-}
-.writing-role p {
-  max-width: 40ch;
-  margin-block: 16px 14px;
-  color: var(--ink-soft);
-  font-size: 20px;
-  line-height: 32px;
-}
-.writing-role > a {
-  margin-top: auto;
-}
-.role-object {
-  position: absolute;
-  z-index: 3;
-  pointer-events: none;
-  filter: drop-shadow(0 6px 6px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.2)));
-}
-/* writers: ruled notebook paper and a fountain pen */
-.role-writers {
-  --paper: var(--card-white);
-  rotate: -0.6deg;
-}
-.role-writers::before {
-  background:
-    linear-gradient(90deg, transparent 26px, var(--margin-line) 26px 28px, transparent 28px),
-    repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px) 0 10px / 100% 100% no-repeat,
-    var(--paper);
-}
-.role-writers .role-object {
-  top: -34px;
-  right: 18px;
-  width: 190px;
-  height: auto;
-  rotate: 16deg;
-}
-/* academics and students: blush paper and a pencil */
-.role-academics {
-  --paper: var(--card-blush);
-  --deckle: var(--deckle-3);
-  margin-top: 36px;
-  rotate: 0.7deg;
-}
-.role-academics h2 {
-  max-width: 13ch;
-}
-.role-academics .role-object {
-  top: -40px;
-  right: 10px;
-  width: 190px;
-  height: auto;
-  rotate: -10deg;
-}
-/* developers: graph paper and letterpress braces */
-.role-developers {
-  --paper: var(--card-white);
-  --deckle: var(--deckle-4);
-  rotate: 0.4deg;
-}
-.role-developers::before {
-  background:
-    repeating-linear-gradient(to bottom, transparent 0 23px, var(--rule) 23px 24px),
-    repeating-linear-gradient(to right, transparent 0 23px, var(--rule) 23px 24px),
-    var(--paper);
-}
-.role-braces {
-  top: -26px;
-  right: 22px;
-  display: flex;
-  gap: 4px;
-  rotate: 8deg;
-}
-.role-braces img {
-  width: 52px;
-  height: auto;
-}
-/* note-takers: an index card, its red header line and blue rules */
-.role-notes {
-  --paper: var(--card-white);
-  --deckle: var(--deckle-1);
-}
-.role-notes::before {
-  background:
-    linear-gradient(to bottom, transparent 92px, var(--margin-line) 92px 94px, transparent 94px),
-    repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px) 0 94px / 100% 100% no-repeat,
-    var(--paper);
-}
-
-/* ---------------------------------------------------------------- faq: index cards */
-
-.faq {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.5fr);
-  align-items: start;
-  gap: 56px;
-  padding-block: 40px 96px;
-}
-.faq > .section-title {
-  margin-top: 10px;
-}
-.faq-list {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: 26px 24px;
-}
-.index-card {
-  --paper: var(--card-white);
-  --deckle: var(--deckle-2);
-  min-height: 132px;
-  padding: 0 24px 6px;
-}
-.index-card::before {
-  background:
-    linear-gradient(to bottom, transparent 63px, var(--margin-line) 63px 65px, transparent 65px),
-    repeating-linear-gradient(to bottom, transparent 0 29px, var(--rule) 29px 30px) 0 66px / 100% 100% no-repeat,
-    var(--paper);
-}
-.index-card:nth-child(1) {
-  rotate: -1deg;
-}
-.index-card:nth-child(2) {
-  rotate: 0.8deg;
-  margin-top: 14px;
-}
-.index-card:nth-child(3) {
-  rotate: 0.6deg;
-  --deckle: var(--deckle-3);
-}
-.index-card:nth-child(4) {
-  rotate: -0.7deg;
-  margin-top: 14px;
-  --deckle: var(--deckle-4);
-}
-.index-card summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  min-height: 64px;
-  list-style: none;
-  font-size: 21px;
-  line-height: 1.2;
-  cursor: pointer;
-}
-.index-card summary::-webkit-details-marker {
-  display: none;
-}
-.index-card summary::after {
-  content: "+";
-  flex-shrink: 0;
-  color: var(--ink-faint);
-  font: 400 18px/1 var(--mono);
-}
-.index-card[open] summary::after {
-  content: "−";
-}
-.index-card p {
-  padding-block: 2px 24px;
-  color: var(--ink-soft);
-  font-size: 19px;
-  line-height: 30px;
-}
-
-/* ---------------------------------------------------------------- the close: a sky panel like the hero */
-
-/* the page ends on the hero's sky (garden.js fills [data-sky]: clouds by day, moon and stars by night), as a rounded
-   panel inset like the hero, with the download on the sky */
-.cta {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  width: calc(100% - 2 * var(--hero-inset, 16px));
-  min-height: max(460px, 72svh);
-  margin: 40px var(--hero-inset, 16px) var(--hero-inset, 16px);
-  padding: 72px 24px;
-  border-radius: 16px;
-  text-align: center;
-  box-shadow:
-    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
-    0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
-}
-/* the same soft glow as the hero's headline keeps the words readable over clouds (painted above the sky) */
-.cta::after {
-  content: "";
-  position: absolute;
-  inset: 12% 10%;
-  z-index: -1;
-  background: radial-gradient(closest-side, rgb(255 255 255 / 0.4), transparent);
-  pointer-events: none;
-}
-[data-theme="dark"] .cta::after {
-  background: radial-gradient(closest-side, rgb(8 14 36 / 0.5), transparent);
-}
-.cta h2 {
-  font: 500 clamp(44px, 6.4vw, 88px) / 1.04 var(--serif);
-  letter-spacing: -0.02em;
-}
-.cta h2 em {
-  font-style: italic;
-}
-.cta-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  margin-top: 34px;
 }
 
 /* ---------------------------------------------------------------- download: the button, and the /download page */
@@ -1835,80 +1332,103 @@
   text-underline-offset: 3px;
 }
 
+/* ---------------------------------------------------------------- the close: the hero's park at the end of the day
 
-/* ---------------------------------------------------------------- footer: the back of a notebook */
-
-.site-footer {
-  position: relative;
-  margin-top: 0;
-  padding: 64px 0 28px;
-  background: var(--kraft) var(--kraft-tile);
-  color: var(--kraft-ink);
-  border-radius: 22px 22px 0 0;
-  box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.12), 0 -10px 30px -18px rgb(var(--shadow-rgb) / 0.6);
-}
-.footer-wordmark {
-  display: flex;
-  justify-content: center;
-  font: 500 clamp(88px, 20vw, 240px) / 0.9 var(--serif);
-  letter-spacing: -0.03em;
-  color: rgb(0 0 0 / 0.1);
-  text-shadow:
-    0 1px 0 rgb(255 255 255 / 0.28),
-    0 -1px 0 rgb(0 0 0 / 0.16);
-  user-select: none;
-}
-[data-theme="dark"] .footer-wordmark {
-  color: rgb(0 0 0 / 0.35);
-  text-shadow:
-    0 1px 0 rgb(255 255 255 / 0.06),
-    0 -1px 0 rgb(0 0 0 / 0.5);
-}
-.footer-details {
-  --paper: #fbf3e2;
-  --deckle: var(--deckle-3);
+   a rounded panel inset like the hero, the park behind it (garden.css .park-bench), the words on its sky. one
+   action: the download; github and discord live in the footer. */
+.cta {
   position: relative;
   isolation: isolate;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 48px;
-  margin-top: 36px;
-  padding: 34px 40px 30px;
-  color: #1f1b16;
-  rotate: -0.4deg;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% - 2 * var(--hero-inset, 16px));
+  height: 680px;
+  margin: var(--gap) var(--hero-inset, 16px) 0;
+  padding: 64px 24px 0;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
+    0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
 }
-[data-theme="dark"] .footer-details {
-  --paper: #2a2217;
-  color: var(--ink);
+.cta-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* the hero's soft local glow keeps the words readable over the clouds */
+.cta-copy::before {
+  content: "";
+  position: absolute;
+  inset: -48px -96px;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.42), transparent);
+  pointer-events: none;
+}
+[data-theme="dark"] .cta-copy::before {
+  background: radial-gradient(closest-side, rgb(8 14 36 / 0.5), transparent);
+}
+.cta h2 {
+  font: 500 clamp(34px, 3.4vw, 49px) / 1.06 var(--serif);
+  letter-spacing: -0.02em;
+}
+.cta h2 em {
+  color: var(--accent);
+  font-style: italic;
+}
+.cta .download-get {
+  margin-top: 26px;
+}
+.cta .facts {
+  margin-top: 16px;
+  color: var(--ink-soft);
+  font: 400 13px/1.5 var(--mono);
+  letter-spacing: 0.02em;
+}
+
+/* ---------------------------------------------------------------- footer: the last page
+
+   the page simply ends on its own paper: the links, a colophon, and the name set large, with the companion's last
+   perch on the tittle of its first i */
+.site-footer {
+  position: relative;
+  margin-top: var(--gap);
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 40px 48px;
+  padding-top: 56px;
+  border-top: 1px solid var(--rule-strong);
 }
 .footer-brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-size: 30px;
 }
 .footer-brand .wordmark-icon {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
 }
 .footer-tagline {
   margin-top: 10px;
-  color: inherit;
+  color: var(--ink-soft);
   font-size: 19px;
   font-style: italic;
-  opacity: 0.85;
 }
 .footer-groups {
   display: grid;
   grid-template-columns: repeat(3, auto);
-  gap: clamp(32px, 6vw, 80px);
+  gap: 28px clamp(40px, 5vw, 72px);
 }
 .footer-group h2 {
   margin-bottom: 8px;
+  color: var(--ink-faint);
   font: 400 12px/1.4 var(--mono);
-  letter-spacing: 0.06em;
-  opacity: 0.8;
+  letter-spacing: 0.04em;
 }
 .footer-group nav {
   display: flex;
@@ -1918,30 +1438,110 @@
 .footer-group a {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   min-height: 36px;
   font-size: 19px;
 }
-.footer-bottom {
+.colophon {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-top: 30px;
-  font: 400 12.5px/1.4 var(--mono);
+  gap: 4px 32px;
+  margin-top: 48px;
+  color: var(--ink-faint);
+  font: 400 12.5px/1.6 var(--mono);
+  letter-spacing: 0.01em;
 }
-.footer-bottom > a {
+.colophon a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.colophon p a {
+  min-height: 0;
 }
 .site-footer a:hover {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: var(--accent);
 }
-.site-footer :focus-visible {
-  outline-color: currentColor;
+/* the name, crisp and whole, its baseline 30 px above the page's end. it is generated text, so the companion reads
+   it as paper; .tittle marks the first i's dot (measured for EB Garamond 500) */
+.bigword {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+  padding-bottom: 30px;
+  overflow: hidden;
+}
+.bigword-text {
+  position: relative;
+  color: var(--ink);
+  --size: clamp(150px, 26vw, 380px);
+  font: 500 var(--size) / 0.8 var(--serif);
+  letter-spacing: -0.035em;
+  user-select: none;
+}
+.bigword-text::before {
+  content: "hibi";
+}
+.tittle {
+  position: absolute;
+  left: 0.567em;
+  top: 0.125em;
+  width: 0.12em;
+  height: 0.12em;
+}
+.bigword .sprig {
+  position: absolute;
+  left: calc(100% + 0.03em);
+  bottom: 0.02em;
+  width: 0.2em;
+  height: auto;
+  rotate: 14deg;
+  filter: saturate(0.72) contrast(0.92) drop-shadow(1px 2px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8)));
+}
+[data-theme="dark"] .bigword .sprig {
+  filter: saturate(0.68) brightness(0.86) drop-shadow(2px 3px 3px rgb(0 0 0 / 0.45));
+}
+.bigword-label {
+  position: absolute;
+  left: calc(100% + 0.4 * var(--size));
+  bottom: calc(0.03 * var(--size));
+  margin: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+  }
+  .bigword-label {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .cta {
+    height: 640px;
+    padding-top: 52px;
+    border-radius: 12px;
+  }
+  .footer-top {
+    padding-top: 40px;
+  }
+  .footer-groups {
+    grid-template-columns: 1fr 1fr;
+    gap: 26px 32px;
+  }
+  .footer-group a {
+    min-height: 44px;
+    font-size: 18px;
+  }
+  .colophon {
+    margin-top: 36px;
+  }
 }
 
 /* kind words (draft until each author agrees): clippings of what people wrote, linked to the original */
@@ -2017,216 +1617,19 @@
   text-underline-offset: 0.2em;
 }
 
-.addon-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 40px 30px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-.addon-grid > li {
-  display: flex;
-  min-width: 0;
-}
-.addon-card {
-  --paper: var(--card-white);
-  --deckle: var(--deckle-1);
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 30px 26px 20px;
-  color: var(--ink);
-  text-align: left;
-  rotate: var(--tilt, -0.5deg);
-}
-.addon-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--paper);
-  clip-path: var(--deckle);
-}
-.addon-card::after {
-  content: "";
-  position: absolute;
-  inset: 5px;
-  z-index: -2;
-  box-shadow:
-    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
-    0 14px 26px -12px rgb(var(--shadow-rgb) / var(--shadow-a));
-}
-.addon-grid > li:nth-child(4n + 2) .addon-card {
-  --paper: var(--card-tan);
-  --deckle: var(--deckle-2);
-  --tilt: 0.6deg;
-}
-.addon-grid > li:nth-child(4n + 3) .addon-card {
-  --paper: var(--card-sage);
-  --deckle: var(--deckle-3);
-  --tilt: -0.3deg;
-}
-.addon-grid > li:nth-child(4n + 4) .addon-card {
-  --paper: var(--card-blush);
-  --deckle: var(--deckle-4);
-  --tilt: 0.4deg;
-}
-.addon-card:hover {
-  color: var(--ink);
-}
-/* each card is held down by a strip of tape or a pin; every seventh carries a pressed butterfly */
-.addon-card-hold {
-  position: absolute;
-  z-index: 2;
-  top: -11px;
-  left: 50%;
-  width: 96px;
-  aspect-ratio: 320 / 47;
-  translate: -50% 0;
-  rotate: -3deg;
-  background: url("/scrapbook/tape-periwinkle.webp") center / 100% 100% no-repeat;
-  opacity: 0.9;
-  pointer-events: none;
-}
-.addon-grid > li:nth-child(3n + 2) .addon-card-hold {
-  background-image: url("/scrapbook/tape-butter.webp");
-  rotate: 4deg;
-}
-.addon-grid > li:nth-child(2n + 3) .addon-card-hold {
-  top: 9px;
-  width: 15px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  rotate: none;
-  width: 6px;
-  background: radial-gradient(circle at 35% 30%, #9a9a9a 0 18%, #161616 62%);
-  box-shadow: 0.5px 0.5px 0 rgb(0 0 0 / 0.4), 5px 7px 3px rgb(40 28 14 / 0.22);
-  opacity: 1;
-}
-.addon-grid > li:nth-child(7n + 3) .addon-card-hold,
-.addon-grid > li:nth-child(7n + 6) .addon-card-hold {
-  top: -26px;
-  left: auto;
-  right: -22px;
-  width: 70px;
-  aspect-ratio: 220 / 168;
-  translate: none;
-  rotate: 14deg;
-  border-radius: 0;
-  background: url("/scrapbook/bf-small-blue.webp") center / contain no-repeat;
-  box-shadow: none;
-  filter: drop-shadow(0 4px 4px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.2)));
-}
-.addon-grid > li:nth-child(7n + 6) .addon-card-hold {
-  aspect-ratio: 200 / 142;
-  rotate: -12deg;
-  background-image: url("/scrapbook/bf-brimstone.webp");
-}
-.addon-grid > li:nth-child(14n + 10) .addon-card-hold {
-  aspect-ratio: 200 / 131;
-  background: url("/scrapbook/bf-cabbage-white.webp") center / contain no-repeat;
-}
-.addon-card-heading {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  width: 100%;
-  font-size: 25px;
-  line-height: 1.15;
-}
-.addon-card-heading svg {
-  flex-shrink: 0;
-  color: var(--accent);
-}
-.addon-card-arrow {
-  margin-left: auto;
-  opacity: 0;
-}
-.addon-card:hover .addon-card-arrow,
-.addon-card:focus-visible .addon-card-arrow {
-  opacity: 1;
-}
-.addon-description {
-  flex: 1;
-  margin-block: 12px 22px;
-  color: var(--ink-soft);
-  font-size: 18.5px;
-  line-height: 1.5;
-}
-.addon-card-footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 2px 12px;
-  width: 100%;
-  padding-top: 12px;
-  border-top: 1px dashed rgb(var(--shadow-rgb) / 0.3);
-  color: var(--ink-faint);
-  font: 400 12px/1.5 var(--mono);
-}
-[data-theme="dark"] .addon-card-footer {
-  border-top-color: rgb(244 232 207 / 0.2);
-}
-.addon-card-footer > * + * {
-  flex-shrink: 0;
-  margin-left: auto;
-}
+/* ---------------------------------------------------------------- responsive */
 
-@media (max-width: 960px) {
-  .addon-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 720px) {
-  .addon-grid {
-    gap: 30px 20px;
-  }
-  .addon-card {
-    padding: 26px 20px 18px;
-  }
-}
-@media (max-width: 540px) {
-  .addon-grid {
-    grid-template-columns: 1fr;
-  }
-  .showcase-grid > li:nth-child(n + 4) {
+@media (max-width: 1024px) {
+  .not-md {
     display: none;
   }
 }
-
-/* ---------------------------------------------------------------- responsive */
-
 @media (max-width: 1399px) {
   .wide {
     display: none;
   }
 }
-@media (max-width: 1024px) {
-  .faq {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-  .not-md {
-    display: none;
-  }
-}
-@media (max-width: 900px) {
-  .features {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-  .features > *,
-  .feature-free {
-    grid-column: 1;
-  }
-  .footer-details {
-    flex-direction: column;
-    gap: 28px;
-  }
-}
+
 @media (max-width: 720px) {
   .not-narrow {
     display: none;
@@ -2253,85 +1656,6 @@
   }
   .demo {
     border-radius: 8px;
-  }
-  .section-title {
-    padding: 12px 22px 14px;
-  }
-  .ledger {
-    padding: 22px 18px 26px;
-  }
-  .comparison-table {
-    font-size: 17px;
-  }
-  .comparison-table :is(th, td) {
-    padding: 16px 14px 15px 0;
-  }
-  .comparison-table :is(th, td):last-child {
-    padding: 16px 0 15px 14px;
-  }
-  .comparison-table thead th:last-child {
-    padding-left: 14px;
-  }
-  .comparison-table th[scope="row"] {
-    width: 86px;
-    font-size: 19px;
-  }
-  .features {
-    padding-block: 56px;
-  }
-  .feature-art {
-    height: 240px;
-  }
-  .feature-copy {
-    padding: 0 12px;
-  }
-  .feature-copy p {
-    font-size: 18px;
-  }
-  .feature-free {
-    padding: 20px 22px;
-  }
-  .writing-role {
-    min-height: 0;
-    padding: 64px 24px 24px;
-  }
-  .writing-role p {
-    font-size: 18px;
-  }
-  .role-writers .role-object,
-  .role-academics .role-object {
-    width: 150px;
-  }
-  .faq-list {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-  .index-card:nth-child(even) {
-    margin-top: 0;
-  }
-  /* the narrow header wordmark size (base.css) used to reach the footer brand too */
-  .footer-brand {
-    font-size: 28px;
-  }
-  .site-footer {
-    padding-top: 40px;
-    border-radius: 16px 16px 0 0;
-  }
-  .footer-details {
-    padding: 28px 22px 24px;
-  }
-  .footer-groups {
-    width: 100%;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-  }
-  .footer-group a {
-    min-height: 44px;
-    font-size: 18px;
-  }
-  .footer-bottom {
-    flex-wrap: wrap;
-    gap: 4px 16px;
   }
 }
 @media (max-width: 440px) {
@@ -2375,7 +1699,7 @@
   .button::before {
     transition: background-color var(--motion-fast) var(--ease-out);
   }
-  .index-card[open] p {
+  .qa details[open] p {
     animation: site-fade-in var(--motion-feedback) var(--ease-out);
   }
 }

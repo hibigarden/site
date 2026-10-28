@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#ebe1cc" />
+    <meta name="theme-color" content="#fffdf8" />
     <meta
       name="description"
       content="find addons for hibi."
@@ -31,15 +31,13 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <script src="/theme-init.js"></script>
     <link rel="stylesheet" href="/src/base.css" />
-    <link rel="stylesheet" href="/src/landing.css" />
+    <link rel="stylesheet" href="/src/pages.css" />
     <script type="module" src="/src/theme.js"></script>
     <script type="module" src="/src/navigation.js"></script>
     <script type="module" src="/src/addons.jsx"></script>
-    <script type="module" src="/src/scrapbook.js"></script>
-    <script type="module" src="/src/butterflies.js"></script>
     <title>addons | hibi</title>
   </head>
-  <body data-butterflies="3">
+  <body>
     <a class="skip-link" href="#main">skip to content</a>
     <header class="site-header page-header wrap">
       <a class="wordmark" href="/" aria-label="hibi home"
@@ -64,21 +62,6 @@
             >documentation <span aria-hidden="true">↗</span></a
           >
         </div>
-        <button
-          class="motion-toggle"
-          type="button"
-          aria-pressed="false"
-          aria-label="still the garden"
-          title="still the garden"
-          hidden
-        >
-          <svg class="motion-pause" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 6v12M15 6v12" />
-          </svg>
-          <svg class="motion-play" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M8 5.5v13l10-6.5Z" />
-          </svg>
-        </button>
         <button
           class="theme-toggle"
           type="button"
@@ -106,35 +89,9 @@
           <a href="https://docs.hibi.garden">read the documentation</a>.
         </p></noscript
       >
-      <span class="note wide gutter-l" aria-hidden="true" style="--w: 120px; --y: 150px; --r: -8deg">pick a few ♡</span>
-      <span class="doodle wide gutter-l" data-doodle="arrow" aria-hidden="true" style="--w: 96px; --y: 206px; --r: 24deg; --dx: 18px"></span>
-      <span class="piece taped wide gutter-l" aria-hidden="true" style="--w: 72px; --y: 24%; --r: -8deg; --tape-img: url(/scrapbook/tape-butter.webp); --tape-y: 60%"
-        ><img src="/scrapbook/lavender-1.webp" width="92" height="316" alt="" decoding="async" data-perch="0.5,0.1"
-      /></span>
-      <span class="piece pinned wide gutter-r" aria-hidden="true" style="--w: 110px; --y: 120px; --r: 14deg"
-        ><img src="/scrapbook/bf-morpho.webp" width="137" height="106" alt="" decoding="async"
-      /></span>
-      <span class="piece wide gutter-r" aria-hidden="true" style="--w: 120px; --y: 34%; --r: 12deg"
-        ><img src="/scrapbook/lavender-heads.webp" width="137" height="96" alt="" loading="lazy" decoding="async" data-perch="0.4,0.3"
-      /></span>
-      <span class="piece pinned wide gutter-l" aria-hidden="true" style="--w: 100px; --y: 48%; --r: -10deg"
-        ><img src="/scrapbook/bf-luna.webp" width="137" height="97" alt="" loading="lazy" decoding="async"
-      /></span>
-      <span class="piece taped wide gutter-r" aria-hidden="true" style="--w: 120px; --y: 58%; --r: 10deg; --tape-img: url(/scrapbook/tape-periwinkle-dots.webp)"
-        ><img src="/scrapbook/lavender-2.webp" width="167" height="296" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1"
-      /></span>
-      <span class="piece wide gutter-l" aria-hidden="true" style="--w: 120px; --y: 72%; --r: -14deg"
-        ><img src="/scrapbook/rose.webp" width="147" height="165" alt="" loading="lazy" decoding="async"
-      /></span>
-      <span class="piece pinned wide gutter-r" aria-hidden="true" style="--w: 96px; --y: 84%; --r: -12deg"
-        ><img src="/scrapbook/bf-swallowtail.webp" width="137" height="120" alt="" loading="lazy" decoding="async"
-      /></span>
     </main>
     <footer class="site-footer">
       <div class="wrap">
-        <div class="footer-wordmark" aria-hidden="true">
-          <span>h</span><span>i</span><span>b</span><span>i</span>
-        </div>
         <div class="footer-details">
           <div>
             <a class="footer-brand wordmark" href="/" aria-label="hibi home">

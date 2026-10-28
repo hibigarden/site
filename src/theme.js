@@ -16,8 +16,9 @@ function apply(theme) {
   const label = `switch to ${theme === "dark" ? "light" : "dark"} mode`;
   toggle.setAttribute("aria-label", label);
   toggle.title = label;
+  // each page's own background (the landing's tan paper, the plain pages' white)
   document.querySelector('meta[name="theme-color"]').content =
-    theme === "dark" ? "#1d1810" : "#ebe1cc";
+    getComputedStyle(root).getPropertyValue("--page").trim();
 }
 
 function changeTheme(theme) {

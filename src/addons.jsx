@@ -30,7 +30,7 @@ import {
   openLink,
   sortAddons,
 } from "./addon-directory.js";
-import { addonPageTitle, addonSpecimen } from "./addon-seo.js";
+import { addonPageTitle } from "./addon-seo.js";
 import { Button } from "../vendor/hibi/src/ui/Controls";
 import "../vendor/hibi/src/ui/controls.css";
 
@@ -138,10 +138,6 @@ function AddonDetails({ addon }) {
   const builtin = addon.origin === "built-in";
   return (
     <article className="addon-detail" aria-labelledby="addon-title">
-      <span className="tape tape-periwinkle tape-top" aria-hidden="true" />
-      <span className="addon-specimen" aria-hidden="true">
-        <img src={addonSpecimen(addon.id)} alt="" />
-      </span>
       <a className="addon-guide-link" href="/addons/">
         ← all addons
       </a>
@@ -270,8 +266,7 @@ function AddonGrid() {
 
   return (
     <>
-      <div className="page-intro addons-intro paper">
-        <span className="tape tape-periwinkle tape-top" aria-hidden="true" />
+      <div className="page-intro">
         <h1>make hibi yours.</h1>
         <a
           className="addon-guide-link"
@@ -342,7 +337,6 @@ function AddonGrid() {
                 href={addonPageLink(addon.id)}
                 aria-label={`view ${addon.name} details`}
               >
-                <span className="addon-card-hold" aria-hidden="true" />
                 <span className="addon-card-heading">
                   <Glyph size={21} strokeWidth={1.5} aria-hidden="true" />
                   <span>{addon.name}</span>

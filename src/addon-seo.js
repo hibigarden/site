@@ -24,13 +24,6 @@ function swap(html, pattern, value) {
 export const addonPageTitle = (addon) =>
   `${addon.name} | hibi ${addon.kind === "theme" ? "themes" : "addons"}`;
 
-const SPECIMENS = ["small-blue", "morpho", "brimstone", "cabbage-white", "peacock", "rosy-maple", "luna", "swallowtail", "hairstreak"];
-/** Each addon page pins its own butterfly, picked from the id so it never changes. */
-export const addonSpecimen = (id) =>
-  `/scrapbook/bf-${SPECIMENS[[...id].reduce((hash, c) => (hash * 31 + c.charCodeAt(0)) >>> 0, 7) % SPECIMENS.length]}.webp`;
-const decorations = (addon) =>
-  `<span class="tape tape-periwinkle tape-top" aria-hidden="true"></span><span class="addon-specimen" aria-hidden="true"><img src="${escape(addonSpecimen(addon.id))}" alt="" /></span>`;
-
 function structuredData(addon, url) {
   const theme = addon.kind === "theme";
   const data = {
@@ -78,7 +71,6 @@ function details(addon) {
     ? new URL(addon.repositoryUrl).pathname.slice(1)
     : null;
   return `<article class="addon-detail" aria-labelledby="addon-title">
-${decorations(addon)}
 <a class="addon-guide-link" href="/addons/">← all addons</a>
 <header class="page-intro">
 <h1 id="addon-title">${escape(addon.name)}</h1>

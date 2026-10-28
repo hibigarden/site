@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#ebe1cc" />
+    <meta name="theme-color" content="#fffdf8" />
     <meta name="description" content="who made the pictures, fonts, icons and sounds on hibi.garden." />
     <meta property="og:title" content="credits | hibi" />
     <meta property="og:description" content="who made the pictures, fonts, icons and sounds on hibi.garden." />
@@ -25,14 +25,12 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <script src="/theme-init.js"></script>
     <link rel="stylesheet" href="/src/base.css" />
-    <link rel="stylesheet" href="/src/landing.css" />
+    <link rel="stylesheet" href="/src/pages.css" />
     <script type="module" src="/src/theme.js"></script>
     <script type="module" src="/src/navigation.js"></script>
-    <script type="module" src="/src/scrapbook.js"></script>
-    <script type="module" src="/src/butterflies.js"></script>
     <title>credits | hibi</title>
   </head>
-  <body data-butterflies="0">
+  <body>
     <a class="skip-link" href="#main">skip to content</a>
     <header class="site-header page-header wrap">
       <a class="wordmark" href="/" aria-label="hibi home"
@@ -58,21 +56,6 @@
           >
         </div>
         <button
-          class="motion-toggle"
-          type="button"
-          aria-pressed="false"
-          aria-label="still the garden"
-          title="still the garden"
-          hidden
-        >
-          <svg class="motion-pause" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 6v12M15 6v12" />
-          </svg>
-          <svg class="motion-play" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M8 5.5v13l10-6.5Z" />
-          </svg>
-        </button>
-        <button
           class="theme-toggle"
           type="button"
           aria-label="switch to dark mode"
@@ -92,30 +75,17 @@
       </nav>
     </header>
     <main id="main" class="credits wrap">
-      <div class="page-intro addons-intro paper">
-        <span class="tape tape-cream tape-top" aria-hidden="true"></span>
+      <div class="page-intro">
         <h1>credits</h1>
       </div>
-      <span class="piece pinned credits-specimen" aria-hidden="true"
-        ><img src="/scrapbook/bf-cramer-blue.webp" width="137" height="77" alt="" decoding="async"
-      /></span>
-      <section class="credits-ledger ledger paper" aria-labelledby="credits-art">
+      <section class="credits-section" aria-labelledby="credits-art">
         <h2 id="credits-art">pictures</h2>
         <p>
           the park, the butterflies and moths, the pressed lavender and
           flowers, the tapes, papers and writing things were drawn for hibi.
         </p>
-        <p>
-          the pinned blue butterfly on this page is cut from plate 21 of
-          <em>de uitlandsche kapellen</em> by pieter cramer and caspar stoll
-          (1779), from the
-          <a href="https://www.biodiversitylibrary.org/title/43777">biodiversity heritage library</a>,
-          via
-          <a href="https://commons.wikimedia.org/wiki/File:Cramer%26Stoll-uitlandsche_kapellen_vol._1-_plate_021.jpg">wikimedia commons</a>.
-          public domain.
-        </p>
       </section>
-      <section class="credits-ledger ledger paper" aria-labelledby="credits-type">
+      <section class="credits-section" aria-labelledby="credits-type">
         <h2 id="credits-type">fonts and icons</h2>
         <ul>
           <li>eb garamond, sil open font license · <a href="/licenses/eb-garamond.txt">licence</a></li>
@@ -124,7 +94,7 @@
           <li>lucide icons, isc license · <a href="/licenses/lucide.txt">licence</a></li>
         </ul>
       </section>
-      <section class="credits-ledger ledger paper" aria-labelledby="credits-demo">
+      <section class="credits-section" aria-labelledby="credits-demo">
         <h2 id="credits-demo">in the demo</h2>
         <ul>
           <li>keyboard sounds from keybeats, mit license · <a href="/licenses/keybeats.txt">licence</a> · <a href="/licenses/kbsim.txt">kbsim</a></li>
@@ -134,9 +104,6 @@
     </main>
     <footer class="site-footer">
       <div class="wrap">
-        <div class="footer-wordmark" aria-hidden="true">
-          <span>h</span><span>i</span><span>b</span><span>i</span>
-        </div>
         <div class="footer-details">
           <div>
             <a class="footer-brand wordmark" href="/" aria-label="hibi home">

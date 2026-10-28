@@ -111,7 +111,7 @@ function AddonDetails({ addon }) {
   const builtin = addon.origin === "built-in";
   return (
     <article className="addon-detail" aria-labelledby="addon-title">
-      <span className="tape tape-blue tape-tl" aria-hidden="true" />
+      <span className="tape tape-periwinkle tape-top" aria-hidden="true" />
       <span className="addon-specimen" aria-hidden="true">
         <img src={addonSpecimen(addon.id)} alt="" />
       </span>
@@ -238,8 +238,7 @@ function AddonGrid() {
   return (
     <>
       <div className="page-intro addons-intro paper">
-        <span className="tape tape-blue tape-tl" aria-hidden="true" />
-        <span className="tape tape-periwinkle tape-tr" aria-hidden="true" />
+        <span className="tape tape-periwinkle tape-top" aria-hidden="true" />
         <h1>make hibi yours.</h1>
         <a
           className="addon-guide-link"

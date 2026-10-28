@@ -29,7 +29,7 @@ const SPECIMENS = ["small-blue", "morpho", "brimstone", "cabbage-white", "peacoc
 export const addonSpecimen = (id) =>
   `/scrapbook/bf-${SPECIMENS[[...id].reduce((hash, c) => (hash * 31 + c.charCodeAt(0)) >>> 0, 7) % SPECIMENS.length]}.webp`;
 const decorations = (addon) =>
-  `<span class="tape tape-blue tape-tl" aria-hidden="true"></span><span class="addon-specimen" aria-hidden="true"><img src="${escape(addonSpecimen(addon.id))}" alt="" /></span>`;
+  `<span class="tape tape-periwinkle tape-top" aria-hidden="true"></span><span class="addon-specimen" aria-hidden="true"><img src="${escape(addonSpecimen(addon.id))}" alt="" /></span>`;
 
 function structuredData(addon, url) {
   const theme = addon.kind === "theme";

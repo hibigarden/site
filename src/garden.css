@@ -33,8 +33,13 @@
     0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
 }
 
-.garden {
+:is(.garden, [data-sky]) {
   --sky-top: #83c3fd;
+}
+[data-theme="dark"] :is(.garden, [data-sky]) {
+  --sky-top: #04154a;
+}
+.garden {
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -42,9 +47,6 @@
   border-radius: inherit;
   container: garden / size;
   background: var(--sky-top);
-}
-[data-theme="dark"] .garden {
-  --sky-top: #04154a;
 }
 /* a soft shadow where the page meets the rounded edge */
 .garden::after {
@@ -91,8 +93,7 @@
   display: none;
 }
 /* while motion is on, everything the clock moves gets its own compositor layer (no repaints on a frame) */
-.is-live [data-depth],
-.is-live :is(.g-halo, .g-bf > i) {
+.is-live :is([data-depth], [data-drift], [data-twinkle], .g-halo, .g-sun, .g-bf > i) {
   will-change: transform, opacity;
 }
 /* the sky runs on above the canvas, as far as a tall panel needs */
@@ -117,29 +118,29 @@
   background-repeat: repeat-x;
 }
 
-/* the sky's free sprites sit in the panel's upper sky, wherever the canvas falls */
+/* the sky's free sprites sit in the panel's upper sky, wherever the canvas falls (sky panels have no canvas) */
 .g-sun {
   position: absolute;
-  left: calc(var(--pl) + 46cqw);
-  top: calc(var(--pt) - 58cqw);
+  left: calc(var(--pl, 0px) + 46cqw);
+  top: calc(var(--pt, 0px) - 58cqw);
   width: 100cqw;
   aspect-ratio: 1;
   border-radius: 50%;
   background: radial-gradient(closest-side, rgb(255 251 234 / 0.55), rgb(255 248 226 / 0.22) 42%, transparent);
 }
 .g-stars {
-  left: calc(var(--pl) + 14cqw);
-  top: calc(var(--pt) + 11cqh);
+  left: calc(var(--pl, 0px) + 14cqw);
+  top: calc(var(--pt, 0px) + 11cqh);
   width: 68cqw;
 }
 .g-stars-2 {
-  left: calc(var(--pl) + 31cqw);
-  top: calc(var(--pt) + 7cqh);
+  left: calc(var(--pl, 0px) + 31cqw);
+  top: calc(var(--pt, 0px) + 7cqh);
   width: 52cqw;
 }
 .g-moon {
-  left: calc(var(--pl) + 79cqw);
-  top: calc(var(--pt) + max(92px, 12cqh));
+  left: calc(var(--pl, 0px) + 79cqw);
+  top: calc(var(--pt, 0px) + max(92px, 12cqh));
   width: clamp(70px, 7cqw, 116px);
   background-size: contain;
 }
@@ -223,6 +224,44 @@
     left: calc(var(--pl) + 74cqw);
     top: calc(var(--pt) + 70px);
   }
+}
+
+/* sky panels ([data-sky], built by garden.js): the hero's sky alone, filling their positioned parent, with its
+   clouds at the hero's scale drifting above a low horizon and a strip of the front lavender along the bottom */
+[data-sky] {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  container: sky / size;
+  background: var(--sky-top);
+}
+[data-sky] .g-sky {
+  top: 0;
+  height: 100%;
+}
+[data-sky] .g-clouds-far {
+  top: calc(88% - 10.667cqw);
+  height: 12.667cqw;
+}
+[data-sky] .g-clouds-mid {
+  top: calc(88% - 16.667cqw);
+  height: 18.667cqw;
+}
+[data-sky] .g-clouds-near {
+  top: calc(88% - 20.667cqw);
+  height: 16.667cqw;
+}
+/* the front lavender's dense left bed (the image's left 46%, before the path; --strip is set for the narrow file)
+   across the bottom, rising softly into the sky */
+[data-sky] .g-lavender {
+  top: auto;
+  bottom: 0;
+  height: min(11cqw, 24%);
+  background-size: var(--strip, 217%) auto;
+  background-position: 0 100%;
+  mask-image: linear-gradient(transparent, #000 55%);
 }
 
 /* the live editor rests below the headline, as large as the panel allows */

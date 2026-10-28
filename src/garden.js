@@ -51,15 +51,91 @@ function land(m, n) {
   return { dx: (m.dx ?? 0) * q, dy: (m.dy ?? 0) * q, rot: (m.rot ?? 0) * kk, sc: 1 + (m.sc ?? 0) * kk };
 }
 
+// Runs `frame` on the clock while `root` is on screen and motion is on; `rest` returns it to its composed state.
+// Returns whether motion is stilled.
+function animate(root, frame, rest) {
+  let still = true;
+  let seen = false;
+  let stop = null;
+  const update = () => {
+    root.classList.toggle("is-live", !still);
+    if (seen && !still) stop ??= tick(frame);
+    else if (stop) {
+      stop();
+      stop = null;
+    }
+  };
+  new IntersectionObserver(([entry]) => {
+    seen = entry.isIntersecting;
+    update();
+  }).observe(root);
+  onMotion((isStill) => {
+    still = isStill;
+    if (still) rest();
+    update();
+  });
+  return () => still;
+}
+
+// a panel at rest: every inline motion removed (its custom properties stay)
+function compose(root) {
+  for (const el of root.querySelectorAll("[style]")) {
+    for (const name of ["transform", "translate", "opacity"]) el.style.removeProperty(name);
+  }
+}
+
+// garden seconds: advanced only while a panel runs, at most two held frames at a time
+function clock() {
+  let t = 0;
+  let last = 0;
+  return (time) => {
+    if (time === undefined) return (t = last = 0);
+    t += Math.min(time - (last || time - FRAME), 2 * FRAME) / 1000;
+    last = time;
+    return t;
+  };
+}
+
+// The sky's own motion, shared by the hero and every sky panel: the clouds drift in seamless loops, the stars
+// twinkle out of step, the moon's halo and the sun breathe.
+function sky(root) {
+  const drifts = [...root.querySelectorAll("[data-drift]")].map((el, i) => [el, +el.dataset.drift, i * 0.29]);
+  const twinkles = [...root.querySelectorAll("[data-twinkle]")].map((el) => [el, ...el.dataset.twinkle.split(",").map(Number)]);
+  const halo = root.querySelector(".g-halo");
+  const sun = root.querySelector(".g-sun");
+  return (t) => {
+    for (const [el, period, phase] of drifts) el.style.translate = `${(-66.6667 * ((t / period + phase) % 1)).toFixed(4)}% 0`;
+    for (const [el, period, phase] of twinkles) el.style.opacity = (0.45 + 0.55 * breathe(t, period, phase)).toFixed(3);
+    if (halo) {
+      const b = breathe(t, 7.4);
+      halo.style.opacity = (0.7 + 0.3 * b).toFixed(3);
+      halo.style.transform = `scale(${(1 + 0.04 * b).toFixed(4)})`;
+    }
+    if (sun) sun.style.opacity = (0.86 + 0.14 * breathe(t, 9.6)).toFixed(3);
+  };
+}
+
+// After the page has loaded, fetch and decode the other theme's images so the first toggle cross-fades into a
+// sky that is already there.
+function warm(root, skip = "") {
+  const other = document.documentElement.dataset.theme === "dark" ? "day" : "night";
+  for (const el of root.querySelectorAll(`:is(.g-layer, .g-free)${skip}`)) {
+    const src = getComputedStyle(el).getPropertyValue(`--${other}`).match(/url\(["']?([^"')]+)/)?.[1];
+    if (!src) continue;
+    const img = new Image();
+    img.src = src;
+    img.decode().catch(() => {});
+  }
+}
+const idle = (fn) => {
+  const run = () => (window.requestIdleCallback?.bind(window) ?? setTimeout)(fn);
+  if (document.readyState === "complete") run();
+  else addEventListener("load", run, { once: true });
+};
+
 if (garden) {
   const scene = garden.querySelector(".g-scene");
-  const layers = [...garden.querySelectorAll("[data-depth]")].map((el) => ({
-    el,
-    depth: +el.dataset.depth,
-    drift: +el.dataset.drift || 0,
-    twinkle: el.dataset.twinkle?.split(",").map(Number),
-  }));
-  layers.filter((l) => l.drift).forEach((l, i) => (l.phase = i * 0.29));
+  const layers = [...garden.querySelectorAll("[data-depth]")].map((el) => ({ el, depth: +el.dataset.depth }));
   layers
     .filter((l) => l.el.matches(".g-bf"))
     .forEach((l, i) => Object.assign(l, { flyer: true, seed: i * 2.1 + 0.7, start: 12 + i }));
@@ -68,16 +144,12 @@ if (garden) {
   }
   // the companion's resting butterfly stays put (companion.js reads its box); it only flies in and basks
   const resting = { el: garden.querySelector(".g-companion"), flyer: true, start: 14 };
-  const halo = garden.querySelector(".g-halo");
-  const sun = garden.querySelector(".g-sun");
   const glow = garden.querySelector(".g-glow");
+  const ambient = sky(garden);
+  const time = clock();
   const fine = matchMedia("(hover: hover) and (pointer: fine)");
 
-  let still = true;
-  let seen = false;
-  let stop = null;
-  let last = 0;
-  let t = 0; // garden seconds, advanced only while running
+  let t = 0;
   let tx = 0; // pointer target, -1..1 across the viewport
   let ty = 0;
   let px = 0;
@@ -106,10 +178,9 @@ if (garden) {
     return [dx * q * c, dy * q * c, 30 * q];
   };
 
-  function frame(time) {
-    const dt = Math.min(time - (last || time - FRAME), 2 * FRAME) / 1000;
-    last = time;
-    t += dt;
+  function frame(now) {
+    t = time(now);
+    ambient(t);
     const k = fine.matches ? 1 : 0;
     px += (tx * k - px) * 0.3;
     py += (ty * k - py) * 0.3;
@@ -140,19 +211,11 @@ if (garden) {
         }
         l.el.children[0].style.transform = l.el.children[1].style.transform = `scaleX(${FLAP[beat]})`;
       }
-      if (l.drift) l.el.style.translate = `${(-66.6667 * ((t / l.drift + l.phase) % 1)).toFixed(4)}% 0`;
-      if (l.twinkle) l.el.style.opacity = (0.45 + 0.55 * breathe(t, l.twinkle[0], l.twinkle[1])).toFixed(3);
       l.el.style.transform =
         `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0)` +
         (rot ? ` rotate(${rot.toFixed(2)}deg)` : "") +
         (scale !== 1 ? ` scale(${scale ? scale.toFixed(4) : 0})` : "");
     }
-    if (halo) {
-      const b = breathe(t, 7.4);
-      halo.style.opacity = (0.7 + 0.3 * b).toFixed(3);
-      halo.style.transform = `scale(${(1 + 0.04 * b).toFixed(4)})`;
-    }
-    if (sun) sun.style.opacity = (0.86 + 0.14 * breathe(t, 9.6)).toFixed(3);
     if (glow) {
       const n = entrance ? entrance.n - Math.max(10, entrance.ready.get(glow) ?? Infinity) : FLICKER.length;
       const b = 0.7 * breathe(t, 5.2) + 0.3 * breathe(t, 2.3, 0.4);
@@ -176,24 +239,10 @@ if (garden) {
 
   // the composed state: what reduced motion and a stilled garden show
   function rest() {
-    for (const el of garden.querySelectorAll("[data-depth], .g-halo, .g-bf > i, .g-companion")) {
-      for (const name of ["transform", "translate", "opacity"]) el.style.removeProperty(name);
-    }
-    t = 0;
+    compose(garden);
+    time();
     px = py = sink = 0;
     entrance = null;
-  }
-
-  function update() {
-    const run = seen && !still;
-    garden.classList.toggle("is-live", !still);
-    if (run && !stop) {
-      last = 0;
-      stop = tick((time) => frame(time));
-    } else if (!run && stop) {
-      stop();
-      stop = null;
-    }
   }
 
   // A fresh load (not back/forward, not opened mid-page) assembles the park like a pop-up book. Each part starts
@@ -221,32 +270,10 @@ if (garden) {
     frame(performance.now()); // pose everything now, so nothing shows assembled before the clock's first frame
   }
 
-  // After the page has loaded, fetch and decode the other theme's images so the first toggle cross-fades into a
-  // park that is already there.
-  function warm() {
-    const other = document.documentElement.dataset.theme === "dark" ? "day" : "night";
-    const narrow = garden.clientWidth / garden.clientHeight < 0.55; // garden.css hides the bench, lamp and glow
-    for (const el of garden.querySelectorAll(narrow ? ".g-layer:not(.g-bench, .g-lamp, .g-glow), .g-free" : ".g-layer, .g-free")) {
-      const src = getComputedStyle(el).getPropertyValue(`--${other}`).match(/url\(["']?([^"')]+)/)?.[1];
-      if (!src) continue;
-      const img = new Image();
-      img.src = src;
-      img.decode().catch(() => {});
-    }
-  }
-
   measure();
   new ResizeObserver(measure).observe(garden);
-  new IntersectionObserver(([entry]) => {
-    seen = entry.isIntersecting;
-    update();
-  }).observe(hero);
-  onMotion((isStill) => {
-    still = isStill;
-    if (still) rest();
-    update();
-  });
-  if (!still) assemble();
+  const stilled = animate(garden, frame, rest);
+  if (!stilled()) assemble();
   addEventListener("pageshow", (event) => {
     if (event.persisted) entrance = null;
   });
@@ -262,7 +289,38 @@ if (garden) {
   document.documentElement.addEventListener("pointerleave", () => {
     tx = ty = 0;
   });
-  const idle = window.requestIdleCallback ?? ((fn) => setTimeout(fn, 1));
-  if (document.readyState === "complete") idle(warm);
-  else addEventListener("load", () => idle(warm), { once: true });
+  // garden.css hides the bench, lamp and glow on narrow panels
+  idle(() => warm(garden, garden.clientWidth / garden.clientHeight < 0.55 ? ":not(.g-bench, .g-lamp, .g-glow)" : ""));
+}
+
+// Sky panels ([data-sky], e.g. behind the closing call to action): the hero's sky without the ground, built here so
+// the markup stays one element. They use the hero's files (its wide or narrow choice), so they download nothing new.
+const SKY =
+  '<i class="g-layer g-sky"></i><i class="g-sun g-day"></i>' +
+  '<i class="g-free g-stars g-night" data-twinkle="4.3,0"></i><i class="g-free g-stars-2 g-night" data-twinkle="6.1,0.45"></i>' +
+  '<i class="g-free g-moon g-night"><i class="g-halo"></i></i>' +
+  '<i class="g-layer g-clouds g-clouds-far" data-drift="640"></i><i class="g-layer g-clouds g-clouds-mid" data-drift="460"></i>' +
+  '<i class="g-layer g-clouds g-clouds-near" data-drift="330"></i><i class="g-layer g-lavender"></i>';
+const TWINS = ["g-sky", "g-clouds-far", "g-clouds-mid", "g-clouds-near", "g-lavender"];
+
+for (const panel of document.querySelectorAll("[data-sky]")) {
+  panel.innerHTML = SKY;
+  const share = () => {
+    for (const name of TWINS) {
+      const twin = getComputedStyle(garden.querySelector(`.${name}`));
+      const mine = panel.querySelector(`.${name}`).style;
+      for (const theme of ["--day", "--night"]) mine.setProperty(theme, twin.getPropertyValue(theme));
+    }
+    // the narrow lavender file starts at the canvas' x 480, so its bed before the path is its left 43%
+    const narrow = /-s\.webp/.test(panel.querySelector(".g-lavender").style.getPropertyValue("--day"));
+    panel.querySelector(".g-lavender").style.setProperty("--strip", narrow ? "233%" : "217%");
+  };
+  if (garden) {
+    share();
+    new ResizeObserver(share).observe(garden);
+  }
+  const ambient = sky(panel);
+  const time = clock();
+  animate(panel, (now) => ambient(time(now)), () => (compose(panel), time()));
+  idle(() => warm(panel));
 }

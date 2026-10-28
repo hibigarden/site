@@ -3,8 +3,9 @@ import { drawDoodles } from "./doodles.js";
 drawDoodles();
 
 // Pieces below the fold settle onto the page as they scroll in, like scraps landing in the film, and pen
-// doodles and margin notes draw themselves in (on screen too). With reduced motion everything is simply there.
-if (matchMedia("(prefers-reduced-motion: no-preference)").matches) {
+// doodles and margin notes draw themselves in (on screen too). Cards stay visible while they settle; with
+// reduced motion, or when the page opens on a #section, everything is simply there.
+if (matchMedia("(prefers-reduced-motion: no-preference)").matches && !location.hash) {
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {

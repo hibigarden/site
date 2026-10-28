@@ -72,7 +72,6 @@
   --shadow-rgb: 64 44 20;
   --shadow-a: 0.2;
   --icon: url("/scrapbook/icon-day.webp");
-  --postcard: url("/scrapbook/postcard-day.webp");
   --pen: #2b4595;
   --pen-lavender: #7a5dae;
   --hand: Caveat, "Bradley Hand", "Segoe Print", cursive;
@@ -130,7 +129,6 @@
   --shadow-rgb: 0 0 0;
   --shadow-a: 0.5;
   --icon: url("/scrapbook/icon-night.webp");
-  --postcard: url("/scrapbook/postcard-night.webp");
   --pen: #aebaf2;
   --pen-lavender: #cdb8ef;
   --border: rgb(244 232 207 / 0.18);
@@ -382,21 +380,6 @@ a:hover {
   color: var(--pen);
   font: 500 28px/0.95 var(--hand);
   white-space: nowrap;
-}
-.scrap-row {
-  display: none;
-  justify-content: center;
-  align-items: center;
-  gap: 18px;
-  padding-block: 6px;
-  pointer-events: none;
-}
-.scrap-row img {
-  height: auto;
-  filter: drop-shadow(0 4px 5px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.1)));
-}
-.scrap-row .doodle {
-  position: static;
 }
 
 /* ---------------------------------------------------------------- header */
@@ -730,65 +713,12 @@ a:hover {
   animation-play-state: paused;
 }
 
-/* ---------------------------------------------------------------- beta letter + postcard */
-
-.beta-notice {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  align-items: start;
-  gap: 56px;
-  padding-top: 16px;
-}
-/* ruled writing paper: rules every 32px under each line of text, a red margin line */
-.letter {
-  --paper: var(--card-white);
-  --deckle: var(--deckle-3);
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  gap: 30px;
-  padding: 40px 48px 40px 30px;
-  rotate: 0.5deg;
-}
-.letter::before {
-  background:
-    linear-gradient(90deg, transparent 82px, var(--margin-line) 82px 84px, transparent 84px),
-    repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px) 0 6px / 100% 100%
-      no-repeat,
-    var(--paper);
-}
-#beta-icon {
-  display: flex;
-  justify-content: center;
-  padding-top: 4px;
-  color: var(--accent);
-}
-#beta-icon svg {
-  width: 24px;
-  height: 24px;
-  stroke-width: 1.6;
-}
-.letter h2 {
-  font-size: 27px;
-  line-height: 32px;
-}
-.letter h2 strong {
-  font-weight: 500;
-  font-style: italic;
-  color: var(--accent);
-}
-.letter p {
-  margin-top: 32px;
-  color: var(--ink-soft);
-  font-size: 19px;
-  line-height: 32px;
-}
-.letter a,
-.statement a,
+.chapter-text a,
 .comparison-table a,
 .writing-role > a,
 .feature-copy > a,
 .feature-free a,
+.index-card a,
 .addon-guide-link,
 .addon-readme a,
 .addon-authors a,
@@ -798,72 +728,6 @@ a:hover {
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
   text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
-}
-.letter a {
-  color: var(--ink);
-}
-.postcard {
-  position: relative;
-  margin-top: 26px;
-  padding: 12px 12px 34px;
-  background: var(--card-white);
-  rotate: 4deg;
-  box-shadow:
-    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8)),
-    0 16px 26px -12px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.3));
-}
-.postcard-photo {
-  display: block;
-  aspect-ratio: 520 / 293;
-  background: var(--postcard) center / cover no-repeat;
-}
-.paperclip {
-  position: absolute;
-  top: -14px;
-  left: 28px;
-  width: 90px;
-  height: auto;
-  rotate: -84deg;
-  filter: drop-shadow(1px 2px 1px rgb(var(--shadow-rgb) / 0.35));
-}
-
-/* ---------------------------------------------------------------- statements */
-
-.intro-spread {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: 56px;
-  padding-block: 104px 40px;
-}
-.statement {
-  --deckle: var(--deckle-2);
-  padding: 50px 46px 54px;
-  rotate: -0.8deg;
-}
-.statement + .statement {
-  --deckle: var(--deckle-4);
-  --paper: var(--card-tan);
-  margin-top: 64px;
-  rotate: 0.7deg;
-}
-.statement-title {
-  font: 500 clamp(36px, 3.7vw, 50px) / 1.04 var(--serif);
-  letter-spacing: -0.015em;
-}
-.statement p {
-  margin-top: 20px;
-  color: var(--ink-soft);
-  font-size: 21px;
-  line-height: 1.55;
-}
-.statement-no {
-  position: absolute;
-  right: 26px;
-  bottom: 18px;
-  color: var(--ink-faint);
-  font: 400 12px/1 var(--mono);
 }
 
 /* ---------------------------------------------------------------- section titles: torn paper tags */
@@ -1421,13 +1285,6 @@ a:hover {
 
 /* ---------------------------------------------------------------- who it's for: four kinds of paper */
 
-.writing-roles {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 44px 48px;
-  padding-block: 40px 96px;
-}
 .writing-role {
   --deckle: var(--deckle-2);
   display: flex;
@@ -2394,10 +2251,6 @@ a:hover {
   }
 }
 @media (max-width: 1024px) {
-  .beta-notice {
-    grid-template-columns: minmax(0, 1fr) 220px;
-    gap: 36px;
-  }
   .faq {
     grid-template-columns: 1fr;
     gap: 32px;
@@ -2419,22 +2272,6 @@ a:hover {
   .hero-icon .pin {
     left: 38px;
   }
-  .beta-notice {
-    grid-template-columns: 1fr;
-  }
-  .postcard {
-    width: min(300px, 70%);
-    justify-self: end;
-    margin: -18px 18px 0 0;
-  }
-  .intro-spread {
-    grid-template-columns: 1fr;
-    gap: 36px;
-    padding-block: 72px 24px;
-  }
-  .statement + .statement {
-    margin-top: 0;
-  }
   .features {
     grid-template-columns: 1fr;
     gap: 30px;
@@ -2442,10 +2279,6 @@ a:hover {
   .features > *,
   .feature-free {
     grid-column: 1;
-  }
-  .writing-roles {
-    grid-template-columns: 1fr;
-    gap: 44px;
   }
   .role-editors,
   .role-ai {
@@ -2459,9 +2292,6 @@ a:hover {
 @media (max-width: 720px) {
   .not-narrow {
     display: none;
-  }
-  .scrap-row.narrow-only {
-    display: flex;
   }
   .wrap {
     width: calc(100% - 40px);
@@ -2551,29 +2381,6 @@ a:hover {
   }
   .demo-print .tape-tr {
     right: -58px;
-  }
-  .letter {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 30px 24px 30px 44px;
-  }
-  .letter::before {
-    background:
-      linear-gradient(90deg, transparent 26px, var(--margin-line) 26px 28px, transparent 28px),
-      repeating-linear-gradient(to bottom, transparent 0 31px, var(--rule) 31px 32px) 0 0 / 100% 100% no-repeat,
-      var(--paper);
-  }
-  #beta-icon {
-    justify-content: flex-start;
-  }
-  .letter p {
-    font-size: 18px;
-  }
-  .statement {
-    padding: 40px 26px 46px;
-  }
-  .statement p {
-    font-size: 19px;
   }
   .section-title {
     padding: 12px 22px 14px;
@@ -2666,9 +2473,6 @@ a:hover {
   }
   .title-card h1 {
     font-size: clamp(38px, 11vw, 46px);
-  }
-  .letter {
-    padding-left: 40px;
   }
   .role-ai {
     padding-inline: 44px;

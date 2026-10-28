@@ -20,7 +20,6 @@ import {
   Search,
   Sigma,
   Star,
-  TriangleAlert,
   Undo2,
 } from "lucide-react";
 
@@ -145,7 +144,6 @@ for (const [id, Illustration] of [
   ["formats-illustration", FormatsIllustration],
   ["themes-illustration", ThemesIllustration],
   ["addons-illustration", AddonsIllustration],
-  ["beta-icon", TriangleAlert],
 ]) {
   createRoot(document.getElementById(id)).render(<Illustration />);
 }

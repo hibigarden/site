@@ -78,3 +78,8 @@
 .companion-layer .bf-stage.plain {
   inset: 8.5px;
 }
+
+/* at night the white paper margins are toned down so they don't glare on the dark page */
+[data-theme="dark"] :is(.bf-layer, .companion-layer) .bf-stage {
+  filter: brightness(0.88);
+}

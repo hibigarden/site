@@ -14,7 +14,7 @@ const MOTION = {
 };
 const MATERIAL = [
   [".chapter-label, .section-title, .drawer-title", "stamp"],
-  [".beat, .index-card, .end-card", "card"],
+  [".beat, .index-card", "card"],
 ];
 const PER_FRAME = FRAME / (1000 / 60); // film frames (60 fps) per held frame
 

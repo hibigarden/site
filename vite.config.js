@@ -5,6 +5,7 @@ import { defineConfig } from "vite";
 import addonCatalog, { readCatalog } from "./scripts/addon-catalog.mjs";
 import { addonIdFromPath, bundledAddons } from "./src/addon-directory.js";
 import { addonPageResponse, readAddonPages } from "./server/addon-pages.js";
+import { releasePlugin } from "./server/release.js";
 
 function addonPages(server) {
   server.middlewares.use(async (request, response, next) => {
@@ -34,6 +35,7 @@ function addonPages(server) {
 export default defineConfig({
   plugins: [
     addonCatalog(),
+    releasePlugin(),
     {
       name: "hibi-addon-pages",
       configureServer: addonPages,

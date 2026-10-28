@@ -676,11 +676,11 @@ a:hover {
 [data-theme="dark"] .title-card::before {
   background: radial-gradient(closest-side, rgb(8 14 36 / 0.5), transparent);
 }
-[data-theme="dark"] .hero .cta-primary,
-[data-theme="dark"] .hero .cta-primary:hover {
+[data-theme="dark"] :is(.hero, .cta) .cta-primary,
+[data-theme="dark"] :is(.hero, .cta) .cta-primary:hover {
   color: #1f1b16;
 }
-[data-theme="dark"] .hero .cta-primary::before {
+[data-theme="dark"] :is(.hero, .cta) .cta-primary::before {
   background: #f6e3b4;
 }
 /* beta hangs off the download button like a little tag */
@@ -693,10 +693,10 @@ a:hover {
 }
 .hero-actions {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px 14px;
-  margin-top: 34px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 30px;
 }
 /* the park's resting butterfly while the companion is out: gone from view, its box kept for the way home */
 .g-companion[hidden] {
@@ -1945,79 +1945,177 @@ a:hover {
   line-height: 30px;
 }
 
-/* ---------------------------------------------------------------- the end card */
+/* ---------------------------------------------------------------- the close: a sky panel like the hero */
 
+/* the page ends on the hero's sky (garden.js fills [data-sky]: clouds by day, moon and stars by night, a strip of
+   lavender along the bottom), as a rounded panel inset like the hero, with the download on the sky */
 .cta {
+  position: relative;
+  isolation: isolate;
   display: grid;
+  align-content: center;
   justify-items: center;
-  padding-block: 24px 128px;
-}
-.end-card {
-  --paper: var(--hibi-blue);
-  --deckle: var(--deckle-1);
-  width: min(920px, 100%);
-  padding: 92px 40px 84px;
-  color: var(--on-blue);
+  width: calc(100% - 2 * var(--hero-inset, 16px));
+  min-height: max(460px, 72svh);
+  margin: 40px var(--hero-inset, 16px) var(--hero-inset, 16px);
+  padding: 72px 24px calc(min(11vw, 150px) + 36px);
+  border-radius: 16px;
   text-align: center;
-  rotate: 0.5deg;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
+    0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
 }
-.end-card::before {
-  background:
-    repeating-linear-gradient(to bottom, transparent 0 35px, rgb(255 255 255 / 0.05) 35px 36px),
-    repeating-linear-gradient(to right, transparent 0 35px, rgb(255 255 255 / 0.05) 35px 36px),
-    var(--paper);
+/* the same soft glow as the hero's headline keeps the words readable over clouds (painted above the sky) */
+.cta::after {
+  content: "";
+  position: absolute;
+  inset: 8% 10% 20%;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.4), transparent);
+  pointer-events: none;
 }
-.end-card h2 {
+[data-theme="dark"] .cta::after {
+  background: radial-gradient(closest-side, rgb(8 14 36 / 0.5), transparent);
+}
+.cta h2 {
   font: 500 clamp(44px, 6.4vw, 88px) / 1.04 var(--serif);
   letter-spacing: -0.02em;
 }
-.end-card h2 em {
+.cta h2 em {
   font-style: italic;
-}
-.end-card :focus-visible {
-  outline-color: var(--on-blue);
 }
 .cta-actions {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+/* ---------------------------------------------------------------- download: the latest release, per platform */
+
+.download {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.download-get {
+  min-height: 52px;
+  padding-inline: 26px;
+  font-size: 15px;
+}
+.download-pick {
+  display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px 14px;
-  margin-top: 36px;
+  gap: 2px 16px;
 }
-.end-card .button {
+.download-pick[hidden] {
+  display: none;
+}
+.download-group,
+[data-choices] {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px 16px;
+}
+.download-group {
+  gap: 2px;
+}
+.download-opt,
+.download-copy {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.download-opt {
+  min-height: 32px;
+  padding: 7px 9px 6px;
+  border-radius: 2px;
   color: var(--ink);
+  font: 400 12.5px/1 var(--mono);
+  letter-spacing: 0.01em;
+  text-decoration: underline transparent;
+  text-underline-offset: 5px;
 }
-.end-card .button::before {
-  background: #fbf1e2;
+.download-opt:hover {
+  text-decoration-color: currentColor;
 }
-.end-card .button:hover::before {
-  background: #fffaf0;
+/* the chosen one is a little paper chip */
+.download-opt[aria-pressed="true"] {
+  background: var(--card-white);
+  box-shadow: 0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8));
+  text-decoration: none;
 }
-.end-card .button.cta-primary::before {
-  background: var(--butter);
+.download-facts {
+  margin: 2px 0 0;
+  padding: 6px 11px 5px;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(var(--shadow-rgb) / 0.3),
+    0.5px 1px 1px rgb(var(--shadow-rgb) / 0.22);
+  color: var(--ink-soft);
+  font: 400 12.5px/1.45 var(--mono);
+  letter-spacing: 0.015em;
+  rotate: -0.6deg;
 }
-.end-card .button {
-  --shadow-rgb: 6 12 34;
-  --shadow-a: 0.5;
+[data-theme="dark"] .download-facts {
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(244 232 207 / 0.22),
+    0.5px 1px 1px rgb(0 0 0 / 0.5);
 }
-[data-theme="dark"] .end-card .button {
-  color: #1f1b16;
+.download-hash {
+  font: inherit;
 }
-[data-theme="dark"] .end-card .button.cta-primary::before {
-  background: #f6e3b4;
+[data-sha] {
+  white-space: nowrap;
 }
-.end-perch {
-  position: absolute;
-  width: 1px;
-  height: 1px;
+.download-copy {
+  min-height: 24px;
+  margin-left: 8px;
+  padding: 0 2px;
+  color: var(--ink);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-.end-perch-a {
-  top: 18%;
-  left: 9%;
+.download-links,
+.also-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0;
+  font: 400 12px/1.6 var(--mono);
 }
-.end-perch-b {
-  bottom: 22%;
-  right: 9%;
+.download-links {
+  gap: 0 6px;
+}
+.download-links a,
+.also-links a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 3px;
+}
+/* github and discord sit quietly under the download, as links rather than buttons */
+.also-links {
+  gap: 4px 22px;
+  font-size: 13px;
+}
+.also-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  text-decoration: none;
+}
+.also-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* ---------------------------------------------------------------- footer: the back of a notebook */
@@ -2900,10 +2998,6 @@ a:hover {
     width: 44px;
     height: 44px;
   }
-  .hero-actions,
-  .cta-actions {
-    gap: 10px;
-  }
   .button {
     min-height: 44px;
     padding-inline: 16px;
@@ -2967,9 +3061,6 @@ a:hover {
   }
   .index-card:nth-child(even) {
     margin-top: 0;
-  }
-  .end-card {
-    padding: 64px 20px 56px;
   }
   .site-footer {
     padding-top: 40px;

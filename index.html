@@ -49,6 +49,7 @@
     <script type="module" src="/src/garden.js"></script>
     <script type="module" src="/src/butterflies.js"></script>
     <script type="module" src="/src/companion.js"></script>
+    <script type="module" src="/src/download.js"></script>
     <title>hibi | a place for your words</title>
   </head>
   <body data-butterflies="0">
@@ -144,17 +145,15 @@
             ></span>
           </h1>
           <div class="hero-actions">
-            <a
-              class="button cta-primary"
-              href="https://github.com/schmayterling/hibi/releases"
-              ><span class="button-icon" data-button-icon="download" aria-hidden="true"></span>download hibi</a
-            ><span class="beta-tag">beta</span>
-            <a class="button" href="https://github.com/schmayterling/hibi"
-              ><span class="button-icon" data-button-icon="star" aria-hidden="true"></span>star on github</a
-            >
-            <a class="button" href="https://discord.gg/v9r4cABUP2"
-              ><span class="button-icon" data-button-icon="chat" aria-hidden="true"></span>join discord</a
-            >
+            <!--hibi:download-->
+            <p class="also-links">
+              <a href="https://github.com/schmayterling/hibi"
+                ><span class="button-icon" data-button-icon="star" aria-hidden="true"></span>star on github</a
+              >
+              <a href="https://discord.gg/v9r4cABUP2"
+                ><span class="button-icon" data-button-icon="chat" aria-hidden="true"></span>join discord</a
+              >
+            </p>
           </div>
         </div>
         <div class="demo-print">
@@ -354,30 +353,6 @@
           </li>
         </ul>
       </section>
-      <section class="cta wrap" aria-labelledby="cta-title" data-scene="liftoff">
-        <div class="end-card paper settle">
-          <span class="tape tape-cream tape-tl" aria-hidden="true"></span>
-          <span class="end-perch end-perch-a" aria-hidden="true" data-perch></span>
-          <span class="end-perch end-perch-b" aria-hidden="true" data-perch></span>
-          <h2 id="cta-title">a place for your <em>words</em>.</h2>
-          <div class="cta-actions">
-            <a
-              class="button cta-primary"
-              href="https://github.com/schmayterling/hibi/releases"
-              ><span class="button-icon" data-button-icon="download" aria-hidden="true"></span>download hibi</a
-            >
-            <a class="button" href="https://github.com/schmayterling/hibi"
-              ><span class="button-icon" data-button-icon="star" aria-hidden="true"></span>star on github</a
-            >
-            <a class="button" href="https://discord.gg/v9r4cABUP2"
-              ><span class="button-icon" data-button-icon="chat" aria-hidden="true"></span>join discord</a
-            >
-          </div>
-          <span class="piece taped not-narrow" aria-hidden="true" style="--x: -34px; --y: calc(100% - 170px); --w: 62px; --r: -18deg; --tape-img: url(/scrapbook/tape-cream.webp); --tape-y: 60%"
-            ><img src="/scrapbook/lavender-1.webp" width="92" height="316" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1"
-          /></span>
-        </div>
-      </section>
       <section class="days wrap" aria-labelledby="days-title">
         <header class="spread-head">
           <h2 class="spread-title" id="days-title">day by day.</h2>
@@ -393,6 +368,42 @@
           <li class="day-note settle"><time datetime="2026-10-28">28.x.2026</time><p>a new icon: a small blue butterfly.</p></li>
         </ol>
         <a class="days-link" href="https://github.com/schmayterling/hibi/releases">changelog <span aria-hidden="true">↗</span></a>
+      </section>
+      <section class="comparison wrap" aria-labelledby="comparison-title">
+          <h2 class="section-title settle" id="comparison-title">how hibi compares.</h2>
+          <div class="ledger paper settle">
+            <table class="comparison-table" aria-labelledby="comparison-title">
+              <thead>
+                <tr><th scope="col">app</th><th scope="col">how hibi differs</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row"><a href="https://www.notion.com/help/export-your-content">notion</a></th>
+                  <td>notion organizes pages and databases in a workspace. <strong>hibi edits documents directly in your local folders.</strong></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://obsidian.md/">obsidian</a></th>
+                  <td>obsidian connects local markdown notes with links and plugins. <strong>hibi focuses on writing across document formats, with open source code.</strong></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://typora.io/">typora</a></th>
+                  <td>typora focuses on markdown editing and live previews. <strong>hibi adds other document formats and writing tools through addons.</strong></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://code.visualstudio.com/">vscode</a></th>
+                  <td>vscode is built around software development. <strong>hibi brings a customizable editor to writing and working with documents.</strong></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://www.microsoft.com/en-us/microsoft-365/word">word</a></th>
+                  <td>word focuses on formatted documents and collaboration. <strong>hibi gives you a customizable workspace for markdown and other text-based formats.</strong></td>
+                </tr>
+                <tr>
+                  <th scope="row"><a href="https://www.overleaf.com/about/features-overview">overleaf</a></th>
+                  <td>overleaf is an online latex editor built for collaboration. <strong>hibi is a local writing app for markdown, typst, and other document formats.</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
       </section>
       <section class="faq wrap" id="faq" aria-labelledby="faq-title">
           <h2 class="section-title settle" id="faq-title">frequently asked questions</h2>
@@ -434,41 +445,20 @@
             </details>
           </div>
       </section>
-      <section class="comparison wrap" aria-labelledby="comparison-title">
-          <h2 class="section-title settle" id="comparison-title">how hibi compares.</h2>
-          <div class="ledger paper settle">
-            <table class="comparison-table" aria-labelledby="comparison-title">
-              <thead>
-                <tr><th scope="col">app</th><th scope="col">how hibi differs</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row"><a href="https://www.notion.com/help/export-your-content">notion</a></th>
-                  <td>notion organizes pages and databases in a workspace. <strong>hibi edits documents directly in your local folders.</strong></td>
-                </tr>
-                <tr>
-                  <th scope="row"><a href="https://obsidian.md/">obsidian</a></th>
-                  <td>obsidian connects local markdown notes with links and plugins. <strong>hibi focuses on writing across document formats, with open source code.</strong></td>
-                </tr>
-                <tr>
-                  <th scope="row"><a href="https://typora.io/">typora</a></th>
-                  <td>typora focuses on markdown editing and live previews. <strong>hibi adds other document formats and writing tools through addons.</strong></td>
-                </tr>
-                <tr>
-                  <th scope="row"><a href="https://code.visualstudio.com/">vscode</a></th>
-                  <td>vscode is built around software development. <strong>hibi brings a customizable editor to writing and working with documents.</strong></td>
-                </tr>
-                <tr>
-                  <th scope="row"><a href="https://www.microsoft.com/en-us/microsoft-365/word">word</a></th>
-                  <td>word focuses on formatted documents and collaboration. <strong>hibi gives you a customizable workspace for markdown and other text-based formats.</strong></td>
-                </tr>
-                <tr>
-                  <th scope="row"><a href="https://www.overleaf.com/about/features-overview">overleaf</a></th>
-                  <td>overleaf is an online latex editor built for collaboration. <strong>hibi is a local writing app for markdown, typst, and other document formats.</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      <section class="cta" aria-labelledby="cta-title" data-scene="liftoff">
+        <div class="sky-panel" data-sky aria-hidden="true"></div>
+        <h2 id="cta-title">a place for your <em>words</em>.</h2>
+        <div class="cta-actions">
+          <!--hibi:download-->
+          <p class="also-links">
+            <a href="https://github.com/schmayterling/hibi"
+              ><span class="button-icon" data-button-icon="star" aria-hidden="true"></span>star on github</a
+            >
+            <a href="https://discord.gg/v9r4cABUP2"
+              ><span class="button-icon" data-button-icon="chat" aria-hidden="true"></span>join discord</a
+            >
+          </p>
+        </div>
       </section>
     </main>
     <footer class="site-footer">

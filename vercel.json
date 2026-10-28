@@ -3,6 +3,9 @@
   "functions": {
     "api/addon-seo.js": {
       "includeFiles": "dist/addons/{index.html,catalog.json}"
+    },
+    "api/release.js": {
+      "includeFiles": "dist/release.json"
     }
   },
   "rewrites": [

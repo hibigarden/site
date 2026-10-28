@@ -30,6 +30,12 @@
   font-display: swap;
 }
 @font-face {
+  font-family: Caveat;
+  src: url("/fonts/caveat-latin-500.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
   font-family: "Geist Mono";
   src: url("../node_modules/geist/dist/fonts/geist-mono/GeistMono-Regular.woff2")
     format("woff2");
@@ -67,6 +73,10 @@
   --shadow-a: 0.2;
   --icon: url("/scrapbook/icon-day.webp");
   --postcard: url("/scrapbook/postcard-day.webp");
+  --pen: #2b4595;
+  --pen-lavender: #7a5dae;
+  --hand: Caveat, "Bradley Hand", "Segoe Print", cursive;
+  --gutter: max(0px, (100vw - 1120px) / 2);
   --serif: "EB Garamond", "Iowan Old Style", Georgia, serif;
   --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   /* the vendored hibi controls (addon search) read these */
@@ -121,6 +131,8 @@
   --shadow-a: 0.5;
   --icon: url("/scrapbook/icon-night.webp");
   --postcard: url("/scrapbook/postcard-night.webp");
+  --pen: #aebaf2;
+  --pen-lavender: #cdb8ef;
   --border: rgb(244 232 207 / 0.18);
   --field-border: rgb(244 232 207 / 0.28);
   --selection: color-mix(in oklch, #aebaf2 22%, var(--card-white));
@@ -295,45 +307,107 @@ a:hover {
     inset 0 0 0 4px rgb(244 232 207 / 0.22),
     0 3px 8px -2px rgb(0 0 0 / 0.5);
 }
-/* decorative scraps in the margins (positions per piece below); never over text */
-.scrap,
-.sprig,
-.specimen {
+/* scraps laid on the page: a picture (pinned or taped), a typed label, a pen doodle or a margin note.
+   each sits at --x/--y inside its section or card, --w wide, turned --r; decorative and never over text
+   (checked by the overlap audit at 1440, 1280, 1024, 768 and 390). */
+.piece,
+.doodle,
+.note {
   position: absolute;
-  z-index: 1;
+  z-index: 4;
+  left: var(--x, 0);
+  top: var(--y, 0);
+  width: var(--w, auto);
+  rotate: var(--r, 0deg);
   pointer-events: none;
   user-select: none;
 }
-.scrap {
-  display: block;
-  height: auto;
-  filter: drop-shadow(0 6px 7px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.1)));
-}
-.sprig img,
-.specimen img {
+.piece > img {
   display: block;
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 5px 6px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.1)));
+  filter: drop-shadow(0 5px 6px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.15)));
 }
-.sprig .tape {
-  --tape-w: 96px;
-  left: 50%;
-  top: 58%;
-  translate: -50% 0;
-  rotate: -14deg;
-}
-.sprig .label,
-.specimen .label {
+.piece.pinned::after {
+  content: "";
   position: absolute;
-  left: 50%;
-  top: calc(100% + 14px);
-  translate: -50% 0;
-  rotate: 2deg;
-}
-.specimen .pin {
   left: calc(50% - 7px);
-  top: 42%;
+  top: var(--pin-y, 38%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #fff 0 9%, var(--pin, #b8322c) 34%, color-mix(in srgb, var(--pin, #b8322c) 62%, #000) 100%);
+  box-shadow: 3px 4px 4px rgb(40 28 14 / 0.32);
+}
+.piece.taped::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: var(--tape-y, 50%);
+  width: max(84px, 80%);
+  aspect-ratio: 320 / 50;
+  translate: -50% -50%;
+  rotate: var(--tape-r, -14deg);
+  background: var(--tape-img, url("/scrapbook/tape-periwinkle.webp")) center / 100% 100% no-repeat;
+  opacity: 0.9;
+}
+.piece.label {
+  width: auto;
+}
+/* margin pieces centre themselves in the page gutter beside the 1120px column (shown from 1400px) */
+.gutter-l {
+  left: calc(var(--gutter) / -2 - var(--w) / 2 + var(--dx, 0px));
+}
+.gutter-r {
+  left: calc(100% + var(--gutter) / 2 - var(--w) / 2 + var(--dx, 0px));
+}
+.doodle {
+  display: block;
+  width: var(--w, 60px);
+  color: var(--pen);
+}
+.doodle svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.doodle path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--pen-w, 2.4);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.doodle[data-doodle="trail"] path {
+  stroke-dasharray: 0.012 0.022;
+}
+.lavender-ink {
+  color: var(--pen-lavender);
+}
+.cream-ink {
+  color: #fbf1e2;
+}
+.note {
+  color: var(--pen);
+  font: 500 28px/0.95 var(--hand);
+  white-space: nowrap;
+}
+.scrap-row {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding-block: 6px;
+  pointer-events: none;
+}
+.scrap-row img {
+  height: auto;
+  filter: drop-shadow(0 4px 5px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.1)));
+}
+.scrap-row .doodle {
+  position: static;
 }
 
 /* ---------------------------------------------------------------- header */
@@ -500,8 +574,37 @@ a:hover {
   font: 500 clamp(46px, 6vw, 88px) / 1.02 var(--serif);
   letter-spacing: -0.022em;
 }
-.title-card h1 span {
+.ink-word {
+  position: relative;
   color: var(--accent);
+  white-space: nowrap;
+}
+.ink-word .doodle {
+  z-index: -1;
+  left: -15%;
+  top: -10%;
+  width: 130%;
+  rotate: -3deg;
+  color: var(--pen-lavender);
+}
+.ink-word .doodle path {
+  stroke-width: 2.6;
+}
+.ink-word .sparkle-a {
+  left: auto;
+  right: -6%;
+  top: -40%;
+  width: 0.34em;
+  color: var(--pen);
+  --delay: 0.5s;
+}
+.ink-word .sparkle-b {
+  left: auto;
+  right: -18%;
+  top: -18%;
+  width: 0.2em;
+  color: var(--pen-lavender);
+  --delay: 0.6s;
 }
 .hero-actions {
   display: flex;
@@ -526,12 +629,6 @@ a:hover {
   left: 57px;
   top: 10px;
   --pin: #203676;
-}
-.hero-specimen {
-  top: 120px;
-  left: calc(50% - 560px);
-  width: 156px;
-  rotate: -12deg;
 }
 .demo-print {
   position: relative;
@@ -560,13 +657,13 @@ a:hover {
 /* tapes hold the print by its white margin and never cross the live editor */
 .demo-print .tape {
   --tape-w: 112px;
-  top: -12px;
+  top: -30px;
 }
 .demo-print .tape-tl {
-  left: -60px;
+  left: -78px;
 }
 .demo-print .tape-tr {
-  right: -60px;
+  right: -78px;
 }
 .demo {
   position: relative;
@@ -645,22 +742,6 @@ a:hover {
 }
 .demo[data-ready="true"] .demo-loader-wordmark::after {
   animation-play-state: paused;
-}
-.hero-sprig-left {
-  left: calc(50% - 590px);
-  top: 430px;
-  width: 75px;
-  rotate: -9deg;
-}
-.hero-sprig-right {
-  left: calc(50% + 482px);
-  top: 520px;
-  width: 132px;
-  rotate: 11deg;
-}
-.hero-sprig-right .label {
-  top: calc(100% + 10px);
-  rotate: -4deg;
 }
 
 /* ---------------------------------------------------------------- beta letter + postcard */
@@ -798,12 +879,6 @@ a:hover {
   color: var(--ink-faint);
   font: 400 12px/1 var(--mono);
 }
-.intro-pen {
-  left: calc(50% - 150px);
-  bottom: -30px;
-  width: 210px;
-  rotate: -22deg;
-}
 
 /* ---------------------------------------------------------------- section titles: torn paper tags */
 
@@ -893,12 +968,6 @@ a:hover {
   background: linear-gradient(transparent 58%, var(--highlight) 58% 92%, transparent 92%);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-}
-.comparison-sprig {
-  right: -110px;
-  top: 150px;
-  width: 112px;
-  rotate: 16deg;
 }
 
 /* ---------------------------------------------------------------- features: printed ui on cards, typed labels */
@@ -1084,9 +1153,9 @@ a:hover {
 }
 .workspace-print {
   top: 26px;
+  bottom: 0;
   left: 6%;
-  width: 104%;
-  height: 290px;
+  width: 97%;
   rotate: -2deg;
 }
 .workspace-print .tape {
@@ -1502,6 +1571,7 @@ a:hover {
   margin-top: 10px;
 }
 .faq-list {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
@@ -1510,6 +1580,7 @@ a:hover {
 .index-card {
   --paper: var(--card-white);
   --deckle: var(--deckle-2);
+  min-height: 132px;
   padding: 0 24px 6px;
 }
 .index-card::before {
@@ -1562,12 +1633,6 @@ a:hover {
   color: var(--ink-soft);
   font-size: 19px;
   line-height: 30px;
-}
-.faq-sprig {
-  left: 40px;
-  top: 190px;
-  width: 128px;
-  rotate: -8deg;
 }
 
 /* ---------------------------------------------------------------- the end card */
@@ -2145,18 +2210,12 @@ a:hover {
 
 /* ---------------------------------------------------------------- responsive */
 
-@media (max-width: 1240px) {
-  .hero-specimen,
-  .hero-sprig-left,
-  .comparison-sprig {
+@media (max-width: 1399px) {
+  .wide {
     display: none;
   }
-  .hero-sprig-right {
-    left: auto;
-    right: -24px;
-    top: 560px;
-    width: 104px;
-  }
+}
+@media (max-width: 1240px) {
   .hero-icon {
     left: auto;
     right: 0;
@@ -2177,7 +2236,7 @@ a:hover {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  .faq-sprig {
+  .not-md {
     display: none;
   }
 }
@@ -2194,9 +2253,6 @@ a:hover {
   .hero-icon .pin {
     left: 38px;
   }
-  .hero-sprig-right {
-    display: none;
-  }
   .beta-notice {
     grid-template-columns: 1fr;
   }
@@ -2212,9 +2268,6 @@ a:hover {
   }
   .statement + .statement {
     margin-top: 0;
-  }
-  .intro-pen {
-    display: none;
   }
   .features {
     grid-template-columns: 1fr;
@@ -2238,6 +2291,12 @@ a:hover {
   }
 }
 @media (max-width: 720px) {
+  .not-narrow {
+    display: none;
+  }
+  .scrap-row.narrow-only {
+    display: flex;
+  }
   .wrap {
     width: calc(100% - 40px);
   }
@@ -2300,6 +2359,10 @@ a:hover {
   .title-card {
     padding: 44px 22px 34px;
   }
+  .title-card .tape {
+    --tape-w: 92px;
+    top: -6px;
+  }
   .hero-actions,
   .cta-actions {
     gap: 10px;
@@ -2314,7 +2377,14 @@ a:hover {
     padding: 10px;
   }
   .demo-print .tape {
-    --tape-w: 104px;
+    --tape-w: 84px;
+    top: -18px;
+  }
+  .demo-print .tape-tl {
+    left: -58px;
+  }
+  .demo-print .tape-tr {
+    right: -58px;
   }
   .letter {
     grid-template-columns: 1fr;
@@ -2378,7 +2448,7 @@ a:hover {
   }
   .writing-role {
     min-height: 0;
-    padding: 40px 24px 24px;
+    padding: 64px 24px 24px;
   }
   .role-ai {
     padding-inline: 48px;
@@ -2442,16 +2512,44 @@ a:hover {
 /* ---------------------------------------------------------------- motion: pieces settle as they arrive */
 
 @media (prefers-reduced-motion: no-preference) {
-  .will-settle {
+  .settle.will-land {
     transition:
       opacity 0.32s var(--ease-out),
       translate 0.75s cubic-bezier(0.2, 1.25, 0.35, 1),
       scale 0.75s cubic-bezier(0.2, 1.25, 0.35, 1);
   }
-  .will-settle:not(.is-landed) {
+  .settle.will-land:not(.is-landed) {
     opacity: 0;
     translate: 0 -16px;
     scale: 1.03;
+  }
+  /* pen doodles draw themselves in, stroke by stroke; margin notes are written left to right */
+  .doodle.will-land path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.75s cubic-bezier(0.45, 0, 0.25, 1)
+      calc(var(--delay, 0.15s) + var(--i, 0) * 0.16s);
+  }
+  .doodle.will-land.is-landed path {
+    stroke-dashoffset: 0;
+  }
+  .doodle[data-doodle="trail"].will-land path {
+    stroke-dasharray: 0.012 0.022;
+    stroke-dashoffset: 0;
+  }
+  .doodle[data-doodle="trail"].will-land {
+    opacity: 0;
+    transition: opacity 0.9s var(--ease-out) 0.3s;
+  }
+  .doodle[data-doodle="trail"].will-land.is-landed {
+    opacity: 1;
+  }
+  .note.will-land {
+    clip-path: inset(-30% 100% -30% -10%);
+    transition: clip-path 0.9s cubic-bezier(0.5, 0, 0.3, 1) var(--delay, 0.2s);
+  }
+  .note.will-land.is-landed {
+    clip-path: inset(-30% -10% -30% -10%);
   }
   .demo iframe {
     transition: opacity var(--motion-pane) var(--ease-out);

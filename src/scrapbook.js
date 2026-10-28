@@ -1,9 +1,10 @@
-// Pieces below the fold settle onto the page as they scroll in, like scraps landing in the film.
-// Anything already on screen, or every piece when motion is reduced, is simply there.
+import { drawDoodles } from "./doodles.js";
+
+drawDoodles();
+
+// Pieces below the fold settle onto the page as they scroll in, like scraps landing in the film, and pen
+// doodles and margin notes draw themselves in (on screen too). With reduced motion everything is simply there.
 if (matchMedia("(prefers-reduced-motion: no-preference)").matches) {
-  const pieces = [...document.querySelectorAll(".settle")].filter(
-    (piece) => piece.getBoundingClientRect().top > innerHeight,
-  );
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
@@ -14,8 +15,9 @@ if (matchMedia("(prefers-reduced-motion: no-preference)").matches) {
     },
     { rootMargin: "0px 0px -6% 0px" },
   );
-  for (const piece of pieces) {
-    piece.classList.add("will-settle");
+  for (const piece of document.querySelectorAll(".settle, .doodle, .note")) {
+    if (piece.matches(".settle") && piece.getBoundingClientRect().top <= innerHeight) continue;
+    piece.classList.add("will-land");
     observer.observe(piece);
   }
 }

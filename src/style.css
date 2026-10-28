@@ -1986,70 +1986,63 @@ a:hover {
   margin-top: 34px;
 }
 
-/* ---------------------------------------------------------------- download: the latest release, per platform */
+/* ---------------------------------------------------------------- download: the button, and the /download page */
 
-.download {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
 .download-get {
   min-height: 52px;
   padding-inline: 26px;
   font-size: 15px;
 }
-.download-pick {
+.download-get svg.button-icon {
+  width: 16px;
+  height: 16px;
+}
+/* github and discord sit quietly under the download, as links rather than buttons */
+.also-links {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2px 16px;
+  gap: 2px 22px;
+  margin: 0;
+  font: 400 13px/1.6 var(--mono);
 }
-.download-pick[hidden] {
-  display: none;
-}
-.download-group,
-[data-choices] {
+.also-links a {
   display: inline-flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2px 16px;
-}
-.download-group {
-  gap: 2px;
-}
-.download-opt,
-.download-copy {
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-.download-opt {
-  min-height: 32px;
-  padding: 7px 9px 6px;
-  border-radius: 2px;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
   color: var(--ink);
-  font: 400 12.5px/1 var(--mono);
-  letter-spacing: 0.01em;
-  text-decoration: underline transparent;
-  text-underline-offset: 5px;
-}
-.download-opt:hover {
-  text-decoration-color: currentColor;
-}
-/* the chosen one is a little paper chip */
-.download-opt[aria-pressed="true"] {
-  background: var(--card-white);
-  box-shadow: 0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8));
   text-decoration: none;
 }
-/* the release's facts and its links share a line where there is room */
-.download-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 8px 18px;
+.also-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.download-page {
+  position: relative;
+  padding-bottom: 96px;
+}
+.download-page .page-intro p {
+  margin-top: 10px;
+  font-size: 19px;
+}
+.download-specimen {
+  --x: min(760px, calc(100% - 140px));
+  --y: 70px;
+  --w: 110px;
+  --r: -10deg;
+}
+.download-pick {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  margin-top: 40px;
+}
+.download-pick [data-pick] {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
 }
 .download-facts {
   margin: 0;
@@ -2070,54 +2063,216 @@ a:hover {
     inset 0 0 0 4px rgb(244 232 207 / 0.22),
     0.5px 1px 1px rgb(0 0 0 / 0.5);
 }
-.download-hash {
-  font: inherit;
-}
 .download-sha {
   white-space: nowrap;
+}
+.download-facts code,
+.download-hash code {
+  font: inherit;
 }
 .download-copy {
   min-height: 24px;
   margin-left: 8px;
   padding: 0 2px;
+  border: 0;
+  background: none;
   color: var(--ink);
   font: inherit;
   text-decoration: underline;
   text-underline-offset: 3px;
+  cursor: pointer;
 }
-.download-links,
-.also-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 0;
-  font: 400 12px/1.6 var(--mono);
+.download-other {
+  color: var(--ink-soft);
+  font: 400 13px/1.5 var(--mono);
 }
-.download-links {
-  gap: 0 6px;
+.download-section {
+  margin-top: 64px;
 }
-.download-links a,
-.also-links a {
-  color: var(--ink);
+.download-ledger {
+  overflow-x: auto;
+}
+.download-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font: 400 14px/1.5 var(--mono);
+}
+.download-table thead th {
+  padding: 0 18px 10px 0;
+  border-bottom: 3px double var(--rule-strong);
+  color: var(--ink-faint);
+  font: 400 12.5px/1.2 var(--mono);
+  letter-spacing: 0.05em;
+}
+.download-table :is(th, td) {
+  padding: 11px 18px 10px 0;
+  vertical-align: baseline;
+}
+.download-table tbody + tbody tr:first-child :is(th, td) {
+  border-top: 1px solid var(--rule-strong);
+}
+.download-table tbody tr + tr td {
+  border-top: 1px solid var(--rule);
+}
+.download-table th[scope="rowgroup"] {
+  width: 110px;
+  font: italic 500 22px/1.2 var(--serif);
+  vertical-align: top;
+}
+.download-table a {
   text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
   text-underline-offset: 3px;
 }
-/* github and discord sit quietly under the download, as links rather than buttons */
-.also-links {
-  gap: 4px 22px;
-  font-size: 13px;
+.download-size {
+  white-space: nowrap;
 }
-.also-links a {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
+.download-hash {
+  color: var(--ink-soft);
+  font-size: 12.5px;
+  word-break: break-all;
+}
+.download-hash .download-copy {
+  margin-left: 10px;
+}
+/* the reader's own build, preselected from the link or the browser */
+.download-table tr.is-yours td {
+  background: linear-gradient(transparent 12%, var(--highlight) 12% 88%, transparent 88%);
+}
+.download-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: 28px;
+  align-items: start;
+}
+.download-columns .ledger,
+.download-notes {
+  margin-top: 0;
+}
+.download-slip h2 {
+  font: 500 30px/1.15 var(--serif);
+}
+.download-slip h3 {
+  margin-top: 20px;
+  font: 400 12.5px/1.2 var(--mono);
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+.download-slip p,
+.download-slip li {
+  max-width: 62ch;
+  margin-top: 8px;
+  color: var(--ink-soft);
+  font-size: 18px;
+  line-height: 1.55;
+}
+.download-slip a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.download-slip pre {
+  margin-top: 10px;
+  padding: 10px 14px;
+  overflow-x: auto;
+  background: rgb(var(--shadow-rgb) / 0.06);
+  font: 400 13px/1.6 var(--mono);
+  white-space: pre;
+}
+.download-meta {
+  font: 400 13px/1.5 var(--mono);
+}
+.release-notes {
+  margin-top: 14px;
+}
+.release-notes summary {
+  width: fit-content;
   min-height: 32px;
-  text-decoration: none;
-}
-.also-links a:hover {
+  font: 400 13px/32px var(--mono);
   text-decoration: underline;
   text-underline-offset: 3px;
+  cursor: pointer;
+}
+.release-notes :is(ul, ol) {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+.release-notes li {
+  margin-top: 2px;
+  font-size: 16px;
+}
+.release-notes code {
+  font: 400 0.9em var(--mono);
+}
+.download-earlier {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font-family: var(--mono);
+}
+.download-pick .download-get {
+  white-space: normal;
+  text-align: left;
+}
+/* narrow screens: each build is a little block (processor, file, size; its sha256 on the next line) */
+@media (max-width: 720px) {
+  .download-ledger {
+    padding-inline: 22px;
+  }
+  .download-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .download-table,
+  .download-table tbody {
+    display: block;
+  }
+  .download-table tr {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 2px 14px;
+    padding: 10px 0;
+  }
+  .download-table :is(th, td) {
+    display: block;
+    padding: 0;
+    border: 0 !important;
+  }
+  .download-table tbody tr + tr,
+  .download-table tbody + tbody tr:first-child {
+    border-top: 1px solid var(--rule);
+  }
+  .download-table th[scope="rowgroup"] {
+    grid-column: 1 / -1;
+    width: auto;
+  }
+  .download-table .download-hash {
+    grid-column: 1 / -1;
+  }
+  .download-table tr.is-yours,
+  .download-table tr.is-yours td {
+    background: var(--highlight);
+  }
+}
+.download-beta {
+  max-width: 68ch;
+  margin-top: 64px;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.55;
+}
+.download-beta h2 {
+  font: 400 12.5px/1.2 var(--mono);
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+.download-beta p {
+  margin-top: 8px;
+}
+.download-beta a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 /* ---------------------------------------------------------------- footer: the back of a notebook */

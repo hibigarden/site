@@ -72,6 +72,7 @@ export default defineConfig({
         demo: "demo/index.html",
         addons: "addons/index.html",
         credits: "credits/index.html",
+        download: "download/index.html",
       },
     },
   },

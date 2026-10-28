@@ -72,8 +72,8 @@
   --shadow-rgb: 64 44 20;
   --shadow-a: 0.2;
   --icon: url("/scrapbook/icon-day.webp");
-  --pen: #2b4595;
-  --pen-lavender: #7a5dae;
+  --pen: #2f3349;
+  --pen-lavender: #6c5f88;
   --hand: Caveat, "Bradley Hand", "Segoe Print", cursive;
   --gutter: max(0px, (100vw - 1120px) / 2);
   --serif: "EB Garamond", "Iowan Old Style", Georgia, serif;
@@ -97,6 +97,9 @@
   --cut-1: polygon(0% 0.05px, 12.5% 0.02px, 25% 0.07px, 37.5% 0px, 50% 0.16px, 62.5% 0.27px, 75% 1.45px, 87.5% 1.42px, calc(100% - 2.57px) 0%, calc(100% - 2.55px) 16.67%, calc(100% - 2.29px) 33.33%, calc(100% - 2.72px) 50%, calc(100% - 2.21px) 66.67%, calc(100% - 2.38px) 83.33%, 100% calc(100% - 0.69px), 87.5% calc(100% - 0.78px), 75% calc(100% - 0.41px), 62.5% calc(100% - 0.78px), 50% calc(100% - 0.58px), 37.5% calc(100% - 0.59px), 25% calc(100% - 0.6px), 12.5% calc(100% - 0.72px), 2.02px 100%, 2.29px 83.33%, 2.49px 66.67%, 2.46px 50%, 1.76px 33.33%, 2.28px 16.67%);
   --cut-2: polygon(0% 0.45px, 12.5% 0.23px, 25% 0.52px, 37.5% 0.57px, 50% 2.29px, 62.5% 2.55px, 75% 2.32px, 87.5% 2.62px, calc(100% - 1.82px) 0%, calc(100% - 1.92px) 16.67%, calc(100% - 1.92px) 33.33%, calc(100% - 1.87px) 50%, calc(100% - 0.83px) 66.67%, calc(100% - 0.59px) 83.33%, 100% calc(100% - 0.1px), 87.5% calc(100% - 0.48px), 75% calc(100% - 0.21px), 62.5% calc(100% - 0.58px), 50% calc(100% - 0.6px), 37.5% calc(100% - 0.35px), 25% calc(100% - 0.22px), 12.5% calc(100% - 0.3px), 3.43px 100%, 3.4px 83.33%, 3.18px 66.67%, 3.1px 50%, 2.97px 33.33%, 2.99px 16.67%);
   --cut-3: polygon(0% 0.68px, 12.5% 0.63px, 25% 0.61px, 37.5% 0.57px, 50% 0.33px, 62.5% 0.2px, 75% 0.48px, 87.5% 0.13px, calc(100% - 2.24px) 0%, calc(100% - 1.99px) 16.67%, calc(100% - 2.5px) 33.33%, calc(100% - 2.54px) 50%, calc(100% - 2.57px) 66.67%, calc(100% - 3.05px) 83.33%, 100% calc(100% - 1.79px), 87.5% calc(100% - 1.85px), 75% calc(100% - 1.47px), 62.5% calc(100% - 1.31px), 50% calc(100% - 0.25px), 37.5% calc(100% - 0.13px), 25% calc(100% - 0.07px), 12.5% calc(100% - 0px), 3.25px 100%, 3.02px 83.33%, 3.08px 66.67%, 2.63px 50%, 2.66px 33.33%, 2.92px 16.67%);
+  --torn-top: polygon(0% 3.48px, 2.5% 0.97px, 5% 0.36px, 7.5% 2.68px, 10% 2.5px, 12.5% 3.83px, 15% 1.23px, 17.5% 1.43px, 20% 2.7px, 22.5% 3.65px, 25% 0.48px, 27.5% 2.12px, 30% 0.63px, 32.5% 2.8px, 35% 0.53px, 37.5% 2.66px, 40% 2.42px, 42.5% 0.93px, 45% 1.18px, 47.5% 3.97px, 50% 2.65px, 52.5% 1.55px, 55% 2.69px, 57.5% 1.6px, 60% 1.12px, 62.5% 3.01px, 65% 1.92px, 67.5% 0.63px, 70% 2.48px, 72.5% 1.85px, 75% 1.75px, 77.5% 1.44px, 80% 0.16px, 82.5% 2.94px, 85% 1.45px, 87.5% 0.24px, 90% 2.86px, 92.5% 2.88px, 95% 3.58px, 97.5% 4.54px, 100% 1.22px, 100% 100%, 0% 100%);
+  --torn-bottom: polygon(0% 0%, 100% 0%, 100% calc(100% - 3.86px), 97.5% calc(100% - 2.43px), 95% calc(100% - 2.58px), 92.5% calc(100% - 4.41px), 90% calc(100% - 2.22px), 87.5% calc(100% - 1.09px), 85% calc(100% - 4.65px), 82.5% calc(100% - 4.76px), 80% calc(100% - 2.99px), 77.5% calc(100% - 1.61px), 75% calc(100% - 1.73px), 72.5% calc(100% - 3.89px), 70% calc(100% - 2.64px), 67.5% calc(100% - 4px), 65% calc(100% - 1.27px), 62.5% calc(100% - 2.43px), 60% calc(100% - 2.53px), 57.5% calc(100% - 2.77px), 55% calc(100% - 1.64px), 52.5% calc(100% - 1.4px), 50% calc(100% - 3.22px), 47.5% calc(100% - 1.99px), 45% calc(100% - 1.52px), 42.5% calc(100% - 0.41px), 40% calc(100% - 3.97px), 37.5% calc(100% - 1.04px), 35% calc(100% - 0.82px), 32.5% calc(100% - 0.26px), 30% calc(100% - 2.17px), 27.5% calc(100% - 2.27px), 25% calc(100% - 3.21px), 22.5% calc(100% - 2.98px), 20% calc(100% - 2.14px), 17.5% calc(100% - 1.4px), 15% calc(100% - 1.63px), 12.5% calc(100% - 2.98px), 10% calc(100% - 0.58px), 7.5% calc(100% - 1.49px), 5% calc(100% - 3.4px), 2.5% calc(100% - 0.74px), 0% calc(100% - 1.07px));
+  --zigzag: polygon(0.00% 7px, 4.17% 0px, 8.33% 7px, 12.50% 0px, 16.67% 7px, 20.83% 0px, 25.00% 7px, 29.17% 0px, 33.33% 7px, 37.50% 0px, 41.67% 7px, 45.83% 0px, 50.00% 7px, 54.17% 0px, 58.33% 7px, 62.50% 0px, 66.67% 7px, 70.83% 0px, 75.00% 7px, 79.17% 0px, 83.33% 7px, 87.50% 0px, 91.67% 7px, 95.83% 0px, 100.00% 7px, 100.00% calc(100% - 7px), 95.83% calc(100% - 0px), 91.67% calc(100% - 7px), 87.50% calc(100% - 0px), 83.33% calc(100% - 7px), 79.17% calc(100% - 0px), 75.00% calc(100% - 7px), 70.83% calc(100% - 0px), 66.67% calc(100% - 7px), 62.50% calc(100% - 0px), 58.33% calc(100% - 7px), 54.17% calc(100% - 0px), 50.00% calc(100% - 7px), 45.83% calc(100% - 0px), 41.67% calc(100% - 7px), 37.50% calc(100% - 0px), 33.33% calc(100% - 7px), 29.17% calc(100% - 0px), 25.00% calc(100% - 7px), 20.83% calc(100% - 0px), 16.67% calc(100% - 7px), 12.50% calc(100% - 0px), 8.33% calc(100% - 7px), 4.17% calc(100% - 0px), 0.00% calc(100% - 7px));
   color: var(--ink);
   background: var(--page) var(--page-tile);
   font-family: var(--serif);
@@ -129,8 +132,8 @@
   --shadow-rgb: 0 0 0;
   --shadow-a: 0.5;
   --icon: url("/scrapbook/icon-night.webp");
-  --pen: #aebaf2;
-  --pen-lavender: #cdb8ef;
+  --pen: #d3d6ea;
+  --pen-lavender: #c2b6da;
   --border: rgb(244 232 207 / 0.18);
   --field-border: rgb(244 232 207 / 0.28);
   --selection: color-mix(in oklch, #aebaf2 22%, var(--card-white));
@@ -144,9 +147,13 @@ html {
 }
 body {
   margin: 0;
-  overflow-x: clip;
   font-size: 20px;
   line-height: 1.55;
+}
+/* scraps may hang off the page edge, but never widen it (body overflow would only reach the viewport) */
+main,
+.site-footer {
+  overflow-x: clip;
 }
 h1,
 h2,
@@ -229,7 +236,7 @@ a:hover {
   width: var(--tape-w, 132px);
   aspect-ratio: 320 / 47;
   background: var(--tape-img) center / 100% 100% no-repeat;
-  opacity: 0.9;
+  opacity: 0.78;
   pointer-events: none;
 }
 .tape-blue {
@@ -269,19 +276,15 @@ a:hover {
 }
 /* a dressmaker's pin from above */
 .pin {
-  --pin: #b8322c;
   position: absolute;
   z-index: 4;
-  width: 15px;
-  height: 15px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 34% 30%,
-    #fff 0 9%,
-    var(--pin) 34%,
-    color-mix(in srgb, var(--pin) 62%, #000) 100%
-  );
-  box-shadow: 3px 4px 4px rgb(40 28 14 / 0.32);
+  background: radial-gradient(circle at 35% 30%, #9a9a9a 0 18%, #161616 62%);
+  box-shadow:
+    0.5px 0.5px 0 rgb(0 0 0 / 0.4),
+    5px 7px 3px rgb(40 28 14 / 0.22);
   pointer-events: none;
 }
 /* a typed specimen label: cream slip, thin double rule, mono type */
@@ -323,18 +326,27 @@ a:hover {
   display: block;
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 5px 6px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.15)));
+  filter: saturate(0.72) contrast(0.92) drop-shadow(1px 2px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8)));
+}
+/* pinned specimens stand off the page on one thin black insect pin, so their shadow falls further */
+.piece.pinned > img {
+  filter: saturate(0.72) contrast(0.92) drop-shadow(5px 8px 5px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)));
+}
+[data-theme="dark"] .piece > img {
+  filter: saturate(0.68) brightness(0.86) drop-shadow(2px 3px 3px rgb(0 0 0 / 0.45));
 }
 .piece.pinned::after {
   content: "";
   position: absolute;
-  left: calc(50% - 7px);
-  top: var(--pin-y, 38%);
-  width: 14px;
-  height: 14px;
+  left: calc(50% - 2.5px);
+  top: var(--pin-y, 40%);
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: radial-gradient(circle at 34% 30%, #fff 0 9%, var(--pin, #b8322c) 34%, color-mix(in srgb, var(--pin, #b8322c) 62%, #000) 100%);
-  box-shadow: 3px 4px 4px rgb(40 28 14 / 0.32);
+  background: radial-gradient(circle at 35% 30%, #9a9a9a 0 18%, #161616 62%);
+  box-shadow:
+    0.5px 0.5px 0 rgb(0 0 0 / 0.4),
+    5px 7px 3px rgb(40 28 14 / 0.22);
 }
 .piece.taped::before {
   content: "";
@@ -354,10 +366,13 @@ a:hover {
 }
 /* margin pieces centre themselves in the page gutter beside the 1120px column (shown from 1400px) */
 .gutter-l {
-  left: calc(var(--gutter) / -2 - var(--w) / 2 + var(--dx, 0px));
+  left: max(calc(var(--gutter) / -2 - var(--w) / 2 + var(--dx, 0px)), calc(28px - var(--gutter)));
 }
 .gutter-r {
-  left: calc(100% + var(--gutter) / 2 - var(--w) / 2 + var(--dx, 0px));
+  left: min(
+    calc(100% + var(--gutter) / 2 - var(--w) / 2 + var(--dx, 0px)),
+    calc(100% + var(--gutter) - var(--w) - 28px)
+  );
 }
 .doodle {
   display: block;
@@ -551,13 +566,15 @@ a:hover {
   color: var(--accent);
   white-space: nowrap;
 }
+/* the owner's own pen circle, drawn over the word (ink lies on top of print) */
 .ink-word .doodle {
-  z-index: -1;
+  z-index: 1;
   left: -15%;
-  top: -10%;
-  width: 130%;
-  rotate: -3deg;
+  top: 2%;
+  width: 131%;
+  rotate: -4deg;
   color: var(--pen-lavender);
+  --delay: 0.4s;
 }
 .ink-word .sparkle-a {
   left: auto;
@@ -582,17 +599,52 @@ a:hover {
   gap: 12px 14px;
   margin-top: 34px;
 }
+/* the app icon, drawn in css: butter ruled paper with a periwinkle margin. its small blue is the
+   companion butterfly (companion.js); until that module runs, the butterfly is painted on the paper. */
 .hero-icon {
+  --ground: #f6e3b4;
+  --icon-rule: rgb(128 86 24 / 0.14);
+  --icon-margin: rgb(110 126 196 / 0.5);
   position: absolute;
   z-index: 4;
   top: 36px;
   left: calc(50% + 384px);
   width: 128px;
   height: 128px;
-  background: var(--icon) center / contain no-repeat;
+  border-radius: 22.4%;
+  background:
+    url("/scrapbook/fly/small-blue.webp") 50% 50% / 56% auto no-repeat,
+    linear-gradient(90deg, transparent 25.9%, var(--icon-margin) 25.9% 26.5%, transparent 26.5%),
+    linear-gradient(var(--ground), var(--ground)) 0 0 / 100% 18.6% no-repeat,
+    repeating-linear-gradient(to bottom, var(--icon-rule) 0 0.5%, transparent 0.5% 8.98%) 0 1.14% / 100% 100%,
+    var(--ground);
+  box-shadow: 0 10px 18px -6px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.4));
   rotate: 9deg;
-  filter: drop-shadow(0 10px 12px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.4)));
   pointer-events: none;
+}
+[data-theme="dark"] .hero-icon {
+  --ground: #2a2317;
+  --icon-rule: rgb(246 227 180 / 0.1);
+  --icon-margin: rgb(150 166 232 / 0.55);
+}
+[data-companion-ready] .hero-icon {
+  background-image:
+    none,
+    linear-gradient(90deg, transparent 25.9%, var(--icon-margin) 25.9% 26.5%, transparent 26.5%),
+    linear-gradient(var(--ground), var(--ground)),
+    repeating-linear-gradient(to bottom, var(--icon-rule) 0 0.5%, transparent 0.5% 8.98%);
+}
+/* where the butterfly sat, a faint pressed outline stays on the paper */
+.hero-icon::after {
+  content: "";
+  position: absolute;
+  inset: 22%;
+  background: url("/scrapbook/fly/small-blue-shadow.webp") center / contain no-repeat;
+  rotate: 10deg;
+  opacity: 0;
+}
+[data-companion-away] .hero-icon::after {
+  opacity: 0.12;
 }
 .hero-icon .pin {
   left: 57px;
@@ -728,6 +780,1130 @@ a:hover {
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
   text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+
+/* ---------------------------------------------------------------- the story: each chapter is a composed spread */
+
+.spread {
+  position: relative;
+  padding-block: 128px 32px;
+}
+.spread-head {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+}
+/* chapter numbers are typed on a crooked slip, specimen style */
+.chapter-label {
+  display: inline-block;
+  margin: 0 0 20px;
+  padding: 6px 11px 5px;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(var(--shadow-rgb) / 0.3),
+    0.5px 1px 1px rgb(var(--shadow-rgb) / 0.22);
+  color: var(--ink-soft);
+  font: 400 12.5px/1.3 var(--mono);
+  letter-spacing: 0.02em;
+  rotate: -1.2deg;
+}
+[data-theme="dark"] .chapter-label {
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(244 232 207 / 0.22),
+    0.5px 1px 1px rgb(0 0 0 / 0.5);
+}
+.spread-title {
+  font: 500 clamp(50px, 7.2vw, 106px) / 0.97 var(--serif);
+  letter-spacing: -0.028em;
+}
+.spread-line {
+  max-width: 44ch;
+  margin-top: 20px;
+  color: var(--ink-soft);
+  font-size: clamp(21px, 1.75vw, 25px);
+  line-height: 1.42;
+}
+.spread-line + .spread-line {
+  margin-top: 4px;
+}
+.turn-line {
+  max-width: 22ch;
+  margin: 110px auto 32px;
+  text-align: center;
+  text-wrap: balance;
+  font: italic 500 clamp(28px, 3.2vw, 42px) / 1.15 var(--serif);
+  letter-spacing: -0.015em;
+}
+
+/* beats: each short line lives on its own object, scattered across the spread */
+.beats {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+  gap: 34px 26px;
+  margin-top: 56px;
+}
+.beat {
+  position: relative;
+  isolation: isolate;
+  margin: 0;
+  color: var(--ink);
+}
+.beat::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+}
+.beat::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -2;
+  box-shadow:
+    1px 2px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.9)),
+    3px 8px 14px -6px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+/* a note at 2 am: torn from a butter notepad (torn along the top only), in pen */
+.obj-note {
+  grid-column: 1 / 5;
+  padding: 28px 30px 32px;
+  color: var(--pen);
+  font: 500 32px/1.02 var(--hand);
+  rotate: -3deg;
+}
+.obj-note::before {
+  background: var(--butter);
+  clip-path: var(--torn-top);
+}
+/* a till receipt, zigzag tear at both ends, the line written on it in pen */
+.obj-receipt {
+  grid-column: 6 / 9;
+  grid-row: 1 / span 2;
+  justify-self: center;
+  width: min(100%, 260px);
+  padding: 100px 22px 64px;
+  color: var(--pen);
+  font: 500 30px/1.05 var(--hand);
+  text-align: center;
+  rotate: 2.5deg;
+}
+.obj-receipt::before {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgb(var(--shadow-rgb) / 0.13) 9px 12px) 22px 26px / calc(100% - 44px) 54px no-repeat,
+    linear-gradient(rgb(var(--shadow-rgb) / 0.2), rgb(var(--shadow-rgb) / 0.2)) 22px 90px / calc(100% - 44px) 1px no-repeat,
+    #fffefb;
+  clip-path: var(--zigzag);
+}
+[data-theme="dark"] .obj-receipt::before {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgb(244 232 207 / 0.12) 9px 12px) 22px 26px / calc(100% - 44px) 54px no-repeat,
+    linear-gradient(rgb(244 232 207 / 0.18), rgb(244 232 207 / 0.18)) 22px 90px / calc(100% - 44px) 1px no-repeat,
+    #322a1e;
+}
+/* half an essay: a cut page with its first line set, the rest still grey */
+.obj-page {
+  grid-column: 9 / 13;
+  padding: 34px 30px 96px;
+  translate: 0 -24px;
+  rotate: 1.6deg;
+}
+.obj-page::before {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 18px, rgb(var(--shadow-rgb) / 0.12) 18px 22px) 30px 86px / calc(100% - 60px) 70px no-repeat,
+    var(--card-white);
+}
+.obj-page span {
+  display: block;
+  font-size: 24px;
+  font-style: italic;
+  line-height: 1.25;
+}
+/* the outline: an index card, typed on its red header line */
+.obj-card {
+  grid-column: 1 / 6;
+  padding: 22px 26px 84px;
+  translate: 24px -6px;
+  font: 400 16px/1.4 var(--mono);
+}
+.obj-card::before {
+  background:
+    linear-gradient(to bottom, transparent 56px, var(--margin-line) 56px 58px, transparent 58px),
+    repeating-linear-gradient(to bottom, transparent 0 25px, var(--rule) 25px 26px) 0 58px / 100% 100% no-repeat,
+    var(--card-white);
+}
+/* a paper somewhere else: a printed latex page, title centred, two grey columns */
+.obj-latex {
+  grid-column: 8 / 12;
+  padding: 30px 30px 124px;
+  text-align: center;
+  rotate: -1.4deg;
+}
+.obj-latex::before {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgb(var(--shadow-rgb) / 0.13) 9px 11px) 30px 98px / calc(50% - 38px) 76px no-repeat,
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgb(var(--shadow-rgb) / 0.13) 9px 11px) calc(50% + 8px) 98px / calc(50% - 38px) 76px no-repeat,
+    #fffefb;
+}
+[data-theme="dark"] .obj-latex::before {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgb(244 232 207 / 0.12) 9px 11px) 30px 98px / calc(50% - 38px) 76px no-repeat,
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgb(244 232 207 / 0.12) 9px 11px) calc(50% + 8px) 98px / calc(50% - 38px) 76px no-repeat,
+    #322a1e;
+}
+.obj-latex span {
+  display: block;
+  font-size: 27px;
+  letter-spacing: 0.03em;
+  line-height: 1.25;
+}
+.obj-latex::after {
+  content: "";
+}
+/* the prompt in a chat tab you already closed: a cut-out of a browser window, its tab crossed out */
+.obj-tab {
+  grid-column: 2 / 11;
+  padding: 60px 28px 26px;
+  font: 400 18px/1.45 var(--font-ui);
+  rotate: -0.8deg;
+}
+.obj-tab::before {
+  background:
+    linear-gradient(#fff, #fff) 14px 12px / 190px 30px no-repeat,
+    linear-gradient(oklch(0.93 0 0), oklch(0.93 0 0)) 0 0 / 100% 44px no-repeat,
+    #fff;
+  border-radius: 6px;
+}
+[data-theme="dark"] .obj-tab::before {
+  background:
+    linear-gradient(oklch(0.25 0 0), oklch(0.25 0 0)) 14px 12px / 190px 30px no-repeat,
+    linear-gradient(oklch(0.18 0 0), oklch(0.18 0 0)) 0 0 / 100% 44px no-repeat,
+    oklch(0.21 0 0);
+}
+.obj-tab {
+  color: oklch(0.24 0.008 200);
+}
+[data-theme="dark"] .obj-tab {
+  color: oklch(0.93 0.005 200);
+}
+.obj-tab span::before {
+  content: "chat  ×";
+  position: absolute;
+  top: 18px;
+  left: 28px;
+  color: oklch(0.49 0.012 200);
+  font: 400 13px/1 var(--font-ui);
+  text-decoration: line-through;
+  white-space: pre;
+}
+
+/* chapter 2: everything gathers into one notebook */
+.ch-one {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 28px;
+  align-items: center;
+  padding-top: 150px;
+}
+.ch-one .spread-head {
+  grid-column: 1 / 6;
+  grid-row: 1;
+}
+.ch-one .spread-title {
+  font-size: clamp(48px, 5.6vw, 84px);
+}
+.gather-stage {
+  position: relative;
+  grid-column: 6 / 13;
+  grid-row: 1;
+  height: 470px;
+}
+.notebook {
+  top: 46px;
+  left: 4%;
+  width: 92%;
+  height: 360px;
+  rotate: 1deg;
+}
+.notebook .editor-preview {
+  font-size: 14px;
+}
+.notebook .preview-titlebar {
+  gap: 0.7em;
+}
+.nb-dot {
+  width: 0.7em;
+  height: 0.7em;
+  border-radius: 50%;
+  background: var(--border);
+}
+.nb-row {
+  display: block;
+  min-height: 0;
+  padding: 0.45em 0.8em;
+  color: var(--ink);
+}
+.nb-doc {
+  display: grid;
+  gap: 0.9em;
+  padding: 1.6em 1.8em;
+}
+.nb-doc strong {
+  font-size: 2em;
+  font-weight: 600;
+}
+.nb-doc i {
+  height: 0.5em;
+  border-radius: 2px;
+  background: var(--border);
+}
+.nb-doc i.short {
+  width: 60%;
+}
+.notebook .tape {
+  --tape-w: 104px;
+  top: -12px;
+  left: 18%;
+  rotate: -5deg;
+}
+/* small stand-ins for the six scraps; story.js flies them into the sidebar */
+.mini {
+  position: absolute;
+  z-index: 3;
+  width: 58px;
+  height: 42px;
+  background: var(--card-white);
+  box-shadow: 1px 2px 3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.2));
+  pointer-events: none;
+}
+.mini-note {
+  top: 0;
+  left: 2%;
+  background: var(--butter);
+  rotate: -8deg;
+}
+.mini-receipt {
+  top: 6px;
+  left: 36%;
+  width: 34px;
+  height: 58px;
+  rotate: 6deg;
+}
+.mini-page {
+  top: -4px;
+  right: 6%;
+  width: 46px;
+  height: 60px;
+  rotate: 4deg;
+}
+.mini-card {
+  bottom: 6px;
+  left: 0;
+  rotate: 5deg;
+  background:
+    linear-gradient(to bottom, transparent 10px, var(--margin-line) 10px 11px, transparent 11px),
+    var(--card-white);
+}
+.mini-latex {
+  bottom: 0;
+  left: 44%;
+  width: 46px;
+  height: 60px;
+  rotate: -5deg;
+}
+.mini-tab {
+  bottom: 10px;
+  right: 2%;
+  width: 70px;
+  height: 46px;
+  rotate: -3deg;
+  background:
+    linear-gradient(oklch(0.93 0 0), oklch(0.93 0 0)) 0 0 / 100% 10px no-repeat,
+    #fff;
+}
+
+/* chapter 3: the draft, with the features pressed in like specimens */
+.ch-draft {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 28px;
+}
+.ch-draft .spread-head {
+  grid-column: 1 / 9;
+}
+.ch-draft .spread-line:first-of-type {
+  margin-top: 24px;
+}
+.chapter-plate {
+  --x: 76%;
+  --y: 120px;
+}
+.ch-draft .features {
+  grid-column: 1 / -1;
+  gap: 64px 40px;
+  margin-top: 80px;
+  padding-block: 0;
+}
+.ch-draft .feature-card {
+  padding: 0;
+  rotate: none;
+}
+.ch-draft .feature-files {
+  grid-column: 1 / 8;
+}
+.ch-draft .feature-formats {
+  grid-column: 8 / 13;
+  margin-top: 70px;
+}
+.ch-draft .feature-customize {
+  grid-column: 1 / 6;
+}
+.ch-draft .feature-addons {
+  grid-column: 6 / 13;
+  margin-top: 40px;
+}
+.ch-draft .feature-copy {
+  padding: 0 4px;
+}
+.ch-draft .grows-line {
+  grid-column: 1 / -1;
+}
+.ch-draft .role-writers {
+  grid-column: 6 / 12;
+  max-width: 540px;
+  justify-self: end;
+}
+
+/* chapter 4: the quiet part, a manuscript page with pencil edits in the margin */
+.ch-quiet {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 28px;
+}
+.ch-quiet .spread-head {
+  grid-column: 7 / 13;
+  grid-row: 1;
+  padding: 20px 0 0 24px;
+}
+.manuscript {
+  grid-column: 1 / 8;
+  grid-row: 1 / span 2;
+  position: relative;
+  isolation: isolate;
+  min-height: 0;
+  margin-top: 30px;
+  padding: 52px 230px 44px 58px;
+  rotate: -0.6deg;
+}
+.manuscript::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, transparent 36px, var(--margin-line) 36px 37px, transparent 37px),
+    var(--card-white);
+  clip-path: var(--torn-bottom);
+}
+.manuscript::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -2;
+  box-shadow:
+    1px 2px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.9)),
+    3px 8px 14px -6px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.ms-body {
+  align-self: stretch;
+  display: grid;
+  gap: 15px;
+  margin-bottom: 34px;
+}
+.ms-body i {
+  position: relative;
+  height: 7px;
+  border-radius: 2px;
+  background: rgb(var(--shadow-rgb) / 0.13);
+}
+[data-theme="dark"] .ms-body i {
+  background: rgb(244 232 207 / 0.12);
+}
+.ms-body i.short {
+  width: 55%;
+}
+.ms-body i.struck::after {
+  content: "";
+  position: absolute;
+  left: -4px;
+  right: 10%;
+  top: 2px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--pen);
+  rotate: -0.6deg;
+}
+.ms-mark {
+  position: absolute;
+  right: 22px;
+  width: 190px;
+  color: var(--pen);
+  font: 500 30px/1.02 var(--hand);
+  rotate: -3deg;
+}
+.ms-cut {
+  top: 60px;
+}
+.ms-move {
+  top: 132px;
+}
+.ms-read {
+  top: 224px;
+}
+.ms-title {
+  font: 500 clamp(30px, 2.8vw, 38px) / 1.1 var(--serif);
+}
+.ms-copy {
+  max-width: 40ch;
+  margin-block: 12px 10px;
+  color: var(--ink-soft);
+  font-size: 20px;
+  line-height: 1.55;
+}
+.manuscript > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font: 400 14px/1 var(--mono);
+}
+.manuscript .role-object {
+  top: auto;
+  bottom: -34px;
+  left: 64px;
+  width: 200px;
+  rotate: -8deg;
+}
+.ch-quiet .turn-line {
+  grid-column: 8 / 13;
+  grid-row: 2;
+  align-self: end;
+  margin: 60px 0 0;
+  text-align: left;
+}
+
+/* chapter 5: the day it's ready, centred, the emotional peak */
+.ch-ready .spread-head {
+  max-width: none;
+  margin-inline: auto;
+  text-align: center;
+}
+.ch-ready .spread-head .turn-line {
+  margin: 30px auto 0;
+}
+.ch-ready .beats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 44px;
+  margin-top: 84px;
+}
+/* export it: hibi's export button, printed */
+.obj-chip {
+  justify-self: center;
+  padding: 24px 30px;
+  font: 500 19px/1.2 var(--font-ui);
+  color: oklch(0.24 0.008 200);
+  rotate: -3deg;
+}
+.obj-chip::before {
+  background: #fff;
+  clip-path: var(--cut-3);
+}
+.obj-chip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border: 1px solid oklch(0.9 0 0);
+  border-radius: 6px;
+  background: oklch(0.97 0 0);
+}
+[data-theme="dark"] .obj-chip {
+  color: oklch(0.93 0.005 200);
+}
+[data-theme="dark"] .obj-chip::before {
+  background: oklch(0.21 0 0);
+}
+[data-theme="dark"] .obj-chip span {
+  border-color: oklch(0.33 0 0);
+  background: oklch(0.25 0 0);
+}
+/* publish it: a little published page */
+.obj-site {
+  padding: 46px 28px 64px;
+  font: 500 26px/1.1 var(--serif);
+  text-align: center;
+  rotate: 1.6deg;
+}
+.obj-site::before {
+  background:
+    radial-gradient(circle, oklch(0.8 0 0) 0 3px, transparent 3.5px) 14px 12px / 12px 12px repeat-x,
+    linear-gradient(oklch(0.95 0 0), oklch(0.95 0 0)) 0 0 / 100% 26px no-repeat,
+    repeating-linear-gradient(to bottom, transparent 0 10px, rgb(var(--shadow-rgb) / 0.12) 10px 13px) 30px calc(100% - 52px) / calc(100% - 60px) 38px no-repeat,
+    #fffefb;
+  clip-path: var(--cut-2);
+}
+[data-theme="dark"] .obj-site::before {
+  background:
+    radial-gradient(circle, oklch(0.4 0 0) 0 3px, transparent 3.5px) 14px 12px / 12px 12px repeat-x,
+    linear-gradient(oklch(0.18 0 0), oklch(0.18 0 0)) 0 0 / 100% 26px no-repeat,
+    repeating-linear-gradient(to bottom, transparent 0 10px, rgb(244 232 207 / 0.12) 10px 13px) 30px calc(100% - 52px) / calc(100% - 60px) 38px no-repeat,
+    #322a1e;
+}
+/* send it: a kraft envelope addressed in pen */
+.obj-envelope {
+  padding: 70px 30px 36px;
+  color: var(--pen);
+  font: 500 27px/1.08 var(--hand);
+  rotate: -2deg;
+}
+.obj-envelope::before {
+  background:
+    linear-gradient(160deg, transparent 49.6%, rgb(var(--shadow-rgb) / 0.18) 50%, transparent 50.6%) 0 0 / 50% 64px no-repeat,
+    linear-gradient(20deg, transparent 49.6%, rgb(var(--shadow-rgb) / 0.18) 50%, transparent 50.6%) 100% 0 / 50% 64px no-repeat,
+    #e3cfa6;
+}
+[data-theme="dark"] .obj-envelope::before {
+  background:
+    linear-gradient(160deg, transparent 49.6%, rgb(0 0 0 / 0.4) 50%, transparent 50.6%) 0 0 / 50% 64px no-repeat,
+    linear-gradient(20deg, transparent 49.6%, rgb(0 0 0 / 0.4) 50%, transparent 50.6%) 100% 0 / 50% 64px no-repeat,
+    #4a3b25;
+}
+.roles-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 56px;
+  margin-top: 110px;
+}
+
+/* chapter 6: tending the garden */
+.ch-garden {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 28px;
+  align-items: center;
+  padding-bottom: 96px;
+}
+.ch-garden .spread-head {
+  grid-column: 1 / 8;
+}
+/* free and open source, on a kraft seed packet */
+.ch-garden .seed-packet {
+  --paper: #c9a978;
+  grid-column: 8 / 12;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  padding: 150px 28px 24px;
+  rotate: 2deg;
+}
+.seed-packet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    url("/scrapbook/lavender-heads.webp") 50% 22px / 120px auto no-repeat,
+    linear-gradient(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.08)) 0 0 / 100% 14px no-repeat,
+    var(--paper);
+  clip-path: var(--cut-1);
+}
+[data-theme="dark"] .seed-packet {
+  --paper: #5a4630;
+}
+.seed-packet::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -2;
+  box-shadow: 1px 2px 3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.1)), 3px 9px 16px -7px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.seed-packet h3 {
+  rotate: -1deg;
+}
+.seed-packet a {
+  color: #1f1b16;
+}
+[data-theme="dark"] .seed-packet a {
+  color: var(--ink);
+}
+
+/* the beta tag beside the download button */
+.beta-tag {
+  align-self: center;
+  margin-left: -6px;
+  padding: 4px 8px 3px;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 2px var(--card-white),
+    inset 0 0 0 3px rgb(var(--shadow-rgb) / 0.34);
+  color: var(--ink-soft);
+  font: 400 11.5px/1.2 var(--mono);
+  letter-spacing: 0.04em;
+  rotate: -4deg;
+}
+
+/* notes in the back: the comparison and the faq */
+.back-notes {
+  position: relative;
+  padding-block: 40px 40px;
+}
+.back-label {
+  margin-bottom: 8px;
+}
+.back-notes .comparison {
+  padding-block: 20px 40px;
+}
+.index-card-wide {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+  .ch-one,
+  .ch-draft,
+  .ch-quiet,
+  .ch-garden {
+    grid-template-columns: 1fr;
+  }
+  .ch-one .spread-head,
+  .gather-stage,
+  .ch-draft .spread-head,
+  .ch-draft .features,
+  .ch-draft .grows-line,
+  .ch-draft .role-writers,
+  .ch-quiet .spread-head,
+  .manuscript,
+  .ch-quiet .turn-line,
+  .ch-garden .spread-head,
+  .seed-packet {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .gather-stage {
+    height: 420px;
+    margin-top: 36px;
+  }
+  .chapter-plate {
+    display: none;
+  }
+  .ch-draft .features > * {
+    grid-column: 1;
+    margin-top: 0;
+  }
+  .ch-quiet .turn-line {
+    margin: 64px auto 0;
+    text-align: center;
+  }
+  .manuscript {
+    padding: 44px 24px 120px 50px;
+  }
+  .ms-mark {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: auto;
+    margin: 0 0 20px auto;
+    text-align: right;
+  }
+  .seed-packet {
+    justify-self: start;
+    width: min(300px, 100%);
+    margin-top: 40px;
+  }
+  .roles-pair {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+  .ch-ready .beats {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 720px) {
+  .spread {
+    padding-top: 96px;
+  }
+  .beats {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-top: 40px;
+  }
+  .beats > .beat {
+    grid-column: 1;
+    grid-row: auto;
+    width: fit-content;
+    max-width: 88%;
+    translate: none;
+  }
+  .beats > .beat:nth-child(even) {
+    justify-self: end;
+  }
+  .obj-receipt {
+    justify-self: end;
+    width: 220px;
+  }
+  .turn-line {
+    margin-block: 80px 20px;
+  }
+  .gather-stage {
+    height: 360px;
+  }
+  .notebook {
+    height: 290px;
+  }
+  .notebook .editor-preview {
+    font-size: 11px;
+  }
+  .manuscript .role-object {
+    width: 150px;
+  }
+}
+
+/* ---------------------------------------------------------------- story, part two: labels, pillows, the turn, keeping */
+
+/* product facts sit on typed specimen labels (they type themselves in, with a caret, as they land) */
+.specimen-label {
+  display: block;
+  width: fit-content;
+  max-width: min(100%, 52ch);
+  margin: 26px 0 0;
+  padding: 8px 13px 7px;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(var(--shadow-rgb) / 0.3),
+    0.5px 1px 1px rgb(var(--shadow-rgb) / 0.22);
+  color: var(--ink-soft);
+  font: 400 13.5px/1.45 var(--mono);
+  letter-spacing: 0.015em;
+  rotate: -0.8deg;
+}
+.specimen-label + .specimen-label {
+  margin-top: 10px;
+  rotate: 0.7deg;
+}
+[data-theme="dark"] .specimen-label {
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(244 232 207 / 0.22),
+    0.5px 1px 1px rgb(0 0 0 / 0.5);
+}
+.keep-labels {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 14px;
+  margin-top: 34px;
+}
+.keep-labels .specimen-label {
+  margin: 0;
+  font-size: 12.5px;
+}
+.keep-labels strong {
+  font-weight: 400;
+}
+.keep-labels a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.end-card .specimen-label {
+  margin: 18px auto 0;
+  background: #fbf1e2;
+  box-shadow: inset 0 0 0 3px #fbf1e2, inset 0 0 0 4px rgb(32 54 118 / 0.4);
+  color: #2b2620;
+}
+.kicker {
+  margin-bottom: 6px;
+  color: var(--ink-soft);
+  font-size: 22px;
+  font-style: italic;
+}
+.peak-line {
+  max-width: 34ch;
+  color: var(--ink);
+  font-size: clamp(23px, 2vw, 28px);
+}
+
+/* pillows: a breath between chapters, no words, just the page and the light */
+.pillow {
+  position: relative;
+  height: clamp(220px, 34vh, 360px);
+}
+
+/* no. 1: the receipt, the note, and a ticket stub with a song on it */
+.ch-scrap .beats {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+.ch-scrap .obj-note {
+  grid-column: 1 / 5;
+}
+.ch-scrap .obj-receipt {
+  grid-column: 5 / 8;
+  grid-row: 1;
+}
+.obj-ticket {
+  grid-column: 8 / 12;
+  padding: 26px 30px 30px 44px;
+  color: var(--pen);
+  font: 500 29px/1.05 var(--hand);
+  translate: 0 40px;
+  rotate: 2.4deg;
+}
+.obj-ticket::before {
+  background:
+    radial-gradient(circle at 0 50%, var(--page) 0 4px, transparent 4.5px) 22px 0 / 10px 14px repeat-y,
+    linear-gradient(90deg, transparent 21px, rgb(var(--shadow-rgb) / 0.22) 21px 22px, transparent 22px),
+    #f4dfc8;
+  clip-path: var(--cut-2);
+}
+[data-theme="dark"] .obj-ticket::before {
+  background:
+    radial-gradient(circle at 0 50%, var(--page) 0 4px, transparent 4.5px) 22px 0 / 10px 14px repeat-y,
+    linear-gradient(90deg, transparent 21px, rgb(244 232 207 / 0.2) 21px 22px, transparent 22px),
+    #3c2c22;
+}
+.ch-scrap > .specimen-label {
+  margin-top: 46px;
+}
+
+/* no. 2: the pile-up, then one place */
+.ch-one {
+  row-gap: 30px;
+}
+.ch-one .pile {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin-top: 0;
+}
+.obj-pile {
+  grid-column: 1 / 5;
+  padding: 22px 26px 26px;
+  color: var(--pen);
+  font: 500 30px/1.02 var(--hand);
+  rotate: -2.5deg;
+}
+.obj-pile::before {
+  background: var(--card-sage);
+  clip-path: var(--torn-bottom);
+}
+.pile .obj-page {
+  grid-column: 5 / 9;
+  translate: 0 22px;
+}
+.pile .obj-card {
+  grid-column: 9 / 13;
+  translate: 0 -6px;
+}
+.pile .obj-tab {
+  grid-column: 2 / 10;
+}
+@media (min-width: 901px) {
+  .ch-one .spread-head,
+  .ch-one .gather-stage {
+    grid-row: 2;
+  }
+}
+.mini-ticket {
+  top: 10px;
+  left: 66%;
+  width: 52px;
+  height: 30px;
+  background: #f4dfc8;
+  rotate: 10deg;
+}
+.mini-ticket ~ .mini-page {
+  right: 1%;
+}
+
+/* no. 3: the specimen drawer, headed by the owner's line */
+.drawer-title {
+  grid-column: 1 / -1;
+  width: fit-content;
+  padding: 10px 18px 11px;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(var(--shadow-rgb) / 0.3),
+    0.5px 1px 1px rgb(var(--shadow-rgb) / 0.22);
+  font: 500 clamp(24px, 2.2vw, 30px) / 1.2 var(--serif);
+  rotate: -1deg;
+}
+[data-theme="dark"] .drawer-title {
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(244 232 207 / 0.22),
+    0.5px 1px 1px rgb(0 0 0 / 0.5);
+}
+
+/* no. 4: the quiet part; the chapter thins out, more paper than pieces */
+.ch-quiet .quiet-label {
+  grid-column: 8 / 13;
+  margin-top: 30px;
+}
+@media (min-width: 901px) {
+  .manuscript {
+    grid-column: 1 / 7;
+    grid-row: 1 / span 4;
+    min-height: 430px;
+  }
+}
+
+/* no. 5 label */
+.ch-ready .ready-label {
+  margin: 56px auto 0;
+}
+.companion-perch {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 1px;
+  height: 1px;
+}
+
+/* no. 6: the turn, at dusk: an old notebook falls open on the receipt and one pressed small blue */
+.ch-turn {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 28px;
+  align-items: center;
+}
+.ch-turn .spread-head {
+  grid-column: 7 / 13;
+  grid-row: 1;
+}
+.keepsake {
+  position: relative;
+  grid-column: 1 / 7;
+  grid-row: 1;
+  height: 420px;
+}
+.keepsake-book {
+  position: absolute;
+  left: 0;
+  top: 40px;
+  width: 100%;
+  max-width: 540px;
+  height: auto;
+  rotate: -4deg;
+  filter: drop-shadow(4px 10px 12px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.2)));
+}
+.keepsake-receipt {
+  position: absolute;
+  left: 10%;
+  top: 6px;
+  width: 110px;
+  height: 150px;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgb(var(--shadow-rgb) / 0.13) 9px 12px) 12px 16px / 86px 40px no-repeat,
+    #f8f1e0;
+  clip-path: var(--zigzag);
+  rotate: -12deg;
+  filter: sepia(0.25);
+}
+[data-theme="dark"] .keepsake-receipt {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 9px, rgb(244 232 207 / 0.12) 9px 12px) 12px 16px / 86px 40px no-repeat,
+    #3a3022;
+}
+.keepsake-butterfly {
+  position: absolute;
+  left: 52%;
+  top: 150px;
+  width: 92px;
+  height: auto;
+  rotate: 14deg;
+  filter: drop-shadow(2px 3px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.1)));
+}
+
+
+/* notes in the back: who it's for */
+.audiences {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px;
+  padding-block: 40px 60px;
+}
+.audiences .writing-role {
+  margin: 0;
+  rotate: none;
+}
+
+/* lavender is held down the way pressed plants are: thin cream paper strips across the stem */
+.piece.strapped::before,
+.piece.strapped::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 38%;
+  min-width: 26px;
+  height: 7px;
+  background: #f6efdf;
+  box-shadow: 0 0.5px 1px rgb(var(--shadow-rgb) / 0.3);
+  translate: -50% 0;
+}
+.piece.strapped::before {
+  top: var(--strap-a, 58%);
+  rotate: -8deg;
+}
+.piece.strapped::after {
+  top: var(--strap-b, 78%);
+  rotate: 6deg;
+}
+[data-theme="dark"] .piece.strapped::before,
+[data-theme="dark"] .piece.strapped::after {
+  background: #d9ccb0;
+}
+
+@media (max-width: 900px) {
+  .ch-turn {
+    grid-template-columns: 1fr;
+  }
+  .ch-turn .spread-head,
+  .keepsake,
+  .ch-quiet .quiet-label {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .keepsake {
+    height: 330px;
+  }
+  .audiences {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 720px) {
+  .pillow {
+    height: 140px;
+  }
+  .ch-scrap .beats > .beat,
+  .pile > .beat {
+    translate: none;
+  }
+  .keepsake {
+    height: 260px;
+  }
+  .keepsake-butterfly {
+    top: 100px;
+    width: 70px;
+  }
 }
 
 /* ---------------------------------------------------------------- section titles: torn paper tags */
@@ -1881,12 +3057,10 @@ a:hover {
   aspect-ratio: 1;
   border-radius: 50%;
   rotate: none;
-  background: radial-gradient(circle at 34% 30%, #fff 0 9%, #b8322c 34%, #74201b 100%);
-  box-shadow: 3px 4px 4px rgb(40 28 14 / 0.32);
+  width: 6px;
+  background: radial-gradient(circle at 35% 30%, #9a9a9a 0 18%, #161616 62%);
+  box-shadow: 0.5px 0.5px 0 rgb(0 0 0 / 0.4), 5px 7px 3px rgb(40 28 14 / 0.22);
   opacity: 1;
-}
-.addon-grid > li:nth-child(2n + 3):nth-child(5n + 4) .addon-card-hold {
-  background: radial-gradient(circle at 34% 30%, #fff 0 9%, #203676 34%, #111d40 100%);
 }
 .addon-grid > li:nth-child(7n + 3) .addon-card-hold,
 .addon-grid > li:nth-child(7n + 6) .addon-card-hold {
@@ -2198,8 +3372,8 @@ a:hover {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: radial-gradient(circle at 34% 30%, #fff 0 9%, #203676 34%, #111d40 100%);
-  box-shadow: 3px 4px 4px rgb(40 28 14 / 0.32);
+  background: radial-gradient(circle at 35% 30%, #9a9a9a 0 18%, #161616 62%);
+  box-shadow: 0.5px 0.5px 0 rgb(0 0 0 / 0.4), 5px 7px 3px rgb(40 28 14 / 0.22);
 }
 @media (max-width: 960px) {
   .addon-grid {
@@ -2292,6 +3466,14 @@ a:hover {
 @media (max-width: 720px) {
   .not-narrow {
     display: none;
+  }
+  .piece,
+  .doodle,
+  .note {
+    left: var(--x-sm, var(--x-md, var(--x)));
+    top: var(--y-sm, var(--y-md, var(--y)));
+    width: var(--w-sm, var(--w));
+    rotate: var(--r-sm, var(--r, 0deg));
   }
   .wrap {
     width: calc(100% - 40px);
@@ -2493,11 +3675,12 @@ a:hover {
     scale: 1.025;
   }
   /* pen doodles draw themselves in, stroke by stroke; margin notes are written left to right */
+  /* drawn in on the 12 fps clock: one held frame per step */
   .doodle.will-land .reveal {
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
-    transition: stroke-dashoffset 0.7s cubic-bezier(0.45, 0, 0.25, 1)
-      calc(var(--delay, 0.15s) + var(--i, 0) * 0.18s);
+    transition: stroke-dashoffset 0.58s steps(7, end)
+      calc(var(--delay, 0.15s) + var(--i, 0) * 0.25s);
   }
   .doodle.will-land.is-landed .reveal {
     stroke-dashoffset: 0;

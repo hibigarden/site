@@ -47,9 +47,10 @@
     <script type="module" src="/src/feature-illustrations.jsx"></script>
     <script type="module" src="/src/scrapbook.js"></script>
     <script type="module" src="/src/butterflies.js"></script>
+    <script type="module" src="/src/companion.js"></script>
     <title>hibi | a place for your words</title>
   </head>
-  <body data-butterflies="4">
+  <body data-butterflies="1">
     <a class="skip-link" href="#main">skip to content</a>
     <header class="site-header wrap">
       <a class="wordmark" href="#" aria-label="hibi home"
@@ -119,7 +120,7 @@
             >
           </div>
         </div>
-        <div class="hero-icon" aria-hidden="true">
+        <div class="hero-icon" aria-hidden="true" data-companion="0" data-heading="19">
           <span class="pin"></span>
         </div>
         <div class="demo-print">
@@ -184,103 +185,102 @@
           ><img src="/scrapbook/bf-morpho.webp" width="120" height="89" alt="" loading="lazy" decoding="async"
         /></span>
       </section>
-      <div class="gather wrap">
-        <div class="gather-visual" aria-hidden="true">
-          <div class="gather-stage">
-            <div class="notebook print">
-              <span class="print-shadow"></span>
-              <div class="editor-preview">
-                <div class="preview-titlebar"><span class="nb-dot"></span><span>everything.md</span></div>
-                <div class="preview-body">
-                  <div class="preview-sidebar">
-                    <span class="preview-workspace-label">workspace</span>
-                    <span class="preview-file-row nb-row nb-note">notes.md</span>
-                    <span class="preview-file-row nb-row nb-essay">essay.md</span>
-                    <span class="preview-file-row nb-row nb-paper">paper.tex</span>
-                    <span class="preview-file-row nb-row nb-code">snippet.ts</span>
-                    <span class="preview-file-row nb-row nb-prompt">prompt.md</span>
-                  </div>
-                  <div class="preview-editor">
-                    <div class="preview-document nb-doc"><strong>today</strong><i></i><i></i><i></i><i class="short"></i></div>
-                  </div>
+      <div class="pillow pillow-dawn" aria-hidden="true">
+        <span class="piece strapped" style="--x: 62%; --y: 34%; --w: 92px; --r: 8deg; --x-sm: 30%; --y-sm: -30px; --w-sm: 70px; --r-sm: 76deg"
+          ><img src="/scrapbook/lavender-1.webp" width="75" height="299" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1" data-companion="1"
+        /></span>
+      </div>
+      <section class="spread ch-scrap wrap" aria-labelledby="scrap-title">
+        <header class="spread-head">
+          <p class="chapter-label">no. 1 · the scrap</p>
+          <h2 class="spread-title" id="scrap-title">it starts as a scrap.</h2>
+        </header>
+        <div class="beats">
+          <p class="beat obj-note settle">a note at 2 am.</p>
+          <p class="beat obj-receipt settle">a line on the back of a receipt.</p>
+          <p class="beat obj-ticket settle"><span>the name of a song a friend played in the car.</span></p>
+        </div>
+        <p class="specimen-label settle">quick note · a shortcut from any app</p>
+        <span class="piece strapped not-narrow" aria-hidden="true" style="--x: 78%; --y: 40px; --w: 118px; --r: 12deg"
+          ><img src="/scrapbook/lavender-2.webp" width="150" height="279" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1"
+        /></span>
+      </section>
+      <section class="spread ch-one wrap" aria-labelledby="about-title">
+        <div class="beats pile">
+          <p class="beat obj-pile settle">then they pile up.</p>
+          <p class="beat obj-page settle"><span>half an essay in one app,</span></p>
+          <p class="beat obj-card settle">the outline in another,</p>
+          <p class="beat obj-tab settle"><span>the prompt you liked in a chat tab you already closed.</span></p>
+        </div>
+        <div class="gather-stage" aria-hidden="true">
+          <div class="notebook print" data-companion="2">
+            <span class="print-shadow"></span>
+            <div class="editor-preview">
+              <div class="preview-titlebar"><span class="nb-dot"></span><span>today.md</span></div>
+              <div class="preview-body">
+                <div class="preview-sidebar">
+                  <span class="preview-workspace-label">workspace</span>
+                  <span class="preview-file-row nb-row">2am.md</span>
+                  <span class="preview-file-row nb-row">receipt.md</span>
+                  <span class="preview-file-row nb-row">song.md</span>
+                  <span class="preview-file-row nb-row">essay.md</span>
+                  <span class="preview-file-row nb-row">outline.md</span>
+                  <span class="preview-file-row nb-row">prompt.md</span>
+                </div>
+                <div class="preview-editor">
+                  <div class="nb-doc"><strong>today</strong><i></i><i></i><i></i><i class="short"></i><i></i><i class="short"></i></div>
                 </div>
               </div>
-              <span class="tape tape-periwinkle"></span>
             </div>
-            <div class="scrap-doc doc-note">
-              <span class="doc-hand">· outline<br />· call the library<br />· that line about rain</span>
-            </div>
-            <div class="scrap-doc doc-essay">
-              <span class="doc-kicker">essay draft</span><strong>on small gardens</strong><i></i><i></i><i></i><i class="short"></i>
-            </div>
-            <div class="scrap-doc doc-paper">
-              <span class="doc-kicker">paper.tex</span><em class="doc-math">e<sup>iπ</sup> + 1 = 0</em><i></i><i class="short"></i>
-            </div>
-            <div class="scrap-doc doc-code">
-              <code>export default (sdk) =&gt; ({<br />&nbsp;&nbsp;start(context) { … }<br />})</code>
-            </div>
-            <div class="scrap-doc doc-prompt">
-              <span class="doc-kicker">prompt.md</span><span class="doc-line">you are a careful editor.</span><i class="short"></i>
-            </div>
+            <span class="tape tape-periwinkle"></span>
           </div>
+          <span class="mini mini-note"></span>
+          <span class="mini mini-receipt"></span>
+          <span class="mini mini-ticket"></span>
+          <span class="mini mini-page"></span>
+          <span class="mini mini-card"></span>
+          <span class="mini mini-tab"></span>
         </div>
-        <section class="chapter-text ch-scrap paper settle" aria-labelledby="scrap-title">
-          <p class="chapter-label">no. 1 · the scrap</p>
-          <h2 id="scrap-title">it starts as a scrap.</h2>
-          <p>
-            a note at 2 am. a line on the back of a receipt. half an essay in
-            one app, the outline in another, a paper somewhere else, and the
-            prompt you liked in a chat tab you already closed.
-          </p>
-          <p>the draft you need is never where you left it.</p>
-          <span class="tape tape-blue tape-top" aria-hidden="true"></span>
-        </section>
-        <section class="chapter-text ch-one paper settle" aria-labelledby="about-title">
+        <header class="spread-head">
           <p class="chapter-label">no. 2 · one place</p>
-          <h2 id="about-title">built around writing.</h2>
-          <p>
+          <p class="kicker">built around writing.</p>
+          <h2 class="spread-title" id="about-title">one place for all of it.</h2>
+          <p class="spread-line">
             hibi gives you one fast place to write, edit, preview, and organize
             documents, with the flexibility of a code editor.
           </p>
-          <span class="tape tape-periwinkle tape-top" aria-hidden="true"></span>
-        </section>
-      </div>
-      <section class="chapter ch-draft wrap" aria-labelledby="control-title">
-        <div class="chapter-text paper settle">
+          <p class="specimen-label settle">markdown · latex · typst · plain text · and more</p>
+          <p class="specimen-label settle">formatted, source, or side by side</p>
+        </header>
+      </section>
+      <section class="spread ch-draft wrap" aria-labelledby="grows-title">
+        <header class="spread-head">
           <p class="chapter-label">no. 3 · the draft</p>
-          <h2 id="control-title">for writers who want control.</h2>
-          <p>
-            start with a simple writing app, then add the tools and formats you
-            need. your files stay in your own folders.
-          </p>
-          <span class="tape tape-butter tape-top" aria-hidden="true"></span>
-        </div>
-        <span class="piece taped chapter-plate" aria-hidden="true" style="--w: 130px; --r: 10deg; --tape-img: url(/scrapbook/tape-periwinkle-dots.webp); --tape-y: 62%"
-          ><img src="/scrapbook/lavender-2.webp" width="150" height="279" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1"
+          <h2 class="spread-title" id="grows-title">then it grows.</h2>
+          <p class="spread-line">start with a simple writing app,</p>
+          <p class="spread-line">then add the tools and formats you need.</p>
+          <p class="spread-line">your files stay in your own folders.</p>
+        </header>
+        <span class="piece strapped chapter-plate" aria-hidden="true" style="--w: 150px; --r: 10deg"
+          ><img src="/scrapbook/lavender-2.webp" width="150" height="279" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1" data-companion="3"
         /></span>
-        <div class="features" id="features" aria-label="features">
-          <p class="drawer-label" aria-hidden="true">features</p>
-          <article class="feature-card feature-files paper settle">
+        <div class="features" id="features" aria-labelledby="control-title">
+          <h3 class="drawer-title" id="control-title">for writers who want control.</h3>
+          <article class="feature-card feature-files settle">
             <div class="feature-art workspace-art" id="workspace-illustration" aria-hidden="true"></div>
             <div class="feature-copy">
               <h3>your files, your folders.</h3>
               <p>keep your notes on your computer.</p>
             </div>
-            <span class="piece" aria-hidden="true" style="--x: -34px; --y: -30px; --w: 92px; --r: -10deg"
-              ><img src="/scrapbook/bf-rosy-maple.webp" width="110" height="63" alt="" loading="lazy" decoding="async"
-            /></span>
           </article>
-          <article class="feature-card feature-formats paper settle">
+          <article class="feature-card feature-formats settle">
             <div class="feature-art formats-art" id="formats-illustration" aria-hidden="true"></div>
             <div class="feature-copy">
               <h3>beyond markdown.</h3>
               <p>write in typst, latex, mdx, and more.</p>
             </div>
-            <span class="piece taped" aria-hidden="true" style="--x: calc(100% - 66px); --y: -30px; --w: 88px; --r: 14deg; --tape-img: url(/scrapbook/tape-butter.webp)"
-              ><img src="/scrapbook/bf-brimstone.webp" width="100" height="71" alt="" loading="lazy" decoding="async"
-            /></span>
           </article>
-          <article class="feature-card feature-customize paper settle">
+          <article class="feature-card feature-customize settle">
             <div class="feature-art themes-art" id="themes-illustration" aria-hidden="true"></div>
             <div class="feature-copy">
               <h3>make it yours.</h3>
@@ -289,144 +289,84 @@
                 >settings <span aria-hidden="true">↗</span></a
               >
             </div>
-            <span class="piece pinned" aria-hidden="true" style="--x: -30px; --y: -30px; --w: 84px; --r: -14deg"
-              ><img src="/scrapbook/bf-small-blue.webp" width="110" height="84" alt="" loading="lazy" decoding="async"
-            /></span>
           </article>
-          <article class="feature-card feature-addons paper settle">
+          <article class="feature-card feature-addons settle">
             <div class="feature-art addons-art" id="addons-illustration" role="img" aria-label="bundled addons for git, latex, vim, and exporting"></div>
             <div class="feature-copy">
               <h3>batteries included.</h3>
               <a href="/addons/">browse addons <span aria-hidden="true">↗</span></a>
             </div>
-            <span class="piece" aria-hidden="true" style="--x: calc(100% - 132px); --y: calc(100% - 92px); --w: 128px; --r: -8deg"
-              ><img src="/scrapbook/lavender-heads.webp" width="120" height="79" alt="" loading="lazy" decoding="async" data-perch="0.4,0.3"
-            /></span>
           </article>
-          <span class="note wide gutter-l" aria-hidden="true" style="--w: 120px; --y: 420px; --r: -8deg">nord ♡<br />catppuccin</span>
-          <span class="doodle wide gutter-l" data-doodle="arrow" aria-hidden="true" style="--w: 100px; --y: 496px; --r: 26deg; --dx: 20px"></span>
-          <span class="piece pinned wide gutter-r" aria-hidden="true" style="--w: 116px; --y: 140px; --r: 14deg"
-            ><img src="/scrapbook/bf-luna.webp" width="120" height="80" alt="" loading="lazy" decoding="async"
-          /></span>
-          <span class="piece taped wide gutter-r" aria-hidden="true" style="--w: 104px; --y: 420px; --r: 8deg; --tape-img: url(/scrapbook/tape-periwinkle.webp); --tape-y: 66%"
-            ><img src="/scrapbook/lavender-tag.webp" width="60" height="267" alt="" loading="lazy" decoding="async" data-perch="0.5,0.08"
-          /></span>
         </div>
-        <p class="grows-line settle">it grows with you.</p>
-        <article class="writing-role role-writers paper settle">
-          <img class="role-object" src="/scrapbook/pen.webp" width="230" height="135" alt="" loading="lazy" decoding="async" />
-          <h2>for writers.</h2>
-          <p>
-            write stories, essays, and notes. keep your drafts and research
-            together in one workspace.
-          </p>
-          <a href="https://docs.hibi.garden/#page=guides%2Fediting.md">writing guide</a>
-        </article>
       </section>
-      <section class="chapter ch-quiet wrap" aria-labelledby="quiet-title">
-        <div class="chapter-text paper settle">
+      <section class="spread ch-quiet wrap" aria-labelledby="quiet-title">
+        <header class="spread-head">
           <p class="chapter-label">no. 4 · the quiet part</p>
-          <h2 id="quiet-title">then it goes quiet.</h2>
-          <p>
-            you cut, you move things around, you read it out loud. nobody needs
-            to see this part.
-          </p>
-          <span class="tape tape-cream tape-top" aria-hidden="true"></span>
-        </div>
-        <article class="writing-role role-editors paper settle">
+          <h2 class="spread-title" id="quiet-title">then it goes quiet.</h2>
+        </header>
+        <div class="manuscript settle">
+          <p class="ms-mark ms-cut">you cut,</p>
+          <p class="ms-mark ms-move">you move things around,</p>
+          <p class="ms-mark ms-read">you read it out loud.</p>
+          <div class="ms-body" aria-hidden="true"><i></i><i class="struck"></i><i></i><i class="short"></i><i></i><i class="struck"></i><i></i><i class="short"></i><i></i><i></i><i class="struck"></i><i class="short"></i></div>
           <img class="role-object" src="/scrapbook/pencil.webp" width="230" height="146" alt="" loading="lazy" decoding="async" />
-          <h2>for editors.</h2>
-          <p>
-            revise in formatted or source view. review changes with git and
-            revisit earlier drafts with version history.
-          </p>
-          <a href="https://docs.hibi.garden/#page=editing%2Fversion-history.md">version history</a>
-          <span class="piece" aria-hidden="true" style="--x: calc(100% - 96px); --y: calc(100% - 110px); --w: 104px; --r: 12deg"
-            ><img src="/scrapbook/rose.webp" width="130" height="148" alt="" loading="lazy" decoding="async" data-perch="0.6,0.2"
-          /></span>
-        </article>
-        <span class="piece wide gutter-l" aria-hidden="true" style="--w: 120px; --y: 40px; --r: -10deg"
-          ><img src="/scrapbook/hydrangea.webp" width="110" height="102" alt="" loading="lazy" decoding="async" data-perch="0.5,0.4"
-        /></span>
+          <span class="companion-perch" aria-hidden="true" data-companion="4" style="--x: 30px; --y: -6px"></span>
+        </div>
+        <p class="turn-line settle">nobody needs to see this part.</p>
+        <p class="specimen-label quiet-label settle">version history · a snapshot every time you save</p>
       </section>
-      <section class="chapter ch-ready wrap" aria-labelledby="ready-title">
-        <div class="chapter-text paper settle">
+      <section class="spread ch-ready wrap" aria-labelledby="ready-title">
+        <header class="spread-head">
           <p class="chapter-label">no. 5 · the day it’s ready</p>
-          <h2 id="ready-title">and one day it’s ready.</h2>
-          <p>
-            you let it go. export it, publish it, send it to the person who’s
-            been waiting for it.
-          </p>
-          <span class="tape tape-blue tape-top" aria-hidden="true"></span>
-          <span class="piece pinned release" aria-hidden="true" style="--x: calc(100% - 60px); --y: -44px; --w: 96px; --r: 14deg"
-            ><img src="/scrapbook/bf-morpho.webp" width="120" height="89" alt="" loading="lazy" decoding="async"
-          /></span>
-          <span class="piece pinned release" aria-hidden="true" style="--x: -50px; --y: calc(100% - 50px); --w: 84px; --r: -12deg"
-            ><img src="/scrapbook/bf-cabbage-white.webp" width="100" height="66" alt="" loading="lazy" decoding="async"
-          /></span>
+          <h2 class="spread-title" id="ready-title">and one day, it’s ready.</h2>
+          <p class="turn-line">you let it go.</p>
+        </header>
+        <div class="beats">
+          <p class="beat obj-chip settle"><span>export it,</span></p>
+          <p class="beat obj-site settle"><span>publish it,</span></p>
+          <p class="beat obj-envelope settle"><span>send it to the person who’s been waiting for it.</span></p>
         </div>
-        <article class="writing-role role-developers paper settle">
-          <span class="role-object role-braces" aria-hidden="true"
-            ><img src="/scrapbook/brace-left.webp" width="64" height="76" alt="" loading="lazy" decoding="async" /><img src="/scrapbook/brace-right.webp" width="64" height="74" alt="" loading="lazy" decoding="async"
-          /></span>
-          <h2>for developers.</h2>
-          <p>
-            write documentation and export it as a site you can host. edit your
-            coding agents’ markdown files in the same workspace.
-          </p>
-          <a href="https://docs.hibi.garden/#page=guides%2Fexporting.md">export documentation</a>
-          <span class="piece pinned release" aria-hidden="true" style="--x: calc(100% - 104px); --y: calc(100% - 78px); --w: 100px; --r: 10deg"
-            ><img src="/scrapbook/bf-swallowtail.webp" width="120" height="103" alt="" loading="lazy" decoding="async"
-          /></span>
-        </article>
-        <article class="writing-role role-ai paper settle">
-          <img class="role-object" src="/scrapbook/keycap.webp" width="104" height="94" alt="" loading="lazy" decoding="async" />
-          <h2>for ai power users.</h2>
-          <p>
-            write and organize prompts, agent instructions, and context files
-            for the ai tools you use.
-          </p>
-          <a href="https://docs.hibi.garden/#page=guides%2Fworkspaces.md">workspace guide</a>
-          <span class="doodle lavender-ink" data-doodle="swirl" aria-hidden="true" style="--x: calc(100% - 96px); --y: calc(100% - 82px); --w: 52px"></span>
-        </article>
-        <span class="piece taped wide gutter-r" aria-hidden="true" style="--w: 112px; --y: 60px; --r: 16deg; --tape-img: url(/scrapbook/tape-blue.webp)"
-          ><img src="/scrapbook/lavender-3.webp" width="130" height="198" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1"
+        <p class="specimen-label ready-label settle">export · one html file, a site you can host, or a typst pdf</p>
+        <span class="piece pinned release not-narrow" aria-hidden="true" style="--x: 0%; --y: 34px; --w: 92px; --r: -14deg"
+          ><img src="/scrapbook/bf-morpho.webp" width="120" height="89" alt="" loading="lazy" decoding="async"
         /></span>
-        <span class="piece wide gutter-l" aria-hidden="true" style="--w: 124px; --y: 380px; --r: -18deg"
-          ><img src="/scrapbook/olive.webp" width="120" height="98" alt="" loading="lazy" decoding="async" data-perch="0.5,0.3"
+        <span class="piece pinned release" aria-hidden="true" style="--x: calc(100% - 96px); --y: 20px; --w: 88px; --r: 16deg"
+          ><img src="/scrapbook/bf-cabbage-white.webp" width="100" height="66" alt="" loading="lazy" decoding="async"
         /></span>
+        <span class="piece pinned release not-narrow" aria-hidden="true" style="--x: calc(100% - 92px); --y: calc(100% - 110px); --w: 90px; --r: -10deg"
+          ><img src="/scrapbook/bf-swallowtail.webp" width="120" height="103" alt="" loading="lazy" decoding="async"
+        /></span>
+        <span class="companion-perch" aria-hidden="true" data-companion="5" style="--x: 50%; --y: 6px"></span>
       </section>
-      <section class="chapter ch-garden wrap" aria-labelledby="garden-title">
-        <div class="chapter-text paper settle">
-          <p class="chapter-label">no. 6 · tending the garden</p>
-          <h2 id="garden-title">hibi grows in the open.</h2>
-          <p>the code is public, and anyone can help.</p>
-          <span class="tape tape-periwinkle tape-top" aria-hidden="true"></span>
-        </div>
-        <article class="feature-free paper settle">
-          <h3>free and open source.</h3>
-          <a href="https://github.com/schmayterling/hibi">view source</a>
-          <span class="doodle" data-doodle="star" aria-hidden="true" style="--x: -22px; --y: -24px; --w: 34px; --r: -12deg"></span>
-          <span class="doodle lavender-ink" data-doodle="sparkle" aria-hidden="true" style="--x: -40px; --y: 20px; --w: 20px"></span>
-        </article>
-        <span class="piece taped wide gutter-l" aria-hidden="true" style="--w: 64px; --y: 20px; --r: -12deg; --tape-img: url(/scrapbook/tape-butter.webp); --tape-y: 58%"
-          ><img src="/scrapbook/lavender-1.webp" width="75" height="299" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1"
-        /></span>
-        <span class="piece wide gutter-r" aria-hidden="true" style="--w: 116px; --y: 60px; --r: 20deg"
+      <div class="pillow pillow-dusk" aria-hidden="true">
+        <span class="piece" style="--x: 30%; --y: 40%; --w: 130px; --r: -6deg"
           ><img src="/scrapbook/lavender-buds.webp" width="120" height="77" alt="" loading="lazy" decoding="async"
         /></span>
+      </div>
+      <section class="spread ch-turn wrap" aria-labelledby="turn-title">
+        <div class="keepsake" aria-hidden="true">
+          <img class="keepsake-book" src="/scrapbook/notebook-open.webp" width="560" height="349" alt="" loading="lazy" decoding="async" />
+          <span class="keepsake-receipt"></span>
+          <img class="keepsake-butterfly" src="/scrapbook/bf-small-blue.webp" width="110" height="84" alt="" loading="lazy" decoding="async" data-companion="6" />
+        </div>
+        <header class="spread-head">
+          <p class="chapter-label">no. 6 · the turn</p>
+          <h2 class="spread-title" id="turn-title">years later, you find it again.</h2>
+          <p class="spread-line">a note from a night you’d forgotten.</p>
+          <p class="spread-line peak-line">
+            three lines, and the whole day comes back: the rain, the cold tea,
+            the line you were so sure about.
+          </p>
+          <p class="specimen-label settle">opens the folders you already have · imports from obsidian, notion, and bear, and keeps the originals</p>
+        </header>
       </section>
       <section class="cta wrap" aria-labelledby="cta-title">
         <div class="end-card paper settle">
           <span class="tape tape-cream tape-tl" aria-hidden="true"></span>
-          <span class="tape tape-cream tape-br" aria-hidden="true"></span>
           <span class="end-perch end-perch-a" aria-hidden="true" data-perch></span>
-          <span class="end-perch end-perch-b" aria-hidden="true" data-perch></span>
-          <span class="doodle cream-ink" data-doodle="sparkle" aria-hidden="true" style="--x: 9%; --y: 30px; --w: 30px"></span>
-          <span class="doodle cream-ink" data-doodle="star" aria-hidden="true" style="--x: calc(91% - 36px); --y: 34px; --w: 36px; --r: 14deg"></span>
-          <span class="doodle cream-ink not-narrow" data-doodle="heart" aria-hidden="true" style="--x: 7%; --y: calc(100% - 64px); --w: 34px; --r: -12deg"></span>
-          <span class="doodle cream-ink not-narrow" data-doodle="swirl" aria-hidden="true" style="--x: calc(93% - 50px); --y: calc(100% - 76px); --w: 50px"></span>
+          <span class="end-perch end-perch-b" aria-hidden="true" data-perch data-companion="7"></span>
           <h2 id="cta-title">a place for your <em>words</em>.</h2>
+          <p class="specimen-label name-label" lang="en">hibi (<span lang="ja">日々</span>) · days; day after day.</p>
           <div class="cta-actions">
             <a
               class="button cta-primary"
@@ -440,13 +380,58 @@
               ><span class="button-icon" data-button-icon="chat" aria-hidden="true"></span>join discord</a
             >
           </div>
-          <span class="piece taped" aria-hidden="true" style="--x: -34px; --y: calc(100% - 170px); --w: 62px; --r: -18deg; --tape-img: url(/scrapbook/tape-cream.webp); --tape-y: 60%"
+          <div class="keep-labels">
+            <p class="specimen-label">yours to keep · plain files, in your own folders</p>
+            <p class="specimen-label">they open without hibi · no account</p>
+            <p class="specimen-label">hibi grows in the open · <strong>free and open source.</strong> <a href="https://github.com/schmayterling/hibi">view source</a></p>
+          </div>
+          <span class="piece taped not-narrow" aria-hidden="true" style="--x: -34px; --y: calc(100% - 170px); --w: 62px; --r: -18deg; --tape-img: url(/scrapbook/tape-cream.webp); --tape-y: 60%"
             ><img src="/scrapbook/lavender-1.webp" width="75" height="299" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1"
           /></span>
         </div>
       </section>
       <div class="back-notes wrap">
         <p class="chapter-label back-label">notes in the back</p>
+        <section class="audiences" aria-label="who hibi is for">
+          <article class="writing-role role-writers paper settle">
+            <img class="role-object" src="/scrapbook/pen.webp" width="230" height="135" alt="" loading="lazy" decoding="async" />
+            <h2>for writers.</h2>
+            <p>
+              write stories, essays, and notes. keep your drafts and research
+              together in one workspace.
+            </p>
+            <a href="https://docs.hibi.garden/#page=guides%2Fediting.md">writing guide</a>
+          </article>
+          <article class="writing-role role-editors paper settle">
+            <img class="role-object" src="/scrapbook/pencil.webp" width="230" height="146" alt="" loading="lazy" decoding="async" />
+            <h2>for editors.</h2>
+            <p>
+              revise in formatted or source view. review changes with git and
+              revisit earlier drafts with version history.
+            </p>
+            <a href="https://docs.hibi.garden/#page=editing%2Fversion-history.md">version history</a>
+          </article>
+          <article class="writing-role role-developers paper settle">
+            <span class="role-object role-braces" aria-hidden="true"
+              ><img src="/scrapbook/brace-left.webp" width="64" height="76" alt="" loading="lazy" decoding="async" /><img src="/scrapbook/brace-right.webp" width="64" height="74" alt="" loading="lazy" decoding="async"
+            /></span>
+            <h2>for developers.</h2>
+            <p>
+              write documentation and export it as a site you can host. edit your
+              coding agents’ markdown files in the same workspace.
+            </p>
+            <a href="https://docs.hibi.garden/#page=guides%2Fexporting.md">export documentation</a>
+          </article>
+          <article class="writing-role role-ai paper settle">
+            <img class="role-object" src="/scrapbook/keycap.webp" width="104" height="94" alt="" loading="lazy" decoding="async" />
+            <h2>for ai power users.</h2>
+            <p>
+              write and organize prompts, agent instructions, and context files
+              for the ai tools you use.
+            </p>
+            <a href="https://docs.hibi.garden/#page=guides%2Fworkspaces.md">workspace guide</a>
+          </article>
+        </section>
         <section class="comparison" aria-labelledby="comparison-title">
           <h2 class="section-title settle" id="comparison-title">how hibi compares.</h2>
           <div class="ledger paper settle">
@@ -481,9 +466,6 @@
                 </tr>
               </tbody>
             </table>
-            <span class="piece pinned" aria-hidden="true" style="--x: calc(100% - 78px); --y: -46px; --w: 104px; --r: 12deg"
-              ><img src="/scrapbook/bf-peacock.webp" width="110" height="72" alt="" loading="lazy" decoding="async"
-            /></span>
           </div>
         </section>
         <section class="faq" id="faq" aria-labelledby="faq-title">
@@ -525,9 +507,6 @@
               </p>
             </details>
           </div>
-          <span class="piece taped not-md" aria-hidden="true" style="--x: 30px; --y: 196px; --w: 120px; --r: -8deg; --tape-img: url(/scrapbook/tape-dots.webp); --tape-y: 60%"
-            ><img src="/scrapbook/lavender-bundle.webp" width="130" height="280" alt="" loading="lazy" decoding="async" data-perch="0.4,0.1"
-          /></span>
         </section>
       </div>
     </main>
@@ -539,10 +518,8 @@
         <span class="piece taped not-narrow" aria-hidden="true" style="--x: calc(100% - 150px); --y: 0px; --w: 98px; --r: 14deg; --tape-img: url(/scrapbook/tape-blue.webp); --tape-y: 62%"
           ><img src="/scrapbook/lavender-bundle.webp" width="130" height="280" alt="" loading="lazy" decoding="async"
         /></span>
-        <span class="doodle cream-ink not-narrow" data-doodle="swirl" aria-hidden="true" style="--x: 40px; --y: 40px; --w: 56px"></span>
-        <span class="doodle cream-ink not-narrow" data-doodle="butterfly" aria-hidden="true" style="--x: 120px; --y: 120px; --w: 58px; --r: 10deg"></span>
         <div class="footer-details">
-          <span class="piece pinned" aria-hidden="true" style="--x: -40px; --y: -40px; --w: 84px; --r: -14deg"
+          <span class="piece pinned not-narrow" aria-hidden="true" style="--x: -40px; --y: -40px; --w: 84px; --r: -14deg"
             ><img src="/scrapbook/bf-rosy-maple.webp" width="110" height="63" alt="" loading="lazy" decoding="async"
           /></span>
           <div>

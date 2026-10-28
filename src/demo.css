@@ -75,6 +75,13 @@ html:not([data-embedded]) body {
   overflow-x: clip;
   background: transparent;
 }
+/* tapes and scraps hang past the edges without widening the page */
+.demo-page {
+  overflow-x: clip;
+}
+html[data-embedded] .demo-page {
+  display: contents;
+}
 .demo-header {
   display: flex;
   align-items: center;

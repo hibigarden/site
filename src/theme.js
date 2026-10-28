@@ -52,3 +52,24 @@ system.addEventListener("change", (event) => {
 reducedMotion.addEventListener("change", () => {
   if (reducedMotion.matches) transition?.skipTransition();
 });
+
+// "still the garden": one switch that stops every looping animation, remembered across visits.
+const motionToggle = document.querySelector(".motion-toggle");
+if (motionToggle) {
+  const setStill = (still) => {
+    if (still) root.dataset.motion = "still";
+    else delete root.dataset.motion;
+    motionToggle.setAttribute("aria-pressed", String(still));
+  };
+  setStill(root.dataset.motion === "still");
+  motionToggle.hidden = false;
+  motionToggle.addEventListener("click", () => {
+    const still = root.dataset.motion !== "still";
+    setStill(still);
+    try {
+      localStorage.setItem("hibi-site-motion", still ? "still" : "moving");
+    } catch {
+      // Keep the choice for this visit.
+    }
+  });
+}

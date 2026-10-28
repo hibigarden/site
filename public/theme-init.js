@@ -11,4 +11,11 @@
       : "light";
   }
   document.documentElement.dataset.theme = theme;
+  try {
+    if (localStorage.getItem("hibi-site-motion") === "still") {
+      document.documentElement.dataset.motion = "still";
+    }
+  } catch {
+    // Motion stays on when storage is unavailable.
+  }
 })();

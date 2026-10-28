@@ -74,33 +74,75 @@
       </nav>
     </header>
     <main id="main" class="product-page wrap">
-      <header class="page-intro">
+      <header class="page-intro product-intro">
         <p class="product-soon"><span class="soon-tag">coming soon</span></p>
         <h1>hibi publish</h1>
         <p>turn a workspace into a website, for docs, notes or a digital garden, without leaving hibi.</p>
+        <span class="intro-pressed" aria-hidden="true"
+          ><img class="piece intro-lavender" src="/scrapbook/lavender-2.webp" width="167" height="296" alt="" decoding="async"
+          /><img class="piece intro-butterfly" src="/scrapbook/bf-brimstone.webp" width="117" height="88" alt="" decoding="async"
+        /></span>
       </header>
       <section class="product-section" aria-labelledby="publish-what">
         <h2 id="publish-what">what it does</h2>
-        <ul class="product-features">
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+        <ul class="bento">
+          <li class="bento-card bento-wide">
             <h3>publish from hibi</h3>
             <p>choose publish workspace from the command palette. hibi asks you to confirm before anything is uploaded.</p>
+            <div class="bento-stage" aria-hidden="true">
+          <div class="mk-stack">
+            <div class="mk-window mk-palette">
+            <div class="mk-search"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg><span>publish<i class="mk-caret"></i></span></div>
+            <div class="mk-results"><div class="mk-option is-on"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg><span>Publish workspace</span><small>Addons</small></div></div>
+            <div class="mk-footer"><span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span><span><kbd>↵</kbd> Run</span><span class="mk-escape"><kbd>esc</kbd> Close</span></div>
+          </div>
+            <div class="mk-window mk-dialog"><strong>Publish workspace</strong><p>All pages in “garden” and their embedded media will become public at the configured site.</p><div class="mk-actions"><span class="mk-button">Cancel</span><span class="mk-button is-primary">Publish workspace</span></div></div>
+          </div>
+            </div>
           </li>
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="7" x="3" y="3" rx="1"/><rect width="9" height="7" x="3" y="14" rx="1"/><rect width="5" height="7" x="16" y="14" rx="1"/></svg>
+          <li class="bento-card bento-narrow">
             <h3>built on the site export</h3>
             <p>it publishes the site hibi’s export already makes, with your themes, navigation and search, and only swaps it in once the whole site checks out.</p>
+            <div class="bento-stage" aria-hidden="true">
+          <div class="mk-window mk-site">
+              <div class="mk-site-bar"><strong>garden</strong><span class="mk-site-search"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>Search</span></div>
+              <div class="mk-site-body"><div class="mk-site-nav"><b>welcome</b><span>plants</span><span>journal</span><span>reading</span></div><div class="mk-site-page"><b>welcome</b><i></i><i></i><i class="short"></i><i></i><i class="short"></i></div></div>
+            </div>
+            </div>
           </li>
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
+          <li class="bento-card bento-half">
             <h3>roll back</h3>
             <p>if a new version isn’t right, switch the site back to the one before it.</p>
+            <div class="bento-stage" aria-hidden="true">
+          <div class="mk-stack mk-rollback">
+            <div class="mk-window mk-admin">
+            <div class="mk-site-row">
+              <div class="mk-site-head"><strong>garden</strong><span class="mk-state is-live">Published</span></div>
+              <div class="mk-site-url">https://pages.example.com/garden/</div>
+              <div class="mk-actions"><span class="mk-button is-focus">Roll back</span><span class="mk-button">Replace token</span><span class="mk-button is-danger">Revoke</span></div>
+            </div>
+            </div>
+            <div class="mk-window mk-dialog"><p>Replace this site with its previous complete release?</p><div class="mk-actions"><span class="mk-button">Cancel</span><span class="mk-button is-primary">OK</span></div></div>
+          </div>
+            </div>
           </li>
-          <li>
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>
+          <li class="bento-card bento-half">
             <h3>take it offline</h3>
             <p>take a site down whenever you like. your workspace files are never touched.</p>
+            <div class="bento-stage" aria-hidden="true">
+          <div class="mk-window mk-admin">
+            <div class="mk-site-row">
+              <div class="mk-site-head"><strong>docs</strong><span class="mk-state is-live">Published</span></div>
+              <div class="mk-site-url">https://pages.example.com/docs/</div>
+              <div class="mk-actions"><span class="mk-button">Roll back</span><span class="mk-button is-danger">Revoke</span></div>
+            </div>
+            <div class="mk-site-row">
+              <div class="mk-site-head"><strong>garden</strong><span class="mk-state">Revoked</span></div>
+              <div class="mk-site-url">https://pages.example.com/garden/</div>
+              <div class="mk-actions"><span class="mk-button">Restore access and issue token</span></div>
+            </div>
+            </div>
+            </div>
           </li>
         </ul>
       </section>

@@ -120,7 +120,7 @@ function ribbon(points, width, r) {
     let w = width * (0.5 + 0.5 * Math.abs(Math.sin(Math.atan2(ny - py, nx - px) - 0.65)));
     w *= 0.9 + 0.2 * Math.min(1, bend / 0.5);
     w *= 1 + 0.35 * Math.exp(-t / 0.012);
-    if (t > 1 - lift) w *= Math.max(0.08, (1 - (t - (1 - lift)) / lift) ** 0.7);
+    if (t > 1 - lift) w *= Math.max(0.08, Math.max(0, 1 - (t - (1 - lift)) / lift) ** 0.7);
     w *= 1 + 0.06 * (r() - 0.5);
     const ox = (-(ny - py) / len) * (w / 2);
     const oy = ((nx - px) / len) * (w / 2);

@@ -188,6 +188,43 @@ a:hover {
   width: min(1120px, calc(100% - 64px));
   margin-inline: auto;
 }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* the day's light over the page (scrapbook.js), behind every piece */
+.daylight {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+/* typed labels: characters appear a few per held frame, then the caret rests and goes */
+.typed > span {
+  visibility: hidden;
+}
+.typed > span.on {
+  visibility: visible;
+}
+.typed .caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.05em;
+  margin-left: 1px;
+  vertical-align: -0.18em;
+  background: currentColor;
+}
+/* until its scrap arrives, a file in the notebook is only a faint line; without motion it is all there */
+.story-motion .nb-row:not(.is-in) {
+  opacity: 0.25;
+}
+:root:not(.story-motion) .mini {
+  display: none;
+}
 .skip-link {
   position: fixed;
   top: 8px;
@@ -3713,16 +3750,6 @@ a:hover {
 /* ---------------------------------------------------------------- motion: pieces settle as they arrive */
 
 @media (prefers-reduced-motion: no-preference) {
-  /* content is never hidden: a piece only hovers a little above its place until it lands */
-  .settle.will-land {
-    transition:
-      translate 0.8s cubic-bezier(0.2, 1.25, 0.35, 1),
-      scale 0.8s cubic-bezier(0.2, 1.25, 0.35, 1);
-  }
-  .settle.will-land:not(.is-landed) {
-    translate: 0 -14px;
-    scale: 1.025;
-  }
   /* pen doodles draw themselves in, stroke by stroke; margin notes are written left to right */
   /* drawn in on the 12 fps clock: one held frame per step */
   .doodle.will-land .reveal {

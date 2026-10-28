@@ -46,6 +46,7 @@
     <script type="module" src="/src/scale-demo.js"></script>
     <script type="module" src="/src/feature-illustrations.jsx"></script>
     <script type="module" src="/src/scrapbook.js"></script>
+    <script type="module" src="/src/garden.js"></script>
     <script type="module" src="/src/butterflies.js"></script>
     <script type="module" src="/src/companion.js"></script>
     <title>hibi | a place for your words</title>
@@ -109,10 +110,31 @@
       </nav>
     </header>
     <main id="main">
-      <section class="hero wrap" aria-labelledby="hero-title">
-        <div class="title-card paper">
-          <span class="tape tape-blue tape-tl" aria-hidden="true"></span>
-          <span class="tape tape-periwinkle tape-tr" aria-hidden="true"></span>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="garden" aria-hidden="true">
+          <div class="g-scene">
+            <i class="g-layer g-sky"></i>
+            <i class="g-sun g-day" data-depth="0.02"></i>
+            <i class="g-free g-stars g-night" data-depth="0.02" data-twinkle="4.3,0"></i>
+            <i class="g-free g-stars-2 g-night" data-depth="0.02" data-twinkle="6.1,0.45"></i>
+            <i class="g-free g-moon g-night" data-depth="0.03"><i class="g-halo"></i></i>
+            <i class="g-layer g-clouds g-clouds-far" data-depth="0.04" data-drift="640"></i>
+            <i class="g-layer g-clouds g-clouds-mid" data-depth="0.06" data-drift="460"></i>
+            <i class="g-layer g-clouds g-clouds-near" data-depth="0.08" data-drift="330"></i>
+            <i class="g-layer g-far" data-depth="0.45"></i>
+            <i class="g-layer g-lawn" data-depth="0.55"></i>
+            <i class="g-layer g-trees" data-depth="0.72"></i>
+            <i class="g-layer g-lamp" data-depth="0.8"></i>
+            <i class="g-layer g-glow g-night" data-depth="0.8"></i>
+            <i class="g-layer g-lavender" data-depth="1"></i>
+            <i class="g-layer g-bench" data-depth="0.88"></i>
+            <i class="g-bf" data-depth="1" style="--x: 12%; --y: 64%; --ar: 1.5; --bf: url(/scrapbook/fly/cabbage-white.webp)"><i></i><i></i></i>
+            <i class="g-bf" data-depth="1" style="--x: 88%; --y: 64%; --ar: 1.38; --bf: url(/scrapbook/fly/brimstone.webp)"><i></i><i></i></i>
+            <i class="g-bf" data-depth="1" style="--x: 61%; --y: 63%; --ar: 1.5; --bf: url(/scrapbook/fly/peacock.webp)"><i></i><i></i></i>
+            <i class="g-bf g-companion" data-companion-start style="--bf: url(/scrapbook/fly/small-blue.webp)"><i></i><i></i></i>
+          </div>
+        </div>
+        <div class="title-card">
           <h1 id="hero-title">
             one app for<br />everything you
             <span class="ink-word"
@@ -135,12 +157,7 @@
             >
           </div>
         </div>
-        <div class="hero-icon" aria-hidden="true" data-companion="0" data-heading="19">
-          <span class="pin"></span>
-        </div>
         <div class="demo-print">
-          <span class="tape tape-cream tape-tl" aria-hidden="true"></span>
-          <span class="tape tape-dots tape-tr" aria-hidden="true"></span>
           <section
             class="demo"
             id="editor"
@@ -179,26 +196,6 @@
             </div>
           </section>
         </div>
-        <span class="piece pinned wide gutter-l" aria-hidden="true" style="--y: 96px; --w: 150px; --r: -12deg"
-          ><img src="/scrapbook/specimen-clearwing.webp" width="167" height="112" alt="" decoding="async"
-        /></span>
-        <span class="piece label wide gutter-l" aria-hidden="true" style="--w: 130px; --y: 214px; --r: -5deg">clearwing · no. 1</span>
-        <span class="piece taped wide gutter-l" aria-hidden="true" style="--y: 330px; --w: 70px; --r: -9deg; --tape-y: 62%"
-          ><img src="/scrapbook/lavender-1.webp" width="92" height="316" alt="" decoding="async" data-perch="0.5,0.1"
-        /></span>
-        <span class="note wide gutter-l" aria-hidden="true" style="--w: 130px; --y: 690px; --r: -7deg">try it here!</span>
-        <span class="doodle wide gutter-l" data-doodle="arrow" aria-hidden="true" style="--y: 716px; --w: 112px; --r: 12deg"></span>
-        <span class="piece taped wide gutter-r" aria-hidden="true" style="--y: 236px; --w: 104px; --r: 16deg; --tape-img: url(/scrapbook/tape-butter.webp); --tape-y: 40%"
-          ><img src="/scrapbook/bf-small-blue.webp" width="127" height="101" alt="" decoding="async"
-        /></span>
-        <span class="doodle wide gutter-r lavender-ink" data-doodle="trail" aria-hidden="true" style="--y: 340px; --w: 150px; --r: 70deg"></span>
-        <span class="piece taped wide gutter-r" aria-hidden="true" style="--y: 540px; --w: 132px; --r: 11deg; --tape-img: url(/scrapbook/tape-cream.webp)"
-          ><img src="/scrapbook/lavender-2.webp" width="167" height="296" alt="" decoding="async" data-perch="0.5,0.1"
-        /></span>
-        <span class="piece label wide gutter-r" aria-hidden="true" style="--w: 130px; --y: 838px; --r: -4deg">lavender · no. 2</span>
-        <span class="piece pinned wide gutter-r" aria-hidden="true" style="--y: 912px; --w: 106px; --r: -18deg"
-          ><img src="/scrapbook/bf-morpho.webp" width="137" height="106" alt="" loading="lazy" decoding="async"
-        /></span>
       </section>
       <section class="spread intro-writing wrap" aria-labelledby="about-title" data-scene="spiral">
         <header class="spread-head">
@@ -208,7 +205,7 @@
             documents, with the flexibility of a code editor.
           </p>
         </header>
-        <div class="notebook print torn" aria-hidden="true" data-companion="1">
+        <div class="notebook print torn" aria-hidden="true">
           <span class="print-shadow"></span>
           <div class="editor-preview">
             <div class="preview-titlebar"><span class="nb-dot"></span><span>today.md</span></div>
@@ -230,7 +227,7 @@
       </section>
       <section class="spread own-app wrap" aria-labelledby="control-title" data-scene="chase">
         <span class="piece strapped own-sprig" aria-hidden="true" style="--w: 120px; --r: -8deg"
-          ><img src="/scrapbook/lavender-2.webp" width="167" height="296" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1" data-companion="2"
+          ><img src="/scrapbook/lavender-2.webp" width="167" height="296" alt="" loading="lazy" decoding="async" data-perch="0.5,0.1"
         /></span>
         <header class="spread-head">
           <h2 class="spread-title" id="control-title">for writers who want an app of their own.</h2>
@@ -361,7 +358,7 @@
         <div class="end-card paper settle">
           <span class="tape tape-cream tape-tl" aria-hidden="true"></span>
           <span class="end-perch end-perch-a" aria-hidden="true" data-perch></span>
-          <span class="end-perch end-perch-b" aria-hidden="true" data-perch data-companion="7"></span>
+          <span class="end-perch end-perch-b" aria-hidden="true" data-perch></span>
           <h2 id="cta-title">a place for your <em>words</em>.</h2>
           <div class="cta-actions">
             <a

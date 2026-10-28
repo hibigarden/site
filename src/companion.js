@@ -214,7 +214,8 @@ function setState(next) {
   if (next === "scene") {
     me.op = 0;
     draw(me);
-    document.querySelector("[data-companion-start]")?.style.removeProperty("visibility");
+    const start = document.querySelector("[data-companion-start]");
+    if (start) start.hidden = false;
     return;
   }
   if (next === "popout") {
@@ -222,7 +223,9 @@ function setState(next) {
     if (!s) return;
     Object.assign(me, s, { op: 1, torn: 0, wing: 0 });
     from = { ...s };
-    document.querySelector("[data-companion-start]")?.style.setProperty("visibility", "hidden");
+    // hidden tells garden.js to stop flying the scene's copy; it keeps its box (style.css) for the way home
+    const start = document.querySelector("[data-companion-start]");
+    if (start) start.hidden = true;
   }
   if (next !== "busy") run();
 }

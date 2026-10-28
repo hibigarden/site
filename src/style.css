@@ -622,18 +622,11 @@ a:hover {
 
 /* ---------------------------------------------------------------- hero */
 
-.hero {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  padding: 18px 0 88px;
-}
 .title-card {
-  --deckle: var(--deckle-1);
+  position: relative;
+  isolation: isolate;
   width: min(940px, 100%);
-  padding: 58px 56px 52px;
   text-align: center;
-  rotate: -0.7deg;
 }
 .title-card h1 {
   font: 500 clamp(46px, 6vw, 88px) / 1.02 var(--serif);
@@ -670,15 +663,9 @@ a:hover {
   color: var(--pen-lavender);
   --delay: 0.6s;
 }
-/* on the park panel the headline and buttons sit straight on the sky (no card): a soft local glow keeps
-   them readable over clouds, and at night the primary button turns cream so it stands off the blue */
-.hero .title-card:not(.paper) {
-  position: relative;
-  isolation: isolate;
-  padding: 0;
-  rotate: none;
-}
-.hero .title-card:not(.paper)::before {
+/* the headline and buttons sit straight on the park's sky (no card): a soft local glow keeps them readable
+   over clouds, and at night the primary button turns cream so it stands off the blue */
+.title-card::before {
   content: "";
   position: absolute;
   inset: -48px -72px;
@@ -686,7 +673,7 @@ a:hover {
   background: radial-gradient(closest-side, rgb(255 255 255 / 0.42), transparent);
   pointer-events: none;
 }
-[data-theme="dark"] .hero .title-card:not(.paper)::before {
+[data-theme="dark"] .title-card::before {
   background: radial-gradient(closest-side, rgb(8 14 36 / 0.5), transparent);
 }
 [data-theme="dark"] .hero .cta-primary,
@@ -711,57 +698,10 @@ a:hover {
   gap: 12px 14px;
   margin-top: 34px;
 }
-/* the app icon, drawn in css: butter ruled paper with a periwinkle margin. its small blue is the
-   companion butterfly (companion.js); until that module runs, the butterfly is painted on the paper. */
-.hero-icon {
-  --ground: #f6e3b4;
-  --icon-rule: rgb(128 86 24 / 0.14);
-  --icon-margin: rgb(110 126 196 / 0.5);
-  position: absolute;
-  z-index: 4;
-  top: 36px;
-  left: calc(50% + 384px);
-  width: 128px;
-  height: 128px;
-  border-radius: 22.4%;
-  background:
-    url("/scrapbook/fly/small-blue.webp") 50% 50% / 56% auto no-repeat,
-    linear-gradient(90deg, transparent 25.9%, var(--icon-margin) 25.9% 26.5%, transparent 26.5%),
-    linear-gradient(var(--ground), var(--ground)) 0 0 / 100% 18.6% no-repeat,
-    repeating-linear-gradient(to bottom, var(--icon-rule) 0 0.5%, transparent 0.5% 8.98%) 0 1.14% / 100% 100%,
-    var(--ground);
-  box-shadow: 0 10px 18px -6px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.4));
-  rotate: 9deg;
-  pointer-events: none;
-}
-[data-theme="dark"] .hero-icon {
-  --ground: #2a2317;
-  --icon-rule: rgb(246 227 180 / 0.1);
-  --icon-margin: rgb(150 166 232 / 0.55);
-}
-[data-companion-ready] .hero-icon {
-  background-image:
-    none,
-    linear-gradient(90deg, transparent 25.9%, var(--icon-margin) 25.9% 26.5%, transparent 26.5%),
-    linear-gradient(var(--ground), var(--ground)),
-    repeating-linear-gradient(to bottom, var(--icon-rule) 0 0.5%, transparent 0.5% 8.98%);
-}
-/* where the butterfly sat, a faint pressed outline stays on the paper */
-.hero-icon::after {
-  content: "";
-  position: absolute;
-  inset: 22%;
-  background: url("/scrapbook/fly/small-blue-shadow.webp") center / contain no-repeat;
-  rotate: 10deg;
-  opacity: 0;
-}
-[data-companion-away] .hero-icon::after {
-  opacity: 0.12;
-}
-.hero-icon .pin {
-  left: 57px;
-  top: 10px;
-  --pin: #203676;
+/* the park's resting butterfly while the companion is out: gone from view, its box kept for the way home */
+.g-companion[hidden] {
+  display: block;
+  visibility: hidden;
 }
 .demo-print {
   position: relative;
@@ -786,17 +726,6 @@ a:hover {
   box-shadow:
     0 2px 3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
     0 30px 50px -18px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.5));
-}
-/* tapes hold the print by its white margin and never cross the live editor */
-.demo-print .tape {
-  --tape-w: 112px;
-  top: -30px;
-}
-.demo-print .tape-tl {
-  left: -78px;
-}
-.demo-print .tape-tr {
-  right: -78px;
 }
 .demo {
   position: relative;
@@ -2879,18 +2808,6 @@ a:hover {
     display: none;
   }
 }
-@media (max-width: 1240px) {
-  .hero-icon {
-    left: auto;
-    right: 0;
-    top: 6px;
-    width: 104px;
-    height: 104px;
-  }
-  .hero-icon .pin {
-    left: 45px;
-  }
-}
 @media (max-width: 1024px) {
   .faq {
     grid-template-columns: 1fr;
@@ -2901,18 +2818,6 @@ a:hover {
   }
 }
 @media (max-width: 900px) {
-  .hero-icon {
-    position: relative;
-    right: auto;
-    top: auto;
-    order: -1;
-    width: 92px;
-    height: 92px;
-    margin-bottom: -26px;
-  }
-  .hero-icon .pin {
-    left: 38px;
-  }
   .features {
     grid-template-columns: 1fr;
     gap: 30px;
@@ -2995,16 +2900,6 @@ a:hover {
     width: 44px;
     height: 44px;
   }
-  .hero {
-    padding-bottom: 64px;
-  }
-  .title-card {
-    padding: 44px 22px 34px;
-  }
-  .title-card .tape {
-    --tape-w: 92px;
-    top: -6px;
-  }
   .hero-actions,
   .cta-actions {
     gap: 10px;
@@ -3017,16 +2912,6 @@ a:hover {
   .demo-print {
     margin-top: 36px;
     padding: 10px;
-  }
-  .demo-print .tape {
-    --tape-w: 84px;
-    top: -18px;
-  }
-  .demo-print .tape-tl {
-    left: -58px;
-  }
-  .demo-print .tape-tr {
-    right: -58px;
   }
   .section-title {
     padding: 12px 22px 14px;

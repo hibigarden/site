@@ -1,0 +1,166 @@
+{
+  "asciidoc": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "autocomplete": {
+    "released": "2026-10-12",
+    "updated": "2026-10-26"
+  },
+  "bbcode": {
+    "released": "2026-09-18",
+    "updated": "2026-09-18"
+  },
+  "block-drag": {
+    "released": "2026-09-18",
+    "updated": "2026-10-27"
+  },
+  "creole": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "diagnostics": {
+    "released": "2026-09-18",
+    "updated": "2026-09-18"
+  },
+  "dictionary": {
+    "released": "2026-10-11",
+    "updated": "2026-10-27"
+  },
+  "discord-presence": {
+    "released": "2026-09-18",
+    "updated": "2026-09-18"
+  },
+  "djot": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "documentation": {
+    "released": "2026-09-17",
+    "updated": "2026-10-27"
+  },
+  "frontmatter": {
+    "released": "2026-09-17",
+    "updated": "2026-10-27"
+  },
+  "git": {
+    "released": "2026-09-17",
+    "updated": "2026-09-20"
+  },
+  "graph": {
+    "released": "2026-09-17",
+    "updated": "2026-10-26"
+  },
+  "html": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "import-bear": {
+    "released": "2026-09-18",
+    "updated": "2026-10-25"
+  },
+  "import-notion": {
+    "released": "2026-09-18",
+    "updated": "2026-10-25"
+  },
+  "import-obsidian": {
+    "released": "2026-09-18",
+    "updated": "2026-10-25"
+  },
+  "keybeats": {
+    "released": "2026-09-17",
+    "updated": "2026-10-25"
+  },
+  "markdoc": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "markdown": {
+    "released": "2026-09-17",
+    "updated": "2026-10-28"
+  },
+  "math": {
+    "released": "2026-09-17",
+    "updated": "2026-10-28"
+  },
+  "mcp-server": {
+    "released": "2026-10-10",
+    "updated": "2026-10-26"
+  },
+  "mdsvex": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "mdx": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "mediawiki": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "mermaid": {
+    "released": "2026-09-18",
+    "updated": "2026-10-28"
+  },
+  "org": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "quarto": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "quick-note": {
+    "released": "2026-09-27",
+    "updated": "2026-10-26"
+  },
+  "review": {
+    "released": "2026-09-18",
+    "updated": "2026-10-12"
+  },
+  "rmarkdown": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "rst": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "slash-commands": {
+    "released": "2026-09-17",
+    "updated": "2026-10-28"
+  },
+  "tags": {
+    "released": "2026-09-17",
+    "updated": "2026-10-27"
+  },
+  "text-extras": {
+    "released": "2026-09-17",
+    "updated": "2026-10-28"
+  },
+  "textile": {
+    "released": "2026-09-17",
+    "updated": "2026-09-17"
+  },
+  "typst": {
+    "released": "2026-09-17",
+    "updated": "2026-10-28"
+  },
+  "ui-preview": {
+    "released": "2026-09-27",
+    "updated": "2026-10-12"
+  },
+  "vim": {
+    "released": "2026-09-17",
+    "updated": "2026-10-26"
+  },
+  "word-count": {
+    "released": "2026-09-18",
+    "updated": "2026-10-28"
+  },
+  "writing-suggestions": {
+    "released": "2026-09-27",
+    "updated": "2026-09-27"
+  }
+}

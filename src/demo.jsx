@@ -1,4 +1,4 @@
-import { freshVisit } from "./demo-host.js";
+import { engineStatus, freshVisit } from "./demo-host.js";
 import {
   lazy,
   Suspense,
@@ -9,6 +9,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { createPortal } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { FileText, Folder } from "lucide-react";
 import { createNoteGraph } from "../vendor/hibi/src/addons/graph/model";
@@ -32,7 +33,9 @@ import { transformMarkdown } from "../vendor/hibi/src/renderer/src/markdown-proj
 import { toolbar } from "../vendor/hibi/src/renderer/src/toolbar";
 import { defaultHotkeys, shortcutFromEvent } from "../vendor/hibi/src/shared/hotkeys";
 import { wikiTarget } from "../vendor/hibi/src/shared/note-links";
+import { Button } from "../vendor/hibi/src/ui/Controls";
 import { DialogProvider, useDialogs } from "../vendor/hibi/src/ui/DialogProvider";
+import { DocumentNotice } from "../vendor/hibi/src/ui/DocumentNotice";
 import { MenuHost } from "../vendor/hibi/src/ui/MenuHost";
 import { Sidebar } from "../vendor/hibi/src/ui/Sidebar";
 import { ToastProvider } from "../vendor/hibi/src/ui/Sonner";
@@ -211,6 +214,51 @@ function WindowControls() {
         </span>
       ))}
     </div>
+  );
+}
+
+// While the Typst compiler or the LaTeX renderer downloads and first compiles, its preview shows what is
+// happening, in hibi's own notice, over the empty pane so the preview takes its place without a jump.
+const megabytes = (bytes) => (bytes / 1048576).toFixed(1);
+function EngineNotice({ onRetry }) {
+  const status = useSyncExternalStore(engineStatus.subscribe, engineStatus.snapshot);
+  const pane = status && document.querySelector(status.engine === "typst" ? ".typst-preview" : ".format-preview");
+  if (!pane) return null;
+  const name = status.engine === "typst" ? "typst compiler" : "latex renderer";
+  const progress = status.phase === "download" && status.loaded > 0;
+  return createPortal(
+    <div className="engine-notice" data-phase={status.phase}>
+      <DocumentNotice
+        title={
+          status.phase === "error"
+            ? `the ${name} did not load`
+            : status.phase === "download"
+              ? `loading the ${name}…`
+              : "compiling…"
+        }
+        message={
+          status.phase === "error"
+            ? status.message
+            : progress
+              ? status.total
+                ? `${megabytes(status.loaded)} of ${megabytes(status.total)} MB`
+                : `${megabytes(status.loaded)} MB`
+              : undefined
+        }
+        busy={status.phase !== "error"}
+      >
+        {status.phase === "error" ? (
+          <Button onClick={onRetry}>Try again</Button>
+        ) : (
+          <progress
+            max={status.total || undefined}
+            value={status.total ? status.loaded : undefined}
+            aria-label={`loading the ${name}`}
+          />
+        )}
+      </DocumentNotice>
+    </div>,
+    pane,
   );
 }
 
@@ -531,6 +579,12 @@ function Demo() {
         open={rightSidebar}
         empty={rightView === "none"}
         resize={{ ...rightResize, onCollapse: () => setRightSidebar(false) }}
+      />
+      <EngineNotice
+        onRetry={() => {
+          engineStatus.set(null);
+          setReset((value) => value + 1);
+        }}
       />
       <WindowControls />
       <MenuHost />

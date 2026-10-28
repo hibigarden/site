@@ -26,17 +26,49 @@ try {
   // keyBeats falls back to its own defaults.
 }
 
+// What the Typst and LaTeX engines are doing while they load, for the demo's loading notice:
+// { engine, phase: "download" | "compile" | "error", loaded, total, message }, or null once they are ready.
+export const engineStatus = {
+  current: null,
+  listeners: new Set(),
+  set(value) {
+    engineStatus.current = value;
+    for (const listener of engineStatus.listeners) listener();
+  },
+  subscribe(listener) {
+    engineStatus.listeners.add(listener);
+    return () => engineStatus.listeners.delete(listener);
+  },
+  snapshot: () => engineStatus.current,
+};
+const ready = (engine) => engineStatus.current?.engine === engine && engineStatus.set(null);
+
 let typst;
 let compiles = 0;
 const pending = new Map();
+function typstFailed(message) {
+  typst.terminate();
+  typst = null;
+  engineStatus.set({ engine: "typst", phase: "error", message });
+  for (const { reject } of pending.values()) reject(new Error(message));
+  pending.clear();
+}
 function compileTypst({ source, block }) {
-  typst ??= new Worker(new URL("./demo-typst.worker.js", import.meta.url), { type: "module" });
-  typst.onmessage = ({ data: { id, result, error } }) => {
-    const { resolve, reject } = pending.get(id);
-    pending.delete(id);
-    if (error) reject(new Error(error));
-    else resolve(result);
-  };
+  if (!typst) {
+    engineStatus.set({ engine: "typst", phase: "download", loaded: 0, total: 0 });
+    typst = new Worker(new URL("./demo-typst.worker.js", import.meta.url), { type: "module" });
+    typst.onerror = () => typstFailed("The Typst compiler could not start.");
+    typst.onmessage = ({ data }) => {
+      if (data.progress) return engineStatus.set({ engine: "typst", phase: "download", ...data.progress });
+      if (data.phase) return engineStatus.set({ engine: "typst", phase: data.phase });
+      if (data.failed) return typstFailed(data.failed);
+      ready("typst");
+      const { resolve, reject } = pending.get(data.id);
+      pending.delete(data.id);
+      if (data.error) reject(new Error(data.error));
+      else resolve(data.result);
+    };
+  }
   return new Promise((resolve, reject) => {
     pending.set(++compiles, { resolve, reject });
     typst.postMessage({ id: compiles, source, block });
@@ -48,6 +80,21 @@ try {
   if (localStorage.getItem("graph:default-zoom") === null) localStorage.setItem("graph:default-zoom", "1.5");
 } catch {
   // The graph falls back to its own default.
+}
+
+let latex;
+async function renderLatex(input) {
+  if (!latex) {
+    engineStatus.set({ engine: "latex", phase: "download" });
+    latex = import("./demo-latex.js").catch((error) => {
+      latex = null;
+      engineStatus.set({ engine: "latex", phase: "error", message: "The LaTeX renderer did not load." });
+      throw error;
+    });
+  }
+  const { renderLatex } = await latex;
+  ready("latex");
+  return renderLatex(input);
 }
 
 const states = catalog.map(({ manifest }) => ({ id: manifest.id, enabled: true, activation: 1 }));
@@ -71,7 +118,7 @@ const host = {
   // loads the first time its preview renders.
   queryAddon: async (id, method, input) => {
     if (id === "typst" && method === "compile") return compileTypst(input);
-    if (id === "math" && method === "render") return (await import("./demo-latex.js")).renderLatex(input);
+    if (id === "math" && method === "render") return renderLatex(input);
     throw new Error("This is available in the desktop app.");
   },
   // Table sizes live with a workspace; the demo has none, so they last until the page closes.

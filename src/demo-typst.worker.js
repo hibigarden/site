@@ -13,12 +13,37 @@ const fonts = [
   "DejaVuSansMono.ttf",
 ].map((name) => `/typst/fonts/${name}`);
 
+// The compiler is most of the download, so the demo shows its progress. A compressed response reports
+// its compressed length, which says nothing about the bytes read, so the total stays unknown then.
+async function download(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`The Typst compiler did not download (${response.status}).`);
+  const total = response.headers.get("content-encoding") ? 0 : Number(response.headers.get("content-length")) || 0;
+  const reader = response.body.getReader();
+  const chunks = [];
+  let loaded = 0;
+  let reported = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+    loaded += value.length;
+    if (performance.now() - reported > 100) {
+      reported = performance.now();
+      postMessage({ progress: { loaded, total } });
+    }
+  }
+  postMessage({ phase: "compile" });
+  return new Blob(chunks).arrayBuffer();
+}
+
 const compiler = createTypstCompiler();
 const renderer = createTypstRenderer();
 const ready = Promise.all([
-  compiler.init({ getModule: () => compilerWasm, beforeBuild: [loadFonts(fonts)] }),
+  compiler.init({ getModule: () => download(compilerWasm), beforeBuild: [loadFonts(fonts)] }),
   renderer.init({ getModule: () => rendererWasm }),
 ]);
+ready.catch((error) => postMessage({ failed: String(error?.message ?? error) }));
 
 // One compile at a time, in order, as the app's compiler process takes them.
 let queue = Promise.resolve();

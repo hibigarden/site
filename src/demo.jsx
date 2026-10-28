@@ -164,6 +164,14 @@ function WindowControls() {
   );
 }
 
+// An easter egg: the x profile in this note and its caption follow on a plain click, or Enter on the
+// selected image, unlike other links. The rich view shows the linked image without its link.
+const egg = "misc/found on my phone.md";
+const eggImage = 'img[src="/found/x-profile.webp"]';
+const eggTarget = (target) =>
+  target.closest?.(".tiptap .document-media")?.querySelector(eggImage) ??
+  target.closest?.(".tiptap blockquote")?.previousElementSibling?.querySelector(eggImage);
+const openEgg = () => window.open("https://x.com/schmayterling", "_blank", "noopener,noreferrer");
 
 function Demo() {
   const [noteIds, setNoteIds] = useState(() => initialNotes.map((note) => note.tabId));
@@ -353,7 +361,24 @@ function Demo() {
       />
       <div className="editor-surface" inert={resize.overlay && sidebar}>
         <EditorToolbar mode={view} />
-        <div className="editor-page" role="region" aria-label={current.name}>
+        <div
+          className="editor-page"
+          role="region"
+          aria-label={current.name}
+          onClickCapture={(event) => {
+            if (pathOf(current.tabId) !== egg || !eggTarget(event.target)) return;
+            event.preventDefault();
+            event.stopPropagation();
+            openEgg();
+          }}
+          onKeyDownCapture={(event) => {
+            if (pathOf(current.tabId) !== egg || event.key !== "Enter" || event.shiftKey || event.altKey) return;
+            if (!document.querySelector(`.tiptap .ProseMirror-selectednode ${eggImage}`)) return;
+            event.preventDefault();
+            event.stopPropagation();
+            openEgg();
+          }}
+        >
           {!host.ready ? (
             <LoadingScreen />
           ) : (

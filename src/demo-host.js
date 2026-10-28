@@ -39,6 +39,10 @@ const host = {
   appendSourceOperation: async () => {},
   flushDocumentChanges: async () => {},
   readDocumentMedia: async () => null,
+  // Images in the notes are files of this site; any other media is a desktop feature.
+  resolveDocumentMedia: async (source) =>
+    /^\/[\w/-]+\.webp$/.test(source) ? { paths: [], media: { kind: "image", url: source } } : null,
+  cancelDocumentMedia: async () => {},
   // Table sizes live with a workspace; the demo has none, so they last until the page closes.
   readTableLayout: async () => null,
   writeTableLayout: async () => {},

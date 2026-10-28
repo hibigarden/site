@@ -67,3 +67,14 @@
 [data-theme="dark"] .companion-layer {
   --bf-shadow: 0.7;
 }
+
+/* the companion carries two sets of wings: torn (a scrapbook piece) and plain (as it sits in the scene),
+   the plain set inset by the torn paper margin so the two line up while they cross-fade */
+.companion-layer .bf-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.companion-layer .bf-stage.plain {
+  inset: 8.5px;
+}

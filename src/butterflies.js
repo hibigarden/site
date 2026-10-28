@@ -2,12 +2,13 @@ import "./butterflies.css";
 import { onMotion, tick as onFrame } from "./clock.js";
 
 // Desktop display size in css px (phones 0.7×); 2× sprites, body on the centre axis.
-const SPECIES = [
-  { id: "small-blue", src: "/scrapbook/fly/small-blue.webp", w: 104, h: 80 },
-  { id: "morpho", src: "/scrapbook/fly/morpho.webp", w: 128, h: 96 },
-  { id: "brimstone", src: "/scrapbook/fly/brimstone.webp", w: 112, h: 81 },
-  { id: "cabbage-white", src: "/scrapbook/fly/cabbage-white.webp", w: 108, h: 72 },
-  { id: "peacock", src: "/scrapbook/fly/peacock.webp", w: 116, h: 77 },
+// sizes include the torn paper margin around each butterfly
+export const SPECIES = [
+  { id: "small-blue", src: "/scrapbook/fly/small-blue.webp", w: 121, h: 97 },
+  { id: "morpho", src: "/scrapbook/fly/morpho.webp", w: 145, h: 113 },
+  { id: "brimstone", src: "/scrapbook/fly/brimstone.webp", w: 129, h: 98 },
+  { id: "cabbage-white", src: "/scrapbook/fly/cabbage-white.webp", w: 125, h: 89 },
+  { id: "peacock", src: "/scrapbook/fly/peacock.webp", w: 133, h: 94 },
 ];
 const IGNORE =
   "a,button,input,textarea,select,summary,label,[contenteditable],[tabindex],iframe,.demo,.addon-search";

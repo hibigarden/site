@@ -1,175 +1,491 @@
-// One small blue goes through the story with the reader. It starts on the app icon in the hero; as the
-// page scrolls it flies from perch to perch ([data-companion="n"], in order), along a path that leaves
-// through the page gutter, so it never crosses the reading column, and it lands where the next chapter
-// begins. Its progress follows the scroll position with a little lag; scrolling back retraces it. It is
-// drawn on the 12 fps clock, idle while perched, and with reduced motion (or the garden stilled) it stays
-// on the icon.
+// The companion: one small blue that lives in the park scene in the hero. When the reader starts to scroll it
+// pops out of the scene toward them (its torn paper border fading in as it becomes a scrapbook piece) and
+// follows the cursor down the page, hovering beside it with a little lag and perching on an empty spot when
+// the cursor rests. On touch screens it follows the scroll from perch to perch. Along the way it meets the
+// others: a courtship spiral, a chase, two landing on one sprig, a pinned one woken up, and a lift-off at
+// the close. Everything is drawn on the 12 fps clock, never rests on text, never steals the pointer, and with
+// reduced motion (or the garden stilled) it simply stays in the scene.
 import "./butterflies.css";
-import { onMotion, tick } from "./clock.js";
+import { SPECIES } from "./butterflies.js";
+import { onMotion, still, tick } from "./clock.js";
 
-const SRC = "/scrapbook/fly/small-blue.webp";
-const phone = matchMedia("(max-width: 699px)");
+const SP = Object.fromEntries(SPECIES.map((s) => [s.id, s]));
+const fine = matchMedia("(hover: hover) and (pointer: fine)");
+const DEG = Math.PI / 180;
+const ease = (u) => (u < 0 ? 0 : u > 1 ? 1 : u * u * (3 - 2 * u));
+const lerp = (a, b, u) => a + (b - a) * u;
 
 const layer = document.createElement("div");
 layer.className = "companion-layer";
 layer.setAttribute("aria-hidden", "true");
-layer.innerHTML = `<i class="bf-shadow companion-shadow" style="width:120px;height:96px;background-image:url(${SRC.replace(".webp", "-shadow.webp")})"></i><div class="bf companion" style="width:104px;height:80px;--src:url(${SRC})"><div class="bf-stage"><i></i><i></i></div></div>`;
 document.body.append(layer);
-document.documentElement.dataset.companionReady = "";
-const el = layer.querySelector(".companion");
-const shadow = layer.querySelector(".companion-shadow");
-const wings = el.firstChild.children;
 
-let stops = []; // [{ x, y, a, at }] perch points in page coordinates, `at` = the scroll position it belongs to
-let gutter = 0; // x of the left gutter's middle; the right one mirrors it
-let size = 1;
-let shown = 0; // the progress being drawn, eases toward `target`
-let target = 0;
-let running = false;
-let motion = false;
-let beat = 0; // wing phase in held frames
-let breathTimer;
-let away = false;
+/** a split-wing butterfly in the layer; `plain` adds a second, borderless set of wings to cross-fade from */
+function actor(id, plain = false) {
+  const sp = SP[id];
+  const stage = (src, cls) => `<div class="bf-stage ${cls}" style="--src:url(${src})"><i></i><i></i></div>`;
+  layer.insertAdjacentHTML(
+    "beforeend",
+    `<i class="bf-shadow" style="width:${sp.w + 16}px;height:${sp.h + 16}px;background-image:url(${sp.src.replace(".webp", "-shadow.webp")})"></i>` +
+      `<div class="bf" style="width:${sp.w}px;height:${sp.h}px">${stage(sp.src, "torn")}${plain ? stage(sp.src.replace(".webp", "-plain.webp"), "plain") : ""}</div>`,
+  );
+  const el = layer.lastChild;
+  const a = { id, el, shadow: el.previousSibling, wings: [...el.querySelectorAll(".bf-stage i")], w: sp.w, h: sp.h };
+  Object.assign(a, { x: -999, y: -999, rot: 0, k: 1, wing: 0, lift: 0, op: 1, torn: 1 });
+  return a;
+}
+function draw(a) {
+  const { w, h, k } = a;
+  a.el.style.transform = `translate3d(${(a.x - w / 2).toFixed(1)}px,${(a.y - h / 2).toFixed(1)}px,0) rotate(${a.rot.toFixed(1)}deg) scale(${k.toFixed(3)})`;
+  for (let i = 0; i < a.wings.length; i++) a.wings[i].style.transform = `rotateY(${i % 2 ? -a.wing : a.wing}deg)`;
+  if (a.wings.length > 2) a.el.lastChild.style.opacity = String(1 - a.torn);
+  const off = (4 + 30 * a.lift) * k;
+  const dark = document.documentElement.dataset.theme === "dark";
+  a.shadow.style.transform = `translate3d(${(a.x - w / 2 - 8 + off * 0.8).toFixed(1)}px,${(a.y - h / 2 - 8 + off).toFixed(1)}px,0) rotate(${a.rot.toFixed(1)}deg) scale(${(k * Math.cos(a.wing * DEG)).toFixed(3)},${k.toFixed(3)})`;
+  a.shadow.style.opacity = String(a.op * (dark ? 0.7 : 0.34) * (1 - 0.5 * a.lift));
+  a.el.style.opacity = String(a.op);
+}
+function drop(a) {
+  a.el.remove();
+  a.shadow.remove();
+}
 
+// ---------------------------------------------------------------- what the page looks like (cached)
+
+let text = []; // text line and control boxes in page coordinates
+let perches = []; // free landing points in page coordinates
+let gutter = 0; // width of the side margin beside the 1120px column
 function measure() {
-  size = phone.matches ? 0.62 : 0.78;
-  const points = [...document.querySelectorAll("[data-companion]")]
-    .filter((p) => p.getClientRects().length)
-    .sort((p, q) => p.dataset.companion - q.dataset.companion);
-  const vh = innerHeight;
-  stops = points.map((p) => {
-    const r = p.getBoundingClientRect();
-    const icon = p.matches(".hero-icon");
-    const x = r.left + scrollX + r.width / 2;
-    const y = r.top + scrollY + (icon ? r.height * 0.5 : Math.min(r.height * 0.15, 40));
-    // on the icon it is exactly the size of the printed butterfly it replaces
-    const k = icon ? (r.width * 0.56) / 104 : size;
-    return { x, y, k, a: Number(p.dataset.heading ?? (icon ? 19 : -14)), at: icon ? 0 : Math.max(0, y - vh * 0.42) };
-  });
-  // keep anchors increasing even if two perches sit at the same height
-  for (let i = 1; i < stops.length; i++) stops[i].at = Math.max(stops[i].at, stops[i - 1].at + 120);
-  const wrap = document.querySelector("main .wrap")?.getBoundingClientRect();
-  gutter = wrap ? Math.max(24, wrap.left / 2) : 24;
-  onScroll();
-  draw(shown);
-}
-
-// where the reader is: a stop index plus the fraction of the flight to the next stop
-function progressAt(y) {
-  if (!stops.length) return 0;
-  let i = 0;
-  while (i < stops.length - 1 && y >= stops[i + 1].at) i++;
-  if (i === stops.length - 1) return i;
-  const span = stops[i + 1].at - stops[i].at;
-  const u = (y - stops[i].at) / span;
-  // perched for the first and last stretch of each span, flying in between
-  const fly = Math.min(1, Math.max(0, (u - 0.2) / 0.6));
-  return i + fly;
-}
-
-const ease = (u) => u * u * (3 - 2 * u);
-function pose(p) {
-  const i = Math.min(Math.floor(p), stops.length - 1);
-  const a = stops[i];
-  const b = stops[i + 1];
-  const u = p - i;
-  if (!b || u <= 0) return { x: a.x, y: a.y, a: a.a, k: a.k, flying: false };
-  // leave through the nearer gutter so the path never crosses the reading column
-  const left = (a.x + b.x) / 2 < scrollX + innerWidth / 2;
-  const gx = scrollX + (left ? gutter : innerWidth - gutter);
-  const dy = b.y - a.y;
-  const c1 = [gx, a.y + dy * 0.3];
-  const c2 = [gx, b.y - dy * 0.3];
-  const s = ease(u);
-  const m = 1 - s;
-  const x = m * m * m * a.x + 3 * m * m * s * c1[0] + 3 * m * s * s * c2[0] + s * s * s * b.x;
-  const y = m * m * m * a.y + 3 * m * m * s * c1[1] + 3 * m * s * s * c2[1] + s * s * s * b.y;
-  const tx = 3 * m * m * (c1[0] - a.x) + 6 * m * s * (c2[0] - c1[0]) + 3 * s * s * (b.x - c2[0]);
-  const ty = 3 * m * m * (c1[1] - a.y) + 6 * m * s * (c2[1] - c1[1]) + 3 * s * s * (b.y - c2[1]);
-  const heading = (Math.atan2(tx, -ty) * 180) / Math.PI;
-  // turn into the flight and back to the perch's own heading as it lands
-  const turn = Math.min(1, u * 5, (1 - u) * 5);
-  return { x, y, a: a.a + (heading - a.a) * turn, k: a.k + (b.k - a.k) * s, flying: u > 0.02 && u < 0.98 };
-}
-
-function draw(p, wing = 0, lift = 0) {
-  if (!stops.length) return;
-  const { x, y, a, k: base } = pose(p);
-  const k = base * (1 + 0.1 * lift);
-  el.style.transform = `translate3d(${x - 52}px,${y - 40}px,0) rotate(${a}deg) scale(${k})`;
-  wings[0].style.transform = `rotateY(${wing}deg)`;
-  wings[1].style.transform = `rotateY(${-wing}deg)`;
-  const off = 4 + 30 * lift;
-  shadow.style.transform = `translate3d(${x - 60 + off * 0.8}px,${y - 48 + off}px,0) rotate(${a}deg) scale(${k * Math.cos((wing * Math.PI) / 180)},${k})`;
-  shadow.style.opacity = lift ? String(0.34 * (1 - 0.5 * lift)) : "";
-  if (away !== p > 0.02) {
-    away = p > 0.02;
-    document.documentElement.toggleAttribute("data-companion-away", away);
+  text = [];
+  const range = document.createRange();
+  for (const root of document.querySelectorAll("main, header, footer")) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      if (!walker.currentNode.data.trim()) continue;
+      range.selectNodeContents(walker.currentNode);
+      for (const r of range.getClientRects()) text.push([r.left + scrollX, r.top + scrollY, r.right + scrollX, r.bottom + scrollY]);
+    }
+    for (const el of root.querySelectorAll("a, button, input, iframe, summary"))
+      for (const r of el.getClientRects()) text.push([r.left + scrollX, r.top + scrollY, r.right + scrollX, r.bottom + scrollY]);
   }
+  perches = [...document.querySelectorAll("[data-perch]")]
+    .filter((el) => el.getClientRects().length && !el.closest(".hero"))
+    .map((el) => {
+      const r = el.getBoundingClientRect();
+      const [fx, fy] = `${el.dataset.perch},`.split(",").map((v) => (v.trim() && isFinite(v) ? +v : 0.5));
+      return { el, x: r.left + scrollX + fx * r.width, y: r.top + scrollY + fy * r.height };
+    })
+    .filter((p) => clear(p.x, p.y, 40, 32));
+  const column = Math.min(1120, document.documentElement.clientWidth - 64);
+  gutter = Math.max(0, (document.documentElement.clientWidth - column) / 2);
+}
+/** no text or control within a box of half-size (hw, hh) around (x, y) */
+function clear(x, y, hw = 46, hh = 38) {
+  for (const [l, t, r, b] of text) if (l < x + hw && r > x - hw && t < y + hh && b > y - hh) return false;
+  return true;
+}
+const viewTop = () => scrollY;
+const viewBottom = () => scrollY + innerHeight;
+
+// ---------------------------------------------------------------- the companion itself
+
+const me = actor("small-blue", true);
+let state = "scene"; // scene | popout | follow | perch | home | busy
+let pointer = null; // last pointer, viewport coordinates
+let lastMove = 0;
+let lastScroll = 0;
+let spot = null; // the perch it is heading for or sitting on
+let t = 0; // frames into the current move
+let from = null;
+let running = false;
+
+function sceneSpot() {
+  const el = document.querySelector("[data-companion-start]");
+  if (el?.getClientRects().length) {
+    const r = el.getBoundingClientRect();
+    return { x: r.left + scrollX + r.width / 2, y: r.top + scrollY + r.height / 2, k: Math.max(0.3, r.width / me.w) };
+  }
+  const hero = document.querySelector(".hero")?.getBoundingClientRect();
+  return hero ? { x: hero.right + scrollX - 120, y: hero.bottom + scrollY - 160, k: 0.4 } : null;
+}
+
+/** where it wants to be: beside the cursor (fine pointers) or on a free perch in view (touch) */
+function goal() {
+  if (fine.matches && pointer) {
+    const px = pointer.x + scrollX;
+    const py = pointer.y + scrollY;
+    for (const [dx, dy] of [[56, -42], [-56, -42], [60, 34], [-60, 34], [0, -70], [0, 72], [96, 0], [-96, 0]])
+      if (clear(px + dx, py + dy)) return { x: px + dx, y: py + dy };
+    // nowhere free beside it: wait in the nearer page margin, level with the cursor
+    const left = px < innerWidth / 2;
+    return { x: scrollX + (left ? Math.max(30, gutter / 2) : innerWidth - Math.max(30, gutter / 2)), y: py };
+  }
+  return nearestPerch() ?? { x: scrollX + innerWidth - Math.max(36, gutter / 2), y: viewTop() + innerHeight * 0.3 };
+}
+function nearestPerch(nearX = me.x, nearY = me.y) {
+  let best = null;
+  let score = Infinity;
+  for (const p of perches) {
+    if (p.y < viewTop() + 60 || p.y > viewBottom() - 60) continue;
+    const d = Math.hypot(p.x - nearX, p.y - nearY);
+    if (d < score) [score, best] = [d, p];
+  }
+  return best;
+}
+/** a free spot near the resting cursor, not under it */
+function restSpot() {
+  const px = pointer.x + scrollX;
+  const py = pointer.y + scrollY;
+  const near = perches.filter((p) => Math.hypot(p.x - px, p.y - py) < 220);
+  if (near.length) return near.sort((a, b) => Math.hypot(a.x - px, a.y - py) - Math.hypot(b.x - px, b.y - py))[0];
+  return goal();
 }
 
 function frame() {
-  const gap = target - shown;
-  shown = Math.abs(gap) < 0.002 ? target : shown + gap * 0.3;
-  const flying = pose(shown).flying;
-  beat++;
-  // stop-motion wingbeats: up on one held frame, down on the next
-  const wing = flying ? (beat % 2 ? 66 : 8) : 0;
-  draw(shown, wing, flying ? Math.sin(Math.PI * (shown % 1)) : 0);
-  if (shown !== target || flying) return true;
-  running = false;
-  rest();
-  return false;
-}
-
-function run() {
-  if (!running && motion) {
-    running = true;
-    tick(frame);
-  }
-}
-
-// while perched it basks: now and then the wings close slowly and open again (a few held frames)
-function rest() {
-  clearTimeout(breathTimer);
-  if (!motion || running) return;
-  breathTimer = setTimeout(() => {
-    const steps = [20, 42, 58, 58, 42, 20, 0];
-    let n = 0;
-    tick(() => {
-      if (running) return false;
-      draw(shown, steps[n++] ?? 0);
-      if (n < steps.length) return true;
-      rest();
+  const now = performance.now();
+  t++;
+  if (state === "popout") {
+    // out of the scene toward the reader: it grows past full size, settles, and its paper border fades in
+    const u = Math.min(1, t / 12);
+    const target = goal();
+    me.x = lerp(from.x, target.x, ease(u));
+    me.y = lerp(from.y, target.y, ease(u)) - Math.sin(u * Math.PI) * 60;
+    me.k = lerp(from.k, 1, ease(u)) + Math.sin(u * Math.PI) * 0.25;
+    me.torn = ease((t - 5) / 6);
+    me.wing = t % 2 ? 64 : 8;
+    me.lift = Math.sin(u * Math.PI);
+    me.rot = lerp(0, -12, u);
+    if (u >= 1) setState("follow");
+  } else if (state === "home") {
+    // back into the scene at the top of the page
+    const u = Math.min(1, t / 12);
+    const s = sceneSpot() ?? from;
+    me.x = lerp(from.x, s.x, ease(u));
+    me.y = lerp(from.y, s.y, ease(u)) - Math.sin(u * Math.PI) * 40;
+    me.k = lerp(from.k, s.k, ease(u));
+    me.torn = 1 - ease(u * 1.4);
+    me.wing = u < 1 ? (t % 2 ? 60 : 10) : 0;
+    if (u >= 1) {
+      setState("scene");
       return false;
-    });
-  }, 4000 + Math.random() * 5000);
+    }
+  } else if (state === "follow" || state === "perch") {
+    const target = state === "perch" && spot ? spot : goal();
+    const dx = target.x - me.x;
+    const dy = target.y - me.y;
+    const dist = Math.hypot(dx, dy);
+    me.x += dx * 0.32;
+    me.y += dy * 0.32;
+    me.k = 1;
+    if (dist > 3) {
+      // heading turns toward the way it moves, in short eased steps
+      const heading = Math.atan2(dx, -dy) / DEG;
+      me.rot += ((((heading - me.rot) % 360) + 540) % 360 - 180) * 0.35;
+      me.wing = t % 2 ? 66 : 6;
+      me.lift = Math.min(1, dist / 120);
+    } else {
+      me.lift = 0;
+      // at rest: the wings bask, slowly closing and opening (a few held frames), otherwise still
+      const phase = t % 60;
+      me.wing = phase < 7 ? [18, 40, 56, 56, 40, 18, 0][phase] : 0;
+      me.rot += ((((-8 - me.rot) % 360) + 540) % 360 - 180) * 0.2;
+    }
+    if (fine.matches && state === "follow" && now - lastMove > 1200 && now - lastScroll > 400 && pointer) {
+      spot = restSpot();
+      setState("perch");
+    }
+    if (!fine.matches && state === "follow" && now - lastScroll > 260) {
+      spot = nearestPerch();
+      if (spot) setState("perch");
+    }
+    draw(me);
+    // nothing left to animate: rest until the pointer or the page moves again
+    if (dist <= 3 && state === "perch" && t > 70) return false;
+    return true;
+  }
+  draw(me);
+  return state !== "scene";
+}
+
+function setState(next) {
+  state = next;
+  t = 0;
+  from = { x: me.x, y: me.y, k: me.k };
+  if (next === "scene") {
+    me.op = 0;
+    draw(me);
+    document.querySelector("[data-companion-start]")?.style.removeProperty("visibility");
+    return;
+  }
+  if (next === "popout") {
+    const s = sceneSpot();
+    if (!s) return;
+    Object.assign(me, s, { op: 1, torn: 0, wing: 0 });
+    from = { ...s };
+    document.querySelector("[data-companion-start]")?.style.setProperty("visibility", "hidden");
+  }
+  if (next !== "busy") run();
+}
+function run() {
+  if (running || still()) return;
+  running = true;
+  tick(() => {
+    const more = frame() !== false;
+    if (!more) running = false;
+    return more;
+  });
 }
 
 function onScroll() {
-  target = motion ? progressAt(scrollY) : 0;
-  run();
+  lastScroll = performance.now();
+  if (still() || state === "busy") return;
+  if (state === "scene" && scrollY > 24) setState("popout");
+  else if (scrollY < 4 && state !== "scene" && state !== "popout") setState("home");
+  else {
+    if (state === "perch" && !fine.matches) setState("follow");
+    run();
+  }
+}
+function onPointer(event) {
+  if (event.pointerType === "touch") return;
+  const moved = pointer ? Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) : 99;
+  pointer = { x: event.clientX, y: event.clientY };
+  lastMove = performance.now();
+  if (state === "perch" && moved > 30) setState("follow");
+  else if (state === "follow") run();
 }
 
-onMotion((isStill) => {
-  motion = !isStill;
-  clearTimeout(breathTimer);
-  if (!motion) {
-    shown = target = 0;
-    draw(0);
-    return;
-  }
-  onScroll();
-  rest();
-});
+// ---------------------------------------------------------------- the meetings, played by scroll position
+
+const SCENES = {
+  /** two small butterflies spiral up together in the side margin (the courtship flight) */
+  spiral(section) {
+    if (gutter < 120) return null;
+    const r = section.getBoundingClientRect();
+    const mx = scrollX + innerWidth - gutter / 2;
+    const my = r.top + scrollY + r.height * 0.55;
+    const other = actor("brimstone");
+    const ox = scrollX + innerWidth + 80;
+    const oy = my + 60;
+    Object.assign(other, { x: ox, y: oy, k: 0.72 });
+    return (f) => {
+      const u = Math.min(1, f / 10);
+      const spin = Math.max(0, f - 10);
+      const cy = my - spin * 9;
+      const th = spin * 0.55;
+      const rad = lerp(34, 22, Math.min(1, spin / 30));
+      const meet = (a, sign, x0, y0) => {
+        if (f <= 10) {
+          a.x = lerp(x0, mx + sign * rad, ease(u));
+          a.y = lerp(y0, my, ease(u));
+        } else {
+          a.x = mx + sign * rad * Math.cos(th);
+          a.y = cy + sign * rad * Math.sin(th) * 0.6;
+        }
+        a.wing = f % 2 ? 66 : 6;
+        a.rot = Math.sin(th + (sign > 0 ? 0 : Math.PI)) * 40;
+        a.lift = 0.8;
+      };
+      meet(other, 1, ox, oy);
+      meet(me, -1, this.from.x, this.from.y);
+      if (f > 40) {
+        other.y -= (f - 40) * 26;
+        other.x += (f - 40) * 6;
+      }
+      draw(other);
+      draw(me);
+      if (f < 52) return true;
+      drop(other);
+      return false;
+    };
+  },
+  /** a peacock crosses the section in the band above the headline, chased by the companion */
+  chase(section) {
+    if (innerWidth < 700) return null;
+    const r = section.getBoundingClientRect();
+    const y0 = r.top + scrollY + 56;
+    const x0 = scrollX - 80;
+    const x1 = scrollX + innerWidth + 80;
+    const lead = actor("peacock");
+    lead.k = 0.7;
+    return (f) => {
+      const path = (a, lag, start) => {
+        const u = Math.max(0, Math.min(1, (f - lag) / 30));
+        a.x = lerp(start, x1, ease(u));
+        a.y = y0 + Math.sin(u * 9 + lag) * 18;
+        a.rot = 90 + Math.cos(u * 9 + lag) * 25;
+        a.wing = f % 2 ? 68 : 4;
+        a.lift = 0.7;
+      };
+      path(lead, 0, x0);
+      path(me, 5, this.from.x);
+      draw(lead);
+      draw(me);
+      if (f < 36) return true;
+      drop(lead);
+      return false;
+    };
+  },
+  /** the companion and a cabbage white land side by side on one sprig */
+  pair(section) {
+    const sprig = section.querySelector("[data-pair]");
+    if (!sprig?.getClientRects().length) return null;
+    const r = sprig.getBoundingClientRect();
+    const sx = r.left + scrollX + r.width / 2;
+    const sy = r.top + scrollY + r.height * 0.1;
+    const other = actor("cabbage-white");
+    const ox = scrollX + innerWidth + 60;
+    const oy = sy - 140;
+    Object.assign(other, { x: ox, y: oy, k: 0.68 });
+    return (f) => {
+      const u = ease(Math.min(1, f / 14));
+      const land = (a, x0, y0, x1, y1, k) => {
+        a.x = lerp(x0, x1, u);
+        a.y = lerp(y0, y1, u) - Math.sin(u * Math.PI) * 40;
+        a.k = lerp(a.k, k, 0.3);
+        a.wing = u < 1 ? (f % 2 ? 64 : 8) : f < 22 ? (f % 3 ? 40 : 0) : 0;
+        if (u >= 1) a.rot = -6;
+        a.lift = u < 1 ? 0.6 : 0;
+      };
+      land(other, ox, oy, sx + 26, sy + 18, 0.66);
+      land(me, this.from.x, this.from.y, sx - 26, sy - 6, 0.78);
+      draw(other);
+      draw(me);
+      // the visitor stays on the sprig afterwards; it is just paper now
+      return f < 26;
+    };
+  },
+  /** the companion lands beside a pinned specimen; the specimen wakes, lets go of its pin, and they fly off */
+  wake(section) {
+    const pinned = section.querySelector(".wake-me img");
+    if (!pinned?.getClientRects().length) return null;
+    const r = pinned.getBoundingClientRect();
+    const px = r.left + scrollX + r.width / 2;
+    const py = r.top + scrollY + r.height / 2;
+    let other = null;
+    return (f) => {
+      if (f <= 12) {
+        const u = ease(f / 12);
+        me.x = lerp(this.from.x, px - 60, u);
+        me.y = lerp(this.from.y, py - 30, u) - Math.sin(u * Math.PI) * 50;
+        me.wing = f % 2 ? 64 : 8;
+      } else if (f <= 20) {
+        me.wing = f % 2 ? 40 : 0;
+        if (f === 16) {
+          other = actor("cabbage-white");
+          Object.assign(other, { x: px, y: py, k: r.width / SP["cabbage-white"].w, rot: 12 });
+          pinned.style.visibility = "hidden";
+        }
+        if (other) other.wing = f % 2 ? 30 : 0;
+      } else {
+        const u = (f - 20) / 22;
+        for (const [a, dx] of [[me, -60], [other, 0]]) {
+          if (!a) continue;
+          a.x = lerp(px + dx, scrollX + innerWidth - gutter / 2 + dx * 0.3, ease(u));
+          a.y = lerp(py, py - 420, u) + Math.sin(u * 8 + dx) * 14;
+          a.wing = f % 2 ? 66 : 6;
+          a.rot = 20 + Math.sin(u * 8 + dx) * 20;
+          a.lift = 0.8;
+        }
+        if (other) other.op = u > 0.8 ? (1 - u) * 5 : 1;
+      }
+      if (other) draw(other);
+      draw(me);
+      if (f < 42) return true;
+      if (other) drop(other);
+      return false;
+    };
+  },
+  /** at the close, a little group lifts off the card together and leaves through the margins */
+  liftoff(section) {
+    const card = section.querySelector(".end-card")?.getBoundingClientRect();
+    if (!card) return null;
+    const middle = card.left + scrollX + card.width / 2;
+    const crew = ["morpho", "brimstone", "cabbage-white"].map((id, i) => {
+      const a = actor(id);
+      const corner = [[0.06, 0.18], [0.94, 0.16], [0.9, 0.86]][i];
+      Object.assign(a, { x: card.left + scrollX + corner[0] * card.width, y: card.top + scrollY + corner[1] * card.height, k: 0.62, rot: [-14, 16, -10][i] });
+      return a;
+    });
+    return (f) => {
+      crew.forEach((a, i) => {
+        const go = f - 6 - i * 2;
+        if (go < 0) {
+          a.wing = f % 4 < 2 ? 0 : 28;
+        } else {
+          const u = go / 24;
+          const side = a.x < middle ? -1 : 1;
+          a.x += side * (6 + go * 0.6);
+          a.y -= 10 + go * 2.4;
+          a.rot = side * (20 + go);
+          a.wing = f % 2 ? 66 : 6;
+          a.lift = Math.min(1, u * 2);
+          a.op = u > 0.75 ? Math.max(0, (1 - u) * 4) : 1;
+        }
+        draw(a);
+      });
+      if (f >= 6) {
+        me.y -= 14;
+        me.x += Math.sin(f) * 6;
+        me.wing = f % 2 ? 66 : 6;
+      }
+      draw(me);
+      if (f < 32) return true;
+      crew.forEach(drop);
+      return false;
+    };
+  },
+};
+
+let playing = null;
+function play(name, section) {
+  if (playing || still() || state === "scene" || state === "popout" || state === "home") return false;
+  const ctx = { from: { x: me.x, y: me.y } };
+  const scene = SCENES[name]?.call(ctx, section);
+  if (!scene) return true; // nothing to play at this width; count it as done
+  playing = name;
+  state = "busy";
+  let f = 0;
+  tick(() => {
+    if (scene.call(ctx, ++f)) return true;
+    playing = null;
+    setState("follow");
+    return false;
+  });
+  return true;
+}
+
+const scenes = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
+      if (entry.intersectionRatio < 0.35) continue;
+      if (play(entry.target.dataset.scene, entry.target)) scenes.unobserve(entry.target);
+    }
+  },
+  { threshold: [0.35, 0.6, 0.9] },
+);
+
+// ---------------------------------------------------------------- wiring
+
 let measureTimer;
 const remeasure = () => {
   clearTimeout(measureTimer);
   measureTimer = setTimeout(measure, 150);
 };
+onMotion((isStill) => {
+  if (isStill) {
+    setState("scene");
+    return;
+  }
+  measure();
+  for (const el of document.querySelectorAll("[data-scene]")) scenes.observe(el);
+  onScroll();
+});
 addEventListener("scroll", onScroll, { passive: true });
+addEventListener("pointermove", onPointer, { passive: true });
 addEventListener("resize", remeasure);
 addEventListener("scrapbook:settled", remeasure);
 new ResizeObserver(remeasure).observe(document.body);
 document.fonts.ready.then(remeasure);
-measure();
+me.op = 0;
+draw(me);

@@ -37,6 +37,8 @@ window.hibi = {
 const colors = createColorschemeStore("hibi-demo-colorscheme");
 colors.start();
 const site = window.frameElement?.ownerDocument.documentElement;
+// On its own, /demo/ lays the editor on a scrapbook page; inside the landing page it is just the editor.
+if (window.parent !== window) document.documentElement.dataset.embedded = "";
 if (site) {
   const followSiteTheme = () => {
     const mode = site.dataset.theme;

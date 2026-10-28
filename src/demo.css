@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "EB Garamond";
+  src: url("/fonts/eb-garamond-latin-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
 .app[data-platform="linux"] .titlebar {
   padding-right: var(--titlebar-edge-inset);
 }
@@ -46,5 +53,196 @@
   }
   .titlebar {
     z-index: 4;
+  }
+}
+
+/* /demo/ on its own: the editor printed and cut out, taped to the scrapbook page */
+html[data-embedded] :is(.demo-header, .demo-tape, .demo-scraps) {
+  display: none;
+}
+html[data-embedded] .demo-frame {
+  display: contents;
+}
+html:not([data-embedded]) {
+  background: #ebe1cc url("/scrapbook/page-day.webp");
+}
+html:not([data-embedded])[data-appearance="dark"] {
+  background: #1d1810 url("/scrapbook/page-night.webp");
+}
+html:not([data-embedded]) body {
+  margin: 0;
+  padding: 0 32px 40px;
+  overflow-x: clip;
+  background: transparent;
+}
+.demo-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: min(1100px, 100%);
+  height: 72px;
+  margin: 0 auto 26px;
+  color: #1f1b16;
+}
+[data-appearance="dark"] .demo-header {
+  color: #f4e8cf;
+}
+.demo-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: inherit;
+  font: 500 30px/1 "EB Garamond", Georgia, serif;
+  text-decoration: none;
+}
+.demo-home:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+.demo-icon {
+  width: 32px;
+  height: 32px;
+  background: url("/scrapbook/icon-day.webp") center / contain no-repeat;
+  rotate: -6deg;
+}
+[data-appearance="dark"] .demo-icon {
+  background-image: url("/scrapbook/icon-night.webp");
+}
+.demo-label {
+  padding: 7px 12px 6px;
+  background: #fffdf8;
+  box-shadow:
+    inset 0 0 0 3px #fffdf8,
+    inset 0 0 0 4px rgb(64 44 20 / 0.32),
+    0 3px 8px -2px rgb(64 44 20 / 0.25);
+  color: #4a4033;
+  font: 400 12.5px/1.3 "Geist Mono", ui-monospace, monospace;
+  rotate: 1.5deg;
+}
+[data-appearance="dark"] .demo-label {
+  background: #30281c;
+  box-shadow:
+    inset 0 0 0 3px #30281c,
+    inset 0 0 0 4px rgb(244 232 207 / 0.22),
+    0 3px 8px -2px rgb(0 0 0 / 0.5);
+  color: #d8c8a6;
+}
+html:not([data-embedded]) .demo-frame {
+  position: relative;
+  isolation: isolate;
+  width: min(1100px, 100%);
+  margin-inline: auto;
+  padding: 14px;
+}
+html:not([data-embedded]) .demo-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #fffcf4;
+  clip-path: polygon(0% 0.05px, 12.5% 0.02px, 25% 0.07px, 37.5% 0px, 50% 0.16px, 62.5% 0.27px, 75% 1.45px, 87.5% 1.42px, calc(100% - 2.57px) 0%, calc(100% - 2.55px) 16.67%, calc(100% - 2.29px) 33.33%, calc(100% - 2.72px) 50%, calc(100% - 2.21px) 66.67%, calc(100% - 2.38px) 83.33%, 100% calc(100% - 0.69px), 87.5% calc(100% - 0.78px), 75% calc(100% - 0.41px), 62.5% calc(100% - 0.78px), 50% calc(100% - 0.58px), 37.5% calc(100% - 0.59px), 25% calc(100% - 0.6px), 12.5% calc(100% - 0.72px), 2.02px 100%, 2.29px 83.33%, 2.49px 66.67%, 2.46px 50%, 1.76px 33.33%, 2.28px 16.67%);
+}
+html:not([data-embedded])[data-appearance="dark"] .demo-frame::before {
+  background: #3a3124;
+}
+html:not([data-embedded]) .demo-frame::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  z-index: -2;
+  box-shadow:
+    0 2px 3px rgb(64 44 20 / 0.14),
+    0 30px 50px -18px rgb(64 44 20 / 0.32);
+}
+html:not([data-embedded])[data-appearance="dark"] .demo-frame::after {
+  box-shadow:
+    0 2px 3px rgb(0 0 0 / 0.4),
+    0 30px 50px -18px rgb(0 0 0 / 0.7);
+}
+html:not([data-embedded]) .app {
+  height: min(780px, calc(100svh - 150px));
+  min-height: 420px;
+}
+.demo-tape {
+  position: absolute;
+  z-index: 3;
+  top: -30px;
+  width: 112px;
+  aspect-ratio: 320 / 47;
+  background: url("/scrapbook/tape-periwinkle.webp") center / 100% 100% no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+}
+.demo-tape-tl {
+  left: -78px;
+  rotate: -36deg;
+}
+.demo-tape-tr {
+  right: -78px;
+  rotate: 36deg;
+  background-image: url("/scrapbook/tape-butter.webp");
+}
+.demo-scraps {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 0;
+  pointer-events: none;
+}
+.demo-scrap {
+  position: absolute;
+  height: auto;
+  filter: drop-shadow(0 5px 6px rgb(64 44 20 / 0.25));
+}
+.demo-lavender {
+  top: 300px;
+  right: calc((100vw - 1100px) / 4 - 60px);
+  width: 120px;
+  rotate: 10deg;
+}
+.demo-butterfly {
+  top: 150px;
+  right: calc((100vw - 1100px) / 4 - 50px);
+  width: 100px;
+  rotate: 16deg;
+}
+.demo-lavender-left {
+  top: 260px;
+  left: calc((100vw - 1100px) / 4 - 34px);
+  width: 68px;
+  rotate: -9deg;
+}
+.demo-moth {
+  top: 620px;
+  left: calc((100vw - 1100px) / 4 - 56px);
+  width: 112px;
+  rotate: -14deg;
+}
+@media (max-width: 1399px) {
+  .demo-scraps {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  html:not([data-embedded]) body {
+    padding: 0 12px 24px;
+  }
+  .demo-header {
+    height: 64px;
+    margin-bottom: 22px;
+  }
+  html:not([data-embedded]) .demo-frame {
+    padding: 8px;
+  }
+  .demo-tape {
+    width: 84px;
+    top: -24px;
+  }
+  .demo-tape-tl {
+    left: -60px;
+  }
+  .demo-tape-tr {
+    right: -60px;
   }
 }

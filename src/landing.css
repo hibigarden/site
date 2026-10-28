@@ -365,9 +365,9 @@
 /* the owner's own pen circle, drawn over the word (ink lies on top of print) */
 .ink-word .doodle {
   z-index: 1;
-  left: -15%;
-  top: 2%;
-  width: 131%;
+  left: -9%;
+  top: 5%;
+  width: 118%;
   rotate: -4deg;
   color: var(--pen-lavender);
   --delay: 0.4s;

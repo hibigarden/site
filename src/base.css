@@ -238,6 +238,12 @@ a:hover {
 :root.js :is(.theme-toggle, .motion-toggle)[hidden] {
   display: grid;
 }
+.brand-mark {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
 /* only the label is underlined: the link is a flex row, so its pill or arrow would get a line of its own */
 .nav-links a:is(:hover, [aria-current="page"]) .nav-label {
   text-decoration: underline;

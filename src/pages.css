@@ -674,6 +674,7 @@ main noscript a {
 .footer-group a {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   min-height: 36px;
   font-size: 18px;
 }

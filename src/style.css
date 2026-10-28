@@ -142,7 +142,6 @@
   box-sizing: border-box;
 }
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: 24px;
 }
 body {
@@ -2764,9 +2763,6 @@ a:hover {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   .demo-loader-wordmark::after {
     display: none;
   }

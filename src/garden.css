@@ -240,7 +240,7 @@
 }
 
 /* sky panels ([data-sky], built by garden.js): the hero's sky alone, filling their positioned parent, with its
-   clouds at the hero's scale drifting above a low horizon and a strip of the front lavender along the bottom */
+   clouds at the hero's scale drifting above a low horizon */
 [data-sky] {
   position: absolute;
   inset: 0;
@@ -258,16 +258,6 @@
   height: 100%;
   background-size: cover;
   background-position: 50% 100%;
-}
-/* the front lavender's dense left bed (the image's left 46%, before the path; --strip is set for the narrow file)
-   across the bottom, rising softly into the sky */
-[data-sky] .g-lavender {
-  top: auto;
-  bottom: 0;
-  height: min(11cqw, 24%);
-  background-size: var(--strip, 217%) auto;
-  background-position: 0 100%;
-  mask-image: linear-gradient(transparent, #000 55%);
 }
 
 /* the live editor rests below the headline, as large as the panel allows */

@@ -199,8 +199,8 @@ const SKY =
   '<i class="g-free g-stars g-night" data-twinkle="4.3,0"></i><i class="g-free g-stars-2 g-night" data-twinkle="6.1,0.45"></i>' +
   '<i class="g-free g-moon g-night"><i class="g-halo"></i></i>' +
   '<i class="g-layer g-clouds g-clouds-far" data-drift="640"></i><i class="g-layer g-clouds g-clouds-mid" data-drift="460"></i>' +
-  '<i class="g-layer g-clouds g-clouds-near" data-drift="330"></i><i class="g-layer g-lavender"></i>';
-const TWINS = ["g-clouds-far", "g-clouds-mid", "g-clouds-near", "g-lavender"];
+  '<i class="g-layer g-clouds g-clouds-near" data-drift="330"></i>';
+const TWINS = ["g-clouds-far", "g-clouds-mid", "g-clouds-near"];
 
 for (const panel of document.querySelectorAll("[data-sky]")) {
   panel.innerHTML = SKY;
@@ -210,9 +210,6 @@ for (const panel of document.querySelectorAll("[data-sky]")) {
       const mine = panel.querySelector(`.${name}`).style;
       for (const theme of ["--day", "--night"]) mine.setProperty(theme, twin.getPropertyValue(theme));
     }
-    // the narrow lavender file starts at the canvas' x 480, so its bed before the path is its left 43%
-    const narrow = /-s\.webp/.test(panel.querySelector(".g-lavender").style.getPropertyValue("--day"));
-    panel.querySelector(".g-lavender").style.setProperty("--strip", narrow ? "233%" : "217%");
   };
   if (garden) {
     share();

@@ -2001,8 +2001,8 @@ a:hover {
 
 /* ---------------------------------------------------------------- the close: a sky panel like the hero */
 
-/* the page ends on the hero's sky (garden.js fills [data-sky]: clouds by day, moon and stars by night, a strip of
-   lavender along the bottom), as a rounded panel inset like the hero, with the download on the sky */
+/* the page ends on the hero's sky (garden.js fills [data-sky]: clouds by day, moon and stars by night), as a rounded
+   panel inset like the hero, with the download on the sky */
 .cta {
   position: relative;
   isolation: isolate;
@@ -2012,7 +2012,7 @@ a:hover {
   width: calc(100% - 2 * var(--hero-inset, 16px));
   min-height: max(460px, 72svh);
   margin: 40px var(--hero-inset, 16px) var(--hero-inset, 16px);
-  padding: 72px 24px calc(min(11vw, 150px) + 36px);
+  padding: 72px 24px;
   border-radius: 16px;
   text-align: center;
   box-shadow:
@@ -2023,7 +2023,7 @@ a:hover {
 .cta::after {
   content: "";
   position: absolute;
-  inset: 8% 10% 20%;
+  inset: 12% 10%;
   z-index: -1;
   background: radial-gradient(closest-side, rgb(255 255 255 / 0.4), transparent);
   pointer-events: none;

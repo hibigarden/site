@@ -68,13 +68,14 @@ function clock() {
   };
 }
 
-// The sky's own motion, shared by the hero and every sky panel: the clouds drift in seamless loops, the stars
-// twinkle out of step, the moon's halo and the sun breathe.
+// The sky's own motion, shared by the hero and every park panel: the clouds drift in seamless loops, the stars
+// twinkle out of step, the moon's halo, the sun and the lamp's glow breathe.
 function sky(root) {
   const drifts = [...root.querySelectorAll("[data-drift]")].map((el, i) => [el, +el.dataset.drift, i * 0.29]);
   const twinkles = [...root.querySelectorAll("[data-twinkle]")].map((el) => [el, ...el.dataset.twinkle.split(",").map(Number)]);
   const halo = root.querySelector(".g-halo");
   const sun = root.querySelector(".g-sun");
+  const glow = root.querySelector(".g-glow");
   return (t) => {
     for (const [el, period, phase] of drifts) el.style.translate = `${(-66.6667 * ((t / period + phase) % 1)).toFixed(4)}% 0`;
     for (const [el, period, phase] of twinkles) el.style.opacity = (0.45 + 0.55 * breathe(t, period, phase)).toFixed(3);
@@ -84,6 +85,7 @@ function sky(root) {
       halo.style.transform = `scale(${(1 + 0.04 * b).toFixed(4)})`;
     }
     if (sun) sun.style.opacity = (0.86 + 0.14 * breathe(t, 9.6)).toFixed(3);
+    if (glow) glow.style.opacity = (0.84 + 0.16 * (0.7 * breathe(t, 5.2) + 0.3 * breathe(t, 2.3, 0.4))).toFixed(3);
   };
 }
 
@@ -415,7 +417,6 @@ if (garden) {
   // the companion's resting butterfly stays put (companion.js reads its box and hides it while it is out)
   const resting = garden.querySelector(".g-companion");
   const flock = flockOf(garden, hero);
-  const glow = garden.querySelector(".g-glow");
   const ambient = sky(garden);
   const time = clock();
   const fine = matchMedia("(hover: hover) and (pointer: fine)");
@@ -446,7 +447,6 @@ if (garden) {
       l.el.style.transform = `translate3d(${(px * SHIFT_X * l.depth).toFixed(2)}px,${(py * SHIFT_Y * l.depth + sink * l.sink).toFixed(2)}px,0)`;
     }
     flock.frame(t, dt, sink, px);
-    if (glow) glow.style.opacity = (0.84 + 0.16 * (0.7 * breathe(t, 5.2) + 0.3 * breathe(t, 2.3, 0.4))).toFixed(3);
     // the companion basks with its wings open, now and then two slow beats
     if (resting && !resting.hidden) {
       const slow = Math.floor(t * 6) % 40;
@@ -487,30 +487,9 @@ if (garden) {
   intent(() => warm(garden, garden.clientWidth / garden.clientHeight < 0.55 ? ":not(.g-bench, .g-lamp, .g-glow, .g-trees, .g-tree)" : ""));
 }
 
-// Sky panels ([data-sky], e.g. behind the closing call to action): the hero's sky without the ground, built here so
-// the markup stays one element. Apart from their own haze-free sky base they use the hero's files (its wide or narrow
-// choice), so they download almost nothing new.
-const SKY =
-  '<i class="g-layer g-sky"></i><i class="g-sun g-day"></i>' +
-  '<i class="g-free g-stars g-night" data-twinkle="4.3,0"></i><i class="g-free g-stars-2 g-night" data-twinkle="6.1,0.45"></i>' +
-  '<i class="g-free g-moon g-night"><i class="g-halo"></i></i>' +
-  '<i class="g-layer g-clouds g-clouds-far" data-drift="640"></i><i class="g-layer g-clouds g-clouds-mid" data-drift="460"></i>' +
-  '<i class="g-layer g-clouds g-clouds-near" data-drift="330"></i>';
-const TWINS = ["g-clouds-far", "g-clouds-mid", "g-clouds-near"];
-
-for (const panel of document.querySelectorAll("[data-sky]")) {
-  panel.innerHTML = SKY;
-  const share = () => {
-    for (const name of TWINS) {
-      const twin = getComputedStyle(garden.querySelector(`.${name}`));
-      const mine = panel.querySelector(`.${name}`).style;
-      for (const theme of ["--day", "--night"]) mine.setProperty(theme, twin.getPropertyValue(theme));
-    }
-  };
-  if (garden) {
-    share();
-    new ResizeObserver(share).observe(garden);
-  }
+// Park panels (.park, behind the window of "built around writing" and the closing call to action): the hero's park in
+// the hero's files (garden.css), with its sky's motion and nothing else.
+for (const panel of document.querySelectorAll(".park")) {
   const ambient = sky(panel);
   const time = clock();
   animate(panel, (now) => ambient(time(now)), () => (compose(panel), time()));

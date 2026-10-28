@@ -32,10 +32,10 @@
   padding: 128px 32px 0;
 }
 
-:is(.garden, [data-sky]) {
+:is(.garden, .park) {
   --sky-top: #83c3fd;
 }
-[data-theme="dark"] :is(.garden, [data-sky]) {
+[data-theme="dark"] :is(.garden, .park) {
   --sky-top: #04154a;
 }
 .garden {
@@ -66,16 +66,16 @@
 }
 
 /* the canvas (2400 x 1350 in the image agent's units, --c css px each): as wide as the panel plus room to shift,
-   horizon (row 560) at --horizon of the panel, the foreground running off the bottom. --pl/--pt is the panel's
-   corner in canvas coordinates, for the sky's free sprites. */
+   horizon (row 560) at --horizon of the panel, the foreground running off the bottom, canvas column --cx in the
+   panel's middle. --pl/--pt is the panel's corner in canvas coordinates, for the sky's free sprites. */
 .g-scene {
   --m: 24px;
   --horizon: 0.68;
   --c: max(calc((100cqw + 2 * var(--m)) / 2400), calc((100cqh * (1 - var(--horizon)) + var(--m)) / 790));
-  --pl: calc(1200 * var(--c) - 50cqw);
+  --pl: calc(var(--cx, 1200) * var(--c) - 50cqw);
   --pt: calc(560 * var(--c) - 100cqh * var(--horizon));
   position: absolute;
-  left: calc(50cqw - 1200 * var(--c));
+  left: calc(50cqw - var(--cx, 1200) * var(--c));
   top: calc(100cqh * var(--horizon) - 560 * var(--c));
   width: calc(2400 * var(--c));
   height: calc(1350 * var(--c));
@@ -258,25 +258,89 @@
   }
 }
 
-/* sky panels ([data-sky], built by garden.js): the hero's sky alone, filling their positioned parent, with its
-   clouds at the hero's scale drifting above a low horizon */
-[data-sky] {
+/* park panels (.park): the hero's own park behind a part of the page (the window of "built around writing" and the
+   closing call to action), layer for layer, in the hero's canvas geometry with the hero's files. each panel picks
+   the stretch of canvas it shows (--span canvas px across around column --cx) and where its horizon sits. on phones
+   they take the hero's narrow files (every phone stretch lies inside their middle 60%), so a panel downloads
+   nothing the hero hasn't (but the bench and lamp the hero hides on phones). */
+.park {
   position: absolute;
   inset: 0;
   z-index: -1;
   overflow: hidden;
   border-radius: inherit;
-  container: sky / size;
+  container-type: size;
   background: var(--sky-top);
 }
-/* the haze-free sky base, its own file (a call to action has no horizon) */
-[data-sky] .g-sky {
-  --day: url("/scrapbook/garden/sky-cta-day.webp");
-  --night: url("/scrapbook/garden/sky-cta-night.webp");
-  top: 0;
-  height: 100%;
-  background-size: cover;
-  background-position: 50% 100%;
+/* the window's park: the lawn path and the lavender, no props. it stays right of the bench and left of the lamppost
+   that the night lawn and lavender have painted in (under the hero's bench and lamp) */
+.park-path .g-scene {
+  --cx: 1460;
+  --horizon: 0.62;
+  --c: calc(100cqw / 1440);
+}
+/* the closing park: the hero's bench and lamp where the hero has them, over the painted ones, an open notebook
+   left on the bench */
+.park-bench .g-scene {
+  --horizon: 0.52;
+  --bx: 10.8333%;
+}
+.park-bench .g-bench {
+  left: var(--bx);
+}
+.notebook {
+  position: absolute;
+  left: calc(var(--bx) + 7.4%);
+  top: 58.6%;
+  width: 7.4%;
+  height: auto;
+  transform: scaleY(0.46) skewX(-12deg);
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 3px 3px rgb(0 0 0 / 0.25));
+}
+[data-theme="dark"] .notebook {
+  filter: brightness(0.78) drop-shadow(0 3px 3px rgb(0 0 0 / 0.4));
+}
+@media (max-width: 900px) {
+  .park-bench .g-scene {
+    --cx: 1000;
+  }
+}
+@media (max-width: 600px) {
+  .park-path .g-scene {
+    --cx: 1340;
+    --horizon: 0.67;
+    --c: calc(100cqw / 1160);
+  }
+  /* a phone's close shows the middle of the park: bench and lamp stand nearer, the trees stay out */
+  .park-bench .g-scene {
+    --cx: 1220;
+    --horizon: 0.6;
+    --bx: 31%;
+    --c: calc(100cqw / 980);
+  }
+  .park-bench .g-lamp {
+    left: 63%;
+  }
+  .park-bench .g-glow {
+    left: 48.8%;
+  }
+  .park-bench .g-trees {
+    display: none;
+  }
+  .park-bench .g-moon {
+    left: calc(var(--pl) + 8cqw);
+    top: calc(var(--pt) + 44cqh);
+  }
+  /* the hero's narrow files (garden.css's generated block, for phones) */
+  .park :is(.g-sky, .g-far, .g-lawn, .g-lavender) { left: 20%; width: 60%; }
+  .park .g-sky { --day: url("/scrapbook/garden/sky-day-s.webp"); --night: url("/scrapbook/garden/sky-night-s.webp"); }
+  .park .g-far { --day: url("/scrapbook/garden/far-day-s.webp"); --night: url("/scrapbook/garden/far-night-s.webp"); }
+  .park .g-lawn { --day: url("/scrapbook/garden/lawn-day-s.webp"); --night: url("/scrapbook/garden/lawn-night-s.webp"); }
+  .park .g-lavender { --day: url("/scrapbook/garden/lavender-day-s.webp"); --night: url("/scrapbook/garden/lavender-night-s.webp"); }
+  .park .g-clouds-far { --day: url("/scrapbook/garden/clouds-far-day-s.webp"); --night: url("/scrapbook/garden/clouds-far-night-s.webp"); }
+  .park .g-clouds-mid { --day: url("/scrapbook/garden/clouds-mid-day-s.webp"); --night: url("/scrapbook/garden/clouds-mid-night-s.webp"); }
+  .park .g-clouds-near { --day: url("/scrapbook/garden/clouds-near-day-s.webp"); --night: url("/scrapbook/garden/clouds-near-night-s.webp"); }
 }
 
 /* the live editor is the hero's focal point: wide, centred, and down to the panel's lower edge (its box is pure

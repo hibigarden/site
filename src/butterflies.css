@@ -49,3 +49,21 @@
   z-index: 1;
   will-change: transform;
 }
+
+/* the companion (companion.js) flies in its own layer above the rest */
+.companion-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 0;
+  overflow: visible;
+  overflow-x: clip;
+  pointer-events: none;
+  z-index: 7;
+  --bf-shadow: 0.34;
+}
+
+[data-theme="dark"] .companion-layer {
+  --bf-shadow: 0.7;
+}

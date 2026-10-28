@@ -1,4 +1,5 @@
 import "./butterflies.css";
+import { onMotion, tick as onFrame } from "./clock.js";
 
 // Desktop display size in css px (phones 0.7×); 2× sprites, body on the centre axis.
 const SPECIES = [
@@ -11,7 +12,6 @@ const SPECIES = [
 const IGNORE =
   "a,button,input,textarea,select,summary,label,[contenteditable],[tabindex],iframe,.demo,.addon-search";
 const DEG = Math.PI / 180;
-const still = matchMedia("(prefers-reduced-motion: reduce)");
 const phone = matchMedia("(max-width: 699px)");
 const rand = (min, max) => min + Math.random() * (max - min);
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -28,10 +28,8 @@ let spots = new Map(); // perch element -> landing point in layer coordinates
 let ox = 0; // layer origin in page coordinates
 let oy = 0;
 let scale = 1;
-let raf = 0;
+let running = false;
 let motion; // aborts the interaction listeners
-let lastCarry = -Infinity;
-let carryTimer;
 let measureTimer;
 const io = new IntersectionObserver((entries) => {
   for (const { target, isIntersecting } of entries) {
@@ -89,7 +87,10 @@ function play(b, anim) {
   b.anim = anim;
   mark(b, !!anim.fly);
   active.add(b);
-  raf ||= requestAnimationFrame(tick);
+  if (!running) {
+    running = true;
+    onFrame(tick);
+  }
 }
 
 function stop(b) {
@@ -99,23 +100,25 @@ function stop(b) {
   draw(b, b.x, b.y, b.a);
 }
 
+// runs on the site's 12 fps clock (held frames, like stop motion)
 function tick(now) {
-  raf = 0;
   for (const b of active) {
     const f = b.anim;
-    const dt = Math.min(now - (f.last ?? now), 50) / 1000;
+    const dt = Math.min(now - (f.last ?? now), 120) / 1000;
     f.last = now;
     const u = Math.min((f.t += dt) / f.d, 1);
     if (f.fly) glide(b, f, u, dt);
     else draw(b, b.x, b.y, b.a, 0, (f.amp * (1 - Math.cos(2 * Math.PI * f.n * u))) / 2);
     if (u < 1) continue;
-    if (f.fly) play(b, { n: 2, amp: 40, d: 0.8 }); // land with a couple of slower beats
+    if (f.fly) play(b, { n: 2, amp: 40, d: 0.9 }); // land with a couple of slower beats
     else {
       stop(b);
       rest(b);
     }
   }
-  if (active.size) raf ||= requestAnimationFrame(tick);
+  if (active.size) return true;
+  running = false;
+  return false;
 }
 
 // A cubic bezier from the takeoff point whose last leg leads head-first into the perch (b.x, b.y).
@@ -140,13 +143,9 @@ function glide(b, f, u, dt) {
   draw(b, x - (dy / len) * wobble, y + (dx / len) * wobble, f.hd, lift, wing);
 }
 
+// perched butterflies keep still on their own (the companion is the one that moves by itself)
 function rest(b) {
   clearTimeout(b.timer);
-  if (!motion || !b.seen || b.anim || document.hidden) return;
-  b.timer = setTimeout(() => {
-    if (Math.random() < 0.3) play(b, { n: 1, amp: 45, d: rand(1.4, 1.9) });
-    else play(b, { n: Math.floor(rand(2, 5)), amp: rand(50, 68), d: rand(0.5, 0.8) });
-  }, rand(3000, 9000));
 }
 
 function free(el, b) {
@@ -203,7 +202,7 @@ function takeoff(b, px, py, enter) {
   clearTimeout(b.timer);
   const d = clamp(length / rand(250, 450), 0.8, 3);
   const lift = Math.min(1, chord / 450);
-  play(b, { fly: true, x0, y0, x1, y1, c, d, lift, ph: 0, hd: a0, seed: rand(0, 6), hz: rand(8, 12) });
+  play(b, { fly: true, x0, y0, x1, y1, c, d, lift, ph: 0, hd: a0, seed: rand(0, 6), hz: b.sp.w > 120 ? 4 : 6 });
   return true;
 }
 
@@ -227,35 +226,22 @@ function onTap(event) {
   startle(event, 160);
 }
 
-// After a scroll leaves no butterfly in view, one off-screen butterfly follows the reader.
-function carry() {
-  if (!motion || document.hidden || flock.some((b) => b.seen)) return;
-  if (performance.now() - lastCarry < 4000) return;
-  const cx = scrollX - ox + innerWidth / 2;
-  const cy = scrollY - oy + innerHeight / 2;
-  const away = (b) => Math.hypot(b.x - cx, b.y - cy);
-  const [b] = flock.filter((b) => !b.anim).sort((p, q) => away(p) - away(q));
-  if (b && takeoff(b, Infinity, Infinity, true)) lastCarry = performance.now();
-}
-
-function onScroll() {
-  clearTimeout(carryTimer);
-  carryTimer = setTimeout(carry, 1500);
+// the story's lift-off: every perched butterfly in view takes off (story.js fires this at chapter 5)
+function release() {
+  if (!motion) return;
+  for (const b of flock) if (b.seen && !b.anim) takeoff(b, b.x, b.y + 400);
 }
 
 function onVisibility() {
-  cancelAnimationFrame(raf);
-  raf = 0;
   for (const b of flock) {
     if (document.hidden) stop(b);
     rest(b);
   }
 }
 
-function setMotion() {
+function setMotion(isStill) {
   motion?.abort();
-  motion = still.matches ? null : new AbortController();
-  clearTimeout(carryTimer);
+  motion = isStill ? null : new AbortController();
   for (const b of flock) {
     stop(b);
     rest(b);
@@ -264,7 +250,7 @@ function setMotion() {
   const options = { passive: true, signal: motion.signal };
   addEventListener("pointermove", onMove, options);
   addEventListener("click", onTap, options);
-  addEventListener("scroll", onScroll, options);
+  addEventListener("butterflies:release", release, options);
   document.addEventListener("visibilitychange", onVisibility, options);
 }
 
@@ -345,8 +331,7 @@ function remeasure() {
 
 measure();
 sync();
-setMotion();
-still.addEventListener("change", setMotion);
+onMotion(setMotion);
 addEventListener("resize", remeasure);
 addEventListener("scrapbook:settled", remeasure); // a card finished landing, so its perches moved
 new ResizeObserver(remeasure).observe(document.body);

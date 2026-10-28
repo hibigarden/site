@@ -475,7 +475,7 @@ main noscript a {
 }
 .download-ledger {
   overflow-x: auto;
-  padding: 6px 24px;
+  padding: 6px 10px;
   border: 1px solid var(--line);
   border-radius: 10px;
 }
@@ -486,7 +486,7 @@ main noscript a {
   text-align: left;
 }
 .download-table :is(th, td) {
-  padding: 12px 18px 11px 0;
+  padding: 12px 14px 11px;
   vertical-align: baseline;
 }
 .download-table thead th {
@@ -718,7 +718,7 @@ main noscript a {
     padding: 20px 18px 14px;
   }
   .download-ledger {
-    padding-inline: 18px;
+    padding-inline: 6px;
   }
   .faq-item summary {
     font-size: 21px;
@@ -739,7 +739,7 @@ main noscript a {
     display: grid;
     grid-template-columns: auto 1fr auto;
     gap: 2px 14px;
-    padding: 10px 0;
+    padding: 10px 12px;
   }
   .download-table :is(th, td) {
     display: block;
@@ -757,9 +757,11 @@ main noscript a {
   .download-table .download-hash {
     grid-column: 1 / -1;
   }
-  .download-table tr.is-yours,
-  .download-table tr.is-yours td {
+  .download-table tr.is-yours {
     background: color-mix(in oklch, var(--accent) 8%, transparent);
+  }
+  .download-table tr.is-yours td {
+    background: none;
   }
   .footer-details {
     flex-direction: column;

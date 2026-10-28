@@ -142,6 +142,12 @@ sky.setAttribute("aria-hidden", "true");
 document.body.prepend(sky);
 let lightShown = -1;
 function light() {
+  // only the landing's day passes, and only in daylight: the night theme is already night
+  if (document.documentElement.dataset.page !== "home" || document.documentElement.dataset.theme === "dark") {
+    if (lightShown !== -2) sky.style.backgroundColor = "";
+    lightShown = -2;
+    return false;
+  }
   const max = document.documentElement.scrollHeight - innerHeight;
   const q = Math.round((max > 0 ? Math.min(1, scrollY / max) : 0) * 120) / 120;
   if (q === lightShown) return false;

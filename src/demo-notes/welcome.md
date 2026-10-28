@@ -1,4 +1,4 @@
-**hibi** is a free, beautiful,  fast, and extensible markdown editor.
+**hibi** is a free, beautiful, fast, and extensible markdown editor.
 
 > -# hibi is currently in beta, contributions are greatly appreciated.
 

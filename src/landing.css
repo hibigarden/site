@@ -1229,8 +1229,16 @@ svg.button-icon,
   gap: 28px 60px;
   align-items: start;
 }
-.qa {
-  border-top: 1px solid var(--rule-strong);
+/* three groups, each under a small typed heading on its own rule */
+.qa-group {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule-strong);
+  color: var(--ink-faint);
+  font: 400 12.5px/1.3 var(--mono);
+  letter-spacing: 0.04em;
+}
+.qa-group:not(:first-child) {
+  margin-top: 44px;
 }
 .qa details {
   border-bottom: 1px solid var(--rule);
@@ -1265,11 +1273,23 @@ svg.button-icon,
 .qa details p + p {
   margin-top: -6px;
 }
+.qa ul {
+  max-width: 36em;
+  margin: 0;
+  padding: 0 0 14px 1.1em;
+  color: var(--ink-soft);
+  font-size: var(--body);
+  line-height: 1.5;
+}
+.qa li + li {
+  margin-top: 6px;
+}
 /* how hibi compares: a plain table of checkable facts (every cell sourced; generated from the research lane's
    comparison.json), clean type with hairlines, the hibi column only tinted. phones scroll it in its own box with
    the facts held at the left */
 .compare {
   grid-column: 1 / -1;
+  min-width: 0;
   margin-top: 72px;
 }
 .compare-title {

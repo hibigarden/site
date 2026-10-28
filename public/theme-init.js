@@ -11,6 +11,8 @@
       : "light";
   }
   document.documentElement.dataset.theme = theme;
+  // ?drafts shows sections still waiting on the owner (e.g. quotes not yet cleared with their authors)
+  if (/[?&]drafts\b/.test(location.search)) document.documentElement.dataset.drafts = "";
   try {
     if (localStorage.getItem("hibi-site-motion") === "still") {
       document.documentElement.dataset.motion = "still";

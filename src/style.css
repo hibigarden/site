@@ -670,6 +670,40 @@ a:hover {
   color: var(--pen-lavender);
   --delay: 0.6s;
 }
+/* on the park panel the headline and buttons sit straight on the sky (no card): a soft local glow keeps
+   them readable over clouds, and at night the primary button turns cream so it stands off the blue */
+.hero .title-card:not(.paper) {
+  position: relative;
+  isolation: isolate;
+  padding: 0;
+  rotate: none;
+}
+.hero .title-card:not(.paper)::before {
+  content: "";
+  position: absolute;
+  inset: -48px -72px;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.42), transparent);
+  pointer-events: none;
+}
+[data-theme="dark"] .hero .title-card:not(.paper)::before {
+  background: radial-gradient(closest-side, rgb(8 14 36 / 0.5), transparent);
+}
+[data-theme="dark"] .hero .cta-primary,
+[data-theme="dark"] .hero .cta-primary:hover {
+  color: #1f1b16;
+}
+[data-theme="dark"] .hero .cta-primary::before {
+  background: #f6e3b4;
+}
+/* beta hangs off the download button like a little tag */
+.cta-primary .beta-tag {
+  position: absolute;
+  top: -11px;
+  right: -14px;
+  margin: 0;
+  rotate: 8deg;
+}
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -2195,6 +2229,79 @@ a:hover {
   min-height: 44px;
   margin-top: 8px;
   font: 400 14px/1.4 var(--mono);
+}
+
+/* kind words (draft until each author agrees): clippings of what people wrote, linked to the original */
+[data-drafts] .draft[hidden] {
+  display: block;
+}
+.draft {
+  outline: 2px dashed var(--margin-line);
+  outline-offset: 12px;
+}
+.kind-words {
+  padding-block: 80px 40px;
+}
+.clippings {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  align-items: start;
+  gap: 30px 26px;
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.clipping {
+  position: relative;
+  isolation: isolate;
+  padding: 22px 22px 18px;
+  rotate: -0.8deg;
+}
+.clipping:nth-child(even) {
+  rotate: 0.9deg;
+}
+.clipping::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--cut-2);
+}
+.clip-letter::before {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 29px, var(--rule) 29px 30px) 0 14px / 100% 100% no-repeat,
+    var(--card-white);
+}
+.clip-postcard::before {
+  background: var(--card-tan);
+}
+.clip-card::before {
+  background: var(--card-sage);
+}
+.clipping::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -2;
+  box-shadow: 1px 2px 3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.9));
+}
+.clipping blockquote {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.45;
+}
+.clip-slip blockquote {
+  font: 400 15px/1.5 var(--font-ui);
+}
+.clip-source {
+  margin-top: 12px;
+  color: var(--ink-faint);
+  font: 400 12px/1.4 var(--mono);
+}
+.clip-source a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 /* credits: a few ledger slips under the title card */

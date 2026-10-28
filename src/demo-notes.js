@@ -1,18 +1,6 @@
-// The garden notes in the demo's sidebar, welcome first.
-import butterflies from "./demo-notes/butterflies.md?raw";
-import compost from "./demo-notes/compost.md?raw";
-import gardenJournal from "./demo-notes/garden journal.md?raw";
-import goldenAngle from "./demo-notes/golden angle.md?raw";
-import plantingPlan from "./demo-notes/planting plan.md?raw";
-import watering from "./demo-notes/watering.md?raw";
-import welcome from "./demo-notes/welcome.md?raw";
+// The notes in the demo's sidebar by their path in the workspace, welcome first: the demo opens on it.
+// thesis/growth.typ sits beside them for the desktop captures; the demo has no typst compiler.
+const files = import.meta.glob("./demo-notes/**/*.md", { query: "?raw", import: "default", eager: true });
+const notes = Object.entries(files).map(([file, markdown]) => ({ path: file.slice("./demo-notes/".length), markdown }));
 
-export default [
-  { name: "welcome.md", markdown: welcome },
-  { name: "garden journal.md", markdown: gardenJournal },
-  { name: "planting plan.md", markdown: plantingPlan },
-  { name: "golden angle.md", markdown: goldenAngle },
-  { name: "butterflies.md", markdown: butterflies },
-  { name: "watering.md", markdown: watering },
-  { name: "compost.md", markdown: compost },
-];
+export default notes.sort((a, b) => (b.path === "welcome.md") - (a.path === "welcome.md"));

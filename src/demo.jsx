@@ -9,7 +9,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import { createRoot } from "react-dom/client";
-import { FileText } from "lucide-react";
+import { FileText, Folder } from "lucide-react";
 import { ActiveDocumentEditor } from "../vendor/hibi/src/renderer/src/ActiveDocumentEditor";
 // The formatted view hibi ships today. To show the CodeMirror one instead, import MarkdownEditor from
 // FormattedEditor, run scripts/vendor-hibi.mjs and set localStorage hibi:formatted-engine to codemirror.
@@ -74,21 +74,24 @@ const platform = /Mac|iPhone|iPad/.test(navigator.platform) ? "darwin" : "linux"
 const hotkeys = defaultHotkeys(platform);
 const views = ["normal", "side-by-side", "markdown"];
 const unavailable = () => Promise.reject(new Error("This is available in the desktop app."));
-const noteState = (name, markdown, index) => ({
+const noteState = (path, markdown, index) => ({
   tabId: `note-${index}`,
   tabs: [],
   tabsEnabled: false,
-  id: `demo:${name}`,
+  id: `demo:${path}`,
   ephemeral: false,
   markdown,
   savedMarkdown: markdown,
-  name,
+  name: path.slice(path.lastIndexOf("/") + 1),
   dirty: false,
   revision: 1,
   contentVersion: 0,
   canAutosave: false,
 });
-const initialNotes = notes.map(({ name, markdown }, index) => noteState(name, markdown, index));
+const initialNotes = notes.map(({ path, markdown }, index) => noteState(path, markdown, index));
+// Workspace paths by tab; new notes start at the top of the workspace.
+const paths = new Map(initialNotes.map((note, index) => [note.tabId, notes[index].path]));
+const pathOf = (tabId) => paths.get(tabId) ?? noteFor(tabId).name;
 // Notes as they open; the runtime holds each one's edits from its first opening.
 const opening = new Map(initialNotes.map((note) => [note.tabId, note]));
 const noteFor = (tabId) => documentRuntime.get(tabId) ?? opening.get(tabId);
@@ -99,6 +102,29 @@ const activate = (tabId, ids) =>
     tabs: ids.map((id) => ({ id, name: noteFor(id).name, dirty: noteFor(id).dirty })),
   });
 activate(initialNotes[0].tabId, [...opening.keys()]);
+
+const names = new Intl.Collator(undefined, { numeric: true });
+// The workspace as hibi's explorer lists it: folders first, then by name.
+function workspaceTree(ids) {
+  const root = [];
+  for (const id of ids) {
+    const parts = pathOf(id).split("/");
+    let level = root;
+    for (let depth = 1; depth < parts.length; depth++) {
+      const folder = `folder:${parts.slice(0, depth).join("/")}`;
+      let item = level.find((entry) => entry.id === folder);
+      if (!item) level.push((item = { id: folder, label: parts[depth - 1], icon: Folder, children: [] }));
+      level = item.children;
+    }
+    level.push({ id, label: noteFor(id).name, icon: FileText });
+  }
+  const sort = (items) => {
+    items.sort((a, b) => Boolean(b.children) - Boolean(a.children) || names.compare(a.label, b.label));
+    for (const item of items) if (item.children) sort(item.children);
+    return items;
+  };
+  return sort(root);
+}
 
 function Demo() {
   const [noteIds, setNoteIds] = useState(() => initialNotes.map((note) => note.tabId));
@@ -113,6 +139,7 @@ function Demo() {
   const [reset, setReset] = useState(0);
   const resize = useSidebarResize(196);
   const dialogs = useDialogs();
+  const tree = useMemo(() => workspaceTree(noteIds), [noteIds]);
 
   // Edits reach the editor document without rerendering this shell, as in the app.
   useLayoutEffect(() => {
@@ -271,13 +298,13 @@ function Demo() {
       />
       <Sidebar
         className="document-sidebar workspace-sidebar"
-        label="Garden notes"
+        label="garden"
         open={sidebar}
         overlay={resize.overlay}
         onDismiss={() => setSidebar(false)}
         resize={resize}
         selected={selected}
-        items={noteIds.map((id) => ({ id, label: noteFor(id).name, icon: FileText }))}
+        items={tree}
         status={new Map(noteIds.map((id) => [id, { dirty: noteFor(id).dirty }]))}
         onSelect={(id) => {
           setFocusEditor(true);
@@ -321,11 +348,11 @@ function Demo() {
                   if (/^https?:\/\//i.test(href)) window.open(href, "_blank", "noopener,noreferrer");
                   if (!href.startsWith("obsidian-wiki:")) return;
                   // Wiki links open the note they name, as in a workspace.
-                  const names = new Map(noteIds.map((id) => [noteFor(id).name, id]));
-                  const name = wikiTarget(current.name, decodeURIComponent(href.slice(14)), new Set(names.keys()));
-                  if (!names.has(name)) return;
+                  const ids = new Map(noteIds.map((id) => [pathOf(id), id]));
+                  const path = wikiTarget(pathOf(current.tabId), decodeURIComponent(href.slice(14)), new Set(ids.keys()));
+                  if (!ids.has(path)) return;
                   setFocusEditor(true);
-                  setSelected(names.get(name));
+                  setSelected(ids.get(path));
                 }}
                 flavors={chosen}
                 footnoteDocument={footnotes}

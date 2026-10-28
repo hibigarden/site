@@ -57,8 +57,8 @@ const kinds = [
   ["extension", "extensions"],
   ["theme", "themes"],
 ];
+// Optional date orders; with neither pressed the catalog keeps its own order.
 const sorts = [
-  ["name", "a–z"],
   ["released", "recently released"],
   ["updated", "recently updated"],
 ];
@@ -216,7 +216,7 @@ function AddonDetails({ addon }) {
 function AddonGrid() {
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState("all");
-  const [sort, setSort] = useState("name");
+  const [sort, setSort] = useState(null);
   const search = useRef(null);
   const [directory, retry] = useDirectory();
   const dates = useCommunityDates();
@@ -225,10 +225,8 @@ function AddonGrid() {
     ...directory.entries.map((entry) => ({ ...entry, ...dates[entry.id] })),
   ];
   const selected = addons.find((addon) => addon.id === requestedId);
-  const matching = sortAddons(
-    addons.filter((addon) => matchesAddon(addon, query, kind)),
-    sort,
-  );
+  const filtered = addons.filter((addon) => matchesAddon(addon, query, kind));
+  const matching = sort ? sortAddons(filtered, sort) : filtered;
 
   useEffect(() => {
     if (!detailPage || (!selected && directory.status === "loading")) return;
@@ -297,10 +295,11 @@ function AddonGrid() {
             onChange={(event) => setQuery(event.target.value)}
           />
           <Button
-            disabled={!query && kind === "all"}
+            disabled={!query && kind === "all" && !sort}
             onClick={() => {
               setQuery("");
               setKind("all");
+              setSort(null);
               search.current.focus();
             }}
           >
@@ -325,7 +324,7 @@ function AddonGrid() {
               key={value}
               data-variant="ghost"
               aria-pressed={sort === value}
-              onClick={() => setSort(value)}
+              onClick={() => setSort(sort === value ? null : value)}
             >
               {label}
             </Button>
@@ -335,7 +334,7 @@ function AddonGrid() {
       <ul className="addon-grid" aria-label="addons">
         {matching.map((addon) => {
           const Glyph = glyph(addon);
-          const day = sort !== "name" && addonDay(addon[sort]);
+          const day = sort && addonDay(addon[sort]);
           return (
             <li key={addon.id}>
               <a

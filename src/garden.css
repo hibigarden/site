@@ -15,21 +15,21 @@
   left: 0;
   right: 0;
 }
+/* the hero is the title and the editor; the park behind them (.garden) is a rounded panel a screen tall. the 16:10
+   editor below the title hangs over the panel's lower edge onto the page, and because the hero's own height is its
+   content (never less than the panel), the next section always starts below the editor: all of it static css. */
 [data-page="home"] .hero {
+  --panel-h: max(760px, calc(100svh - 2 * var(--hero-inset)));
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-rows: auto minmax(420px, 1fr);
+  grid-template-rows: auto auto;
+  align-content: start;
   justify-items: center;
   width: calc(100% - 2 * var(--hero-inset));
-  height: calc(100svh - 2 * var(--hero-inset));
-  min-height: 760px;
+  min-height: var(--panel-h);
   margin: var(--hero-inset);
-  padding: 100px 32px 24px;
-  border-radius: 16px;
-  box-shadow:
-    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
-    0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
+  padding: 100px 32px 0;
 }
 
 :is(.garden, [data-sky]) {
@@ -40,10 +40,16 @@
 }
 .garden {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--panel-h);
   z-index: -1;
   overflow: hidden;
-  border-radius: inherit;
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
+    0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
   container: garden / size;
   background: var(--sky-top);
 }
@@ -262,10 +268,10 @@
 /* the live editor is the hero's focal point: wide, centred, and down to the panel's lower edge (its box is pure
    css, so it is reserved from the first paint; scale-demo.js fits the editor into whatever shape it gets) */
 .hero .demo-print {
-  align-self: stretch;
+  align-self: start;
   width: min(1180px, 84%);
-  aspect-ratio: auto;
-  margin-top: 24px;
+  aspect-ratio: 16 / 10;
+  margin-top: 28px;
 }
 .hero .demo {
   height: 100%;
@@ -274,17 +280,12 @@
 /* below desktop the panel grows with its content and keeps at least a screen, so the park shows under it */
 @media (max-width: 1024px) {
   [data-page="home"] .hero {
-    grid-template-rows: auto auto;
-    align-content: start;
-    height: auto;
-    min-height: calc(100svh - 2 * var(--hero-inset));
+    --panel-h: calc(100svh - 2 * var(--hero-inset));
   }
+  /* below desktop the editor is its snapshot, at the snapshot's own shape */
   .hero .demo-print {
-    align-self: start;
     width: min(900px, 84%);
-  }
-  .hero .demo {
-    height: auto;
+    aspect-ratio: 900 / 520;
   }
 }
 @media (max-width: 720px) {
@@ -292,7 +293,9 @@
     --hero-inset: 10px;
   }
   [data-page="home"] .hero {
-    padding: 84px 12px 20px;
+    padding: 84px 12px 0;
+  }
+  .garden {
     border-radius: 12px;
   }
   .hero .demo-print {

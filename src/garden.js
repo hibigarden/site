@@ -130,7 +130,7 @@ if (garden) {
 
   function measure() {
     c = scene.offsetWidth / 2400 || 1;
-    height = hero.offsetHeight;
+    height = garden.offsetHeight;
   }
 
   function frame(now) {

@@ -8,8 +8,10 @@ export default async function handler(request, response) {
     response.end();
     return;
   }
-  const { id, sitemap } = request.query;
-  const pathname = sitemap === "1" ? "/sitemap.xml" : typeof id === "string" ? `/addons/${id}` : "";
+  const { id, sitemap, community } = request.query;
+  const pathname = community === "1"
+    ? "/addons/community.json"
+    : sitemap === "1" ? "/sitemap.xml" : typeof id === "string" ? `/addons/${id}` : "";
   try {
     assets ??= readAddonPages(process.cwd());
     const result = await addonPageResponse(pathname, await assets);

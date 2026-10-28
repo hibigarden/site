@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { addonIdFromPath, bundledAddons, fetchDirectory } from "../src/addon-directory.js";
 import { renderAddonPage } from "../src/addon-seo.js";
+import { communityFeed, datedAddons } from "./addon-dates.js";
 
 const origin = "https://www.hibi.garden";
 const escapeXml = (value) => value.replace(/[&<>"']/g, (character) =>
@@ -9,15 +10,33 @@ const escapeXml = (value) => value.replace(/[&<>"']/g, (character) =>
 );
 
 export async function readAddonPages(root) {
-  const [template, catalog] = await Promise.all([
+  const [template, catalog, snapshot] = await Promise.all([
     readFile(join(root, "dist/addons/index.html"), "utf8"),
     readFile(join(root, "dist/addons/catalog.json"), "utf8"),
+    // Addon pages never depend on the community snapshot.
+    readFile(join(root, "dist/addons/community-snapshot.json"), "utf8").catch(() => null),
   ]);
-  return { template, addons: bundledAddons(JSON.parse(catalog)) };
+  return {
+    template,
+    addons: bundledAddons(JSON.parse(catalog)),
+    snapshot: snapshot ? JSON.parse(snapshot) : { head: null, dates: {}, addons: [] },
+  };
 }
 
 /** Shared by production functions and Vite so raw HTML works without JavaScript. */
-export async function addonPageResponse(pathname, { template, addons, fetch = globalThis.fetch }) {
+export async function addonPageResponse(pathname, { template, addons, snapshot, fetch = globalThis.fetch }) {
+  if (pathname === "/addons/community.json") {
+    const feed = await communityFeed(snapshot, addons.map((entry) => entry.id), { fetch });
+    return new Response(JSON.stringify({ live: feed.live, addons: datedAddons(feed) }), {
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        // A snapshot answer is retried sooner than a live one.
+        "Cache-Control": feed.live
+          ? "public, max-age=0, s-maxage=300, stale-while-revalidate=3600"
+          : "public, max-age=0, s-maxage=60, stale-while-revalidate=600",
+      },
+    });
+  }
   const sitemap = pathname === "/sitemap.xml";
   const id = addonIdFromPath(pathname);
   if (!sitemap && !id) return null;

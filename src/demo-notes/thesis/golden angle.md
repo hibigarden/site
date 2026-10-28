@@ -16,4 +16,4 @@ $$
 
 so every seed gets the same area, no two seeds line up, and the head fills without gaps. count the spirals and you usually get two fibonacci numbers in a row, like 34 and 55.
 
-the paper draft is in [[growth]] and the sources are in the [[reading list]].
+the paper draft is in [[growth]] and the sources are in the [[reading list]]. the exercises for thursday are in [[problem set.tex]].

@@ -36,6 +36,7 @@ the fit gives $K = 2.4$ m, $r = 0.09$ per day and $t_0 = 60$, so the fastest gro
 
 ## next
 
+- [x] typeset the draft for the seminar, see [[growth.typ]]
 - [ ] fit $K$ for each plant instead of the mean
 - [ ] count the seed spirals on the same heads, see [[golden angle]]
 - [ ] add the sources from the [[reading list]]

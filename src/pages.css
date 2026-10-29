@@ -548,12 +548,16 @@ main noscript a {
   max-width: 820px;
 }
 .faq-item {
+  padding-inline: 12px;
   border-top: 1px solid var(--line);
 }
 .faq-item:last-child {
   border-bottom: 1px solid var(--line);
 }
 .faq-item summary {
+  /* the row spans the rule, its words keep the item's inset: room for the focus ring inside */
+  margin-inline: -12px;
+  padding-inline: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -1809,13 +1809,16 @@ svg.button-icon,
   margin-top: 44px;
 }
 .qa details {
+  padding-inline: 12px;
   border-bottom: 1px solid var(--rule);
 }
 .qa summary {
+  /* the row spans the rule, its words keep the item's inset: room for the focus ring inside */
+  margin-inline: -12px;
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  padding: 18px 0 17px;
+  padding: 18px 12px 17px;
   font: 500 23px/1.25 var(--serif);
   list-style: none;
   cursor: pointer;
@@ -1865,7 +1868,9 @@ svg.button-icon,
   letter-spacing: -0.01em;
 }
 .compare-scroll {
-  margin-top: 22px;
+  /* room above the column links for their focus ring (the scroller clips) */
+  margin-top: 16px;
+  padding-top: 6px;
   overflow-x: auto;
 }
 .compare-table {
@@ -2081,6 +2086,10 @@ svg.button-icon,
   .compare-table {
     min-width: 760px;
     font-size: 15px;
+  }
+  /* a link scrolled into view by focus lands clear of the pinned first column */
+  .compare-scroll {
+    scroll-padding-inline-start: 118px;
   }
   .compare-table :is(tbody, thead) > tr > :first-child {
     position: sticky;

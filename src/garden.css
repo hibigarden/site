@@ -308,6 +308,9 @@
   width: min(1000px, 74%);
   aspect-ratio: 16 / 10;
   margin-top: 28px;
+  /* never wider than the hero: safari sizes this box's automatic minimum width from a height that follows its
+     toolbar, so scrolling on a phone widened the hero's column and the editor grew past the panel */
+  min-width: 0;
 }
 .hero .demo {
   height: 100%;

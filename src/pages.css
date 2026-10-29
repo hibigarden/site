@@ -466,6 +466,11 @@ main noscript a {
   text-underline-offset: 3px;
   cursor: pointer;
 }
+/* hidden until the script knows the clipboard works, but holding its room so lines and rows don't grow when it shows */
+.download-copy[hidden] {
+  display: inline-block;
+  visibility: hidden;
+}
 .download-section {
   margin-top: 72px;
 }

@@ -444,12 +444,14 @@ function physics(a) {
   if (goal.route) {
     if (a.path !== goal.route) [a.path, a.pi] = [goal.route, 0];
   } else if (goal.plan) {
-    if (a.version !== map.version || !a.planned || Math.hypot(a.planned.x - goal.x, a.planned.y - goal.y) > map.c) {
+    // (no way found from here: it tries again a few times a second as it moves, rather than pressing on against text)
+    if (a.version !== map.version || !a.planned || Math.hypot(a.planned.x - goal.x, a.planned.y - goal.y) > map.c || (!a.path && --a.retry <= 0)) {
       // a meeting's arrivals keep to the rows on screen when they can
       a.path = (goal.onscreen && plan(a.x, a.y, goal.x, goal.y, reach(a), view + 0.3 * a.w * a.k, view + VH - 0.3 * a.w * a.k)) || plan(a.x, a.y, goal.x, goal.y, reach(a));
       a.pi = 0;
       a.version = map.version;
       a.planned = { x: goal.x, y: goal.y };
+      a.retry = 2 * SUB;
     }
   } else a.path = null;
   let tx = goal.x;

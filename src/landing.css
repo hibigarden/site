@@ -2462,3 +2462,159 @@ svg.button-icon,
     mask-position: -100% 0;
   }
 }
+
+/* ---------------------------------------------------------------- the people: the team on taped photos, then everyone
+   who helped as one grid of avatars (rendered at build by server/people.js, no scripts) */
+.people .s-head {
+  margin-bottom: 44px;
+}
+.team {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 40px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.teammate {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  min-width: 0;
+}
+.team-photo {
+  position: relative;
+  display: block;
+  margin-bottom: 18px;
+  padding: 6px 6px 7px;
+  background: var(--card-white);
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8)),
+    0 8px 16px -8px rgb(var(--shadow-rgb) / var(--shadow-a));
+  rotate: -2deg;
+}
+.teammate:nth-child(even) .team-photo {
+  rotate: 1.6deg;
+}
+.team-photo .tape {
+  --tape-w: 62px;
+  top: -9px;
+  left: 50%;
+  translate: -50% 0;
+  rotate: -4deg;
+}
+.teammate:nth-child(even) .team-photo .tape {
+  rotate: 5deg;
+}
+.team-img,
+.contributor-img {
+  display: block;
+  object-fit: cover;
+  background: var(--card-tan);
+}
+[data-theme="dark"] :is(.team-img, .contributor-img) {
+  filter: brightness(0.92);
+}
+.person-letter {
+  display: grid;
+  place-items: center;
+  color: var(--ink-soft);
+  font: 500 22px/1 var(--serif);
+}
+.team-login {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font: 500 21px/1.2 var(--serif);
+}
+.team-login:hover,
+.team-site:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.team-role {
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font-size: 16.5px;
+  line-height: 1.4;
+}
+.team-site {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  margin-top: 2px;
+  color: var(--accent);
+  font: 400 13px/1.3 var(--mono);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+.people-sub {
+  margin-top: 64px;
+  font: 500 var(--h3) / 1.15 var(--serif);
+  letter-spacing: -0.01em;
+}
+.contributors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.contributor {
+  position: relative;
+  display: block;
+  border-radius: 50%;
+}
+.contributor-img {
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2px var(--card-white),
+    0 3px 8px -2px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.contributor:focus-visible {
+  outline-offset: 5px;
+  border-radius: 50%;
+}
+.contributor:hover .contributor-img {
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 3px 8px -2px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.sponsor-heart {
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--card-white);
+  box-shadow: 0 1px 3px rgb(var(--shadow-rgb) / 0.35);
+  color: #b4234a;
+  font: 13px/1 var(--font-ui);
+}
+[data-theme="dark"] .sponsor-heart {
+  color: #f08aa4;
+}
+@media (max-width: 900px) {
+  .team {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .team {
+    gap: 32px 18px;
+  }
+  .team-login {
+    font-size: 19px;
+  }
+  .team-role {
+    font-size: 15.5px;
+  }
+  .people-sub {
+    margin-top: 48px;
+  }
+}

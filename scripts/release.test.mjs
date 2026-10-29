@@ -141,6 +141,16 @@ test("/api/release reuses the snapshot until a newer release or nightly is out",
   await assert.rejects(releaseResponse(null, { fetch: fakeGitHub({ fail: true }).fetch }));
 });
 
+test("a nightly feed pointing at the release itself adds no second table and no api request", async () => {
+  const atRelease = { tag: "v0.2.1", version: "0.2.1" };
+  const release = fromGitHub(github, { list, nightly: atRelease });
+  assert.equal(release.nightly, null);
+  assert.doesNotMatch(renderDownloadPage(release), /download-nightly/);
+  const same = fakeGitHub({ feed: atRelease });
+  assert.equal((await releaseResponse(release, { fetch: same.fetch })).body, release);
+  assert.ok(!same.calls.some((url) => url.startsWith("https://api.github.com/")));
+});
+
 test("a dev server picks up a release published while it runs", async (t) => {
   const root = mkdtempSync(join(tmpdir(), "hibi-release-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));

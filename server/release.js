@@ -57,7 +57,7 @@ export async function releaseResponse(snapshot, { fetch = globalThis.fetch, toke
   const signal = AbortSignal.timeout(timeout);
   try {
     const [tag, feed] = await Promise.all([latestTag(fetch, signal), nightlyFeed(fetch, signal)]);
-    const current = snapshot && tag === snapshot.tag && (!feed?.tag || feed.tag === snapshot.nightly?.tag);
+    const current = snapshot && tag === snapshot.tag && (!feed?.tag || feed.tag === snapshot.nightly?.tag || feed.tag === snapshot.tag);
     const release = current ? snapshot : await fetchRelease({ fetch, token, timeout });
     return { status: 200, cache: "public, max-age=0, s-maxage=300, stale-while-revalidate=86400", body: release };
   } catch (error) {

@@ -66,7 +66,8 @@ export function fromGitHub(release, { list = [], nightly = null } = {}) {
   return {
     tag,
     sums: download(sums?.browser_download_url, tag),
-    nightly: nightlyFromFeed(nightly, list.find((entry) => entry?.tag_name === nightly?.tag)),
+    // right after a release the nightly feed points at it: the release's own table is the nightly's
+    nightly: nightly?.tag === tag ? null : nightlyFromFeed(nightly, list.find((entry) => entry?.tag_name === nightly?.tag)),
     files,
   };
 }

@@ -211,15 +211,23 @@
           </fieldset>
           <!-- one window on the hero's park; each tab's capture loads when its tab is shown (or reached for) -->
           <div class="window-panel" data-perch="0.95,0.16">
-            <div class="park park-path" aria-hidden="true">
-              <div class="g-scene">
-                <i class="g-layer g-sky"></i>
-                <i class="g-layer g-clouds g-clouds-far" data-drift="640"></i>
-                <i class="g-layer g-clouds g-clouds-mid" data-drift="460"></i>
-                <i class="g-layer g-clouds g-clouds-near" data-drift="330"></i>
-                <i class="g-layer g-far"></i>
-                <i class="g-layer g-lawn"></i>
-                <i class="g-layer g-lavender"></i>
+            <!-- each tab's own garden behind the window (the image agent's persona scenes), by day or by night -->
+            <div class="scenes" aria-hidden="true">
+              <div class="scene" data-who="authors">
+                <picture class="theme-day"><source type="image/avif" srcset="/scenes/authors-day-1200.avif 1200w, /scenes/authors-day-2400.avif 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" /><img src="/scenes/authors-day-1200.webp" srcset="/scenes/authors-day-1200.webp 1200w, /scenes/authors-day-2400.webp 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" width="2400" height="1500" alt="" loading="lazy" decoding="async" /></picture>
+                <picture class="theme-night"><source type="image/avif" srcset="/scenes/authors-night-1200.avif 1200w, /scenes/authors-night-2400.avif 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" /><img src="/scenes/authors-night-1200.webp" srcset="/scenes/authors-night-1200.webp 1200w, /scenes/authors-night-2400.webp 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" width="2400" height="1500" alt="" loading="lazy" decoding="async" /></picture>
+              </div>
+              <div class="scene" data-who="academics">
+                <picture class="theme-day"><source type="image/avif" srcset="/scenes/academics-day-1200.avif 1200w, /scenes/academics-day-2400.avif 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" /><img src="/scenes/academics-day-1200.webp" srcset="/scenes/academics-day-1200.webp 1200w, /scenes/academics-day-2400.webp 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" width="2400" height="1500" alt="" loading="lazy" decoding="async" /></picture>
+                <picture class="theme-night"><source type="image/avif" srcset="/scenes/academics-night-1200.avif 1200w, /scenes/academics-night-2400.avif 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" /><img src="/scenes/academics-night-1200.webp" srcset="/scenes/academics-night-1200.webp 1200w, /scenes/academics-night-2400.webp 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" width="2400" height="1500" alt="" loading="lazy" decoding="async" /></picture>
+              </div>
+              <div class="scene" data-who="developers">
+                <picture class="theme-day"><source type="image/avif" srcset="/scenes/developers-day-1200.avif 1200w, /scenes/developers-day-2400.avif 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" /><img src="/scenes/developers-day-1200.webp" srcset="/scenes/developers-day-1200.webp 1200w, /scenes/developers-day-2400.webp 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" width="2400" height="1500" alt="" loading="lazy" decoding="async" /></picture>
+                <picture class="theme-night"><source type="image/avif" srcset="/scenes/developers-night-1200.avif 1200w, /scenes/developers-night-2400.avif 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" /><img src="/scenes/developers-night-1200.webp" srcset="/scenes/developers-night-1200.webp 1200w, /scenes/developers-night-2400.webp 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" width="2400" height="1500" alt="" loading="lazy" decoding="async" /></picture>
+              </div>
+              <div class="scene" data-who="note-takers">
+                <picture class="theme-day"><source type="image/avif" srcset="/scenes/note-takers-day-1200.avif 1200w, /scenes/note-takers-day-2400.avif 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" /><img src="/scenes/note-takers-day-1200.webp" srcset="/scenes/note-takers-day-1200.webp 1200w, /scenes/note-takers-day-2400.webp 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" width="2400" height="1500" alt="" loading="lazy" decoding="async" /></picture>
+                <picture class="theme-night"><source type="image/avif" srcset="/scenes/note-takers-night-1200.avif 1200w, /scenes/note-takers-night-2400.avif 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" /><img src="/scenes/note-takers-night-1200.webp" srcset="/scenes/note-takers-night-1200.webp 1200w, /scenes/note-takers-night-2400.webp 2400w" sizes="(max-width: 600px) calc((100vw - 32px) * 1.97), min(1120px, 100vw - 64px)" width="2400" height="1500" alt="" loading="lazy" decoding="async" /></picture>
               </div>
             </div>
             <!-- a Mac's menu bar with hibi in front (its menus from the app's own installMenu); the clock is who.js's -->

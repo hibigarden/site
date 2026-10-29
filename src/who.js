@@ -1,120 +1,103 @@
 import { onMotion, still, tick } from "./clock.js";
 
 // "built around writing": the tabs for who hibi is for are radio buttons, so they switch without javascript. here
-// a #for-… link opens its tab, the address follows the open tab, and a tab's window starts loading as the reader
-// reaches for it (only the open tab's window loads with the page). A switch closes the open window (it fades out,
-// shrinking a touch) and opens the new one, on the site's 12 fps clock; stilled, they simply swap. While the reader
-// watches, the tabs also take turns by themselves (the owner's): every 3 s the next one opens, a bar filling along the
-// open tab's lower edge, until the reader takes over (a click, a key, a #for-… link). The menu bar's clock shows the
-// reader's time, ticking while it is on screen.
+// a #for-… link opens its tab, the address follows the open tab, and a tab's window and garden start loading as the
+// reader reaches for them (only the open tab's load with the page). A switch closes the open window (it fades out,
+// shrinking a touch) while the new tab's garden comes in under it, then opens the new window. While the reader
+// watches, the tabs also take turns by themselves (the owner's): a bar fills along the open tab's lower edge for 3 s
+// and the next tab opens, until the reader takes over (a click, a key, a #for-… link). These run at the display's own
+// frame rate (the owner's), as css transitions and one css animation (landing.css); stilled, the tabs simply swap and
+// keep still. The menu bar's clock shows the reader's time, ticking on the site's clock while it is on screen.
 const who = document.querySelector(".who");
 if (who) {
   const radios = [...who.querySelectorAll('input[name="who"]')];
-  const windows = Object.fromEntries([...who.querySelectorAll(".window")].map((w) => [w.dataset.who, w]));
+  const byWho = (selector) => Object.fromEntries([...who.querySelectorAll(selector)].map((el) => [el.dataset.who, el]));
+  const windows = byWho(".window");
+  const scenes = byWho(".scene");
+  const tabs = who.querySelector(".who-tabs");
+  const panel = who.querySelector(".window-panel");
   const theme = () => (document.documentElement.dataset.theme === "dark" ? "night" : "day");
-  const STEPS = 4; // held frames each way: a third of a second
-  let shown = windows[radios.find((r) => r.checked)?.value];
-  let stop = null;
+  const FADE = 340; // ms, the fades' length in landing.css
+  const STATES = ["is-leaving", "is-closed", "is-entering", "is-new"];
+  let shown = radios.find((r) => r.checked)?.value;
+  let run = 0; // the switch in progress; an older one stops at its next step
 
-  const set = (el, u) => {
-    el.style.opacity = u.toFixed(3);
-    el.style.transform = `scale(${(0.98 + 0.02 * u).toFixed(4)})`;
-  };
-  const clear = (el) => {
-    el.style.opacity = el.style.transform = "";
-    el.classList.remove("is-leaving");
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  /** resolves once the element's picture in this theme can be drawn (or after half a second) */
+  const ready = (el) => {
+    const img = el.querySelector(`.theme-${theme()} img`);
+    return Promise.race([img?.decode().catch(() => {}), wait(500)]);
   };
   const halt = () => {
-    stop?.();
-    stop = null;
-    for (const w of Object.values(windows)) clear(w);
+    run++;
+    for (const el of [...Object.values(windows), ...Object.values(scenes)]) el.classList.remove(...STATES);
   };
-  /** `frame(k)` on each of the next STEPS held frames, then `done` */
-  const steps = (frame, done) => {
-    let k = 0;
-    stop = tick(() => {
-      frame(++k);
-      if (k < STEPS) return true;
-      stop = null;
-      done?.();
-      return false;
-    });
+  /** fades the window in once its capture can be drawn */
+  const open = async (el, id = run) => {
+    el.classList.add("is-closed");
+    await ready(el);
+    if (id !== run) return;
+    void el.offsetWidth; // the closed state is drawn first, so the change transitions
+    el.classList.remove("is-closed");
   };
-  /** fades the window in once its capture is there (or after half a second) */
-  const open = (el) => {
-    set(el, 0);
-    const img = el.querySelector(`.theme-${theme()} img`);
-    let waited = 0;
-    stop = tick(() => {
-      if (!(img?.complete && img.naturalWidth) && waited++ < 6) return true;
-      stop = null;
-      steps((k) => set(el, k / STEPS), () => clear(el));
-      return false;
-    });
-  };
-  const show = (next) => {
+  const show = async (next) => {
     const prev = shown;
     halt();
     shown = next;
     if (still() || !prev || prev === next) return;
-    prev.classList.add("is-leaving");
-    set(next, 0);
-    steps(
-      (k) => set(prev, 1 - k / STEPS),
-      () => {
-        clear(prev);
-        open(next);
-      },
-    );
+    const id = run;
+    const [oldWindow, newWindow, oldScene, newScene] = [windows[prev], windows[next], scenes[prev], scenes[next]];
+    oldWindow.classList.add("is-leaving");
+    oldScene.classList.add("is-leaving");
+    newWindow.classList.add("is-closed");
+    newScene.classList.add("is-new", "is-entering");
+    // the old window closes as the new garden comes in under it; then the new window opens
+    await ready(newScene);
+    if (id !== run) return;
+    void newScene.offsetWidth;
+    oldWindow.classList.add("is-closed");
+    newScene.classList.remove("is-entering");
+    await wait(FADE);
+    if (id !== run) return;
+    oldWindow.classList.remove("is-leaving", "is-closed");
+    oldScene.classList.remove("is-leaving");
+    newScene.classList.remove("is-new");
+    open(newWindow, id);
   };
 
-  // taking turns: CYCLE held frames a tab (3 s), paused while the pointer or focus is on the tabs or the window, the
-  // section is off screen, or the page is hidden (the clock then stops); ended for good when the reader takes over.
+  // taking turns (landing.css draws and times the bar): it holds while the pointer or focus is on the tabs or the
+  // window (css), the section is off screen or the page hidden (here), and ends for good when the reader takes over.
   // It never moves focus and is never announced.
-  const CYCLE = 36;
-  const tabs = who.querySelector(".who-tabs");
-  const panel = who.querySelector(".window-panel");
   let auto = true;
-  let held = 0;
-  let turns = null;
-  const pause = { hover: new Set(), focus: false, away: true };
-  const bar = (p) => {
-    for (const radio of radios) radio.closest("label").style.removeProperty("--p");
-    if (p !== null) radios.find((r) => r.checked)?.closest("label").style.setProperty("--p", p.toFixed(3));
-  };
+  let away = true;
   const next = () => radios[(radios.findIndex((r) => r.checked) + 1) % radios.length];
   const turn = () => {
-    const run = auto && !still() && !pause.away && !pause.focus && !pause.hover.size;
-    if (run) {
-      turns ??= tick(() => {
-        if (++held === 1) warm(next());
-        if (held < CYCLE) return bar(held / CYCLE), true;
-        held = 0;
-        const radio = next();
-        radio.checked = true;
-        show(windows[radio.value]);
-        bar(0);
-        return true;
-      });
-    } else {
-      turns?.();
-      turns = null;
-    }
-    if (!auto || still()) bar(null);
+    who.classList.toggle("is-auto", auto && !still());
+    who.classList.toggle("is-paused", away || document.hidden);
   };
   const takeOver = () => {
     auto = false;
     turn();
   };
-  for (const el of [tabs, panel]) {
-    el.addEventListener("pointerenter", () => (pause.hover.add(el), turn()));
-    el.addEventListener("pointerleave", () => (pause.hover.delete(el), turn()));
-  }
-  who.addEventListener("focusin", () => ((pause.focus = true), turn()));
-  who.addEventListener("focusout", (event) => ((pause.focus = who.contains(event.relatedTarget)), turn()));
+  // the next tab loads as its turn begins on screen, so a switch never shows a blank window or garden
+  tabs.addEventListener("animationstart", (event) => event.animationName === "tab-turn" && !away && warm(next()));
+  tabs.addEventListener("animationend", (event) => {
+    if (event.animationName !== "tab-turn" || !who.classList.contains("is-auto")) return;
+    const radio = next();
+    radio.checked = true;
+    show(radio.value);
+  });
   who.addEventListener("keydown", takeOver);
   tabs.addEventListener("click", takeOver);
-  new IntersectionObserver(([entry]) => ((pause.away = !entry.isIntersecting), turn()), { threshold: 0.4 }).observe(panel);
+  document.addEventListener("visibilitychange", turn);
+  new IntersectionObserver(
+    ([entry]) => {
+      away = !entry.isIntersecting;
+      if (!away && auto) warm(next());
+      turn();
+    },
+    { threshold: 0.4 },
+  ).observe(panel);
 
   // the #for-… ids sit on the tabs themselves, so the browser already scrolls to them
   const fromHash = () => {
@@ -123,7 +106,7 @@ if (who) {
     takeOver();
     if (!radio.checked) {
       radio.checked = true;
-      show(windows[radio.value]);
+      show(radio.value);
     }
   };
   fromHash();
@@ -132,10 +115,10 @@ if (who) {
     if (event.target.name !== "who") return;
     takeOver();
     history.replaceState(null, "", `#${event.target.id}`);
-    show(windows[event.target.value]);
+    show(event.target.value);
   });
   function warm(radio) {
-    for (const img of who.querySelectorAll(`.window[data-who="${radio.value}"] .theme-${theme()} img`)) img.loading = "eager";
+    for (const img of who.querySelectorAll(`[data-who="${radio.value}"] .theme-${theme()} img`)) img.loading = "eager";
   }
   for (const radio of radios) {
     radio.closest("label").addEventListener("pointerenter", () => warm(radio));
@@ -144,13 +127,13 @@ if (who) {
 
   // the first window opens as the panel scrolls in
   if (shown && !still() && panel.getBoundingClientRect().top > innerHeight) {
-    set(shown, 0);
+    windows[shown].classList.add("is-closed");
     const seen = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
         seen.disconnect();
-        if (still()) clear(shown);
-        else open(shown);
+        if (still()) windows[shown].classList.remove("is-closed");
+        else open(windows[shown]);
       },
       { threshold: 0.3 },
     );

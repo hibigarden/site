@@ -258,8 +258,7 @@
   }
 }
 
-/* park panels (.park): the hero's own park behind a part of the page (the window of "built around writing" and the
-   closing call to action), layer for layer, in the hero's canvas geometry with the hero's files. each panel picks
+/* park panels (.park): the hero's own park behind a part of the page (the closing call to action), layer for layer, in the hero's canvas geometry with the hero's files. each panel picks
    the stretch of canvas it shows (--span canvas px across around column --cx) and where its horizon sits. on phones
    they take the hero's narrow files (every phone stretch lies inside their middle 60%), so a panel downloads
    nothing the hero hasn't (but the lamp the hero hides on phones). */
@@ -272,23 +271,11 @@
   container-type: size;
   background: var(--sky-top);
 }
-/* the window's park: the lawn path and the lavender, no props. it stays right of the bench and left of the lamppost
-   that the night lawn and lavender have painted in (under the hero's bench and lamp) */
-.park-path .g-scene {
-  --cx: 1460;
-  --horizon: 0.62;
-  --c: calc(100cqw / 1440);
-}
 /* the closing park: the hero's sky down to its horizon, the treeline and the top of its lamppost */
 .park-horizon .g-scene {
   --horizon: 1;
 }
 @media (max-width: 600px) {
-  .park-path .g-scene {
-    --cx: 1340;
-    --horizon: 0.67;
-    --c: calc(100cqw / 1160);
-  }
   /* a phone's close shows the middle of the horizon: the lamp stands nearer, the trees and the moon stay out (the
      words fill its sky) */
   .park-horizon .g-scene {
@@ -306,11 +293,9 @@
     display: none;
   }
   /* the hero's narrow files (garden.css's generated block, for phones) */
-  .park :is(.g-sky, .g-far, .g-lawn, .g-lavender) { left: 20%; width: 60%; }
+  .park :is(.g-sky, .g-far) { left: 20%; width: 60%; }
   .park .g-sky { --day: url("/scrapbook/garden/sky-day-s.webp"); --night: url("/scrapbook/garden/sky-night-s.webp"); }
   .park .g-far { --day: url("/scrapbook/garden/far-day-s.webp"); --night: url("/scrapbook/garden/far-night-s.webp"); }
-  .park .g-lawn { --day: url("/scrapbook/garden/lawn-day-s.webp"); --night: url("/scrapbook/garden/lawn-night-s.webp"); }
-  .park .g-lavender { --day: url("/scrapbook/garden/lavender-day-s.webp"); --night: url("/scrapbook/garden/lavender-night-s.webp"); }
   .park .g-clouds-far { --day: url("/scrapbook/garden/clouds-far-day-s.webp"); --night: url("/scrapbook/garden/clouds-far-night-s.webp"); }
   .park .g-clouds-mid { --day: url("/scrapbook/garden/clouds-mid-day-s.webp"); --night: url("/scrapbook/garden/clouds-mid-night-s.webp"); }
   .park .g-clouds-near { --day: url("/scrapbook/garden/clouds-near-day-s.webp"); --night: url("/scrapbook/garden/clouds-near-night-s.webp"); }

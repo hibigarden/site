@@ -770,11 +770,27 @@ svg.button-icon,
 .who-tabs label:has(:checked)::before {
   background: var(--hibi-blue);
 }
-/* while the tabs take turns (who.js), the open tab's bar fills along its lower edge, inside the paper */
-.who-tabs label[style*="--p"]::before {
+/* while the tabs take turns (who.js), the open tab's bar fills along its lower edge, inside the paper, for 3 s at the
+   display's own frame rate; its end opens the next tab. it holds while the pointer or focus is on the tabs or the
+   window, or who.js pauses it (section off screen, page hidden) */
+@property --turn {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes tab-turn {
+  to {
+    --turn: 1;
+  }
+}
+.who.is-auto .who-tabs label:has(:checked)::before {
   background:
-    linear-gradient(var(--bar), var(--bar)) 0 100% / calc(var(--p) * 100%) 3px no-repeat,
+    linear-gradient(var(--bar), var(--bar)) 0 100% / calc(var(--turn) * 100%) 3px no-repeat,
     var(--hibi-blue);
+  animation: tab-turn 3s linear;
+}
+.who:is(.is-paused, :focus-within, :has(.who-tabs:hover), :has(.window-panel:hover)) .who-tabs label::before {
+  animation-play-state: paused;
 }
 [data-theme="dark"] .who-tabs label:has(:checked) {
   color: #1f1b16;
@@ -785,9 +801,9 @@ svg.button-icon,
 [data-theme="dark"] .who-tabs {
   --bar: rgb(32 54 118 / 0.55);
 }
-[data-theme="dark"] .who-tabs label[style*="--p"]::before {
+[data-theme="dark"] .who.is-auto .who-tabs label:has(:checked)::before {
   background:
-    linear-gradient(var(--bar), var(--bar)) 0 100% / calc(var(--p) * 100%) 3px no-repeat,
+    linear-gradient(var(--bar), var(--bar)) 0 100% / calc(var(--turn) * 100%) 3px no-repeat,
     #f6e3b4;
 }
 .who-tabs label:has(:focus-visible) {
@@ -795,10 +811,10 @@ svg.button-icon,
   outline-offset: 3px;
 }
 /* only the open tab's window and words show; the others' words keep their place (the tallest sets the height) */
-.who:not(:has([value="authors"]:checked)) .window[data-who="authors"],
-.who:not(:has([value="academics"]:checked)) .window[data-who="academics"],
-.who:not(:has([value="developers"]:checked)) .window[data-who="developers"],
-.who:not(:has([value="note-takers"]:checked)) .window[data-who="note-takers"] {
+.who:not(:has([value="authors"]:checked)) :is(.window, .scene)[data-who="authors"],
+.who:not(:has([value="academics"]:checked)) :is(.window, .scene)[data-who="academics"],
+.who:not(:has([value="developers"]:checked)) :is(.window, .scene)[data-who="developers"],
+.who:not(:has([value="note-takers"]:checked)) :is(.window, .scene)[data-who="note-takers"] {
   display: none;
 }
 .who:not(:has([value="authors"]:checked)) .who-caption[data-who="authors"],
@@ -811,7 +827,7 @@ svg.button-icon,
 [data-theme="dark"] .theme-day {
   display: none;
 }
-/* the panel is a Mac's screen: the park as its wallpaper, a menu bar across the top, the window in the middle of
+/* the panel is a Mac's screen: the open tab's garden as its wallpaper, a menu bar across the top, the window in the middle of
    what's left. it is drawn at a real Mac's proportions, the window 1400 px of a 1750 px screen (--mb: the menu
    bar's 24 px line with room above and below, --wh: the window's height) */
 .window-panel {
@@ -823,9 +839,30 @@ svg.button-icon,
   container-type: inline-size;
   aspect-ratio: 1120 / 690;
   border-radius: 16px;
+  background: #8cc6fb;
   box-shadow:
     0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
     0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
+}
+[data-theme="dark"] .window-panel {
+  background: #0b1d55;
+}
+/* each tab's scene fills the screen (lazy, like the windows: only the open tab's, in the reader's theme) */
+.scenes,
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.scenes {
+  z-index: -1;
+}
+.scene img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .menubar {
   --u: calc(100cqw / 1750);
@@ -837,7 +874,11 @@ svg.button-icon,
   gap: calc(20 * var(--u));
   height: var(--mb);
   padding: 6px 24px;
-  color: rgb(0 0 0 / 0.86);
+  color: rgb(0 0 0 / 0.92);
+  text-shadow:
+    0 0 1px rgb(255 255 255 / 0.95),
+    0 0 3px rgb(255 255 255 / 0.9),
+    0 0 8px rgb(255 255 255 / 0.6);
   font: 400 calc(13 * var(--u)) / 1 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -847,6 +888,10 @@ svg.button-icon,
    over the day sky, light over the night */
 [data-theme="dark"] .menubar {
   color: rgb(255 255 255 / 0.94);
+  text-shadow:
+    0 0 1px rgb(0 0 12 / 0.9),
+    0 0 4px rgb(0 0 12 / 0.75),
+    0 0 10px rgb(0 0 12 / 0.45);
 }
 .menubar svg {
   flex-shrink: 0;
@@ -899,9 +944,28 @@ svg.button-icon,
     0 1px 3px rgb(0 0 0 / 0.3),
     0 22px 46px -16px rgb(0 0 8 / 0.45);
 }
-/* while a tab switch closes it (who.js), the old window stays drawn until it has faded */
-.who .window.is-leaving {
+/* a tab switch (who.js): the old window and scene stay drawn until the new ones are in; the old window closes
+   (fading, shrinking a touch) as the new scene fades in over the old one, then the new window opens. a third of a
+   second each, at the display's own frame rate; stilled, they swap at once */
+.who :is(.window, .scene).is-leaving {
   display: block !important;
+}
+.who .window.is-closed {
+  opacity: 0;
+  transform: scale(0.98);
+}
+.who .scene.is-new {
+  z-index: 1;
+}
+.who .scene.is-entering {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="still"]) .who :is(.window, .scene) {
+    transition:
+      opacity 0.34s ease-out,
+      transform 0.34s ease-out;
+  }
 }
 /* the window's own traffic lights, where the app puts them (titleBarStyle hiddenInset, trafficLightPosition 12, 11:
    13 px in, centred in its 36 px title bar); the captures leave that corner empty. --app: one of the app's px */

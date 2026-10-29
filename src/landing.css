@@ -2076,10 +2076,11 @@ svg.button-icon,
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: min(1120px, calc(100% - 64px));
   height: 380px;
   margin: var(--gap) auto 0;
-  padding: 64px 24px 0;
+  padding: 0 24px;
   border-radius: 16px;
   text-align: center;
   box-shadow:
@@ -2254,7 +2255,8 @@ svg.button-icon,
 @media (max-width: 600px) {
   .cta {
     height: 440px;
-    padding-top: 52px;
+    /* the words stay in the sky, clear of the treeline and the lamp */
+    padding-bottom: 64px;
     border-radius: 12px;
   }
   .footer-top {

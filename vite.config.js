@@ -6,6 +6,7 @@ import addonCatalog, { communitySnapshot, readCatalog } from "./scripts/addon-ca
 import { addonIdFromPath, bundledAddons } from "./src/addon-directory.js";
 import { addonPageResponse, readAddonPages } from "./server/addon-pages.js";
 import { releasePlugin } from "./server/release.js";
+import { peoplePlugin } from "./server/people.js";
 
 function addonPages(server) {
   server.middlewares.use(async (request, response, next) => {
@@ -37,6 +38,7 @@ export default defineConfig({
   plugins: [
     addonCatalog(),
     releasePlugin(),
+    peoplePlugin(),
     {
       name: "hibi-addon-pages",
       configureServer: addonPages,

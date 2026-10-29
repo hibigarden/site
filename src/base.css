@@ -201,6 +201,9 @@ a:hover {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
   border-radius: 2px;
+  /* a link that wraps gets a whole ring per line, not open-ended pieces */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
   /* focus scrolling stops short of viewport and scroller edges, so the ring is never cut there */
   scroll-margin: 16px;
 }

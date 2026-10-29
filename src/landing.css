@@ -245,44 +245,35 @@
   white-space: nowrap;
 }
 
+/* the footer's switch for the garden's motion: plain text, its label says what it will do */
+.colophon-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 24px;
+}
 .motion-toggle {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  min-height: 44px;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  color: var(--ink);
-  background: var(--card-white);
-  box-shadow:
-    inset 0 0 0 1px var(--border),
-    0 3px 8px -2px rgb(var(--shadow-rgb) / var(--shadow-a));
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
 }
 .motion-toggle:hover {
   color: var(--accent);
 }
-.motion-toggle svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.motion-toggle[aria-pressed="true"] {
-  background: var(--butter);
-}
 .motion-toggle[hidden],
-.motion-play,
-[data-motion="still"] .motion-pause {
+.motion-move,
+[data-motion="still"] .motion-still {
   display: none;
 }
-[data-motion="still"] .motion-play {
-  display: block;
+[data-motion="still"] .motion-move {
+  display: inline;
 }
 /* stilled: every piece already in place, every mark already drawn */
 :root[data-motion="still"] .will-land {

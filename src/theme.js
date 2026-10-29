@@ -54,13 +54,13 @@ reducedMotion.addEventListener("change", () => {
   if (reducedMotion.matches) transition?.skipTransition();
 });
 
-// "still the garden": one switch that stops every looping animation, remembered across visits.
+// "still the garden": one switch in the footer that stops every looping animation, remembered across visits. its
+// label swaps with [data-motion] (css), so the button's name always says what pressing it does.
 const motionToggle = document.querySelector(".motion-toggle");
 if (motionToggle) {
   const setStill = (still) => {
     if (still) root.dataset.motion = "still";
     else delete root.dataset.motion;
-    motionToggle.setAttribute("aria-pressed", String(still));
   };
   setStill(root.dataset.motion === "still");
   motionToggle.hidden = false;

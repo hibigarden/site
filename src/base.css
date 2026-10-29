@@ -256,7 +256,7 @@ a:hover {
 .site-header nav {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 8px;
   font: 400 13.5px/1 var(--mono);
   letter-spacing: 0.01em;
 }
@@ -303,6 +303,8 @@ a:hover {
 .site-header nav a.nav-download {
   min-height: 40px;
   padding: 0 16px;
+  /* the text links end before the pill with a little air; the pill and the toggle stay close */
+  margin-left: 12px;
   border-radius: 999px;
   background: var(--card-white);
   box-shadow:
@@ -399,7 +401,7 @@ a:hover {
     height: 76px;
   }
   .site-header nav {
-    gap: 10px;
+    gap: 8px;
     font-size: 13px;
   }
   .wordmark {

@@ -85,21 +85,6 @@
         </div>
         <a class="nav-download" href="/download/">download</a>
         <button
-          class="motion-toggle"
-          type="button"
-          aria-pressed="false"
-          aria-label="still the garden"
-          title="still the garden"
-          hidden
-        >
-          <svg class="motion-pause" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M9 6v12M15 6v12" />
-          </svg>
-          <svg class="motion-play" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M8 5.5v13l10-6.5Z" />
-          </svg>
-        </button>
-        <button
           class="theme-toggle"
           type="button"
           aria-label="switch to dark mode"
@@ -706,7 +691,11 @@ The lavender opened on <i>*Monday*</i>.
       </div>
       <div class="wrap colophon">
         <p>© 2026 <a href="https://github.com/schmayterling">schmayterling</a> · made with ♥</p>
-        <a href="#">back to top <span aria-hidden="true">↑</span></a>
+        <div class="colophon-end">
+          <!-- the garden's motion (butterflies, the sky, the window's turns) stops here; the label says what it does -->
+          <button class="motion-toggle" type="button" hidden><span class="motion-still">still the garden</span><span class="motion-move">let the garden move</span></button>
+          <a href="#">back to top <span aria-hidden="true">↑</span></a>
+        </div>
       </div>
       <!-- the name, set large (generated text, so the companion reads it as paper); its last perch is the first i's tittle -->
       <div class="bigword" aria-hidden="true">

@@ -1714,6 +1714,10 @@ svg.button-icon,
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
+/* when the label wraps under it (narrow screens), the label's paper must not cover the focus ring */
+.showcase-all:focus-visible {
+  z-index: 1;
+}
 
 /* day by day: one strip of paper, a column a day; the pinned one past its end wakes when the companion lands */
 .days-head {

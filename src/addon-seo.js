@@ -86,8 +86,9 @@ ${repository ? link(addon.repositoryUrl, repository, ` class="addon-repository" 
 /**
  * Fills the built addons/index.html for one validated catalog entry, or the
  * not-found page (noindex) when `addon` is null. The caller sets the status.
+ * `image` ({ url, alt }) replaces the site's social image.
  */
-export function renderAddonPage(template, addon, unavailable = false) {
+export function renderAddonPage(template, addon, unavailable = false, image = null) {
   const missingTitle = unavailable ? "addon unavailable" : "addon not found";
   const missingDescription = unavailable
     ? "the addon directory is temporarily unavailable. please try again."
@@ -114,6 +115,11 @@ export function renderAddonPage(template, addon, unavailable = false) {
   html = swap(html, /<meta\s+name="description"\s+content="[^"]*"\s*\/?>/, `<meta name="description" content="${description}" />`);
   html = swap(html, /<meta\s+property="og:title"\s+content="[^"]*"\s*\/?>/, `<meta property="og:title" content="${escape(title)}" />`);
   html = swap(html, /<meta\s+property="og:description"\s+content="[^"]*"\s*\/?>/, `<meta property="og:description" content="${description}" />`);
+  if (image) {
+    html = swap(html, /<meta\s+property="og:image"\s+content="[^"]*"\s*\/?>/, `<meta property="og:image" content="${escape(image.url)}" />`);
+    html = swap(html, /<meta\s+property="og:image:alt"\s+content="[^"]*"\s*\/?>/, `<meta property="og:image:alt" content="${escape(image.alt)}" />`);
+    html = swap(html, /<meta\s+name="twitter:image"\s+content="[^"]*"\s*\/?>/, `<meta name="twitter:image" content="${escape(image.url)}" />`);
+  }
   html = swap(html, /<div id="addon-grid"><\/div>/, `<div id="addon-grid">${body}</div>`);
   return swap(html, /<\/head>/, head);
 }

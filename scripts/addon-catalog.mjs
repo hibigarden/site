@@ -278,16 +278,23 @@ export default function addonCatalog() {
       },
     },
     async generateBundle() {
+      const catalog = readCatalog(directory);
+      const snapshot = await communitySnapshot(directory);
       this.emitFile({
         type: "asset",
         fileName: "addons/catalog.json",
-        source: JSON.stringify(readCatalog(directory)),
+        source: JSON.stringify(catalog),
       });
       this.emitFile({
         type: "asset",
         fileName: "addons/community-snapshot.json",
-        source: JSON.stringify(await communitySnapshot(directory)),
+        source: JSON.stringify(snapshot),
       });
+      // Imported here, so the dev server never loads the renderer.
+      const { ogImages } = await import("./og-images.mjs");
+      const { files, manifest } = await ogImages([...bundledAddons(catalog), ...snapshot.addons]);
+      for (const { fileName, source } of files) this.emitFile({ type: "asset", fileName, source });
+      this.emitFile({ type: "asset", fileName: "addons/og.json", source: JSON.stringify(manifest) });
     },
     resolveId(source) {
       if (source === "virtual:hibi-addons") return id;

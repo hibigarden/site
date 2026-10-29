@@ -70,7 +70,7 @@ test("built-in extension pages carry metadata and visible details without script
   assert.equal(meta(html, "twitter:title"), "Vim | hibi addons");
   assert.equal(meta(html, "twitter:description"), builtin.description);
   assert.match(html, /<link rel="canonical" href="https:\/\/www\.hibi\.garden\/addons\/vim" \/>/);
-  assert.match(html, /property="og:image" content="https:\/\/www\.hibi\.garden\/opengraph\.png\?v=2"/);
+  assert.match(html, /property="og:image" content="https:\/\/www\.hibi\.garden\/opengraph\.png\?v=3"/);
   assert.doesNotMatch(html, /noindex|addons \| hibi</);
   assert.deepEqual(jsonLd(html), [
     {

@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/addon-seo.js": {
-      "includeFiles": "dist/addons/{index.html,catalog.json,community-snapshot.json}"
+      "includeFiles": "dist/addons/{index.html,catalog.json,community-snapshot.json,og.json}"
     },
     "api/release.js": {
       "includeFiles": "dist/release.json"

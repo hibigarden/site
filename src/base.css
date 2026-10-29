@@ -171,6 +171,11 @@ main,
 .site-footer {
   overflow-x: clip;
 }
+/* where main is the column itself, it clips at the column: reach a focus ring past it, same column width */
+main.wrap {
+  box-sizing: content-box;
+  padding-inline: 8px;
+}
 h1,
 h2,
 h3,
@@ -196,6 +201,12 @@ a:hover {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
   border-radius: 2px;
+  /* focus scrolling stops short of viewport and scroller edges, so the ring is never cut there */
+  scroll-margin: 16px;
+}
+/* question rows run edge to edge of a clipped column: their ring sits inside the row */
+summary:focus-visible {
+  outline-offset: -2px;
 }
 ::selection {
   background: color-mix(in oklch, var(--accent) 24%, transparent);

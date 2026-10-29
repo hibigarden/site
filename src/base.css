@@ -2,14 +2,14 @@
 
 @font-face {
   font-family: "EB Garamond";
-  src: url("/fonts/eb-garamond-latin-500.woff2") format("woff2");
+  src: url("./fonts/eb-garamond-latin-500.woff2") format("woff2");
   font-style: normal;
   font-weight: 500;
   font-display: swap;
 }
 @font-face {
   font-family: "EB Garamond";
-  src: url("/fonts/eb-garamond-latin-500-italic.woff2") format("woff2");
+  src: url("./fonts/eb-garamond-latin-500-italic.woff2") format("woff2");
   font-style: italic;
   font-weight: 500;
   font-display: swap;
@@ -35,6 +35,42 @@
     format("woff2");
   font-weight: 400;
   font-display: swap;
+}
+/* local stand-ins sized like the web fonts, so text keeps its lines and height when the web font swaps in:
+   size-adjust = the average advance over the landing's copy, the overrides = hhea metrics / size-adjust
+   (computed once from the woff2 files; metric-compatible liberation faces cover linux) */
+@font-face {
+  font-family: "EB Garamond fallback";
+  src: local("Times New Roman"), local("TimesNewRomanPSMT"), local("Liberation Serif");
+  size-adjust: 97.16%;
+  ascent-override: 103.64%;
+  descent-override: 30.67%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "EB Garamond fallback";
+  src: local("Times New Roman Italic"), local("TimesNewRomanPS-ItalicMT"), local("Liberation Serif Italic");
+  font-style: italic;
+  size-adjust: 95.22%;
+  ascent-override: 105.75%;
+  descent-override: 31.29%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Geist fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  size-adjust: 102.54%;
+  ascent-override: 98.01%;
+  descent-override: 28.77%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Geist Mono fallback";
+  src: local("Courier New"), local("CourierNewPSMT"), local("Liberation Mono");
+  size-adjust: 99.98%;
+  ascent-override: 100.52%;
+  descent-override: 29.5%;
+  line-gap-override: 0%;
 }
 
 /* hibi's colours and type, shared by every page. day = the film's page; night = the dark app icon's
@@ -66,8 +102,10 @@
   --icon: url("/scrapbook/icon-day.webp");
   --pen: #2f3349;
   --pen-lavender: #6c5f88;
-  --serif: "EB Garamond", "Iowan Old Style", Georgia, serif;
-  --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --serif: "EB Garamond", "EB Garamond fallback", "Iowan Old Style", Georgia, serif;
+  --mono: "Geist Mono", "Geist Mono fallback", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-ui: "Geist", "Geist fallback", sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono fallback", monospace;
   /* the vendored hibi controls (addon search) read these */
   --background: var(--card-white);
   --surface: var(--card);

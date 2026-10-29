@@ -8,6 +8,12 @@
       "includeFiles": "dist/release.json"
     }
   },
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
+  ],
   "rewrites": [
     { "source": "/addons/:id([a-z][a-z0-9-]{0,47})", "destination": "/api/addon-seo?id=:id" },
     { "source": "/addons/:id([a-z][a-z0-9-]{0,47})/", "destination": "/api/addon-seo?id=:id" },

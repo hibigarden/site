@@ -28,13 +28,25 @@ function updateAccessibility() {
   else loader.setAttribute("aria-hidden", "true");
 }
 
+// The editor takes the stage's shape: in a stage at least 900 css px wide it runs at full size and fills it, in a
+// narrower one it lays out 900 px wide and is scaled down to fit.
 function scaleDemo() {
-  const scale = Math.min(
-    stage.clientWidth / Number(frame.width),
-    stage.clientHeight / Number(frame.height),
-    1,
-  );
+  const scale = Math.min(stage.clientWidth / Number(frame.width), 1);
+  shell.style.width = `${stage.clientWidth / scale}px`;
+  shell.style.height = `${stage.clientHeight / scale}px`;
   shell.style.transform = `translate(-50%, -50%) scale(${scale})`;
+}
+
+// The editor starts loading once the landing page has loaded and gone idle, so it never competes
+// with the hero for the network or the main thread, and the page's load event never waits for it.
+let editorRequested = false;
+function loadEditor() {
+  if (editorRequested) return;
+  editorRequested = true;
+  const idle = window.requestIdleCallback ?? ((callback) => setTimeout(callback, 200));
+  const start = () => idle(() => (frame.src = frame.dataset.src), { timeout: 2000 });
+  if (document.readyState === "complete") start();
+  else addEventListener("load", start, { once: true });
 }
 
 function updateMode() {
@@ -43,7 +55,7 @@ function updateMode() {
     resizeObserver ??= new ResizeObserver(scaleDemo);
     resizeObserver.observe(stage);
     scaleDemo();
-    if (!frame.hasAttribute("src")) frame.src = frame.dataset.src;
+    loadEditor();
   } else {
     // Keep an already-loaded editor mounted so resizing does not discard writing.
     resizeObserver?.disconnect();

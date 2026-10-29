@@ -1,0 +1,341 @@
+/* the hero is the old site's rounded panel, inset from the viewport, and the panel is the view: hibi's park in
+   layers, by day or by moonlight. the park fills the panel's width with the horizon low (--horizon of its height),
+   so the sky holds the headline; the live editor rests below it like a print. garden.js assembles the scene on a
+   fresh load, drifts the clouds, twinkles the stars, breathes the moon, the sun and the lamp, flies the scene's
+   butterflies, shifts the layers with the pointer and sinks the ground as the hero scrolls away, all on the site's
+   12 fps clock. only the active theme's images load: every layer names its two in --day and --night. */
+
+:root {
+  --hero-inset: 16px;
+}
+/* the header lies on the panel, inside its inset */
+[data-page="home"] .site-header {
+  position: absolute;
+  top: var(--hero-inset);
+  left: 0;
+  right: 0;
+}
+/* the hero is the title and the editor; the park behind them (.garden) is a rounded panel a screen tall. the 16:10
+   editor below the title hangs over the panel's lower edge onto the page, and because the hero's own height is its
+   content (never less than the panel), the next section always starts below the editor: all of it static css. */
+[data-page="home"] .hero {
+  --panel-h: max(760px, calc(100svh - 2 * var(--hero-inset)));
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto auto;
+  align-content: start;
+  justify-items: center;
+  width: calc(100% - 2 * var(--hero-inset));
+  min-height: var(--panel-h);
+  margin: var(--hero-inset);
+  padding: 128px 32px 0;
+}
+
+:is(.garden, .park) {
+  --sky-top: #83c3fd;
+}
+[data-theme="dark"] :is(.garden, .park) {
+  --sky-top: #04154a;
+}
+.garden {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--panel-h);
+  z-index: -1;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
+    0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
+  container: garden / size;
+  background: var(--sky-top);
+}
+/* a soft shadow where the page meets the rounded edge */
+.garden::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.5)),
+    inset 0 2px 22px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.9));
+  pointer-events: none;
+}
+
+/* the canvas (2400 x 1350 in the image agent's units, --c css px each): as wide as the panel plus room to shift,
+   horizon (row 560) at --horizon of the panel, the foreground running off the bottom, canvas column --cx in the
+   panel's middle. --pl/--pt is the panel's corner in canvas coordinates, for the sky's free sprites. */
+.g-scene {
+  --m: 24px;
+  --horizon: 0.68;
+  --c: max(calc((100cqw + 2 * var(--m)) / 2400), calc((100cqh * (1 - var(--horizon)) + var(--m)) / 790));
+  --pl: calc(var(--cx, 1200) * var(--c) - 50cqw);
+  --pt: calc(560 * var(--c) - 100cqh * var(--horizon));
+  position: absolute;
+  left: calc(50cqw - var(--cx, 1200) * var(--c));
+  top: calc(100cqh * var(--horizon) - 560 * var(--c));
+  width: calc(2400 * var(--c));
+  height: calc(1350 * var(--c));
+}
+.g-layer,
+.g-free {
+  position: absolute;
+  background: var(--day) 0 0 / 100% 100% no-repeat;
+}
+[data-theme="dark"] :is(.g-layer, .g-free) {
+  background-image: var(--night);
+}
+.g-layer {
+  left: 0;
+  width: 100%;
+  transform-origin: 50% 100%;
+}
+:root:not([data-theme="dark"]) .g-night,
+[data-theme="dark"] .g-day {
+  display: none;
+}
+/* while motion is on, everything the clock moves gets its own compositor layer (no repaints on a frame) */
+.is-live :is([data-depth], [data-drift], [data-twinkle], .g-halo, .g-sun, .g-bf, .g-bf > i) {
+  will-change: transform, opacity;
+}
+/* the sky runs on above the canvas, as far as a tall panel needs */
+.g-sky::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  background: var(--sky-top);
+}
+/* seamless 4800 px strips: one period is 2/3 of the element, so a drift of -66.667% lands where it began */
+.g-clouds {
+  width: 300%;
+  background-size: 66.6667% 100%;
+  background-repeat: repeat-x;
+}
+
+/* the sky's free sprites sit in the panel's upper sky, wherever the canvas falls (sky panels have no canvas) */
+.g-sun {
+  position: absolute;
+  left: calc(var(--pl, 0px) + 46cqw);
+  top: calc(var(--pt, 0px) - 58cqw);
+  width: 100cqw;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 251 234 / 0.55), rgb(255 248 226 / 0.22) 42%, transparent);
+}
+.g-stars {
+  left: calc(var(--pl, 0px) + 14cqw);
+  top: calc(var(--pt, 0px) + 11cqh);
+  width: 68cqw;
+}
+.g-stars-2 {
+  left: calc(var(--pl, 0px) + 31cqw);
+  top: calc(var(--pt, 0px) + 7cqh);
+  width: 52cqw;
+}
+.g-moon {
+  left: calc(var(--pl, 0px) + 79cqw);
+  top: calc(var(--pt, 0px) + max(92px, 12cqh));
+  width: clamp(70px, 7cqw, 116px);
+  background-size: contain;
+}
+.g-halo {
+  position: absolute;
+  inset: -60%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(246 227 180 / 0.2), rgb(246 227 180 / 0.07) 55%, transparent);
+}
+
+/* the park's butterflies by day and moths by night (garden.js measures the free sky and flies them in it): clean
+   sprites at scene scale, the far ones smaller and softer (--fade). each sits at the panel's corner and is moved by
+   its transform; only the active theme's cast shows, so only its sprites load. the companion rests on the lavender
+   by the frame's edge, clear of the title and the editor at every width (far enough that it lands home at page scale
+   without crossing the editor), until companion.js lifts it out of the scene, starting from the same borderless sprite */
+.g-flock {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.g-bf {
+  position: absolute;
+  left: 0;
+  top: 0;
+  aspect-ratio: var(--ar, 1.3);
+  opacity: var(--fade, 0.94);
+  filter: saturate(0.82);
+}
+[data-theme="dark"] .g-bf {
+  filter: brightness(0.8) saturate(0.75);
+}
+/* the moths circling the lamp are lit by it */
+[data-theme="dark"] .g-bf.lit {
+  filter: brightness(0.94) sepia(0.15);
+}
+.g-bf > i {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--bf) 0 0 / 200% 100% no-repeat;
+  transform-origin: 100% 50%;
+}
+.g-bf > i + i {
+  left: 50%;
+  background-position: 100% 0;
+  transform-origin: 0 50%;
+}
+.g-companion {
+  --bf: url("/scrapbook/fly/small-blue-plain.webp");
+  --ar: 208 / 161;
+  left: 93%;
+  top: 82%;
+  width: 30px;
+  translate: -50% -50%;
+}
+
+/* layers: generated by layers.mjs */
+.g-sky { top: -69.6296%; height: 177.7778%; --day: url("/scrapbook/garden/sky-day.webp"); --night: url("/scrapbook/garden/sky-night.webp"); }
+.g-stars { aspect-ratio: 1376 / 236; --day: none; --night: url("/scrapbook/garden/stars-1-night.webp"); }
+.g-stars-2 { aspect-ratio: 1056 / 364; --day: none; --night: url("/scrapbook/garden/stars-2-night.webp"); }
+.g-moon { aspect-ratio: 240 / 240; --day: none; --night: url("/scrapbook/garden/moon-night.webp"); }
+.g-far { top: 32.5926%; height: 12.4444%; --day: url("/scrapbook/garden/far-day.webp"); --night: url("/scrapbook/garden/far-night.webp"); }
+.g-lawn { top: 37.6296%; height: 62.3704%; --day: url("/scrapbook/garden/lawn-day.webp"); --night: url("/scrapbook/garden/lawn-night.webp"); }
+.g-trees { left: 76%; width: 24%; top: 29.037%; height: 16.8889%; --day: url("/scrapbook/garden/trees-day.webp"); --night: url("/scrapbook/garden/trees-night.webp"); }
+.g-tree { left: -5.7396%; width: 30.625%; top: -23.1852%; height: 87.1111%; --day: url("/scrapbook/garden/tree-day.webp"); --night: url("/scrapbook/garden/tree-night.webp"); }
+.g-lavender { top: 44.7407%; height: 55.2593%; --day: url("/scrapbook/garden/lavender-day.webp"); --night: url("/scrapbook/garden/lavender-night.webp"); }
+.g-bench { left: 10.8333%; width: 20.6667%; top: 53.9259%; height: 24%; --day: url("/scrapbook/garden/bench-day.webp"); --night: url("/scrapbook/garden/bench-night.webp"); }
+.g-lamp { left: 89.1854%; width: 4.425%; top: 21.7741%; height: 52.5333%; --day: url("/scrapbook/garden/lamp-day.webp"); --night: url("/scrapbook/garden/lamp-night.webp"); }
+.g-glow { left: 75%; width: 24.1667%; top: 29.6296%; height: 66.0741%; --day: none; --night: url("/scrapbook/garden/glow-night.webp"); }
+.g-clouds-far { top: 22.5185%; height: 35.5556%; --day: url("/scrapbook/garden/clouds-far-day.webp"); --night: url("/scrapbook/garden/clouds-far-night.webp"); }
+.g-clouds-mid { top: 11.8519%; height: 52.1481%; --day: url("/scrapbook/garden/clouds-mid-day.webp"); --night: url("/scrapbook/garden/clouds-mid-night.webp"); }
+.g-clouds-near { top: 4.7407%; height: 40.2963%; --day: url("/scrapbook/garden/clouds-near-day.webp"); --night: url("/scrapbook/garden/clouds-near-night.webp"); }
+[data-sky] .g-clouds-far { top: calc(88% - 10.667cqw); height: 20cqw; }
+[data-sky] .g-clouds-mid { top: calc(88% - 16.667cqw); height: 29.333cqw; }
+[data-sky] .g-clouds-near { top: calc(88% - 20.667cqw); height: 22.667cqw; }
+@container garden (aspect-ratio < 0.55) {
+  .g-layer:not(.g-clouds, .g-free) { left: 20%; width: 60%; }
+  .g-sky { --day: url("/scrapbook/garden/sky-day-s.webp"); --night: url("/scrapbook/garden/sky-night-s.webp"); }
+  .g-far { --day: url("/scrapbook/garden/far-day-s.webp"); --night: url("/scrapbook/garden/far-night-s.webp"); }
+  .g-lawn { --day: url("/scrapbook/garden/lawn-day-s.webp"); --night: url("/scrapbook/garden/lawn-night-s.webp"); }
+  .g-trees { display: none; }
+  .g-tree { display: none; }
+  .g-lavender { --day: url("/scrapbook/garden/lavender-day-s.webp"); --night: url("/scrapbook/garden/lavender-night-s.webp"); }
+  .g-bench { display: none; }
+  .g-lamp { display: none; }
+  .g-glow { display: none; }
+  .g-clouds-far { --day: url("/scrapbook/garden/clouds-far-day-s.webp"); --night: url("/scrapbook/garden/clouds-far-night-s.webp"); }
+  .g-clouds-mid { --day: url("/scrapbook/garden/clouds-mid-day-s.webp"); --night: url("/scrapbook/garden/clouds-mid-night-s.webp"); }
+  .g-clouds-near { --day: url("/scrapbook/garden/clouds-near-day-s.webp"); --night: url("/scrapbook/garden/clouds-near-night-s.webp"); }
+}
+/* layers end */
+
+/* the standalone tree stands with its trunk base at canvas (190, 863) (44.6% across its image). on short, wide
+   panels the canvas sits high and its crown would reach the header, so its height is capped to end 96 px below the
+   panel top; it then shrinks around the trunk base, which stays where it stands */
+.g-tree {
+  top: auto;
+  bottom: 36.0741%;
+  left: calc(190 * var(--c));
+  width: auto;
+  height: min(87.1111%, calc(303 * var(--c) + 100cqh * var(--horizon) - 96px));
+  aspect-ratio: 735 / 1176;
+  translate: -44.59% 0;
+}
+
+@container garden (aspect-ratio < 0.55) {
+  .g-companion {
+    left: 52%;
+    top: 86%;
+  }
+  /* a phone's headline fills its sky; the moon would touch it (stars stay) */
+  .g-moon {
+    display: none;
+  }
+}
+
+/* park panels (.park): the hero's own park behind a part of the page (the closing call to action), layer for layer, in the hero's canvas geometry with the hero's files. each panel picks
+   the stretch of canvas it shows (--span canvas px across around column --cx) and where its horizon sits. on phones
+   they take the hero's narrow files (every phone stretch lies inside their middle 60%), so a panel downloads
+   nothing the hero hasn't (but the lamp the hero hides on phones). */
+.park {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  container-type: size;
+  background: var(--sky-top);
+}
+/* the closing park: the hero's sky down to its horizon, the treeline and the top of its lamppost */
+.park-horizon .g-scene {
+  --horizon: 1;
+}
+@media (max-width: 600px) {
+  /* a phone's close shows the middle of the horizon: the lamp stands nearer, the trees and the moon stay out (the
+     words fill its sky) */
+  .park-horizon .g-scene {
+    --cx: 1220;
+    --horizon: 1;
+    --c: calc(100cqw / 980);
+  }
+  .park-horizon .g-lamp {
+    left: 63%;
+  }
+  .park-horizon .g-glow {
+    left: 48.8%;
+  }
+  .park-horizon :is(.g-trees, .g-moon) {
+    display: none;
+  }
+  /* the hero's narrow files (garden.css's generated block, for phones) */
+  .park :is(.g-sky, .g-far) { left: 20%; width: 60%; }
+  .park .g-sky { --day: url("/scrapbook/garden/sky-day-s.webp"); --night: url("/scrapbook/garden/sky-night-s.webp"); }
+  .park .g-far { --day: url("/scrapbook/garden/far-day-s.webp"); --night: url("/scrapbook/garden/far-night-s.webp"); }
+  .park .g-clouds-far { --day: url("/scrapbook/garden/clouds-far-day-s.webp"); --night: url("/scrapbook/garden/clouds-far-night-s.webp"); }
+  .park .g-clouds-mid { --day: url("/scrapbook/garden/clouds-mid-day-s.webp"); --night: url("/scrapbook/garden/clouds-mid-night-s.webp"); }
+  .park .g-clouds-near { --day: url("/scrapbook/garden/clouds-near-day-s.webp"); --night: url("/scrapbook/garden/clouds-near-night-s.webp"); }
+}
+
+/* the live editor is the hero's focal point: wide, centred, and down to the panel's lower edge (its box is pure
+   css, so it is reserved from the first paint; scale-demo.js fits the editor into whatever shape it gets) */
+.hero .demo-print {
+  align-self: start;
+  width: min(1000px, 74%);
+  aspect-ratio: 16 / 10;
+  margin-top: 28px;
+}
+.hero .demo {
+  height: 100%;
+}
+
+/* below desktop the panel grows with its content and keeps at least a screen, so the park shows under it */
+@media (max-width: 1024px) {
+  [data-page="home"] .hero {
+    --panel-h: calc(100svh - 2 * var(--hero-inset));
+  }
+  /* below desktop the editor is its snapshot, at the snapshot's own shape */
+  .hero .demo-print {
+    width: min(900px, 74%);
+    aspect-ratio: 900 / 520;
+  }
+}
+@media (max-width: 720px) {
+  :root {
+    --hero-inset: 10px;
+  }
+  [data-page="home"] .hero {
+    padding: 100px 12px 0;
+  }
+  .garden {
+    border-radius: 12px;
+  }
+  .hero .demo-print {
+    width: 100%;
+    margin-top: 30px;
+  }
+}

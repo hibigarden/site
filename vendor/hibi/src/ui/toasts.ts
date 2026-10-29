@@ -8,12 +8,20 @@ export const toastPositions = [
 ] as const
 export type ToastPosition = (typeof toastPositions)[number]
 export type ToastPreferences = { position: ToastPosition; duration: number }
+/** Where a notification leads. */
+export type ToastAction = {
+  /** Says what activating does, such as `Open update settings`. */
+  label: string
+  run: () => void
+}
 export type ToastOptions = {
   message: string
   description?: string
   variant?: 'info' | 'success' | 'error'
   /** Milliseconds; zero keeps the notification until dismissed. */
   duration?: number
+  /** Makes the whole notification clickable. Clicking it or its action button runs `run`, then closes it. */
+  action?: ToastAction
 }
 export type ToastHandle = {
   update: (changes: Partial<ToastOptions>) => void

@@ -23,3 +23,8 @@ document.addEventListener("keydown", (event) => {
     menu.focus();
   }
 });
+// chromium's focus scroll leaves a half-visible link half-hidden inside a sideways scroller (the comparison
+// table): bring the keyboard-focused element, ring included (scroll-margin), fully into view
+document.addEventListener("focusin", (event) => {
+  if (event.target.matches(":focus-visible")) event.target.scrollIntoView({ block: "nearest", inline: "nearest" });
+});

@@ -225,3 +225,28 @@ export async function fetchDirectory(
   }
   return parseDirectory(JSON.parse(body), builtinIds);
 }
+
+const MONTHS = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii"];
+/** "2026-10-12" → "12.x.2026", the site's label style; null for anything else. */
+export function addonDay(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value ?? "");
+  return match && MONTHS[match[2] - 1] && +match[3]
+    ? `${+match[3]}.${MONTHS[match[2] - 1]}.${match[1]}`
+    : null;
+}
+
+/**
+ * Newest first by `released` or `updated`. Undated entries follow in their
+ * given (catalog) order, so a missing date never hides an addon.
+ */
+export function sortAddons(addons, order) {
+  const date = (addon) => (addonDay(addon[order]) ? addon[order] : "");
+  return [...addons].sort((a, b) => {
+    const [x, y] = [date(a), date(b)];
+    if (!x || !y) return !x - !y;
+    return (
+      y.localeCompare(x) ||
+      a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+    );
+  });
+}

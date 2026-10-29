@@ -1,0 +1,2709 @@
+@font-face {
+  font-family: Caveat;
+  src: url("./fonts/caveat-latin-500.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+/* sized like caveat (see base.css's fallback faces) */
+@font-face {
+  font-family: "Caveat fallback";
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans");
+  size-adjust: 76.34%;
+  ascent-override: 125.76%;
+  descent-override: 39.3%;
+  line-gap-override: 0%;
+}
+/* hibi's butterfly garden, kept as a scrapbook: tan pages, cream cards, washi tape, typed labels.
+   the landing only; base.css holds the colours and type every page shares. */
+:root {
+  --page-tile: url("/scrapbook/page-day.webp");
+  --hand: Caveat, "Caveat fallback", "Bradley Hand", "Segoe Print", cursive;
+  --gutter: max(0px, (100vw - 1120px) / 2);
+  --deckle-1: polygon(0% 2.98px, 2.94% 0.28px, 5.88% 1.95px, 8.82% 2.16px, 11.76% 1.65px, 14.71% 1.55px, 17.65% 0.47px, 20.59% 1.18px, 23.53% 1.26px, 26.47% 2.16px, 29.41% 1.88px, 32.35% 3.42px, 35.29% 1.2px, 38.24% 0.49px, 41.18% 3.65px, 44.12% 0.66px, 47.06% 2.14px, 50% 2.01px, 52.94% 1.87px, 55.88% 3.75px, 58.82% 0.71px, 61.76% 0.34px, 64.71% 1.72px, 67.65% 0.91px, 70.59% 1.5px, 73.53% 1.22px, 76.47% 1.7px, 79.41% 3.09px, 82.35% 1.35px, 85.29% 0.2px, 88.24% 1.77px, 91.18% 1.07px, 94.12% 1.56px, 97.06% 0.34px, calc(100% - 1.81px) 0%, calc(100% - 3.24px) 5%, calc(100% - 1.95px) 10%, calc(100% - 1.86px) 15%, calc(100% - 1.05px) 20%, calc(100% - 0.04px) 25%, calc(100% - 0.93px) 30%, calc(100% - 0.25px) 35%, calc(100% - 2.62px) 40%, calc(100% - 1.07px) 45%, calc(100% - 2.11px) 50%, calc(100% - 4.31px) 55%, calc(100% - 2.22px) 60%, calc(100% - 1.91px) 65%, calc(100% - 0.37px) 70%, calc(100% - 3.24px) 75%, calc(100% - 1.56px) 80%, calc(100% - 0.53px) 85%, calc(100% - 2.79px) 90%, calc(100% - 2.75px) 95%, 100% calc(100% - 2.22px), 97.06% calc(100% - 1.56px), 94.12% calc(100% - 1.99px), 91.18% calc(100% - 0.33px), 88.24% calc(100% - 0.89px), 85.29% calc(100% - 3.91px), 82.35% calc(100% - 1.33px), 79.41% calc(100% - 1.95px), 76.47% calc(100% - 2.29px), 73.53% calc(100% - 1.1px), 70.59% calc(100% - 1.66px), 67.65% calc(100% - 0.71px), 64.71% calc(100% - 0.13px), 61.76% calc(100% - 3.73px), 58.82% calc(100% - 3.14px), 55.88% calc(100% - 4.54px), 52.94% calc(100% - 0.12px), 50% calc(100% - 1.81px), 47.06% calc(100% - 1.45px), 44.12% calc(100% - 0.1px), 41.18% calc(100% - 1.22px), 38.24% calc(100% - 1.71px), 35.29% calc(100% - 1.18px), 32.35% calc(100% - 1.74px), 29.41% calc(100% - 2.65px), 26.47% calc(100% - 1.13px), 23.53% calc(100% - 1.9px), 20.59% calc(100% - 2.16px), 17.65% calc(100% - 0.01px), 14.71% calc(100% - 0.73px), 11.76% calc(100% - 0.6px), 8.82% calc(100% - 0.74px), 5.88% calc(100% - 3.43px), 2.94% calc(100% - 1.69px), 0.71px 100%, 3.38px 95%, 2.61px 90%, 3.06px 85%, 1.62px 80%, 0.55px 75%, 0.52px 70%, 0.03px 65%, 4.41px 60%, 2.39px 55%, 0.19px 50%, 1.98px 45%, 2.16px 40%, 2.87px 35%, 4.61px 30%, 1.27px 25%, 0.9px 20%, 0.39px 15%, 0.42px 10%, 1.98px 5%);
+  --deckle-2: polygon(0% 0.79px, 2.94% 2.48px, 5.88% 1.47px, 8.82% 1.72px, 11.76% 0.43px, 14.71% 2.76px, 17.65% 1.43px, 20.59% 1.75px, 23.53% 2.41px, 26.47% 2.11px, 29.41% 0.82px, 32.35% 0.64px, 35.29% 1.26px, 38.24% 4.01px, 41.18% 4.22px, 44.12% 2.83px, 47.06% 1.74px, 50% 1.07px, 52.94% 4.34px, 55.88% 3.12px, 58.82% 1.5px, 61.76% 0.62px, 64.71% 1.82px, 67.65% 3.17px, 70.59% 1.37px, 73.53% 2.02px, 76.47% 2.2px, 79.41% 0.56px, 82.35% 0.03px, 85.29% 1.31px, 88.24% 2.76px, 91.18% 1.63px, 94.12% 0.71px, 97.06% 1.52px, calc(100% - 1.29px) 0%, calc(100% - 0.65px) 5%, calc(100% - 1.55px) 10%, calc(100% - 1.05px) 15%, calc(100% - 0.84px) 20%, calc(100% - 1.81px) 25%, calc(100% - 2.36px) 30%, calc(100% - 0.54px) 35%, calc(100% - 2.3px) 40%, calc(100% - 4.23px) 45%, calc(100% - 1.99px) 50%, calc(100% - 0.27px) 55%, calc(100% - 2.27px) 60%, calc(100% - 2.84px) 65%, calc(100% - 2.2px) 70%, calc(100% - 0.93px) 75%, calc(100% - 1.01px) 80%, calc(100% - 1.47px) 85%, calc(100% - 0.69px) 90%, calc(100% - 0.5px) 95%, 100% calc(100% - 1.42px), 97.06% calc(100% - 2.76px), 94.12% calc(100% - 0.37px), 91.18% calc(100% - 1.08px), 88.24% calc(100% - 1.65px), 85.29% calc(100% - 1.94px), 82.35% calc(100% - 0.04px), 79.41% calc(100% - 1.94px), 76.47% calc(100% - 1.65px), 73.53% calc(100% - 0.52px), 70.59% calc(100% - 2.33px), 67.65% calc(100% - 2.76px), 64.71% calc(100% - 0.93px), 61.76% calc(100% - 1.5px), 58.82% calc(100% - 1.26px), 55.88% calc(100% - 0.27px), 52.94% calc(100% - 2.24px), 50% calc(100% - 3.1px), 47.06% calc(100% - 1.66px), 44.12% calc(100% - 2.82px), 41.18% calc(100% - 3.28px), 38.24% calc(100% - 0.47px), 35.29% calc(100% - 0.72px), 32.35% calc(100% - 2.22px), 29.41% calc(100% - 1.99px), 26.47% calc(100% - 3.1px), 23.53% calc(100% - 0.51px), 20.59% calc(100% - 0.45px), 17.65% calc(100% - 3.35px), 14.71% calc(100% - 0.43px), 11.76% calc(100% - 2.25px), 8.82% calc(100% - 0.3px), 5.88% calc(100% - 1.08px), 2.94% calc(100% - 2.4px), 3.27px 100%, 0.46px 95%, 1.26px 90%, 1.76px 85%, 1.13px 80%, 1.71px 75%, 1.3px 70%, 2.15px 65%, 1.25px 60%, 2.24px 55%, 2.23px 50%, 0.66px 45%, 2.84px 40%, 2.45px 35%, 2.29px 30%, 2.72px 25%, 0.17px 20%, 0.6px 15%, 0.05px 10%, 2.25px 5%);
+  --deckle-3: polygon(0% 0.72px, 2.94% 0.86px, 5.88% 2.15px, 8.82% 2.6px, 11.76% 0.93px, 14.71% 4.28px, 17.65% 2.39px, 20.59% 2.52px, 23.53% 0.36px, 26.47% 0.61px, 29.41% 1.28px, 32.35% 1.22px, 35.29% 1.72px, 38.24% 2.83px, 41.18% 1.24px, 44.12% 0.61px, 47.06% 1.98px, 50% 0.8px, 52.94% 1.94px, 55.88% 1.99px, 58.82% 0.86px, 61.76% 0.08px, 64.71% 4.64px, 67.65% 0.14px, 70.59% 1.43px, 73.53% 1.57px, 76.47% 3.28px, 79.41% 1.36px, 82.35% 2.27px, 85.29% 1.59px, 88.24% 0.23px, 91.18% 2.43px, 94.12% 1.51px, 97.06% 3.75px, calc(100% - 1.48px) 0%, calc(100% - 0.95px) 5%, calc(100% - 0.68px) 10%, calc(100% - 3.76px) 15%, calc(100% - 0.02px) 20%, calc(100% - 0.8px) 25%, calc(100% - 0.64px) 30%, calc(100% - 0.41px) 35%, calc(100% - 4.23px) 40%, calc(100% - 1.98px) 45%, calc(100% - 0.57px) 50%, calc(100% - 0.37px) 55%, calc(100% - 2.36px) 60%, calc(100% - 0.23px) 65%, calc(100% - 2.92px) 70%, calc(100% - 1.68px) 75%, calc(100% - 1.59px) 80%, calc(100% - 1.82px) 85%, calc(100% - 1.14px) 90%, calc(100% - 1.38px) 95%, 100% calc(100% - 0.73px), 97.06% calc(100% - 0.82px), 94.12% calc(100% - 0.67px), 91.18% calc(100% - 1.34px), 88.24% calc(100% - 0.2px), 85.29% calc(100% - 1.99px), 82.35% calc(100% - 0.32px), 79.41% calc(100% - 0.66px), 76.47% calc(100% - 0.08px), 73.53% calc(100% - 3.99px), 70.59% calc(100% - 0.99px), 67.65% calc(100% - 2.94px), 64.71% calc(100% - 4.26px), 61.76% calc(100% - 0.73px), 58.82% calc(100% - 1.55px), 55.88% calc(100% - 1.93px), 52.94% calc(100% - 2.35px), 50% calc(100% - 3.03px), 47.06% calc(100% - 0.58px), 44.12% calc(100% - 0.75px), 41.18% calc(100% - 2.5px), 38.24% calc(100% - 2.45px), 35.29% calc(100% - 0.02px), 32.35% calc(100% - 3.44px), 29.41% calc(100% - 1.11px), 26.47% calc(100% - 3.74px), 23.53% calc(100% - 1.71px), 20.59% calc(100% - 1.1px), 17.65% calc(100% - 2.59px), 14.71% calc(100% - 2.53px), 11.76% calc(100% - 3.97px), 8.82% calc(100% - 0.22px), 5.88% calc(100% - 1.13px), 2.94% calc(100% - 3.52px), 1.66px 100%, 2.5px 95%, 1.17px 90%, 0.01px 85%, 0.8px 80%, 3.32px 75%, 1.87px 70%, 3.73px 65%, 1.55px 60%, 1.77px 55%, 1.92px 50%, 2.56px 45%, 2.11px 40%, 2.35px 35%, 2.31px 30%, 1.85px 25%, 0.32px 20%, 1.81px 15%, 0.18px 10%, 0.91px 5%);
+  --deckle-4: polygon(0% 2.85px, 2.94% 2.92px, 5.88% 0.23px, 8.82% 2.35px, 11.76% 1.66px, 14.71% 0.99px, 17.65% 1.07px, 20.59% 2.23px, 23.53% 0.93px, 26.47% 0.65px, 29.41% 0.5px, 32.35% 0.57px, 35.29% 1.99px, 38.24% 0.12px, 41.18% 1.62px, 44.12% 1.86px, 47.06% 2.33px, 50% 1.29px, 52.94% 0.78px, 55.88% 1.42px, 58.82% 3.57px, 61.76% 0.43px, 64.71% 0.41px, 67.65% 1.13px, 70.59% 1.22px, 73.53% 1.82px, 76.47% 2.33px, 79.41% 1.71px, 82.35% 0.72px, 85.29% 4.28px, 88.24% 2.92px, 91.18% 1.05px, 94.12% 1.09px, 97.06% 0.74px, calc(100% - 2.8px) 0%, calc(100% - 1.62px) 5%, calc(100% - 1.44px) 10%, calc(100% - 1.27px) 15%, calc(100% - 2.59px) 20%, calc(100% - 1.68px) 25%, calc(100% - 2.46px) 30%, calc(100% - 1.01px) 35%, calc(100% - 3.43px) 40%, calc(100% - 0.93px) 45%, calc(100% - 1.07px) 50%, calc(100% - 1.29px) 55%, calc(100% - 1.21px) 60%, calc(100% - 0.6px) 65%, calc(100% - 3.29px) 70%, calc(100% - 3.81px) 75%, calc(100% - 1.97px) 80%, calc(100% - 0.41px) 85%, calc(100% - 1.32px) 90%, calc(100% - 2.33px) 95%, 100% calc(100% - 0.76px), 97.06% calc(100% - 2.52px), 94.12% calc(100% - 0.47px), 91.18% calc(100% - 1.33px), 88.24% calc(100% - 2.72px), 85.29% calc(100% - 3.09px), 82.35% calc(100% - 3.01px), 79.41% calc(100% - 1.23px), 76.47% calc(100% - 0.48px), 73.53% calc(100% - 3.85px), 70.59% calc(100% - 2.13px), 67.65% calc(100% - 1.72px), 64.71% calc(100% - 1.68px), 61.76% calc(100% - 4.47px), 58.82% calc(100% - 0.06px), 55.88% calc(100% - 0.04px), 52.94% calc(100% - 1.28px), 50% calc(100% - 1.26px), 47.06% calc(100% - 2.29px), 44.12% calc(100% - 2.43px), 41.18% calc(100% - 2.68px), 38.24% calc(100% - 0.28px), 35.29% calc(100% - 0.04px), 32.35% calc(100% - 0.63px), 29.41% calc(100% - 1.03px), 26.47% calc(100% - 0.53px), 23.53% calc(100% - 0.64px), 20.59% calc(100% - 3.89px), 17.65% calc(100% - 0.98px), 14.71% calc(100% - 0.12px), 11.76% calc(100% - 3.14px), 8.82% calc(100% - 0.5px), 5.88% calc(100% - 2.05px), 2.94% calc(100% - 1.47px), 1.01px 100%, 1.54px 95%, 2px 90%, 2.72px 85%, 3.23px 80%, 3.7px 75%, 1.11px 70%, 3.76px 65%, 0.63px 60%, 2.25px 55%, 0.25px 50%, 0.41px 45%, 2.83px 40%, 0.58px 35%, 2.04px 30%, 1.83px 25%, 1.16px 20%, 1.6px 15%, 0px 10%, 1.01px 5%);
+  --cut-1: polygon(0% 0.05px, 12.5% 0.02px, 25% 0.07px, 37.5% 0px, 50% 0.16px, 62.5% 0.27px, 75% 1.45px, 87.5% 1.42px, calc(100% - 2.57px) 0%, calc(100% - 2.55px) 16.67%, calc(100% - 2.29px) 33.33%, calc(100% - 2.72px) 50%, calc(100% - 2.21px) 66.67%, calc(100% - 2.38px) 83.33%, 100% calc(100% - 0.69px), 87.5% calc(100% - 0.78px), 75% calc(100% - 0.41px), 62.5% calc(100% - 0.78px), 50% calc(100% - 0.58px), 37.5% calc(100% - 0.59px), 25% calc(100% - 0.6px), 12.5% calc(100% - 0.72px), 2.02px 100%, 2.29px 83.33%, 2.49px 66.67%, 2.46px 50%, 1.76px 33.33%, 2.28px 16.67%);
+  --cut-2: polygon(0% 0.45px, 12.5% 0.23px, 25% 0.52px, 37.5% 0.57px, 50% 2.29px, 62.5% 2.55px, 75% 2.32px, 87.5% 2.62px, calc(100% - 1.82px) 0%, calc(100% - 1.92px) 16.67%, calc(100% - 1.92px) 33.33%, calc(100% - 1.87px) 50%, calc(100% - 0.83px) 66.67%, calc(100% - 0.59px) 83.33%, 100% calc(100% - 0.1px), 87.5% calc(100% - 0.48px), 75% calc(100% - 0.21px), 62.5% calc(100% - 0.58px), 50% calc(100% - 0.6px), 37.5% calc(100% - 0.35px), 25% calc(100% - 0.22px), 12.5% calc(100% - 0.3px), 3.43px 100%, 3.4px 83.33%, 3.18px 66.67%, 3.1px 50%, 2.97px 33.33%, 2.99px 16.67%);
+  --cut-3: polygon(0% 0.68px, 12.5% 0.63px, 25% 0.61px, 37.5% 0.57px, 50% 0.33px, 62.5% 0.2px, 75% 0.48px, 87.5% 0.13px, calc(100% - 2.24px) 0%, calc(100% - 1.99px) 16.67%, calc(100% - 2.5px) 33.33%, calc(100% - 2.54px) 50%, calc(100% - 2.57px) 66.67%, calc(100% - 3.05px) 83.33%, 100% calc(100% - 1.79px), 87.5% calc(100% - 1.85px), 75% calc(100% - 1.47px), 62.5% calc(100% - 1.31px), 50% calc(100% - 0.25px), 37.5% calc(100% - 0.13px), 25% calc(100% - 0.07px), 12.5% calc(100% - 0px), 3.25px 100%, 3.02px 83.33%, 3.08px 66.67%, 2.63px 50%, 2.66px 33.33%, 2.92px 16.67%);
+  --torn-top: polygon(0% 3.48px, 2.5% 0.97px, 5% 0.36px, 7.5% 2.68px, 10% 2.5px, 12.5% 3.83px, 15% 1.23px, 17.5% 1.43px, 20% 2.7px, 22.5% 3.65px, 25% 0.48px, 27.5% 2.12px, 30% 0.63px, 32.5% 2.8px, 35% 0.53px, 37.5% 2.66px, 40% 2.42px, 42.5% 0.93px, 45% 1.18px, 47.5% 3.97px, 50% 2.65px, 52.5% 1.55px, 55% 2.69px, 57.5% 1.6px, 60% 1.12px, 62.5% 3.01px, 65% 1.92px, 67.5% 0.63px, 70% 2.48px, 72.5% 1.85px, 75% 1.75px, 77.5% 1.44px, 80% 0.16px, 82.5% 2.94px, 85% 1.45px, 87.5% 0.24px, 90% 2.86px, 92.5% 2.88px, 95% 3.58px, 97.5% 4.54px, 100% 1.22px, 100% 100%, 0% 100%);
+  --torn-bottom: polygon(0% 0%, 100% 0%, 100% calc(100% - 3.86px), 97.5% calc(100% - 2.43px), 95% calc(100% - 2.58px), 92.5% calc(100% - 4.41px), 90% calc(100% - 2.22px), 87.5% calc(100% - 1.09px), 85% calc(100% - 4.65px), 82.5% calc(100% - 4.76px), 80% calc(100% - 2.99px), 77.5% calc(100% - 1.61px), 75% calc(100% - 1.73px), 72.5% calc(100% - 3.89px), 70% calc(100% - 2.64px), 67.5% calc(100% - 4px), 65% calc(100% - 1.27px), 62.5% calc(100% - 2.43px), 60% calc(100% - 2.53px), 57.5% calc(100% - 2.77px), 55% calc(100% - 1.64px), 52.5% calc(100% - 1.4px), 50% calc(100% - 3.22px), 47.5% calc(100% - 1.99px), 45% calc(100% - 1.52px), 42.5% calc(100% - 0.41px), 40% calc(100% - 3.97px), 37.5% calc(100% - 1.04px), 35% calc(100% - 0.82px), 32.5% calc(100% - 0.26px), 30% calc(100% - 2.17px), 27.5% calc(100% - 2.27px), 25% calc(100% - 3.21px), 22.5% calc(100% - 2.98px), 20% calc(100% - 2.14px), 17.5% calc(100% - 1.4px), 15% calc(100% - 1.63px), 12.5% calc(100% - 2.98px), 10% calc(100% - 0.58px), 7.5% calc(100% - 1.49px), 5% calc(100% - 3.4px), 2.5% calc(100% - 0.74px), 0% calc(100% - 1.07px));
+  --zigzag: polygon(0.00% 7px, 4.17% 0px, 8.33% 7px, 12.50% 0px, 16.67% 7px, 20.83% 0px, 25.00% 7px, 29.17% 0px, 33.33% 7px, 37.50% 0px, 41.67% 7px, 45.83% 0px, 50.00% 7px, 54.17% 0px, 58.33% 7px, 62.50% 0px, 66.67% 7px, 70.83% 0px, 75.00% 7px, 79.17% 0px, 83.33% 7px, 87.50% 0px, 91.67% 7px, 95.83% 0px, 100.00% 7px, 100.00% calc(100% - 7px), 95.83% calc(100% - 0px), 91.67% calc(100% - 7px), 87.50% calc(100% - 0px), 83.33% calc(100% - 7px), 79.17% calc(100% - 0px), 75.00% calc(100% - 7px), 70.83% calc(100% - 0px), 66.67% calc(100% - 7px), 62.50% calc(100% - 0px), 58.33% calc(100% - 7px), 54.17% calc(100% - 0px), 50.00% calc(100% - 7px), 45.83% calc(100% - 0px), 41.67% calc(100% - 7px), 37.50% calc(100% - 0px), 33.33% calc(100% - 7px), 29.17% calc(100% - 0px), 25.00% calc(100% - 7px), 20.83% calc(100% - 0px), 16.67% calc(100% - 7px), 12.50% calc(100% - 0px), 8.33% calc(100% - 7px), 4.17% calc(100% - 0px), 0.00% calc(100% - 7px));
+  background: var(--page) var(--page-tile);
+}
+:root[data-theme="dark"] {
+  --page-tile: url("/scrapbook/page-night.webp");
+}
+
+/* the day's light over the page (scrapbook.js), behind every piece */
+/* typed labels: characters appear a few per held frame, then the caret rests and goes */
+.typed > span {
+  visibility: hidden;
+}
+.typed > span.on {
+  visibility: visible;
+}
+.typed .caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.05em;
+  margin-left: 1px;
+  vertical-align: -0.18em;
+  background: currentColor;
+}
+
+/* ---------------------------------------------------------------- paper primitives */
+
+/* a card of paper: the deckled sheet and its shadow are pseudo-elements, so focus rings inside are never clipped */
+.paper {
+  --paper: var(--card);
+  position: relative;
+  isolation: isolate;
+}
+.paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--paper);
+  clip-path: var(--deckle, var(--deckle-1));
+}
+.paper::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: -2;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
+    0 16px 30px -12px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+/* washi tape: a strip of the image agent's tape, laid over a corner or an edge */
+.tape {
+  position: absolute;
+  z-index: 3;
+  width: var(--tape-w, 132px);
+  aspect-ratio: 320 / 47;
+  background: var(--tape-img) center / 100% 100% no-repeat;
+  opacity: 0.78;
+  pointer-events: none;
+}
+.tape-blue {
+  --tape-img: url("/scrapbook/tape-blue.webp");
+}
+.tape-dots {
+  --tape-img: url("/scrapbook/tape-dots.webp");
+  aspect-ratio: 320 / 39;
+}
+.tape-periwinkle {
+  --tape-img: url("/scrapbook/tape-periwinkle.webp");
+}
+.tape-cream {
+  --tape-img: url("/scrapbook/tape-cream.webp");
+  aspect-ratio: 320 / 63;
+}
+.tape-tl {
+  top: 8px;
+  left: -30px;
+  rotate: -36deg;
+}
+.tape-tr {
+  top: 8px;
+  right: -30px;
+  rotate: 36deg;
+}
+.tape-br {
+  bottom: 10px;
+  right: -30px;
+  rotate: -34deg;
+}
+.tape-top {
+  top: -12px;
+  left: 50%;
+  translate: -50% 0;
+  rotate: -2deg;
+}
+/* a dressmaker's pin from above */
+.pin {
+  position: absolute;
+  z-index: 4;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #9a9a9a 0 18%, #161616 62%);
+  box-shadow:
+    0.5px 0.5px 0 rgb(0 0 0 / 0.4),
+    5px 7px 3px rgb(40 28 14 / 0.22);
+  pointer-events: none;
+}
+/* a typed specimen label: cream slip, thin double rule, mono type */
+.label {
+  display: inline-block;
+  padding: 7px 11px 6px;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(var(--shadow-rgb) / 0.32),
+    0 3px 8px -2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.9));
+  color: var(--ink-soft);
+  font: 400 12px/1.35 var(--mono);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+[data-theme="dark"] .label {
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(244 232 207 / 0.22),
+    0 3px 8px -2px rgb(0 0 0 / 0.5);
+}
+/* scraps laid on the page: a picture (pinned or taped), a typed label, a pen doodle or a margin note.
+   each sits at --x/--y inside its section or card, --w wide, turned --r; decorative and never over text
+   (checked by the overlap audit at 1440, 1280, 1024, 768 and 390). */
+.piece,
+.doodle,
+.note {
+  position: absolute;
+  z-index: 4;
+  left: var(--x, 0);
+  top: var(--y, 0);
+  width: var(--w, auto);
+  rotate: var(--r, 0deg);
+  pointer-events: none;
+  user-select: none;
+}
+.piece > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.72) contrast(0.92) drop-shadow(1px 2px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8)));
+}
+/* pinned specimens stand off the page on one thin black insect pin, so their shadow falls further */
+.piece.pinned > img {
+  filter: saturate(0.72) contrast(0.92) drop-shadow(5px 8px 5px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)));
+}
+[data-theme="dark"] .piece > img {
+  filter: saturate(0.68) brightness(0.86) drop-shadow(2px 3px 3px rgb(0 0 0 / 0.45));
+}
+.piece.pinned::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 2.5px);
+  top: var(--pin-y, 40%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #9a9a9a 0 18%, #161616 62%);
+  box-shadow:
+    0.5px 0.5px 0 rgb(0 0 0 / 0.4),
+    5px 7px 3px rgb(40 28 14 / 0.22);
+}
+.piece.taped::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: var(--tape-y, 50%);
+  width: max(84px, 80%);
+  aspect-ratio: 320 / 50;
+  translate: -50% -50%;
+  rotate: var(--tape-r, -14deg);
+  background: var(--tape-img, url("/scrapbook/tape-periwinkle.webp")) center / 100% 100% no-repeat;
+  opacity: 0.9;
+}
+.piece.label {
+  width: auto;
+}
+/* margin pieces centre themselves in the page gutter beside the 1120px column (shown from 1400px) */
+.gutter-l {
+  left: max(calc(var(--gutter) / -2 - var(--w) / 2 + var(--dx, 0px)), calc(28px - var(--gutter)));
+}
+.gutter-r {
+  left: min(
+    calc(100% + var(--gutter) / 2 - var(--w) / 2 + var(--dx, 0px)),
+    calc(100% + var(--gutter) - var(--w) - 28px)
+  );
+}
+.doodle {
+  display: block;
+  width: var(--w, 60px);
+  color: var(--pen);
+}
+.doodle svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.lavender-ink {
+  color: var(--pen-lavender);
+}
+.cream-ink {
+  color: #fbf1e2;
+}
+.note {
+  color: var(--pen);
+  font: 500 28px/0.95 var(--hand);
+  white-space: nowrap;
+}
+
+/* the footer's switch for the garden's motion: plain text, its label says what it will do */
+.colophon-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 24px;
+}
+.motion-toggle {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.motion-toggle:hover {
+  color: var(--accent);
+}
+.motion-toggle[hidden],
+.motion-move,
+[data-motion="still"] .motion-still {
+  display: none;
+}
+[data-motion="still"] .motion-move {
+  display: inline;
+}
+/* stilled: every piece already in place, every mark already drawn */
+:root[data-motion="still"] .will-land {
+  translate: none !important;
+  scale: none !important;
+  clip-path: none !important;
+  transition: none !important;
+}
+:root[data-motion="still"] .will-land .reveal {
+  stroke-dashoffset: 0 !important;
+  transition: none !important;
+}
+
+/* ---------------------------------------------------------------- buttons: paper tags */
+
+.button {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  padding: 12px 20px 11px;
+  color: var(--ink);
+  font: 400 14px/1 var(--mono);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--cut-2);
+}
+.button::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -2;
+  box-shadow:
+    0 0 0 1px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.5)),
+    0 4px 10px -3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.3));
+}
+.button:hover {
+  color: var(--ink);
+}
+.button:hover::before {
+  background: var(--card-tan);
+}
+.cta-primary,
+.cta-primary:hover {
+  color: var(--on-blue);
+}
+.cta-primary::before {
+  background: var(--hibi-blue);
+}
+.cta-primary:hover::before {
+  background: color-mix(in oklch, var(--hibi-blue) 86%, #fff);
+}
+.button-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------------------------------------------------------------- hero */
+
+.title-card {
+  position: relative;
+  isolation: isolate;
+  width: min(940px, 100%);
+  text-align: center;
+}
+.title-card h1 {
+  font: 500 clamp(36px, 3.6vw, 52px) / 1.06 var(--serif);
+  letter-spacing: -0.022em;
+}
+.ink-word {
+  position: relative;
+  color: var(--accent);
+  white-space: nowrap;
+}
+/* the owner's own pen circle, drawn over the word (ink lies on top of print) */
+.ink-word .doodle {
+  z-index: 1;
+  left: -9%;
+  top: 5%;
+  width: 118%;
+  rotate: -4deg;
+  color: var(--pen-lavender);
+  --delay: 0.4s;
+}
+.ink-word .sparkle-a {
+  left: auto;
+  right: -6%;
+  top: -40%;
+  width: 0.34em;
+  color: var(--pen);
+  --delay: 0.5s;
+}
+.ink-word .sparkle-b {
+  left: auto;
+  right: -18%;
+  top: -18%;
+  width: 0.2em;
+  color: var(--pen-lavender);
+  --delay: 0.6s;
+}
+/* the headline and buttons sit straight on the park's sky (no card): a soft local glow keeps them readable
+   over clouds, and at night the primary button turns cream so it stands off the blue */
+.title-card::before {
+  content: "";
+  position: absolute;
+  inset: -48px -72px;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.42), transparent);
+  pointer-events: none;
+}
+[data-theme="dark"] .title-card::before {
+  background: radial-gradient(closest-side, rgb(8 14 36 / 0.5), transparent);
+}
+[data-theme="dark"] :is(.hero, .cta) .cta-primary,
+[data-theme="dark"] :is(.hero, .cta) .cta-primary:hover {
+  color: #1f1b16;
+}
+[data-theme="dark"] :is(.hero, .cta) .cta-primary::before {
+  background: #f6e3b4;
+}
+/* beta hangs off the download button like a little tag */
+.cta-primary .beta-tag {
+  position: absolute;
+  top: -11px;
+  right: -14px;
+  margin: 0;
+  rotate: 8deg;
+}
+/* the button group sits just under the title (its beta tag ~15 px below the descenders), the links a little apart
+   from the button; the editor follows */
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 38px;
+}
+.hero .download-get {
+  min-height: 40px;
+  padding: 9px 18px 8px;
+  gap: 8px;
+  font-size: 13px;
+}
+.hero .download-get .button-icon {
+  width: 14px;
+  height: 14px;
+}
+.hero .cta-primary .beta-tag {
+  top: -9px;
+  right: -12px;
+  padding: 3px 6px 2px;
+  font-size: 10px;
+}
+.hero .also-links {
+  gap: 0 18px;
+  font-size: 12px;
+}
+.hero .also-links a {
+  min-height: 28px;
+  gap: 6px;
+}
+/* the park's resting butterfly while the companion is out: gone from view, its box kept for the way home */
+.g-companion[hidden] {
+  display: block;
+  visibility: hidden;
+}
+/* the live editor sits straight on the scene as its own window: rounded corners, a faint contact shadow and one
+   wide soft layer part it from the park and the page without a dark band */
+.demo-print {
+  position: relative;
+  width: min(900px, 100%);
+  margin-top: 44px;
+}
+.demo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 900 / 520;
+  text-align: left;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--card-white);
+  box-shadow:
+    0 0 0 1px rgb(40 30 16 / 0.08),
+    0 1px 3px rgb(40 30 16 / 0.12),
+    0 18px 40px -16px rgb(24 32 56 / 0.24);
+}
+[data-theme="dark"] .demo {
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.4),
+    0 1px 3px rgb(0 0 0 / 0.3),
+    0 22px 46px -16px rgb(0 0 8 / 0.45);
+}
+.demo-shell {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 900px;
+  height: 520px;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  overflow: hidden;
+  background: var(--card-white);
+}
+.demo-snapshot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.demo-snapshot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+.demo[data-live="true"] .demo-snapshot {
+  display: none;
+}
+.demo[data-live="true"] .demo-shell {
+  display: block;
+}
+.demo iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  opacity: 0;
+}
+.demo-loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--card-white);
+  pointer-events: none;
+}
+.demo-loader-wordmark {
+  position: relative;
+  font: 500 34px/1 var(--serif);
+  color: color-mix(in srgb, var(--ink) 28%, transparent);
+}
+.demo-loader-wordmark::after {
+  content: "hibi";
+  position: absolute;
+  inset: 0;
+  color: var(--ink);
+  opacity: 0.65;
+  mask-image: linear-gradient(110deg, transparent 42%, black 50%, transparent 58%);
+  mask-size: 300% 100%;
+}
+.demo[data-ready="true"] iframe {
+  opacity: 1;
+}
+.demo[data-ready="true"] .demo-loader {
+  opacity: 0;
+  visibility: hidden;
+}
+.demo[data-ready="true"] .demo-loader-wordmark::after {
+  animation-play-state: paused;
+}
+
+.who-caption a,
+.feats a,
+.qa a,
+.compare a,
+.addon-guide-link,
+.addon-readme a,
+.addon-authors a,
+.addon-actions a:not(.addon-action),
+.credits a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+
+/* the beta tag beside the download button */
+.beta-tag {
+  align-self: center;
+  margin-left: -6px;
+  padding: 4px 8px 3px;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 2px var(--card-white),
+    inset 0 0 0 3px rgb(var(--shadow-rgb) / 0.34);
+  color: var(--ink-soft);
+  font: 400 11.5px/1.2 var(--mono);
+  letter-spacing: 0.04em;
+  rotate: -4deg;
+}
+/* product facts sit on typed specimen labels (they type themselves in, with a caret, as they land) */
+.specimen-label {
+  display: block;
+  width: fit-content;
+  max-width: min(100%, 52ch);
+  margin: 26px 0 0;
+  padding: 8px 13px 7px;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(var(--shadow-rgb) / 0.3),
+    0.5px 1px 1px rgb(var(--shadow-rgb) / 0.22);
+  color: var(--ink-soft);
+  font: 400 13.5px/1.45 var(--mono);
+  letter-spacing: 0.015em;
+  rotate: -0.8deg;
+}
+.specimen-label + .specimen-label {
+  margin-top: 10px;
+  rotate: 0.7deg;
+}
+[data-theme="dark"] .specimen-label {
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(244 232 207 / 0.22),
+    0.5px 1px 1px rgb(0 0 0 / 0.5);
+}
+/* no. 3: the specimen drawer, headed by the owner's line */
+.drawer-title {
+  grid-column: 1 / -1;
+  width: fit-content;
+  padding: 10px 18px 11px;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(var(--shadow-rgb) / 0.3),
+    0.5px 1px 1px rgb(var(--shadow-rgb) / 0.22);
+  font: 500 clamp(24px, 2.2vw, 30px) / 1.2 var(--serif);
+  rotate: -1deg;
+}
+[data-theme="dark"] .drawer-title {
+  box-shadow:
+    inset 0 0 0 3px var(--card-white),
+    inset 0 0 0 4px rgb(244 232 207 / 0.22),
+    0.5px 1px 1px rgb(0 0 0 / 0.5);
+}
+/* lavender is held down the way pressed plants are: thin cream paper strips across the stem */
+.piece.strapped::before,
+.piece.strapped::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 38%;
+  min-width: 26px;
+  height: 7px;
+  background: #f6efdf;
+  box-shadow: 0 0.5px 1px rgb(var(--shadow-rgb) / 0.3);
+  translate: -50% 0;
+}
+.piece.strapped::before {
+  top: var(--strap-a, 58%);
+  rotate: -8deg;
+}
+.piece.strapped::after {
+  top: var(--strap-b, 78%);
+  rotate: 6deg;
+}
+[data-theme="dark"] .piece.strapped::before,
+[data-theme="dark"] .piece.strapped::after {
+  background: #d9ccb0;
+}
+
+/* ---------------------------------------------------------------- the landing below the hero: one paper, one scale
+
+   four sections on the page's own paper, then the park again at the close. no head outranks the hero's title:
+   section heads stop at 40 px, sub heads at 29 px. decoration recedes: one cut-out per section at most, in a
+   gutter or beside a head, never on text. */
+:root {
+  --h2: clamp(29px, 1.5vw + 19px, 40px);
+  --h3: clamp(23px, 0.6vw + 20px, 29px);
+  --lead: clamp(19px, 0.2vw + 18px, 21px);
+  --body: clamp(17.5px, 0.2vw + 16.5px, 19.5px);
+  --gap: clamp(96px, 8vw + 40px, 168px);
+}
+.icon-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+svg.button-icon,
+.feats > li > svg,
+.feat-stage svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.s {
+  position: relative;
+  margin-top: var(--gap);
+}
+.s-head {
+  position: relative;
+  margin-bottom: 56px;
+}
+.s h2 {
+  max-width: 20em;
+  font: 500 var(--h2) / 1.06 var(--serif);
+  letter-spacing: -0.016em;
+}
+.s .lead {
+  max-width: 34em;
+  margin-top: 16px;
+  color: var(--ink-soft);
+  font-size: var(--lead);
+  line-height: 1.45;
+}
+.who-caption a,
+.feats a {
+  font: 400 14px/1.3 var(--mono);
+  color: var(--accent);
+}
+
+/* built around writing: the four people hibi is for, as tabs over one real window on the hero's park. the tabs
+   are radio buttons, so they work without javascript (who.js adds #for-… links and loads a window on intent) */
+.pair-sprig {
+  --y: -12px;
+}
+.who {
+  display: grid;
+  grid-template-areas: "tabs" "panel" "caption";
+}
+.who-tabs {
+  grid-area: tabs;
+  --bar: rgb(251 241 226 / 0.8);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  margin: 0 0 26px;
+  padding: 0;
+  border: 0;
+}
+.who-tabs label {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 11px 16px 10px;
+  color: var(--ink);
+  font: 400 14px/1.2 var(--mono);
+  cursor: pointer;
+}
+.who-tabs label::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--cut-2);
+}
+.who-tabs label::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -2;
+  box-shadow:
+    0 0 0 1px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.5)),
+    0 4px 10px -3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.1));
+}
+.who-tabs input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.who-tabs label:hover::before {
+  background: var(--card-tan);
+}
+.who-tabs label:has(:checked) {
+  color: var(--on-blue);
+}
+.who-tabs label:has(:checked)::before {
+  background: var(--hibi-blue);
+}
+/* while the tabs take turns (who.js), the open tab's bar fills along its lower edge, inside the paper, for 3 s at the
+   display's own frame rate; its end opens the next tab. it holds while the pointer or focus is on the tabs or the
+   window, or who.js pauses it (section off screen, page hidden) */
+@property --turn {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes tab-turn {
+  to {
+    --turn: 1;
+  }
+}
+.who.is-auto .who-tabs label:has(:checked)::before {
+  background:
+    linear-gradient(var(--bar), var(--bar)) 0 100% / calc(var(--turn) * 100%) 3px no-repeat,
+    var(--hibi-blue);
+  animation: tab-turn 3s linear;
+}
+.who:is(.is-paused, :focus-within, :has(.who-tabs:hover), :has(.window-panel:hover)) .who-tabs label::before {
+  animation-play-state: paused;
+}
+[data-theme="dark"] .who-tabs label:has(:checked) {
+  color: #1f1b16;
+}
+[data-theme="dark"] .who-tabs label:has(:checked)::before {
+  background: #f6e3b4;
+}
+[data-theme="dark"] .who-tabs {
+  --bar: rgb(32 54 118 / 0.55);
+}
+[data-theme="dark"] .who.is-auto .who-tabs label:has(:checked)::before {
+  background:
+    linear-gradient(var(--bar), var(--bar)) 0 100% / calc(var(--turn) * 100%) 3px no-repeat,
+    #f6e3b4;
+}
+.who-tabs label:has(:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+/* only the open tab's window and words show; the others' words keep their place (the tallest sets the height) */
+.who:not(:has([value="authors"]:checked)) :is(.window, .scene)[data-who="authors"],
+.who:not(:has([value="academics"]:checked)) :is(.window, .scene)[data-who="academics"],
+.who:not(:has([value="developers"]:checked)) :is(.window, .scene)[data-who="developers"],
+.who:not(:has([value="note-takers"]:checked)) :is(.window, .scene)[data-who="note-takers"] {
+  display: none;
+}
+.who:not(:has([value="authors"]:checked)) .who-caption[data-who="authors"],
+.who:not(:has([value="academics"]:checked)) .who-caption[data-who="academics"],
+.who:not(:has([value="developers"]:checked)) .who-caption[data-who="developers"],
+.who:not(:has([value="note-takers"]:checked)) .who-caption[data-who="note-takers"] {
+  visibility: hidden;
+}
+:root:not([data-theme="dark"]) .theme-night,
+[data-theme="dark"] .theme-day {
+  display: none;
+}
+/* the panel is a Mac's screen: the open tab's garden as its wallpaper, a menu bar across the top, the window in the middle of
+   what's left. it is drawn at a real Mac's proportions, the window 1400 px of a 1750 px screen (--mb: the menu
+   bar's 24 px line with room above and below, --wh: the window's height) */
+.window-panel {
+  --mb: calc(100cqw * 24 / 1750 + 12px);
+  --wh: 40cqw;
+  grid-area: panel;
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+  aspect-ratio: 1120 / 690;
+  border-radius: 16px;
+  background: #8cc6fb;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
+    0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
+}
+[data-theme="dark"] .window-panel {
+  background: #0b1d55;
+}
+/* each tab's scene fills the screen (lazy, like the windows: only the open tab's, in the reader's theme) */
+.scenes,
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+.scenes {
+  z-index: -1;
+}
+.scene img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.menubar {
+  --u: calc(100cqw / 1750);
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: calc(20 * var(--u));
+  height: var(--mb);
+  padding: 6px 24px;
+  color: rgb(0 0 0 / 0.92);
+  text-shadow:
+    0 0 1px rgb(255 255 255 / 0.95),
+    0 0 3px rgb(255 255 255 / 0.9),
+    0 0 8px rgb(255 255 255 / 0.6);
+  font: 400 calc(13 * var(--u)) / 1 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  user-select: none;
+}
+/* a transparent menu bar, its corners clear of the panel's; its type adapts to the wallpaper as macOS does: dark
+   over the day sky, light over the night */
+[data-theme="dark"] .menubar {
+  color: rgb(255 255 255 / 0.94);
+  text-shadow:
+    0 0 1px rgb(0 0 12 / 0.9),
+    0 0 4px rgb(0 0 12 / 0.75),
+    0 0 10px rgb(0 0 12 / 0.45);
+}
+.menubar svg {
+  flex-shrink: 0;
+  height: calc(14 * var(--u));
+  fill: currentColor;
+}
+.menubar b {
+  font-weight: 700;
+}
+.mb-menus,
+.mb-status {
+  display: flex;
+  align-items: center;
+  gap: inherit;
+}
+.mb-status {
+  gap: calc(16 * var(--u));
+  margin-left: auto;
+}
+.mb-battery {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(5 * var(--u));
+}
+.mb-clock {
+  min-width: 9.6em;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: pre;
+}
+/* the window rests in the middle of the screen below the menu bar, rounded, with the hero editor's shadow */
+.window {
+  position: absolute;
+  left: 10%;
+  top: calc(var(--mb) + (100% - var(--mb) - var(--wh)) / 2);
+  width: 80%;
+  aspect-ratio: 2;
+  overflow: hidden;
+  container-type: inline-size;
+  border-radius: 10px;
+  background: var(--card-white);
+  box-shadow:
+    0 0 0 1px rgb(40 30 16 / 0.08),
+    0 1px 3px rgb(40 30 16 / 0.12),
+    0 18px 40px -16px rgb(24 32 56 / 0.24);
+}
+[data-theme="dark"] .window {
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.4),
+    0 1px 3px rgb(0 0 0 / 0.3),
+    0 22px 46px -16px rgb(0 0 8 / 0.45);
+}
+/* a tab switch (who.js): the old window and scene stay drawn until the new ones are in; the old window closes
+   (fading, shrinking a touch) as the new scene fades in over the old one, then the new window opens. a third of a
+   second each, at the display's own frame rate; stilled, they swap at once */
+.who :is(.window, .scene).is-leaving {
+  display: block !important;
+}
+.who .window.is-closed {
+  opacity: 0;
+  transform: scale(0.98);
+}
+.who .scene.is-new {
+  z-index: 1;
+}
+.who .scene.is-entering {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="still"]) .who :is(.window, .scene) {
+    transition:
+      opacity 0.34s ease-out,
+      transform 0.34s ease-out;
+  }
+}
+/* the window's own traffic lights, where the app puts them (titleBarStyle hiddenInset, trafficLightPosition 12, 11:
+   13 px in, centred in its 36 px title bar); the captures leave that corner empty. --app: one of the app's px */
+.lights {
+  --app: calc(100cqw / 1400);
+  position: absolute;
+  z-index: 1;
+  left: calc(13 * var(--app));
+  top: calc(12 * var(--app));
+  display: flex;
+  gap: calc(8 * var(--app));
+}
+.lights i {
+  width: calc(12 * var(--app));
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ff5f57;
+  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.2);
+}
+.lights i + i {
+  background: #febc2e;
+}
+.lights i + i + i {
+  background: #28c840;
+}
+.window img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+.who-caption {
+  grid-area: caption;
+  display: grid;
+  align-content: start;
+  grid-template-columns: minmax(0, 9fr) minmax(0, 17fr);
+  gap: 12px 60px;
+  margin-top: 40px;
+}
+.who-caption h3 {
+  font: 500 var(--h3) / 1.1 var(--serif);
+  letter-spacing: -0.01em;
+}
+.who-caption p {
+  color: var(--ink-soft);
+  font-size: var(--body);
+  line-height: 1.5;
+}
+.who-caption a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 4px;
+}
+/* what comes with it: six cards of the page's paper, each with a small drawing of hibi in its own themes
+   (catppuccin latte by day, hibsy by night, like the windows above). the drawings are html, aria-hidden. */
+.feats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 28px;
+  margin: 96px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.feats > li {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 26px 28px 22px;
+}
+.feats > li::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--deckle, var(--deckle-2));
+}
+.feats > li::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: -2;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
+    0 12px 22px -12px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.feats > li:nth-child(4n + 1) {
+  --deckle: var(--deckle-1);
+}
+.feats > li:nth-child(4n + 3) {
+  --deckle: var(--deckle-3);
+}
+.feats > li:nth-child(4n + 4) {
+  --deckle: var(--deckle-4);
+}
+.feat-files,
+.feat-license {
+  grid-column: span 2;
+}
+.feat-typst,
+.feat-quick {
+  grid-column: span 4;
+}
+.feat-yours,
+.feat-batteries {
+  grid-column: span 3;
+}
+.feats > li > svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
+  stroke-width: 1.6;
+}
+.feats h3 {
+  margin-top: 12px;
+  font: 500 21px/1.2 var(--serif);
+}
+.feats p {
+  margin-top: 6px;
+  color: var(--ink-soft);
+  font-size: 17px;
+  line-height: 1.45;
+}
+.feats a {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.feat-stage {
+  --m-bg: #eff1f5;
+  --m-surface: #e6e9ef;
+  --m-sidebar: #e6e9ef;
+  --m-ink: #4c4f69;
+  --m-muted: #5c5f77;
+  --m-accent: #8435e8;
+  --m-border: #ccd0da;
+  --m-active: #dce0e8;
+  --m-shadow: 40 30 16;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 14px;
+  height: 236px;
+  margin-top: auto;
+  padding: 22px 20px 0;
+  overflow: clip;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--card-tan) 55%, var(--card-white));
+  color: var(--m-ink);
+  font: 400 13px/1.4 var(--font-ui);
+  user-select: none;
+}
+[data-theme="dark"] .feat-stage {
+  background: color-mix(in srgb, var(--page) 60%, var(--card-white));
+  --m-bg: #18181b;
+  --m-surface: #201f25;
+  --m-sidebar: #111114;
+  --m-ink: #dedde0;
+  --m-muted: #8e8e94;
+  --m-accent: #a78bfa;
+  --m-border: #262629;
+  --m-active: #2a243a;
+  --m-shadow: 0 0 0;
+}
+.feats > li > p {
+  margin-bottom: 22px;
+}
+.feat-stage .mk-icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  color: var(--m-muted);
+  stroke-width: 1.5;
+}
+.mk-window {
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid var(--m-border);
+  border-radius: 8px;
+  background: var(--m-bg);
+  box-shadow:
+    0 1px 2px rgb(var(--m-shadow) / 0.12),
+    0 12px 26px -14px rgb(var(--m-shadow) / 0.38);
+}
+.mk-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 12px 0 calc(12px + var(--depth, 0) * 18px);
+  white-space: nowrap;
+}
+.mk-row > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mk-row.is-active {
+  background: var(--m-active);
+}
+.mk-label {
+  display: block;
+  padding: 8px 14px 4px;
+  color: var(--m-muted);
+  font-size: 11px;
+}
+.mk-button {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--m-border);
+  border-radius: 6px;
+  font-size: 11.5px;
+}
+.mk-button.is-primary {
+  border-color: var(--m-ink);
+  background: var(--m-ink);
+  color: var(--m-bg);
+}
+.mk-caret {
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  margin-left: 1px;
+  vertical-align: -2px;
+  background: var(--m-accent);
+}
+.mk-tab {
+  display: flex;
+  height: 32px;
+  padding: 6px 8px 0;
+  border-bottom: 1px solid var(--m-border);
+  background: var(--m-surface);
+}
+.mk-tab span {
+  padding: 4px 12px;
+  border: 1px solid var(--m-border);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  background: var(--m-bg);
+  font-size: 11.5px;
+}
+/* your files: the workspace sidebar */
+.mk-sidebar {
+  width: min(100%, 250px);
+  padding-bottom: 6px;
+  background: var(--m-sidebar);
+}
+.mk-side-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px;
+  color: var(--m-muted);
+  font-size: 12px;
+}
+/* beyond markdown: typst source beside its preview */
+.mk-split {
+  width: min(100%, 560px);
+}
+.mk-panes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.mk-source {
+  margin: 0;
+  padding: 14px;
+  overflow: hidden;
+  border-right: 1px solid var(--m-border);
+  font: 400 12px/1.75 var(--mono);
+  white-space: pre;
+}
+.mk-source b,
+.mk-source i {
+  color: var(--m-accent);
+  font-style: normal;
+  font-weight: 400;
+}
+.mk-source em {
+  color: var(--m-muted);
+  font-style: normal;
+}
+.mk-preview {
+  padding: 14px 16px;
+  background: var(--m-surface);
+}
+.mk-page {
+  padding: 14px 16px 18px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.16);
+  color: #1d1d1f;
+  font-family: var(--serif);
+}
+.mk-page strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+}
+.mk-page p {
+  margin-top: 6px;
+  color: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.mk-page .mk-math {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 13px;
+}
+.mk-page sup {
+  font-size: 0.65em;
+}
+/* make it yours: colorscheme, an addon and a shortcut */
+.mk-settings {
+  width: min(100%, 420px);
+  padding-bottom: 4px;
+}
+.mk-scheme .mk-swatch {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--m-border);
+  border-radius: 999px;
+  background: #eff1f5;
+}
+.mk-scheme.is-hibsy .mk-swatch {
+  background: #18181b;
+}
+.mk-swatch i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4c4f69;
+}
+.mk-swatch i + i {
+  margin-left: 2px;
+  background: #8435e8;
+}
+.mk-scheme.is-hibsy .mk-swatch i {
+  background: #dedde0;
+}
+.mk-scheme.is-hibsy .mk-swatch i + i {
+  background: #a78bfa;
+}
+:root:not([data-theme="dark"]) .mk-scheme.is-latte,
+[data-theme="dark"] .mk-scheme.is-hibsy {
+  background: var(--m-active);
+}
+:root:not([data-theme="dark"]) .mk-scheme.is-latte::after,
+[data-theme="dark"] .mk-scheme.is-hibsy::after {
+  content: "✓" / "";
+  margin-left: auto;
+  color: var(--m-accent);
+}
+.mk-set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  padding: 9px 14px;
+  border-top: 1px solid var(--m-border);
+}
+.mk-addon {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.mk-addon b {
+  font-weight: 600;
+}
+.mk-addon small {
+  overflow: hidden;
+  color: var(--m-muted);
+  font-size: 11.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mk-switch {
+  flex-shrink: 0;
+  width: 30px;
+  height: 18px;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--m-accent);
+}
+.mk-switch i {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: #fff;
+}
+.mk-keys {
+  display: inline-flex;
+  gap: 3px;
+}
+.mk-keys kbd {
+  min-width: 20px;
+  padding: 1px 5px;
+  border: 1px solid var(--m-border);
+  border-radius: 4px;
+  font: 11px/1.4 var(--font-ui);
+  text-align: center;
+}
+/* batteries included: the git panel, vim in the status bar, export in the palette */
+.mk-git {
+  width: min(46%, 200px);
+  background: var(--m-sidebar);
+}
+.mk-git-head {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px 8px;
+}
+.mk-git-head small {
+  color: var(--m-muted);
+  font-size: 11px;
+}
+.mk-select,
+.mk-input {
+  display: block;
+  padding: 4px 10px;
+  border: 1px solid var(--m-border);
+  border-radius: 6px;
+  background: var(--m-bg);
+  font-size: 12px;
+}
+.mk-input {
+  margin: 0 12px;
+  color: var(--m-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mk-git-file code {
+  width: 18px;
+  color: var(--m-accent);
+  font: 400 11.5px var(--mono);
+  white-space: pre;
+}
+.mk-git-file .mk-icon:last-child {
+  margin-left: auto;
+}
+.mk-status {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  padding: 6px 12px;
+  border-top: 1px solid var(--m-border);
+  color: var(--m-muted);
+  font-size: 11px;
+}
+.mk-palette {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 280px;
+  margin-top: 34px;
+}
+.mk-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--m-border);
+}
+.mk-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 5px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.mk-option.is-on {
+  background: var(--m-active);
+}
+.mk-option > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mk-option small {
+  margin-left: auto;
+  color: var(--m-muted);
+  font-size: 10.5px;
+}
+/* the card is narrow: the command name matters more than its category */
+.stage-batteries .mk-option small {
+  display: none;
+}
+/* quick notes: the capture window over another app */
+.mk-other {
+  position: absolute;
+  top: 22px;
+  left: 20px;
+  width: 62%;
+  height: 210px;
+  padding: 38px 22px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--card-white) 70%, #d7d2c6);
+  box-shadow: 0 1px 2px rgb(var(--m-shadow) / 0.12);
+}
+[data-theme="dark"] .mk-other {
+  background: #2c2924;
+}
+.mk-other i {
+  display: block;
+  height: 7px;
+  margin-top: 12px;
+  border-radius: 4px;
+  background: rgb(var(--shadow-rgb) / 0.12);
+}
+[data-theme="dark"] .mk-other i {
+  background: rgb(255 255 255 / 0.08);
+}
+.mk-other i.short {
+  width: 55%;
+}
+.mk-capture {
+  position: absolute;
+  top: 46px;
+  right: 24px;
+  width: min(62%, 340px);
+}
+.mk-toolbar {
+  display: flex;
+  gap: 14px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--m-border);
+  color: var(--m-muted);
+  font: 12px/1 var(--font-ui);
+}
+.mk-capture-text {
+  padding: 12px 14px 16px;
+}
+.mk-capture-text strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.mk-capture-text p {
+  margin: 4px 0 0;
+  color: var(--m-ink);
+  font-size: 12.5px;
+}
+.mk-capture-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 8px 14px;
+  border-top: 1px solid var(--m-border);
+  background: var(--m-surface);
+}
+.mk-capture-bar > span:first-child {
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--m-muted);
+  font-size: 11px;
+}
+/* free and open source: hibi's licence, open in hibi */
+.mk-doc {
+  width: min(100%, 300px);
+}
+.mk-doc-body {
+  padding: 14px 16px;
+}
+.mk-doc-body strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.mk-doc-body p {
+  margin: 6px 0 0;
+  color: var(--m-ink);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.mk-doc-body .mk-faint {
+  margin-top: 10px;
+  color: var(--m-muted);
+  font: 400 10.5px/1.6 var(--mono);
+}
+
+/* an app of their own: the newest addons on six plain cards (built into the page, so it never opens a hole) */
+.showcase-sort {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 0;
+  border: 0;
+}
+.showcase-sort label {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 9px 12px 8px;
+  color: var(--ink-soft);
+  font: 400 13px/1 var(--mono);
+  cursor: pointer;
+}
+.showcase-sort input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.showcase-sort label:has(:checked) {
+  color: var(--ink);
+}
+.showcase-sort label:has(:checked)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--butter);
+  clip-path: var(--cut-2);
+}
+.showcase-sort label:has(:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+/* the switch works without javascript: the unchecked order's list is hidden */
+.own-app:has([value="released"]:checked) .showcase-grid[data-sort="updated"],
+.own-app:has([value="updated"]:checked) .showcase-grid[data-sort="released"] {
+  display: none;
+}
+.addon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.addon-grid > li {
+  display: flex;
+  min-width: 0;
+}
+.addon-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 22px 24px 18px;
+  color: var(--ink);
+}
+.addon-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--deckle-2);
+}
+.addon-card::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: -2;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
+    0 12px 22px -12px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.addon-card:hover {
+  color: var(--ink);
+}
+.addon-card:hover .addon-card-heading {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.addon-card-hold {
+  display: none;
+}
+.addon-card-heading {
+  overflow: hidden;
+  font-size: 22px;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.addon-card-kind {
+  margin-top: 4px;
+  color: var(--ink-faint);
+  font: 400 12px/1.3 var(--mono);
+}
+/* three lines, always: the grid keeps its height whatever the fresh list holds */
+.addon-description {
+  display: -webkit-box;
+  min-height: calc(3 * 1.45em);
+  margin-block: 12px 16px;
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: 16.5px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+.addon-card-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed var(--rule-strong);
+  color: var(--ink-faint);
+  font: 400 12px/1.4 var(--mono);
+}
+.addon-card-footer > :first-child {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.addon-card-footer > * + * {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.showcase-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 18px;
+  margin-top: 22px;
+}
+.showcase-foot .specimen-label {
+  margin: 0;
+}
+.showcase-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font: 400 14px/1 var(--mono);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* when the label wraps under it (narrow screens), the label's paper must not cover the focus ring */
+.showcase-all:focus-visible {
+  z-index: 1;
+}
+
+/* day by day: one strip of paper, a column a day; the pinned one past its end wakes when the companion lands */
+.days-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 14px 24px;
+  margin-bottom: 40px;
+}
+.days-head .specimen-label {
+  margin: 0;
+}
+.diary-wrap {
+  position: relative;
+}
+.diary {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.diary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--deckle-3);
+}
+.diary::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: -2;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.7)),
+    0 14px 24px -12px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.diary li {
+  padding: 20px 16px 24px;
+  border-left: 1px solid var(--rule);
+}
+.diary li:first-child {
+  border-left: 0;
+}
+.diary time {
+  display: block;
+  color: var(--accent);
+  font: 400 12.5px/1.2 var(--mono);
+  letter-spacing: 0.02em;
+}
+.diary p {
+  margin-top: 12px;
+  font-size: 18px;
+  line-height: 1.35;
+}
+.wake-me {
+  --x: calc(100% + 34px);
+  --y: -104px;
+  --w: 84px;
+  --r: 14deg;
+}
+.days-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: 22px;
+  font: 400 14px/1 var(--mono);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* questions: one ruled list, then how hibi compares as a quiet ruled one */
+.faq {
+  display: grid;
+  grid-template-columns: minmax(0, 9fr) minmax(0, 17fr);
+  gap: 28px 60px;
+  align-items: start;
+}
+/* three groups, each under a small typed heading on its own rule */
+.qa-group {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule-strong);
+  color: var(--ink-faint);
+  font: 400 12.5px/1.3 var(--mono);
+  letter-spacing: 0.04em;
+}
+.qa-group:not(:first-child) {
+  margin-top: 44px;
+}
+.qa details {
+  padding-inline: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+.qa summary {
+  /* the row spans the rule, its words keep the item's inset: room for the focus ring inside */
+  margin-inline: -12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 12px 17px;
+  font: 500 23px/1.25 var(--serif);
+  list-style: none;
+  cursor: pointer;
+}
+.qa summary::-webkit-details-marker {
+  display: none;
+}
+.qa summary::after {
+  content: "+";
+  color: var(--ink-faint);
+  font: 400 18px/1.4 var(--mono);
+}
+.qa details[open] summary::after {
+  content: "\2212";
+}
+.qa details p {
+  max-width: 36em;
+  padding-bottom: 18px;
+  color: var(--ink-soft);
+  font-size: var(--body);
+  line-height: 1.5;
+}
+.qa details p + p {
+  margin-top: -6px;
+}
+.qa ul {
+  max-width: 36em;
+  margin: 0;
+  padding: 0 0 14px 1.1em;
+  color: var(--ink-soft);
+  font-size: var(--body);
+  line-height: 1.5;
+}
+.qa li + li {
+  margin-top: 6px;
+}
+/* how hibi compares: a plain table of checkable facts (every cell sourced; generated from the research lane's
+   comparison.json), clean type with hairlines, the hibi column only tinted. phones scroll it in its own box with
+   the facts held at the left */
+.compare {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin-top: 72px;
+}
+.compare-title {
+  font: 500 var(--h3) / 1.1 var(--serif);
+  letter-spacing: -0.01em;
+}
+.compare-scroll {
+  /* room above the column links for their focus ring (the scroller clips) */
+  margin-top: 16px;
+  padding-top: 6px;
+  overflow-x: auto;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  line-height: 1.4;
+  text-align: left;
+}
+.compare-table :is(th, td) {
+  padding: 11px 12px 10px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.compare-table thead :is(th, td) {
+  padding-top: 10px;
+  border-bottom-color: var(--rule-strong);
+  color: var(--ink-faint);
+  font: 400 12.5px/1.3 var(--mono);
+  letter-spacing: 0.02em;
+}
+.compare-table tbody th {
+  width: 17%;
+  padding-left: 0;
+  color: var(--ink);
+  font-weight: 500;
+}
+.compare-table td {
+  color: var(--ink-soft);
+}
+.compare-table .is-hibi {
+  background: color-mix(in srgb, var(--card-white) 60%, transparent);
+  color: var(--ink);
+}
+.compare-table sup {
+  margin-left: 1px;
+  color: var(--ink-faint);
+  font: 400 0.68em/0 var(--mono);
+}
+.compare-notes {
+  columns: 3 240px;
+  column-gap: 36px;
+  margin: 22px 0 0;
+  padding-left: 2.4em;
+  color: var(--ink-faint);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.compare-notes li {
+  break-inside: avoid;
+}
+.compare-notes li::marker {
+  font: 400 11px var(--mono);
+}
+.compare-asof {
+  margin-top: 14px;
+  color: var(--ink-faint);
+  font: 400 12.5px/1.5 var(--mono);
+}
+
+@media (max-width: 1100px) {
+  .stage-batteries {
+    gap: 12px;
+    padding-inline: 16px;
+  }
+  .stage-batteries .mk-git {
+    width: 42%;
+  }
+  .stage-batteries .mk-option {
+    font-size: 12.5px;
+  }
+}
+@media (max-width: 1024px) {
+  .feats > li {
+    grid-column: span 3;
+  }
+}
+/* below 900 px a card is too narrow to share a row: one column, each drawing at its own height */
+@media (max-width: 900px) {
+  .feats {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .feats > li {
+    grid-column: auto;
+    padding: 22px 20px 18px;
+  }
+  .feat-stage {
+    padding-inline: 14px;
+    height: auto;
+    padding-bottom: 18px;
+  }
+  .stage-quick {
+    height: 236px;
+  }
+  .mk-capture {
+    right: 14px;
+    width: 84%;
+  }
+  .stage-batteries {
+    flex-direction: column;
+    align-items: center;
+  }
+  .stage-batteries .mk-git,
+  .stage-batteries .mk-palette {
+    flex: none;
+    width: min(100%, 460px);
+    max-width: none;
+    margin-top: 0;
+  }
+}
+@media (max-width: 600px) {
+  .feats {
+    margin-top: 80px;
+  }
+}
+@media (max-width: 900px) {
+  .faq {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 1359px) {
+  /* no gutter wide enough: the pinned one sits above the strip's last day */
+  .wake-me {
+    --x: calc(100% - 100px);
+    --y: -66px;
+  }
+}
+@media (max-width: 600px) {
+  .s-head {
+    margin-bottom: 36px;
+  }
+  .who-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .who-tabs label {
+    padding: 10px 8px 9px;
+    font-size: 12.5px;
+    text-align: center;
+  }
+  /* a phone's screen: the menu bar keeps the apple, the app's name and the clock at a size that reads */
+  .window-panel {
+    --mb: calc(max(18px, 5.2cqw) + 8px);
+    --wh: 70.4cqw;
+    aspect-ratio: 350 / 430;
+    border-radius: 12px;
+  }
+  .menubar {
+    --u: 0.72px;
+    gap: 9px;
+    padding: 4px 18px;
+  }
+  .mb-menus,
+  .mb-status > :not(.mb-clock) {
+    display: none;
+  }
+  .window {
+    left: 6%;
+    width: 88%;
+    aspect-ratio: 5 / 4;
+    border-radius: 8px;
+  }
+  /* the phone captures are the window narrowed to 583 px */
+  .lights {
+    --app: calc(100cqw / 583);
+    top: calc(14.8 * var(--app));
+  }
+  .who-caption {
+    grid-template-columns: 1fr;
+    margin-top: 28px;
+  }
+  .feats h3 {
+    font-size: 19px;
+  }
+  .feats p {
+    font-size: 15.5px;
+  }
+  .addon-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .showcase-grid > li:nth-child(n + 4) {
+    display: none;
+  }
+  .diary {
+    grid-template-columns: 1fr;
+  }
+  .diary li {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: baseline;
+    padding: 13px 16px;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .diary li:first-child {
+    border-top: 0;
+  }
+  .diary p {
+    margin-top: 0;
+    font-size: 17px;
+  }
+  .wake-me {
+    --x: calc(100% - 84px);
+    --y: calc(100% + 6px);
+    --w: 64px;
+  }
+  .qa summary {
+    font-size: 21px;
+  }
+  .compare-table {
+    min-width: 760px;
+    font-size: 15px;
+  }
+  /* a link scrolled into view by focus lands clear of the pinned first column */
+  .compare-scroll {
+    scroll-padding-inline-start: 118px;
+  }
+  .compare-table :is(tbody, thead) > tr > :first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 118px;
+    min-width: 118px;
+    background: var(--page);
+  }
+}
+@media (min-width: 601px) and (max-width: 960px) {
+  .addon-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------------------------------------------------------------- download: the button, and the /download page */
+
+.download-get {
+  min-height: 52px;
+  padding-inline: 26px;
+  font-size: 15px;
+}
+.download-get svg.button-icon {
+  width: 16px;
+  height: 16px;
+}
+/* github and discord sit quietly under the download, as links rather than buttons */
+.also-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px 22px;
+  margin: 0;
+  font: 400 13px/1.6 var(--mono);
+}
+.also-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.also-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------- the close: the hero's sky, down to its horizon
+
+   a rounded panel inset like the hero, the park's sky and horizon behind it (garden.css .park-horizon), the words on
+   its sky. one action: the download; github and discord live in the footer. */
+.cta {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(1120px, calc(100% - 64px));
+  height: 380px;
+  margin: var(--gap) auto 0;
+  padding: 0 24px;
+  border-radius: 16px;
+  text-align: center;
+}
+/* its shadow is its own layer: the companion reads the panel as open sky (painted cards holding words are where it
+   keeps off), so the lift-off can end on the lamp */
+.cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  border-radius: inherit;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
+    0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
+  pointer-events: none;
+}
+.cta-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* the hero's soft local glow keeps the words readable over the clouds */
+.cta-copy::before {
+  content: "";
+  position: absolute;
+  inset: -48px -96px;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.42), transparent);
+  pointer-events: none;
+}
+[data-theme="dark"] .cta-copy::before {
+  background: radial-gradient(closest-side, rgb(8 14 36 / 0.5), transparent);
+}
+.cta h2 {
+  font: 500 clamp(34px, 3.4vw, 49px) / 1.06 var(--serif);
+  letter-spacing: -0.02em;
+}
+.cta h2 em {
+  color: var(--accent);
+  font-style: italic;
+}
+.cta .download-get {
+  margin-top: 26px;
+}
+.cta .facts {
+  margin-top: 16px;
+  color: var(--ink-soft);
+  font: 400 13px/1.5 var(--mono);
+  letter-spacing: 0.02em;
+}
+
+/* ---------------------------------------------------------------- footer: the last page
+
+   the page simply ends on its own paper: the links, a colophon, and the name set large, with the companion's last
+   perch on the tittle of its first i */
+.site-footer {
+  position: relative;
+  margin-top: var(--gap);
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 40px 48px;
+  padding-top: 56px;
+  border-top: 1px solid var(--rule-strong);
+}
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 30px;
+}
+.footer-brand .wordmark-icon {
+  width: 34px;
+  height: 34px;
+}
+.footer-tagline {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 19px;
+  font-style: italic;
+}
+.footer-groups {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 28px clamp(40px, 5vw, 72px);
+}
+.footer-group h2 {
+  margin-bottom: 8px;
+  color: var(--ink-faint);
+  font: 400 12px/1.4 var(--mono);
+  letter-spacing: 0.04em;
+}
+.footer-group nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.footer-group a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  font-size: 19px;
+}
+.colophon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 32px;
+  margin-top: 48px;
+  color: var(--ink-faint);
+  font: 400 12.5px/1.6 var(--mono);
+  letter-spacing: 0.01em;
+}
+.colophon a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.colophon p a {
+  min-height: 0;
+}
+.site-footer a:hover {
+  color: var(--accent);
+}
+/* the name, crisp and whole, its baseline 30 px above the page's end. it is generated text, so the companion reads
+   it as paper; .tittle marks the first i's dot (measured for EB Garamond 500) */
+.bigword {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+  padding-bottom: 30px;
+  overflow: hidden;
+}
+.bigword-text {
+  position: relative;
+  color: var(--ink);
+  font: 500 clamp(150px, 26vw, 380px) / 0.8 var(--serif);
+  letter-spacing: -0.035em;
+  user-select: none;
+}
+.bigword-text::before {
+  content: "hibi";
+}
+.tittle {
+  position: absolute;
+  left: 0.567em;
+  top: 0.125em;
+  width: 0.12em;
+  height: 0.12em;
+}
+.bigword .sprig {
+  position: absolute;
+  left: calc(100% + 0.03em);
+  bottom: 0.02em;
+  width: 0.2em;
+  height: auto;
+  rotate: 14deg;
+  filter: saturate(0.72) contrast(0.92) drop-shadow(1px 2px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8)));
+}
+[data-theme="dark"] .bigword .sprig {
+  filter: saturate(0.68) brightness(0.86) drop-shadow(2px 3px 3px rgb(0 0 0 / 0.45));
+}
+
+@media (max-width: 900px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+  }
+}
+/* phones keep the hero's inset */
+@media (max-width: 720px) {
+  .cta {
+    width: calc(100% - 2 * var(--hero-inset));
+  }
+}
+@media (max-width: 600px) {
+  .cta {
+    height: 440px;
+    /* the words stay in the sky, clear of the treeline and the lamp */
+    padding-bottom: 64px;
+    border-radius: 12px;
+  }
+  .footer-top {
+    padding-top: 40px;
+  }
+  .footer-groups {
+    grid-template-columns: 1fr 1fr;
+    gap: 26px 32px;
+  }
+  .footer-group a {
+    min-height: 44px;
+    font-size: 18px;
+  }
+  .colophon {
+    margin-top: 36px;
+  }
+}
+
+/* kind words (draft until each author agrees): clippings of what people wrote, linked to the original */
+[data-drafts] .draft[hidden] {
+  display: block;
+}
+.draft {
+  outline: 2px dashed var(--margin-line);
+  outline-offset: 12px;
+}
+.kind-words {
+  padding-block: 80px 40px;
+}
+.clippings {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  align-items: start;
+  gap: 30px 26px;
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.clipping {
+  position: relative;
+  isolation: isolate;
+  padding: 22px 22px 18px;
+  rotate: -0.8deg;
+}
+.clipping:nth-child(even) {
+  rotate: 0.9deg;
+}
+.clipping::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--card-white);
+  clip-path: var(--cut-2);
+}
+.clip-letter::before {
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 29px, var(--rule) 29px 30px) 0 14px / 100% 100% no-repeat,
+    var(--card-white);
+}
+.clip-postcard::before {
+  background: var(--card-tan);
+}
+.clip-card::before {
+  background: var(--card-sage);
+}
+.clipping::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -2;
+  box-shadow: 1px 2px 3px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.9));
+}
+.clipping blockquote {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.45;
+}
+.clip-slip blockquote {
+  font: 400 15px/1.5 var(--font-ui);
+}
+.clip-source {
+  margin-top: 12px;
+  color: var(--ink-faint);
+  font: 400 12px/1.4 var(--mono);
+}
+.clip-source a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---------------------------------------------------------------- responsive */
+
+@media (max-width: 1024px) {
+  .not-md {
+    display: none;
+  }
+}
+@media (max-width: 1399px) {
+  .wide {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .not-narrow {
+    display: none;
+  }
+  .piece,
+  .doodle,
+  .note {
+    left: var(--x-sm, var(--x-md, var(--x)));
+    top: var(--y-sm, var(--y-md, var(--y)));
+    width: var(--w-sm, var(--w));
+    rotate: var(--r-sm, var(--r, 0deg));
+  }
+  .motion-toggle {
+    width: 44px;
+    height: 44px;
+  }
+  .button {
+    min-height: 44px;
+    padding-inline: 16px;
+    font-size: 13px;
+  }
+  .demo-print {
+    margin-top: 32px;
+  }
+  .demo {
+    border-radius: 8px;
+  }
+}
+@media (max-width: 440px) {
+  .title-card h1 {
+    font-size: clamp(32px, 9vw, 40px);
+  }
+}
+
+/* ---------------------------------------------------------------- motion: pieces settle as they arrive */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* pen doodles draw themselves in, stroke by stroke; margin notes are written left to right */
+  /* drawn in on the 12 fps clock: one held frame per step */
+  .doodle.will-land .reveal {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 0.58s steps(7, end)
+      calc(var(--delay, 0.15s) + var(--i, 0) * 0.25s);
+  }
+  .doodle.will-land.is-landed .reveal {
+    stroke-dashoffset: 0;
+  }
+  .note.will-land {
+    clip-path: inset(-30% 100% -30% -10%);
+    transition: clip-path 0.9s cubic-bezier(0.5, 0, 0.3, 1) var(--delay, 0.2s);
+  }
+  .note.will-land.is-landed {
+    clip-path: inset(-30% -10% -30% -10%);
+  }
+  .demo iframe {
+    transition: opacity var(--motion-pane) var(--ease-out);
+  }
+  .demo-loader {
+    transition:
+      opacity var(--motion-feedback) var(--ease-out),
+      visibility 0s linear var(--motion-feedback);
+  }
+  .demo-loader-wordmark::after {
+    animation: preview-shine 1.8s ease-in-out infinite;
+  }
+  .button::before {
+    transition: background-color var(--motion-fast) var(--ease-out);
+  }
+  .qa details[open] p {
+    animation: site-fade-in var(--motion-feedback) var(--ease-out);
+  }
+}
+@media print {
+  .will-land {
+    translate: none !important;
+    scale: none !important;
+    clip-path: none !important;
+    opacity: 1 !important;
+  }
+  .will-land :is(path, .reveal) {
+    stroke-dashoffset: 0 !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-loader-wordmark::after {
+    display: none;
+  }
+}
+
+@keyframes site-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes preview-shine {
+  from {
+    mask-position: 100% 0;
+  }
+  to {
+    mask-position: -100% 0;
+  }
+}
+
+/* ---------------------------------------------------------------- the people: the team on taped photos, then everyone
+   who helped as one grid of avatars (rendered at build by server/people.js, no scripts) */
+.people .s-head {
+  margin-bottom: 44px;
+}
+.team {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 40px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.teammate {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  min-width: 0;
+}
+.team-photo {
+  position: relative;
+  display: block;
+  margin-bottom: 18px;
+  padding: 6px 6px 7px;
+  background: var(--card-white);
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.8)),
+    0 8px 16px -8px rgb(var(--shadow-rgb) / var(--shadow-a));
+  rotate: -2deg;
+}
+.teammate:nth-child(even) .team-photo {
+  rotate: 1.6deg;
+}
+.team-photo .tape {
+  --tape-w: 62px;
+  top: -9px;
+  left: 50%;
+  translate: -50% 0;
+  rotate: -4deg;
+}
+.teammate:nth-child(even) .team-photo .tape {
+  rotate: 5deg;
+}
+.team-img,
+.contributor-img {
+  display: block;
+  object-fit: cover;
+  background: var(--card-tan);
+}
+[data-theme="dark"] :is(.team-img, .contributor-img) {
+  filter: brightness(0.92);
+}
+.person-letter {
+  display: grid;
+  place-items: center;
+  color: var(--ink-soft);
+  font: 500 22px/1 var(--serif);
+}
+.team-login {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font: 500 21px/1.2 var(--serif);
+}
+.team-login:hover,
+.team-site:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.team-role {
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font-size: 16.5px;
+  line-height: 1.4;
+}
+.team-site {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  margin-top: 2px;
+  color: var(--accent);
+  font: 400 13px/1.3 var(--mono);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+}
+.people-sub {
+  margin-top: 64px;
+  font: 500 var(--h3) / 1.15 var(--serif);
+  letter-spacing: -0.01em;
+}
+.contributors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.contributor {
+  position: relative;
+  display: block;
+  border-radius: 50%;
+}
+.contributor-img {
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2px var(--card-white),
+    0 3px 8px -2px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.contributor:focus-visible {
+  outline-offset: 5px;
+  border-radius: 50%;
+}
+.contributor:hover .contributor-img {
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 3px 8px -2px rgb(var(--shadow-rgb) / var(--shadow-a));
+}
+.sponsor-heart {
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--card-white);
+  box-shadow: 0 1px 3px rgb(var(--shadow-rgb) / 0.35);
+  color: #b4234a;
+  font: 13px/1 var(--font-ui);
+}
+[data-theme="dark"] .sponsor-heart {
+  color: #f08aa4;
+}
+@media (max-width: 900px) {
+  .team {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .team {
+    gap: 32px 18px;
+  }
+  .team-login {
+    font-size: 19px;
+  }
+  .team-role {
+    font-size: 15.5px;
+  }
+  .people-sub {
+    margin-top: 48px;
+  }
+}

@@ -1,320 +1,592 @@
-import { useEffect, useRef, useState } from "react";
+import { engineStatus, freshVisit } from "./demo-host.js";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { createPortal } from "react-dom";
 import { createRoot } from "react-dom/client";
-import { FileText } from "lucide-react";
-import { Titlebar } from "../vendor/hibi/src/renderer/src/Titlebar";
+import { FileText, Folder } from "lucide-react";
+import { createNoteGraph } from "../vendor/hibi/src/addons/graph/model";
+import { ActiveDocumentEditor } from "../vendor/hibi/src/renderer/src/ActiveDocumentEditor";
+import { AddonSidebar, viewShortcut } from "../vendor/hibi/src/renderer/src/AddonSidebar";
+// The formatted view hibi ships today. To show the CodeMirror one instead, import MarkdownEditor from
+// FormattedEditor, run scripts/vendor-hibi.mjs and set localStorage hibi:formatted-engine to codemirror.
 import { MarkdownEditor } from "../vendor/hibi/src/renderer/src/Editor";
 import { EditorToolbar } from "../vendor/hibi/src/renderer/src/EditorToolbar";
-import { onEditorKeyEvent } from "../vendor/hibi/src/renderer/src/editor-events";
-import { toolbar } from "../vendor/hibi/src/renderer/src/toolbar";
 import { StatusBar } from "../vendor/hibi/src/renderer/src/StatusBar";
-import { defaultCursor } from "../vendor/hibi/src/renderer/src/EditorCursor";
-import {
-  defaultHotkeys,
-  shortcutFromEvent,
-} from "../vendor/hibi/src/shared/hotkeys";
+import { Titlebar } from "../vendor/hibi/src/renderer/src/Titlebar";
+import { useAddons, useEditorAddons } from "../vendor/hibi/src/renderer/src/addons";
+import { colorschemes } from "../vendor/hibi/src/renderer/src/colorschemes";
+import { documentFormats, editorDocument } from "../vendor/hibi/src/renderer/src/document-formats";
+import { documentRuntime } from "../vendor/hibi/src/renderer/src/document-runtime";
+import { hasDocumentFootnotes, subscribeDocumentShell } from "../vendor/hibi/src/renderer/src/document-shell";
+import { editorPreferences, useEditorPreference } from "../vendor/hibi/src/renderer/src/editor-preferences";
+import { flavors, loadFlavor, selectedFlavors } from "../vendor/hibi/src/renderer/src/flavors";
+import { LoadingScreen } from "../vendor/hibi/src/renderer/src/LoadingScreen";
+import { transformMarkdown } from "../vendor/hibi/src/renderer/src/markdown-projection";
+import { toolbar } from "../vendor/hibi/src/renderer/src/toolbar";
+import { defaultHotkeys, shortcutFromEvent } from "../vendor/hibi/src/shared/hotkeys";
+import { wikiTarget } from "../vendor/hibi/src/shared/note-links";
+import { Button } from "../vendor/hibi/src/ui/Controls";
+import { DialogProvider, useDialogs } from "../vendor/hibi/src/ui/DialogProvider";
+import { DocumentNotice } from "../vendor/hibi/src/ui/DocumentNotice";
+import { MenuHost } from "../vendor/hibi/src/ui/MenuHost";
 import { Sidebar } from "../vendor/hibi/src/ui/Sidebar";
+import { ToastProvider } from "../vendor/hibi/src/ui/Sonner";
 import { useSidebarResize } from "../vendor/hibi/src/ui/useSidebarResize";
-import {
-  DialogProvider,
-  useDialogs,
-} from "../vendor/hibi/src/ui/DialogProvider";
-import { ToastProvider, useToasts } from "../vendor/hibi/src/ui/Sonner";
-import { createColorschemeStore } from "../vendor/hibi/src/ui/colorschemes";
-import githubMarkdown from "../vendor/hibi/src/addons/github-markdown";
-import textExtras from "../vendor/hibi/src/addons/text-extras";
-import { setPreferences as setKeybeatsPreferences } from "../vendor/hibi/src/addons/keybeats/preferences";
-import "../vendor/hibi/src/addons/github-markdown/alerts.css";
-import "../vendor/hibi/src/addons/text-extras/styles.css";
+import notes from "./demo-notes.js";
 import "../vendor/hibi/src/renderer/src/styles.css";
 import "./demo.css";
 
-// The browser never resolves desktop paths or fetches remote document images.
-window.hibi = {
-  readDocumentMedia: async () => null,
-  onWorkspaceChanged: () => () => {},
-};
+// Typst and LaTeX documents open in hibi's format editor, loaded with the first one as in the app.
+const FormatEditor = lazy(() =>
+  import("../vendor/hibi/src/renderer/src/FormatEditor").then(({ FormatEditor }) => ({ default: FormatEditor })),
+);
 
-const colors = createColorschemeStore("hibi-demo-colorscheme");
-colors.start();
+// Inside the landing page the editor follows the site's theme switch; on its own, the saved site theme.
 const site = window.frameElement?.ownerDocument.documentElement;
+if (window.parent !== window) document.documentElement.dataset.embedded = "";
+const followSiteTheme = () => {
+  let mode = site?.dataset.theme;
+  if (!site) {
+    try {
+      mode = localStorage.getItem("hibi-site-theme");
+    } catch {
+      // Follow the system without storage.
+    }
+  }
+  colorschemes.set({ mode: mode === "light" || mode === "dark" ? mode : "system" });
+};
+followSiteTheme();
 if (site) {
-  const followSiteTheme = () => {
-    const mode = site.dataset.theme;
-    if (mode === "light" || mode === "dark") colors.set({ mode });
-  };
-  followSiteTheme();
-  const observer = new MutationObserver(followSiteTheme);
+  const observer = new site.ownerDocument.defaultView.MutationObserver(followSiteTheme);
   observer.observe(site, { attributes: true, attributeFilter: ["data-theme"] });
   if (import.meta.hot) import.meta.hot.dispose(() => observer.disconnect());
 }
-const platform = /Mac|iPhone|iPad/.test(navigator.platform)
+// hibi's default toolbar, with the buttons of the addons the demo turns on in its menu: the math
+// buttons, and the mute button for the typing sounds that would otherwise have none.
+if (freshVisit)
+  toolbar.setPreferences({
+    placements: {
+      ...toolbar.snapshot().preferences.placements,
+      "math.inline": "menu",
+      "math.block": "menu",
+      "keybeats.mute": "menu",
+    },
+  });
+
+// The title bar of the visitor's system: hibi leaves room for each one's window controls. macOS when unknown.
+const agent = navigator.userAgentData?.platform || navigator.userAgent;
+const platform = /Android/.test(agent)
   ? "darwin"
-  : "linux";
+  : /Windows/.test(agent)
+    ? "win32"
+    : /Linux/.test(agent)
+      ? "linux"
+      : "darwin";
 const hotkeys = defaultHotkeys(platform);
-const empty = [];
-const flavors = [...githubMarkdown.flavors, ...textExtras.flavors];
-const examples = [
-  {
-    name: "welcome.md",
-    markdown:
-      "**hibi** is a free, beautiful,  fast, and extensible markdown editor.\n\n> -# hibi is currently in beta, contributions are greatly appreciated.\n\n---\n\n-# scroll down to learn more or type to get a feel.\n",
-  },
-];
-const initialDocuments = examples.map((example, index) => ({
-  ...example,
-  id: String(index),
-  savedMarkdown: example.markdown,
-  dirty: false,
+const views = ["normal", "side-by-side", "markdown"];
+const unavailable = () => Promise.reject(new Error("This is available in the desktop app."));
+const noteState = (path, markdown, index) => ({
+  tabId: `note-${index}`,
+  tabs: [],
+  tabsEnabled: false,
+  id: `demo:${path}`,
   ephemeral: false,
-  revision: index,
-}));
+  markdown,
+  savedMarkdown: markdown,
+  name: path.slice(path.lastIndexOf("/") + 1),
+  dirty: false,
+  revision: 1,
+  contentVersion: 0,
+  canAutosave: false,
+});
+const initialNotes = notes.map(({ path, markdown }, index) => noteState(path, markdown, index));
+// Workspace paths by tab; new notes start at the top of the workspace.
+const paths = new Map(initialNotes.map((note, index) => [note.tabId, notes[index].path]));
+const pathOf = (tabId) => paths.get(tabId) ?? noteFor(tabId).name;
+// Notes as they open; the runtime holds each one's edits from its first opening.
+const opening = new Map(initialNotes.map((note) => [note.tabId, note]));
+const noteFor = (tabId) => documentRuntime.get(tabId) ?? opening.get(tabId);
+// Every note stays open as a tab of the window: the runtime closes the tabs a document doesn't list.
+const activate = (tabId, ids) =>
+  documentRuntime.activate({
+    ...noteFor(tabId),
+    tabs: ids.map((id) => ({ id, name: noteFor(id).name, dirty: noteFor(id).dirty })),
+  });
+activate(initialNotes[0].tabId, [...opening.keys()]);
+
+// The workspace queries the app answers from its index, answered from the demo's notes by hibi's own
+// graph code. The workspace never changes underneath the demo, so subscribers hear nothing.
+window.hibi.subscribeWorkspaceChanges = async () => ({ snapshot: null, dispose() {} });
+// Every document is a node, as in the app. The easter egg in misc/ stays out, where its notes would float
+// unlinked and give it away.
+function workspaceGraph() {
+  const notes = [...opening.keys()].filter((id) => !pathOf(id).startsWith("misc/"));
+  const graph = createNoteGraph(notes.map(pathOf));
+  for (const id of notes) graph.add({ path: pathOf(id), markdown: noteFor(id).markdown });
+  return graph.finish();
+}
+// The graph frames the note open beside it; a note without links, like the welcome note, would leave
+// the graph out of view, so the whole workspace shows instead.
+const graphFocus = (path) =>
+  workspaceGraph().edges.some((edge) => edge.source === path || edge.target === path) ? path : null;
+window.hibi.queryWorkspaceReferences = async (request) => {
+  if (request.kind !== "graph")
+    return { ok: false, code: "unavailable", message: "This is available in the desktop app." };
+  const { nodes, edges } = workspaceGraph();
+  return {
+    ok: true,
+    value: {
+      target: request.target,
+      syntax: "gfm+wikilinks+hashtags",
+      flavorAware: false,
+      unsupportedSyntax: false,
+      sequence: 0,
+      stale: false,
+      complete: true,
+      capReached: false,
+      kind: "graph",
+      items: [
+        ...nodes.map((node) => ({ kind: "node", path: node.id })),
+        ...edges.map((edge) => ({ kind: "edge", ...edge })),
+      ],
+      hasMore: false,
+      nextCursor: null,
+    },
+  };
+};
+
+const names = new Intl.Collator(undefined, { numeric: true });
+// The workspace as hibi's explorer lists it: folders first, then by name.
+function workspaceTree(ids) {
+  const root = [];
+  for (const id of ids) {
+    const parts = pathOf(id).split("/");
+    let level = root;
+    for (let depth = 1; depth < parts.length; depth++) {
+      const folder = `folder:${parts.slice(0, depth).join("/")}`;
+      let item = level.find((entry) => entry.id === folder);
+      if (!item) level.push((item = { id: folder, label: parts[depth - 1], icon: Folder, children: [] }));
+      level = item.children;
+    }
+    level.push({ id, label: noteFor(id).name, icon: FileText });
+  }
+  const sort = (items) => {
+    items.sort((a, b) => Boolean(b.children) - Boolean(a.children) || names.compare(a.label, b.label));
+    for (const item of items) if (item.children) sort(item.children);
+    return items;
+  };
+  return sort(root);
+}
+
+// The browser window has the real controls; these show where the app's title bar leaves room for them.
+const glyphs = {
+  win32: [
+    <path key="minimize" d="M0 5.5h10" />,
+    <rect key="maximize" x="0.5" y="0.5" width="9" height="9" rx="1" />,
+    <path key="close" d="m0.5 0.5 9 9m0-9-9 9" />,
+  ],
+  linux: [
+    <path key="minimize" d="M4.5 11.25h7" />,
+    <rect key="maximize" x="4.75" y="4.75" width="6.5" height="6.5" rx="1" />,
+    <path key="close" d="m5 5 6 6m0-6-6 6" />,
+  ],
+};
+function WindowControls() {
+  const size = platform === "win32" ? 10 : 16;
+  return (
+    <div className="window-controls" data-platform={platform} aria-hidden="true">
+      {(glyphs[platform] ?? [null, null, null]).map((glyph, index) => (
+        <span key={index}>
+          {glyph && (
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+              {glyph}
+            </svg>
+          )}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+// While the Typst compiler or the LaTeX renderer downloads and first compiles, its preview shows what is
+// happening, in hibi's own notice, over the empty pane so the preview takes its place without a jump.
+const megabytes = (bytes) => (bytes / 1048576).toFixed(1);
+function EngineNotice({ onRetry }) {
+  const status = useSyncExternalStore(engineStatus.subscribe, engineStatus.snapshot);
+  const pane = status && document.querySelector(status.engine === "typst" ? ".typst-preview" : ".format-preview");
+  if (!pane) return null;
+  const name = status.engine === "typst" ? "typst compiler" : "latex renderer";
+  const progress = status.phase === "download" && status.loaded > 0;
+  return createPortal(
+    <div className="engine-notice" data-phase={status.phase}>
+      <DocumentNotice
+        title={
+          status.phase === "error"
+            ? `the ${name} did not load`
+            : status.phase === "download"
+              ? `loading the ${name}…`
+              : "compiling…"
+        }
+        message={
+          status.phase === "error"
+            ? status.message
+            : progress
+              ? status.total
+                ? `${megabytes(status.loaded)} of ${megabytes(status.total)} MB`
+                : `${megabytes(status.loaded)} MB`
+              : undefined
+        }
+        busy={status.phase !== "error"}
+      >
+        {status.phase === "error" ? (
+          <Button onClick={onRetry}>Try again</Button>
+        ) : (
+          <progress
+            max={status.total || undefined}
+            value={status.total ? status.loaded : undefined}
+            aria-label={`loading the ${name}`}
+          />
+        )}
+      </DocumentNotice>
+    </div>,
+    pane,
+  );
+}
+
+// An easter egg: the x profile in this note and its caption follow on a plain click, or Enter on the
+// selected image, unlike other links. The rich view shows the linked image without its link.
+const egg = "misc/follow me.md";
+const eggImage = 'img[src="/found/x-profile.webp"]';
+const eggTarget = (target) =>
+  target.closest?.(".tiptap .document-media")?.querySelector(eggImage) ??
+  target.closest?.(".tiptap blockquote")?.previousElementSibling?.querySelector(eggImage);
+const openEgg = () => window.open("https://x.com/schmayterling", "_blank", "noopener,noreferrer");
 
 function Demo() {
-  const [documents, setDocuments] = useState(initialDocuments);
-  const [selected, setSelected] = useState("0");
-  const current = documents.find((entry) => entry.id === selected);
+  const [noteIds, setNoteIds] = useState(() => initialNotes.map((note) => note.tabId));
+  const [selected, setSelected] = useState(initialNotes[0].tabId);
+  const [current, setCurrent] = useState(() => documentRuntime.get(selected));
+  const shell = useRef(current);
   const [mode, setMode] = useState("normal");
   const [sidebar, setSidebar] = useState(() => innerWidth >= 650);
+  // The graph of the writer's notes stays open beside them where there is room for both.
+  const [rightSidebar, setRightSidebar] = useState(() => innerWidth >= 880);
+  const [rightView, setRightView] = useState("graph.workspace");
   const [find, setFind] = useState(false);
-  const [typing, setTyping] = useState(false);
-  const typingTimer = useRef(null);
-  const counter = useRef(examples.length);
-  const resize = useSidebarResize(196);
+  // In the landing page the editor waits for a visitor before it takes focus.
+  const [focusEditor, setFocusEditor] = useState(window.parent === window);
+  const [reset, setReset] = useState(0);
+  const resize = useSidebarResize(196, "sidebar-width", rightSidebar ? 0.35 : 0.6);
+  const rightResize = useSidebarResize(240, "right-sidebar-width", sidebar ? 0.35 : 0.6);
   const dialogs = useDialogs();
-  const toasts = useToasts();
+  const tree = useMemo(() => workspaceTree(noteIds), [noteIds]);
 
-  useEffect(() => {
-    let disposed = false;
-    let stop;
-    const notify = (message) => toasts.show({ message, variant: "error" });
-    const scope = toolbar.scope("keybeats", () =>
-      notify("could not update keyboard sounds."),
+  // Edits reach the editor document without rerendering this shell, as in the app.
+  useLayoutEffect(() => {
+    const active = activate(selected, noteIds);
+    shell.current = active;
+    setCurrent(active);
+    editorDocument.publish(active);
+    return subscribeDocumentShell(documentRuntime, shell, setCurrent, (next, changes) =>
+      editorDocument.publish(next, changes),
     );
-    import("../vendor/hibi/src/addons/keybeats/engine")
-      .then(({ startKeybeats }) => {
-        if (disposed) return;
-        setKeybeatsPreferences({
-          profile: "holypanda",
-          volume: 0.15,
-          muted: false,
-        });
-        stop = startKeybeats({
-          editor: { onKeyEvent: onEditorKeyEvent },
-          toolbar: scope.api,
-          notify,
-        });
-      })
-      .catch(() => {
-        if (!disposed) notify("could not start keyboard sounds.");
-      });
-    return () => {
-      disposed = true;
-      stop?.();
-      scope.dispose();
-    };
-  }, [toasts]);
+  }, [selected, noteIds]);
 
-  const showTitlebar = () => {
-    clearTimeout(typingTimer.current);
-    setTyping(false);
-  };
-  useEffect(() => () => clearTimeout(typingTimer.current), []);
+  // As in the app, notes with footnotes open in source or side by side, and other formats in the views they offer.
+  const format = documentFormats.get(current.name);
+  const markdownNote = documentFormats.isMarkdown(current.name);
+  const footnotes =
+    markdownNote && hasDocumentFootnotes(documentRuntime, documentRuntime.get(current.tabId) ?? current);
+  const noteViews = documentFormats.views(current.name).filter((view) => !footnotes || view !== "normal");
+  const view = noteViews.includes(mode) ? mode : "side-by-side";
+  const host = useAddons(
+    {
+      openDependencySettings: () => {},
+      openAddonSettings: () => {},
+      workspace: {
+        index: unavailable,
+        snapshot: unavailable,
+        get: async () => ({
+          id: "demo",
+          workspaceGeneration: 1,
+          name: "garden",
+          entries: [],
+          activePath: graphFocus(pathOf(selected)),
+        }),
+        open: async () => null,
+        openFile: async (path) => {
+          const id = noteIds.find((note) => pathOf(note) === path);
+          if (!id) return;
+          setFocusEditor(true);
+          setSelected(id);
+        },
+      },
+      invoke: unavailable,
+      error: (error) => console.error(error),
+      isBusy: () => false,
+      updateMarkdown(transform, options) {
+        const markdown = transformMarkdown(
+          documentRuntime.get(selected)?.markdown ?? "",
+          host.markdownExtensions,
+          transform,
+          options,
+        );
+        if (markdown === null) return;
+        documentRuntime.replace(markdown, "visual", undefined, selected);
+        setReset((value) => value + 1);
+      },
+      runCommand: async () => false,
+      runAction: (id) => run(id),
+      getEditorDocument: () => documentRuntime.get(selected),
+      openSidebar: (id) => {
+        setRightView(id);
+        setRightSidebar(true);
+      },
+      closeSidebar: () => {},
+      openTab: () => {},
+      focusDocument: async () => true,
+    },
+    current.name,
+    view,
+  );
+  useSyncExternalStore(documentFormats.subscribe, documentFormats.snapshot);
+  const available = useSyncExternalStore(flavors.subscribe, flavors.snapshot);
+  const [choice] = useState(() => loadFlavor());
+  const chosen = useMemo(() => selectedFlavors(choice, available), [choice, available]);
+  const { knownFlavors, manifests, enabledAddons } = useEditorAddons(host, available);
+  const [cursor] = useEditorPreference(editorPreferences.cursor);
+  const [lineNumbers] = useEditorPreference(editorPreferences.lineNumbers);
+  const [spellCheck] = useEditorPreference(editorPreferences.spellCheck);
+  const [markers] = useEditorPreference(editorPreferences.markers);
+  const [flavorLabel, setFlavorLabel] = useState("markdown");
 
-  function update(changes) {
-    setDocuments((entries) =>
-      entries.map((entry) =>
-        entry.id === selected ? { ...entry, ...changes } : entry,
-      ),
-    );
+  function addNote() {
+    const index = opening.size;
+    const count = index - initialNotes.length;
+    const note = noteState(count ? `untitled ${count + 1}.md` : "untitled.md", "", index);
+    opening.set(note.tabId, note);
+    setNoteIds((ids) => [...ids, note.tabId]);
+    setSelected(note.tabId);
   }
 
-  function addDocument(name, markdown) {
-    const revision = counter.current++;
-    const entry = {
-      id: String(revision),
-      name,
-      markdown,
-      savedMarkdown: markdown,
-      dirty: false,
-      ephemeral: false,
-      revision,
-    };
-    setDocuments((entries) => [...entries, entry]);
-    setSelected(entry.id);
-  }
-
+  // Saving downloads the note, which then counts as saved.
   function save() {
-    const url = URL.createObjectURL(
-      new Blob([current.markdown], { type: "text/markdown;charset=utf-8" }),
-    );
+    const note = documentRuntime.get(selected);
+    const token = documentRuntime.beginSave(selected);
+    const url = URL.createObjectURL(new Blob([note.markdown], { type: "text/markdown;charset=utf-8" }));
     const link = document.createElement("a");
     link.href = url;
-    link.download = current.name.replace(/[\\/]/g, "-");
+    link.download = note.name.replace(/[\\/]/g, "-");
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    update({ dirty: false, savedMarkdown: current.markdown });
-  }
-
-  function command(id) {
-    if (id === "new") addDocument("untitled.md", "");
-    if (id === "save" || id === "saveAs") save();
+    documentRuntime.acknowledgeSave({ ...note, saveReceipt: true, savedVersion: note.contentVersion }, token);
   }
 
   useEffect(() => {
     const warn = (event) => {
-      if (documents.some((entry) => entry.dirty)) {
-        event.preventDefault();
-        event.returnValue = "";
-      }
+      if (!noteIds.some((id) => noteFor(id).dirty)) return;
+      event.preventDefault();
+      event.returnValue = "";
     };
-    window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
-  }, [documents]);
+    addEventListener("beforeunload", warn);
+    return () => removeEventListener("beforeunload", warn);
+  }, [noteIds]);
 
-  const commands = [
-    ...["normal", "side-by-side", "markdown"].map((view) => ({
-      id: view,
-      label: view,
-      category: "view",
-      shortcut: hotkeys[view],
-      run: () => setMode(view),
-    })),
-    ...["new", "save"].map((id) => ({
-      id,
-      label: id,
-      category: "file",
-      shortcut: hotkeys[id],
-      run: () => command(id),
-    })),
-    {
-      id: "find",
-      label: "find in note",
-      category: "edit",
-      shortcut: hotkeys.find,
-      run: () => setFind(true),
-    },
-  ];
+  function run(id) {
+    if (views.includes(id)) setMode(id);
+    else if (id === "new") addNote();
+    else if (id === "save" || id === "saveAs") save();
+    else if (id === "find") setFind(true);
+  }
 
   return (
     <div
       className="app"
-      data-platform="linux"
+      data-platform={platform}
       data-screen="editor"
       data-sidebar={sidebar}
-      data-typing={typing}
-      style={{ "--sidebar-width": `${resize.width}px` }}
-      onInputCapture={(event) => {
-        if (!event.target.closest(".editor-panes")) return;
-        clearTimeout(typingTimer.current);
-        setTyping(true);
-        typingTimer.current = setTimeout(() => setTyping(false), 1200);
-      }}
-      onPointerMove={(event) => {
-        if (event.clientY <= 36) showTitlebar();
-      }}
-      onFocusCapture={(event) => {
-        if (event.target.closest(".titlebar, .editor-toolbar")) showTitlebar();
-      }}
+      data-right-sidebar={rightSidebar}
+      data-sidebar-overlay={resize.overlay}
+      style={{ "--sidebar-width": `${resize.width}px`, "--right-sidebar-width": `${rightResize.width}px` }}
       onKeyDownCapture={(event) => {
-        if (event.key === "Escape") {
-          setFind(false);
-        }
+        if (event.key === "Escape") setFind(false);
         if (dialogs.isOpen()) return;
         const shortcut = shortcutFromEvent(event);
-        if (
-          [hotkeys.palette, hotkeys.settings, hotkeys.open].includes(shortcut)
-        ) {
+        if ([hotkeys.palette, hotkeys.settings, hotkeys.open].includes(shortcut)) {
           event.preventDefault();
           event.stopPropagation();
           return;
         }
-        const action = commands.find(
-          (entry) => entry.shortcut && entry.shortcut === shortcut,
-        );
-        if (action) {
-          event.preventDefault();
-          showTitlebar();
-          action.run();
-        }
+        const action = [...views, "new", "save", "find"].find((id) => hotkeys[id] === shortcut);
+        if (!action) return;
+        event.preventDefault();
+        run(action);
       }}
     >
       <Titlebar
         document={current}
         settingsOpen={false}
-        onSettings={() => {}}
-        onPalette={() => {}}
-        mode={mode}
+        mode={view}
+        availableViews={noteViews}
         onMode={setMode}
-        onCommand={command}
-        disabled={false}
-        busy={false}
         hotkeys={hotkeys}
         platform={platform}
         sidebarOpen={sidebar}
         onSidebar={() => setSidebar(!sidebar)}
-        onRename={async (name) => {
-          if (name.trim()) update({ name: name.trim() });
-        }}
+        onSettings={() => {}}
+        onBack={() => {}}
+        sidebarOverlay={resize.overlay}
+        sidebarView="workspace"
+        sidebarViews={host.sidebarViews.map(viewShortcut)}
+        onSidebarView={() => {}}
+        rightSidebarOpen={rightSidebar}
+        rightSidebarView={rightView}
+        onRightSidebar={() => setRightSidebar(!rightSidebar)}
+        onRightSidebarView={setRightView}
+        onSelectTab={() => {}}
+        onCloseTab={() => {}}
+        onCloseTabs={() => {}}
+        onMoveTab={() => {}}
+        addonTabs={[]}
+        activeAddonTab={null}
+        onSelectAddonTab={() => {}}
+        onCloseAddonTab={() => {}}
+        splitTabs={null}
+        busy={false}
       />
       <Sidebar
-        className="workspace-sidebar"
-        label="demo files"
+        className="document-sidebar workspace-sidebar"
+        label="garden"
         open={sidebar}
-        selected={selected}
+        overlay={resize.overlay}
+        onDismiss={() => setSidebar(false)}
         resize={resize}
-        items={documents.map((entry) => ({
-          id: entry.id,
-          label: entry.name,
-          icon: FileText,
-          dirty: entry.dirty,
-        }))}
+        selected={selected}
+        items={tree}
+        status={new Map(noteIds.map((id) => [id, { dirty: noteFor(id).dirty }]))}
         onSelect={(id) => {
+          setFocusEditor(true);
           setSelected(id);
-          if (innerWidth < 650) setSidebar(false);
+          if (resize.overlay) setSidebar(false);
         }}
       />
-      <div className="editor-surface">
-        <EditorToolbar mode={mode} typing={typing} />
-        <div className="editor-page">
-          <MarkdownEditor
-            key={current.id}
-            document={current}
-            format={undefined}
-            formatName="markdown"
-            value={current.markdown}
-            onChange={(markdown) =>
-              update({ markdown, dirty: markdown !== current.savedMarkdown })
-            }
-            mode={mode}
-            disabled={false}
-            findOpen={find}
-            onCloseFind={() => setFind(false)}
-            markdownExtensions={empty}
-            sourceExtensions={empty}
-            richExtensions={empty}
-            cursorSettings={defaultCursor}
-            showLineNumbers={false}
-            documentRevision={current.revision}
-            flavors={flavors}
-            unsupportedFlavor={false}
-            onAttach={async () => {
-              await dialogs.alert({
-                title: "desktop feature",
-                description:
-                  "image attachments are available in the desktop app.",
-              });
-              return null;
-            }}
-            onLink={(href) => {
-              if (/^https?:\/\//i.test(href))
-                window.open(href, "_blank", "noopener,noreferrer");
-            }}
-          />
+      <div className="editor-surface" inert={resize.overlay && sidebar}>
+        <EditorToolbar mode={view} />
+        <div
+          className="editor-page"
+          role="region"
+          aria-label={current.name}
+          onClickCapture={(event) => {
+            if (pathOf(current.tabId) !== egg || !eggTarget(event.target)) return;
+            event.preventDefault();
+            event.stopPropagation();
+            openEgg();
+          }}
+          onKeyDownCapture={(event) => {
+            if (pathOf(current.tabId) !== egg || event.key !== "Enter" || event.shiftKey || event.altKey) return;
+            if (!document.querySelector(`.tiptap .ProseMirror-selectednode ${eggImage}`)) return;
+            event.preventDefault();
+            event.stopPropagation();
+            openEgg();
+          }}
+        >
+          {!host.ready ? (
+            <LoadingScreen />
+          ) : (
+            <Suspense fallback={<LoadingScreen />}>
+              <ActiveDocumentEditor
+                key={`${current.tabId}-${reset}`}
+                Component={markdownNote ? MarkdownEditor : FormatEditor}
+                autoFocus={focusEditor}
+                markdown={markdownNote}
+                knownFlavors={knownFlavors}
+                chosenFlavors={chosen}
+                flavorChoice={choice}
+                manifests={manifests}
+                enabledAddons={enabledAddons}
+                onFlavorStatus={(status) => setFlavorLabel(status.label)}
+                onOutline={() => {}}
+                outlineActive={false}
+                onActiveOutline={() => {}}
+                outlineTarget={null}
+                document={current}
+                format={format}
+                formatName={format?.name ?? "Markdown"}
+                onAttach={async () => {
+                  await dialogs.alert({
+                    title: "Desktop feature",
+                    description: "Image attachments are available in the desktop app.",
+                  });
+                  return null;
+                }}
+                onLink={(href) => {
+                  if (/^https?:\/\//i.test(href)) window.open(href, "_blank", "noopener,noreferrer");
+                  if (!href.startsWith("obsidian-wiki:")) return;
+                  // Wiki links open the note they name, as in a workspace.
+                  const ids = new Map(noteIds.map((id) => [pathOf(id), id]));
+                  const path = wikiTarget(pathOf(current.tabId), decodeURIComponent(href.slice(14)), new Set(ids.keys()));
+                  if (!ids.has(path)) return;
+                  setFocusEditor(true);
+                  setSelected(ids.get(path));
+                }}
+                flavors={chosen}
+                footnoteDocument={footnotes}
+                sourceExtensions={host.sourceExtensions}
+                formattedExtensions={host.formattedExtensions}
+                richExtensions={host.richExtensions}
+                documentRevision={current.revision}
+                showLineNumbers={lineNumbers}
+                spellCheck={spellCheck}
+                showMarkdownMarkers={markers}
+                cursorSettings={cursor}
+                markdownExtensions={host.markdownExtensions}
+                onChange={(value, group) => documentRuntime.replace(value, "visual", group, current.tabId)}
+                mode={view}
+                disabled={false}
+                findOpen={find}
+                onCloseFind={() => setFind(false)}
+              />
+            </Suspense>
+          )}
           <StatusBar
-            items={[{ id: "format", label: "markdown", tooltip: "markdown" }]}
+            items={[
+              { id: "flavor", label: flavorLabel, tooltip: "Detected Markdown flavor" },
+              ...host.statusItems.filter(
+                (item) =>
+                  item.label &&
+                  (item.when !== "source" || view !== "normal") &&
+                  (item.when !== "normal" || view === "normal"),
+              ),
+            ]}
           />
         </div>
       </div>
+      <AddonSidebar
+        side="right"
+        overlay={rightResize.overlay}
+        onDismiss={() => setRightSidebar(false)}
+        view={host.sidebarViews.find((view) => view.id === rightView)}
+        input={undefined}
+        open={rightSidebar}
+        empty={rightView === "none"}
+        resize={{ ...rightResize, onCollapse: () => setRightSidebar(false) }}
+      />
+      <EngineNotice
+        onRetry={() => {
+          engineStatus.set(null);
+          setReset((value) => value + 1);
+        }}
+      />
+      <WindowControls />
+      <MenuHost />
     </div>
   );
 }

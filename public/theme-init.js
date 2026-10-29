@@ -11,12 +11,16 @@
       : "light";
   }
   document.documentElement.dataset.theme = theme;
-  if (document.documentElement.dataset.page === "home") {
-    const image = document.createElement("link");
-    image.rel = "preload";
-    image.as = "image";
-    image.href =
-      theme === "dark" ? "/hero-garden-dark.webp" : "/hero-garden.webp";
-    document.head.append(image);
+  // the header's toggles need javascript; marking it here, before the body is parsed, lets css draw them from the
+  // first paint instead of moving the header when the modules reveal them
+  document.documentElement.classList.add("js");
+  // ?drafts shows sections still waiting on the owner (e.g. quotes not yet cleared with their authors)
+  if (/[?&]drafts\b/.test(location.search)) document.documentElement.dataset.drafts = "";
+  try {
+    if (localStorage.getItem("hibi-site-motion") === "still") {
+      document.documentElement.dataset.motion = "still";
+    }
+  } catch {
+    // Motion stays on when storage is unavailable.
   }
 })();

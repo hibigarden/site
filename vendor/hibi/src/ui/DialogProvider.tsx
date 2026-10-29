@@ -11,7 +11,8 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react'
-import { Button, IconButton } from './Controls'
+import { sentenceCase } from '../shared/ui-case'
+import { Button, IconButton, TextInput } from './Controls'
 import type {
   DialogApi,
   DialogHandle,
@@ -24,15 +25,15 @@ import { TooltipHost } from './Tooltip'
 
 type Request = {
   id: number
-  owner: string
   options: DialogOptions<unknown>
   closing: boolean
   value: unknown
+  controller: AbortController
   settle: (value: unknown) => void
 }
 
 /** One queue per window. Each addon start owns a separate scope. */
-export function createDialogService() {
+function createDialogService() {
   let requests: Request[] = []
   let nextId = 0
   let active = true
@@ -40,12 +41,17 @@ export function createDialogService() {
   const publish = () => {
     for (const listener of listeners) listener()
   }
-  const finish = (request: Request, value: unknown) => {
-    if (!requests.includes(request)) return
-    requests = requests.filter((entry) => entry !== request)
-    request.settle(value)
+  /** Removes every request before any abort listener runs, so none can settle another. */
+  const settleAll = (targets: Iterable<Request>, value: unknown) => {
+    const done = [...targets].filter((request) => requests.includes(request))
+    if (!done.length) return
+    requests = requests.filter((request) => !done.includes(request))
+    for (const request of done) request.controller.abort()
+    for (const request of done) request.settle(value)
     publish()
   }
+  const finish = (request: Request, value: unknown) =>
+    settleAll([request], value)
   const close = (request: Request, value: unknown) => {
     if (!requests.includes(request) || request.closing) return
     if (requests[0] !== request) {
@@ -53,11 +59,12 @@ export function createDialogService() {
       return
     }
     request.closing = true
+    request.controller.abort()
     request.value = value
     requests = [...requests]
     publish()
   }
-  function scope(owner: string) {
+  function scope() {
     let disposed = false
     const owned = new Set<Request>()
     const api: DialogApi = {
@@ -70,10 +77,10 @@ export function createDialogService() {
         })
         const request: Request = {
           id: ++nextId,
-          owner,
           options: options as DialogOptions<unknown>,
           closing: false,
           value: null,
+          controller: new AbortController(),
           settle(value) {
             owned.delete(request)
             settle(value as T | null)
@@ -90,7 +97,7 @@ export function createDialogService() {
           content: () => null,
           footer: ({ close }) => (
             <Button className="dialog-primary" onClick={() => close(null)}>
-              {options.confirmLabel ?? 'ok'}
+              {options.confirmLabel ?? 'Ok'}
             </Button>
           ),
         }).result
@@ -99,14 +106,20 @@ export function createDialogService() {
         return (
           (await api.open<boolean>({
             ...options,
+            closeOnOutsideClick: !options.destructive,
             content: () => null,
             footer: ({ close }) => (
               <>
                 <Button onClick={() => close(false)}>
-                  {options.cancelLabel ?? 'cancel'}
+                  {options.cancelLabel ?? 'Cancel'}
                 </Button>
-                <Button className="dialog-primary" onClick={() => close(true)}>
-                  {options.confirmLabel ?? 'confirm'}
+                <Button
+                  className={
+                    options.destructive ? 'dialog-danger' : 'dialog-primary'
+                  }
+                  onClick={() => close(true)}
+                >
+                  {options.confirmLabel ?? 'Confirm'}
                 </Button>
               </>
             ),
@@ -127,11 +140,11 @@ export function createDialogService() {
       api,
       dispose() {
         disposed = true
-        for (const request of owned) finish(request, null)
+        settleAll(owned, null)
       },
     }
   }
-  const root = scope('hibi')
+  const root = scope()
   return {
     api: root.api,
     scope,
@@ -149,7 +162,7 @@ export function createDialogService() {
     },
     stop() {
       active = false
-      for (const request of requests) finish(request, null)
+      settleAll(requests, null)
     },
   }
 }
@@ -172,7 +185,12 @@ export function DialogProvider({ children }: { children: ReactNode }) {
   const [service] = useState(createDialogService)
   useLayoutEffect(() => {
     service.start()
-    return () => service.stop()
+    // A reload skips React unmount; dismissal signals must still fire.
+    window.addEventListener('pagehide', service.stop)
+    return () => {
+      window.removeEventListener('pagehide', service.stop)
+      service.stop()
+    }
   }, [service])
   return (
     <DialogContext.Provider value={service}>
@@ -202,8 +220,8 @@ class ContentBoundary extends Component<
   render() {
     return this.state.failed ? (
       <div role="alert">
-        <p>this dialog could not load.</p>
-        <Button onClick={this.props.close}>close</Button>
+        <p>Could not load this dialog. Close it and try again.</p>
+        <Button onClick={this.props.close}>Close</Button>
       </div>
     ) : (
       this.props.children
@@ -220,9 +238,10 @@ function DialogContent({
   close: (value: unknown) => void
   footer?: boolean
 }) {
+  const controls = { close, signal: request.controller.signal }
   return footer
-    ? request.options.footer?.({ close })
-    : request.options.content({ close })
+    ? request.options.footer?.(controls)
+    : request.options.content(controls)
 }
 
 function DialogFrame({
@@ -249,29 +268,30 @@ function DialogFrame({
     const timer = setTimeout(finish, 140)
     return () => clearTimeout(timer)
   }, [request, request.closing, service])
+  const { preserveTitleCase } = request.options
+  const title = preserveTitleCase
+    ? request.options.title
+    : sentenceCase(request.options.title)
   return (
     <Modal
       ref={modal}
       className={`app-dialog${request.closing ? ' closing' : ''}`}
       data-size={request.options.size ?? 'normal'}
-      aria-label={request.options.title}
+      aria-label={title}
       aria-describedby={request.options.description ? description : undefined}
       closeOnOutsideClick={request.options.closeOnOutsideClick ?? true}
       onDismiss={() => close()}
     >
       <header className="dialog-heading">
         <div className="dialog-title-row">
-          <h2>{request.options.title}</h2>
-          <IconButton aria-label="close dialog" onClick={() => close()}>
+          <h2 data-verbatim={preserveTitleCase || undefined}>{title}</h2>
+          <IconButton aria-label="Close dialog" onClick={() => close()}>
             <X size={16} aria-hidden="true" />
           </IconButton>
         </div>
-        {request.owner !== 'hibi' && (
-          <p className="dialog-owner">{request.owner}</p>
-        )}
         {request.options.description && (
           <p id={description} className="dialog-description">
-            {request.options.description}
+            {sentenceCase(request.options.description)}
           </p>
         )}
       </header>
@@ -322,13 +342,13 @@ function PromptForm({
           setError(
             error instanceof Error
               ? error.message
-              : 'could not validate this value.',
+              : 'Could not check this value. Try again.',
           )
         }
       }}
     >
-      <label htmlFor={id}>{options.label}</label>
-      <input
+      <label htmlFor={id}>{sentenceCase(options.label)}</label>
+      <TextInput
         ref={input}
         id={id}
         value={value}
@@ -347,10 +367,10 @@ function PromptForm({
       )}
       <div className="dialog-actions">
         <Button onClick={() => close(null)}>
-          {options.cancelLabel ?? 'cancel'}
+          {options.cancelLabel ?? 'Cancel'}
         </Button>
         <Button type="submit" className="dialog-primary">
-          {options.confirmLabel ?? 'save'}
+          {options.confirmLabel ?? 'Save'}
         </Button>
       </div>
     </form>

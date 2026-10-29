@@ -1,0 +1,83 @@
+.typst-preview {
+  position: relative;
+  min-height: var(--control-height);
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.typst-preview:not([data-block]) {
+  padding: var(--editor-padding);
+}
+.typst-preview .typst-progress {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  pointer-events: none;
+}
+.typst-preview img {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  background: white;
+}
+.typst-preview[data-block] img {
+  width: auto;
+  margin-inline: auto;
+}
+.typst-preview figure {
+  min-width: 0;
+  margin: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+}
+.typst-preview p {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+.typst-diagnostics {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border: 1px solid var(--status-warning);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  white-space: pre-wrap;
+}
+.typst-diagnostics p {
+  color: var(--ink);
+}
+.typst-diagnostics[data-error="true"] {
+  border-color: var(--status-danger);
+}
+.typst-block {
+  margin-block: var(--space-4);
+}
+.typst-block-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  color: var(--muted);
+  font: var(--text-sm) var(--font-ui);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.typst-block-heading > div {
+  display: flex;
+  gap: var(--space-1);
+}
+.typst-block .typst-preview {
+  padding: var(--space-3);
+}
+.typst-block pre {
+  margin: 0;
+}

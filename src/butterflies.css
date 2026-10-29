@@ -1,0 +1,85 @@
+.bf-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 0;
+  overflow: visible;
+  /* Butterflies entering from the side never widen the page. */
+  overflow-x: clip;
+  pointer-events: none;
+  z-index: 6;
+  --bf-shadow: 0.34;
+}
+
+[data-theme="dark"] .bf-layer {
+  --bf-shadow: 0.7;
+}
+
+.bf,
+.bf-shadow {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.bf-shadow {
+  background: 0 0 / 100% 100% no-repeat;
+  opacity: var(--bf-shadow);
+}
+
+.bf-stage {
+  display: flex;
+  height: 100%;
+  perspective: 480px;
+}
+
+.bf-stage i {
+  flex: 1;
+  background: var(--src) 0 0 / 200% 100% no-repeat;
+  transform-origin: 100% 50%;
+}
+
+.bf-stage i + i {
+  background-position: 100% 0;
+  transform-origin: 0 50%;
+}
+
+.bf-fly {
+  z-index: 1;
+  will-change: transform;
+}
+
+/* the companion (companion.js) flies in its own layer above the rest */
+.companion-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 0;
+  overflow: visible;
+  overflow-x: clip;
+  pointer-events: none;
+  z-index: 7;
+  --bf-shadow: 0.34;
+}
+
+[data-theme="dark"] .companion-layer {
+  --bf-shadow: 0.7;
+}
+
+/* the companion carries two sets of wings: torn (a scrapbook piece) and plain (as it sits in the scene),
+   the plain set inset by the torn paper margin so the two line up while they cross-fade */
+.companion-layer .bf-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.companion-layer .bf-stage.plain {
+  inset: 8.5px;
+}
+
+/* at night the white paper margins are toned down so they don't glare on the dark page */
+[data-theme="dark"] :is(.bf-layer, .companion-layer) .bf-stage {
+  filter: brightness(0.88);
+}

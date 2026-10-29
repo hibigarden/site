@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en" data-page="sync">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fffdf8" />
+    <meta name="description" content="keep the same hibi workspace on all your computers. coming soon." />
+    <meta property="og:title" content="sync | hibi" />
+    <meta property="og:description" content="keep the same hibi workspace on all your computers. coming soon." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://www.hibi.garden/opengraph.png?v=2" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="a place for your words. hibi's editor in dark mode."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://www.hibi.garden/opengraph.png?v=2" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-dark-32.png" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon-dark.png" media="(prefers-color-scheme: dark)" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script src="/theme-init.js"></script>
+    <link rel="preload" href="/src/fonts/eb-garamond-latin-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/node_modules/geist/dist/fonts/geist-mono/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/src/base.css" />
+    <link rel="stylesheet" href="/src/pages.css" />
+    <script type="module" src="/src/theme.js"></script>
+    <script type="module" src="/src/navigation.js"></script>
+    <title>sync | hibi</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">skip to content</a>
+    <header class="site-header page-header wrap">
+      <a class="wordmark" href="/" aria-label="hibi home"
+        ><span class="wordmark-icon" aria-hidden="true"></span>hibi</a
+      >
+      <nav aria-label="main navigation">
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-links"
+        >
+          menu
+        </button>
+        <div class="nav-links" id="site-links">
+          <a href="/addons/"><span class="nav-label">addons</span></a>
+          <a href="/sync/" aria-current="page"><span class="nav-label">sync</span> <span class="soon-tag">soon</span></a>
+          <a href="/publish/"><span class="nav-label">publish</span> <span class="soon-tag">soon</span></a>
+          <a href="https://docs.hibi.garden"
+            ><span class="nav-label">docs</span> <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <a class="nav-download" href="/download/">download</a>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="switch to dark mode"
+          title="switch to dark mode"
+          hidden
+        >
+          <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z" />
+          </svg>
+          <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42m0-14.14-1.42 1.42m-11.3 11.3-1.42 1.42"
+            />
+          </svg>
+        </button>
+      </nav>
+    </header>
+    <main id="main" class="product-page wrap">
+      <header class="page-intro product-intro">
+        <p class="product-soon"><span class="soon-tag">coming soon</span></p>
+        <h1>hibi sync</h1>
+        <p>the same workspace on all your computers, with your notes still plain files in your own folders.</p>
+        <span class="intro-pressed" aria-hidden="true"
+          ><img class="piece intro-lavender" src="/scrapbook/lavender-bundle.webp" width="147" height="298" alt="" decoding="async"
+          /><img class="piece intro-butterfly" src="/scrapbook/bf-small-blue.webp" width="127" height="101" alt="" decoding="async"
+        /></span>
+      </header>
+      <section class="product-section" aria-labelledby="sync-what">
+        <h2 id="sync-what">what it does</h2>
+        <ul class="bento">
+          <li class="bento-card bento-wide">
+            <h3>your notes stay files</h3>
+            <p>each computer keeps an ordinary folder. sync copies the files you’ve saved between them through a hibi addon.</p>
+            <div class="bento-stage" aria-hidden="true">
+          <div class="mk-pair">
+            <div class="mk-window mk-sidebar"><div class="mk-side-head"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg><span>notes</span></div><div class="mk-row is-active"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>garden.md</span></div><div class="mk-row"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>ideas.md</span></div><div class="mk-row is-folder"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><span>journal</span></div><div class="mk-row" style="--depth: 1"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>monday.md</span></div><div class="mk-row"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>reading.md</span></div></div>
+            <div class="mk-window mk-finder"><div class="mk-finder-head"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span>notes</span></div><div class="mk-files"><div class="mk-file"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>garden.md</span></div><div class="mk-file"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>ideas.md</span></div><div class="mk-file"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg><span>journal</span></div><div class="mk-file"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>reading.md</span></div></div></div>
+          </div>
+            </div>
+          </li>
+          <li class="bento-card bento-narrow">
+            <h3>nothing is overwritten</h3>
+            <p>when two computers change the same file, your copy stays and the other version is saved beside it, so you choose which to keep.</p>
+            <div class="bento-stage" aria-hidden="true">
+          <div class="mk-window mk-sidebar"><div class="mk-side-head"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg><span>notes</span></div><div class="mk-row"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>garden.md</span></div><div class="mk-row is-active"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>ideas.md</span></div><div class="mk-row is-conflict"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>sync-conflict-3f9a1c0e8b2d4f61-r4.md</span></div><div class="mk-row"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>reading.md</span></div></div>
+            </div>
+          </li>
+          <li class="bento-card bento-narrow">
+            <h3>deletions sync too</h3>
+            <p>a file you delete goes to the trash on your other computers. if one of them edited it in the meantime, that edit stays.</p>
+            <div class="bento-stage" aria-hidden="true">
+          <div class="mk-window mk-sidebar"><div class="mk-side-head"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg><span>notes · other computer</span></div><div class="mk-row"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>garden.md</span></div><div class="mk-row is-gone"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>old-draft.md</span><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div><div class="mk-row is-kept"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>plans.md</span></div><div class="mk-row"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>reading.md</span></div></div>
+            </div>
+          </li>
+          <li class="bento-card bento-wide">
+            <h3>you choose when</h3>
+            <p>choose sync workspace now and hibi sends and fetches what changed. the first version doesn’t run in the background.</p>
+            <div class="bento-stage" aria-hidden="true">
+          <div class="mk-window mk-palette">
+            <div class="mk-search"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg><span>sync<i class="mk-caret"></i></span></div>
+            <div class="mk-results"><div class="mk-option is-on"><svg class="mk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 17H5"/><path d="M19 7h-9"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg><span>Sync workspace now</span><small>Addons</small></div></div>
+            <div class="mk-footer"><span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span><span><kbd>↵</kbd> Run</span><span class="mk-escape"><kbd>esc</kbd> Close</span></div>
+          </div>
+            </div>
+          </li>
+        </ul>
+      </section>
+      <section class="product-section" aria-labelledby="sync-ways">
+        <h2 id="sync-ways">two ways to run it</h2>
+        <ul class="bento">
+          <li class="bento-card bento-half">
+            <h3>host it yourself</h3>
+            <p>an open-source server under the MIT license, for your own workspace. run it on a computer or server you control, behind https.</p>
+            <div class="bento-stage" aria-hidden="true">
+          <div class="mk-term"><div class="mk-term-head"><i></i><i></i><i></i></div><pre><span class="mk-prompt">$</span> export HIBI_SYNC_TOKEN=…
+<span class="mk-prompt">$</span> export HIBI_SYNC_WORKSPACE=notes
+<span class="mk-prompt">$</span> npm start
+Hibi sync listening on loopback.</pre></div>
+            </div>
+          </li>
+          <li class="bento-card bento-half">
+            <h3>a hosted service <span class="soon-tag">planned</span></h3>
+            <p>an account on a service that runs the server for you, with the same rules for conflicts and deletions.</p>
+            <div class="bento-stage" aria-hidden="true">
+          <div class="mk-window mk-form">
+              <div class="mk-form-title">Managed sync</div>
+              <div class="mk-field"><span>Workspace ID</span><b>notes</b></div>
+              <div class="mk-field"><span>Account ID</span><b>alice</b></div>
+              <div class="mk-field"><span>Bearer token</span><b>••••••••••••</b></div>
+              <span class="mk-button is-primary">Connect workspace</span>
+            </div>
+            </div>
+          </li>
+        </ul>
+      </section>
+      <section class="product-section" aria-labelledby="sync-today">
+        <h2 id="sync-today">what you can do today</h2>
+        <p>hibi is free and works without sync. a workspace is an ordinary folder, so you can already keep it in a git repository and use the built-in <a href="/addons/git">git addon</a> to commit, pull and push your notes between computers.</p>
+      </section>
+      <section class="product-section faq" aria-labelledby="sync-faq">
+        <h2 id="sync-faq">questions</h2>
+        <details class="faq-item">
+          <summary>is it end-to-end encrypted?</summary>
+          <p>yes, on the hosted service: your files are encrypted on your computer before they leave it, and only your devices can read them. when you host it yourself, files travel over https to a server you control, so only you can read them.</p>
+        </details>
+        <details class="faq-item">
+          <summary>does it merge changes?</summary>
+          <p>no. when the same file changed on two computers, you get both versions and pick the one to keep.</p>
+        </details>
+        <details class="faq-item">
+          <summary>do i need it to use hibi?</summary>
+          <p>no. hibi stays free and works the same without sync. your notes are plain files either way.</p>
+        </details>
+        <details class="faq-item">
+          <summary>when is it coming?</summary>
+          <p>there’s no date yet.</p>
+        </details>
+      </section>
+      <section class="product-section" aria-labelledby="sync-follow">
+        <h2 id="sync-follow">hear about it first</h2>
+        <p>sync will be announced in <a href="https://discord.gg/v9r4cABUP2">hibi’s discord</a> and in the <a href="https://github.com/schmayterling/hibi/releases">releases on github</a>.</p>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-details">
+          <div>
+            <a class="footer-brand wordmark" href="/" aria-label="hibi home">
+              <span class="wordmark-icon" aria-hidden="true"></span>
+              hibi
+            </a>
+            <p class="footer-tagline">a place for your words</p>
+          </div>
+          <div class="footer-groups">
+            <div class="footer-group">
+              <h2>hibi</h2>
+              <nav aria-label="footer hibi">
+                <a href="/download/">download</a>
+                <a href="/#features">features</a>
+                <a href="/addons/">addons</a>
+                <a href="/sync/" aria-current="page">sync</a>
+                <a href="/publish/">publish</a>
+              </nav>
+            </div>
+            <div class="footer-group">
+              <h2>resources</h2>
+              <nav aria-label="footer resources">
+                <a href="https://docs.hibi.garden">documentation</a>
+                <a href="https://github.com/schmayterling/hibi/releases">changelog</a>
+                <a href="/#faq">faq</a>
+                <a href="/credits/">credits</a>
+              </nav>
+            </div>
+            <div class="footer-group">
+              <h2>community</h2>
+              <nav aria-label="footer community">
+                <a href="https://github.com/schmayterling/hibi"><svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg>github</a>
+                <a href="https://discord.gg/v9r4cABUP2"><svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" /></svg>discord</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 <a href="https://github.com/schmayterling">schmayterling</a></span>
+          <a href="#">back to top <span aria-hidden="true">↑</span></a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

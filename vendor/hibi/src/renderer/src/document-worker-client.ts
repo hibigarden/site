@@ -1,0 +1,1104 @@
+import { journalMessageBytes } from '../../shared/document-journal.ts'
+import type { DocumentSession } from '../../shared/document-session.ts'
+import {
+  type BoundaryReceive,
+  boundaryKey,
+  type CodeExtentPage,
+  type DocumentWorkerReply,
+  type DocumentWorkerRequest,
+  type FindMode,
+  type FindOptions,
+  type MarkdownReferenceRequest,
+  type MarkdownReferenceSyntax,
+  type MarkdownSemanticResult,
+  type MetadataDialect,
+} from '../../shared/document-worker-protocol.ts'
+import { reportDiagnosticFailure } from '../../shared/local-diagnostics-observer.ts'
+import type { BoundaryConfig } from '../../shared/markdown-boundary-syntax.ts'
+import type { SourceOwnerPage } from '../../shared/markdown-source-model.ts'
+import type { SourceSnapshot } from '../../shared/source-buffer.ts'
+import type { SourceOperation } from '../../shared/source-operations.ts'
+import {
+  editorChangesFromSource,
+  mappedPrefix,
+} from '../../shared/source-projection.ts'
+import type { ReferenceValue } from '../../shared/source-references.ts'
+import type {
+  SearchHighlights,
+  SearchLocation,
+} from '../../shared/source-search-index.ts'
+import {
+  type SourceTransferRequest,
+  SourceTransferSender,
+} from '../../shared/source-transfer.ts'
+
+type Transport = Pick<
+  Worker,
+  'postMessage' | 'terminate' | 'onmessage' | 'onerror' | 'onmessageerror'
+>
+export type FindAction = 'first' | 'next' | 'previous' | null
+type Request = Extract<DocumentWorkerRequest, { type: 'find' }> & {
+  action: FindAction
+}
+type ClientOptions = {
+  changed: () => void
+  pending: () => void
+  result: (
+    location: SearchLocation,
+    action: FindAction,
+    highlightStarts: readonly number[] | undefined,
+    query: string,
+    highlights?: SearchHighlights,
+    mode?: FindMode,
+    replacement?: import('../../shared/rendered-replace.ts').RenderedReplacement,
+  ) => void
+  error: (message: string, reason?: 'unsupported') => void
+  metadataPending?: () => void
+  metadataResult?: (
+    page: SourceOwnerPage,
+    reference?: ReferenceValue | null,
+    semantic?: MarkdownSemanticResult,
+  ) => void
+  metadataError?: (message: string) => void
+  worker?: () => Transport
+  maximumPendingBytes?: number
+  timeoutMs?: number
+}
+
+function validCodeCoverage(value: unknown, length: number, slots: number) {
+  if (!value || typeof value !== 'object') return false
+  const page = value as Omit<CodeExtentPage, 'version'>
+  if (
+    !Number.isSafeInteger(page.from) ||
+    !Number.isSafeInteger(page.to) ||
+    page.from < 0 ||
+    page.to < page.from ||
+    page.to > length ||
+    !Array.isArray(page.records) ||
+    page.records.length + slots > 128
+  )
+    return false
+  let end = -1
+  return page.records.every((record) => {
+    if (
+      !record ||
+      typeof record !== 'object' ||
+      ![
+        record.from,
+        record.to,
+        record.contentFrom,
+        record.contentTo,
+        record.contentLines,
+        record.contentColumns,
+      ].every(Number.isSafeInteger) ||
+      record.from < 0 ||
+      record.from >= record.to ||
+      record.from < end ||
+      record.to > length ||
+      record.to <= page.from ||
+      record.from >= page.to ||
+      record.contentFrom < record.from ||
+      record.contentTo < record.contentFrom ||
+      record.contentTo > record.to ||
+      record.contentLines < 0 ||
+      record.contentColumns < 0 ||
+      (record.contentLines === 0 && record.contentColumns !== 0) ||
+      !['fenced', 'indented'].includes(record.kind) ||
+      typeof record.closed !== 'boolean'
+    )
+      return false
+    end = record.to
+    return true
+  })
+}
+
+/** One cancelable derived replica, with bounded bootstrap/operation/query ownership. */
+export class DocumentWorkerClient {
+  readonly #session: DocumentSession
+  readonly #options: ClientOptions
+  readonly #detach: (() => void)[]
+  #worker: Transport | null = null
+  #epoch = ''
+  #document: SourceSnapshot['document']
+  #bootstrap: {
+    source: SourceSnapshot
+    sender: SourceTransferSender
+    request: SourceTransferRequest
+    done: boolean
+    finishing: boolean
+    operations: SourceOperation[]
+  } | null = null
+  #loaded = false
+  #ack = -1
+  #sent = -1
+  readonly #pending = new Map<number, number>()
+  #bytes = 0
+  #latest: Request | null = null
+  #requestId = 0
+  #sentRequest = 0
+  #flight: number | null = null
+  #canceling: number | null = null
+  #startTimer: ReturnType<typeof setTimeout> | undefined
+  #deadline: ReturnType<typeof setTimeout> | undefined
+  #disposed = false
+  #failed = false
+  #restarts = 0
+  #metadata: Extract<DocumentWorkerRequest, { type: 'metadata' }> | null = null
+  #metadataFlight: number | null = null
+  #metadataCanceling: number | null = null
+  #metadataReleasing = false
+  #sentMetadata = 0
+  #metadataDeadline: ReturnType<typeof setTimeout> | undefined
+  #findDeadline: ReturnType<typeof setTimeout> | undefined
+  #findTimer: ReturnType<typeof setTimeout> | undefined
+  #findQuietUntil = 0
+  #highlightRequest: Request | null = null
+  #boundaries: {
+    id: number
+    version: number
+    config: BoundaryConfig
+    key: string
+    from: number
+    baseVersion?: number
+    codeOnly: boolean
+    coverage: boolean
+    complete: boolean
+    receive: BoundaryReceive
+    declined: (reason: 'stale' | 'mismatch') => void
+  } | null = null
+  #sentBoundaries = ''
+  #boundarySequence = 0
+  #boundaryFrom: number | null = null
+  #boundaryTo: number | null = null
+  #codeDelivered = false
+  #codeVersion = -1
+  #codeConfig: { config: BoundaryConfig; version: number } | null = null
+  readonly #codeReceivers = new Set<(page: CodeExtentPage) => void>()
+  constructor(session: DocumentSession, options: ClientOptions) {
+    this.#session = session
+    this.#options = options
+    this.#document = session.snapshot().document
+    this.#detach = [
+      session.subscribeOperations((prepared) => {
+        if (this.#disposed || this.#failed) return
+        const operation = prepared.operation
+        if (this.#codeConfig?.version === prepared.before.version) {
+          this.#codeConfig.version = prepared.after.version
+          const config = this.#codeConfig.config
+          if (config.prefix) {
+            let offset = 0
+            const changes = editorChangesFromSource(
+              prepared.before,
+              operation.changes,
+            ).map((change) => {
+              const range = {
+                fromA: change.from,
+                toA: change.to,
+                fromB: change.from + offset,
+                toB: change.from + offset + change.insert.length,
+              }
+              offset += change.insert.length - (change.to - change.from)
+              return range
+            })
+            const prefix = mappedPrefix(config.prefix, changes)
+            if (prefix !== null) this.#codeConfig.config = { ...config, prefix }
+          }
+        }
+        if (this.#boundaries) {
+          // The receiver still belongs to its view's old document until it requests again.
+          this.#sentBoundaries = ''
+          this.#boundarySequence = 0
+          this.#codeDelivered = false
+          this.#boundaryFrom = null
+          this.#boundaryTo = null
+        }
+        this.#deferFind()
+        if (this.#bootstrap || this.#loaded) {
+          const bytes = journalMessageBytes(operation)
+          if (
+            this.#bytes + bytes >
+            (options.maximumPendingBytes ?? 8 * 1024 * 1024)
+          ) {
+            // Only the derived replica is replaced; canonical recovery never drops edits.
+            this.#restart()
+          } else {
+            this.#pending.set(operation.contentVersion, bytes)
+            this.#bytes += bytes
+            this.#flight = this.#canceling = null
+            clearTimeout(this.#findDeadline)
+            this.#findDeadline = undefined
+            this.#metadataFlight = this.#metadataCanceling = null
+            this.#metadataReleasing = false
+            clearTimeout(this.#metadataDeadline)
+            this.#metadataDeadline = undefined
+            if (this.#bootstrap) this.#bootstrap.operations.push(operation)
+            else this.#sendOperation(operation)
+          }
+        }
+        this.#watchCode()
+        options.changed()
+      }),
+      session.subscribe(() => {
+        if (this.#disposed) return
+        const document = session.snapshot().document
+        if (
+          document.tabId !== this.#document.tabId ||
+          document.revision !== this.#document.revision
+        ) {
+          this.#document = document
+          this.#failed = false
+          this.#restarts = 0
+          this.#latest = null
+          this.#findQuietUntil = 0
+          this.#metadata = null
+          this.#boundaries = null
+          this.#codeConfig = null
+          this.#restart()
+          options.changed()
+        }
+      }),
+    ]
+  }
+  /** Code coverage shares the boundary stream's version checks and backpressure. */
+  subscribeCodeExtents(receive: (page: CodeExtentPage) => void): () => void {
+    if (this.#disposed) return () => {}
+    this.#codeReceivers.add(receive)
+    const request = this.#boundaries
+    const replay = this.#codeDelivered || this.#codeVersion >= 0
+    this.#codeVersion = -1
+    if (
+      request?.codeOnly &&
+      request.version === this.#session.snapshot().version &&
+      replay
+    ) {
+      // A late listener needs the retained prefix too; replay metadata, never source.
+      this.#boundaries = null
+      this.#requestBoundaries(
+        request.config,
+        request.receive,
+        request.declined,
+        0,
+        undefined,
+        request.codeOnly,
+      )
+    }
+    this.#watchCode()
+    return () => {
+      this.#codeReceivers.delete(receive)
+      if (!this.#codeReceivers.size) {
+        const request = this.#boundaries
+        if (
+          request &&
+          (request.codeOnly ||
+            request.version !== this.#session.snapshot().version)
+        )
+          this.releaseBoundaries(true)
+        else if (request?.coverage && !request.complete) {
+          this.#boundaries = null
+          this.#requestBoundaries(
+            request.config,
+            request.receive,
+            request.declined,
+            request.from,
+            request.baseVersion,
+            false,
+          )
+        }
+      }
+    }
+  }
+  #watchCode() {
+    const version = this.#session.snapshot().version,
+      request = this.#boundaries
+    if (
+      request &&
+      !request.codeOnly &&
+      !request.complete &&
+      request.version === version
+    ) {
+      if (this.#codeReceivers.size && !request.coverage)
+        this.#requestBoundaries(
+          request.config,
+          request.receive,
+          request.declined,
+          request.from,
+          request.baseVersion,
+          false,
+        )
+      return
+    }
+    if (this.#codeReceivers.size && this.#codeConfig?.version === version)
+      this.#requestBoundaries(
+        this.#codeConfig.config,
+        (_page, acknowledge) => acknowledge(),
+        () => {},
+        0,
+        undefined,
+        true,
+      )
+  }
+  boundaries(
+    config: BoundaryConfig,
+    receive: BoundaryReceive,
+    declined: (reason: 'stale' | 'mismatch') => void,
+    from = 0,
+    baseVersion?: number,
+  ) {
+    this.#requestBoundaries(config, receive, declined, from, baseVersion, false)
+  }
+  #requestBoundaries(
+    config: BoundaryConfig,
+    receive: BoundaryReceive,
+    declined: (reason: 'stale' | 'mismatch') => void,
+    from: number,
+    baseVersion: number | undefined,
+    codeOnly: boolean,
+  ) {
+    if (this.#disposed || this.#failed) return
+    const key = boundaryKey(config),
+      version = this.#session.snapshot().version
+    this.#codeConfig = { config, version }
+    if (
+      this.#boundaries?.key === key &&
+      this.#boundaries.config.prefix === config.prefix &&
+      this.#boundaries.version === version &&
+      this.#boundaries.from === from &&
+      this.#boundaries.baseVersion === baseVersion &&
+      this.#boundaries.codeOnly === codeOnly &&
+      this.#boundaries.coverage === !!this.#codeReceivers.size
+    ) {
+      this.#boundaries.receive = receive
+      return
+    }
+    this.#boundaries = {
+      config,
+      key,
+      version,
+      id: ++this.#requestId,
+      from,
+      codeOnly,
+      coverage: !!this.#codeReceivers.size,
+      complete: false,
+      ...(baseVersion === undefined ? {} : { baseVersion }),
+      receive,
+      declined,
+    }
+    this.#sentBoundaries = ''
+    this.#boundarySequence = 0
+    this.#codeDelivered = false
+    this.#boundaryFrom = null
+    this.#boundaryTo = null
+    if (!this.#worker && !this.#startTimer && !this.#bootstrap) this.#restart()
+    this.#flushBoundaries()
+  }
+  releaseBoundaries(retain = false) {
+    if (retain && this.#codeReceivers.size && this.#codeConfig) {
+      if (!this.#boundaries?.codeOnly) this.#boundaries = null
+      this.#watchCode()
+      return
+    }
+    if (!retain) {
+      this.#codeVersion = -1
+      this.#codeConfig = null
+    }
+    this.#boundaries = null
+    this.#sentBoundaries = ''
+    this.#boundarySequence = 0
+    this.#codeDelivered = false
+    this.#boundaryFrom = null
+    this.#boundaryTo = null
+    if (!this.#loaded) return
+    this.#post({
+      type: 'cancel-boundaries',
+      epoch: this.#epoch,
+      ...(retain ? { retain: true } : {}),
+    })
+  }
+  #flushBoundaries() {
+    const request = this.#boundaries
+    if (
+      !request ||
+      !this.#loaded ||
+      request.version !== this.#session.snapshot().version ||
+      this.#ack !== request.version
+    )
+      return
+    const sent = `${request.id} ${request.version} ${request.key}`
+    if (this.#sentBoundaries === sent) return
+    this.#sentBoundaries = sent
+    this.#post({
+      type: 'boundaries',
+      epoch: this.#epoch,
+      id: request.id,
+      version: request.version,
+      config: request.config,
+      ...(request.coverage
+        ? { codeVersion: this.#codeVersion < 0 ? null : this.#codeVersion }
+        : {}),
+      ...(request.codeOnly ? { codeOnly: true } : {}),
+      ...(request.from ? { from: request.from } : {}),
+      ...(request.baseVersion === undefined
+        ? {}
+        : { baseVersion: request.baseVersion }),
+    })
+  }
+  find(
+    query: string,
+    from: number,
+    to: number,
+    action: FindAction = null,
+    options: FindOptions = {},
+  ) {
+    if (this.#disposed || this.#failed) return
+    if (!this.#worker && !this.#startTimer && !this.#bootstrap) this.#restart()
+    const config =
+      options.config ??
+      (options.mode === 'rendered' ? this.#boundaries?.config : undefined)
+    this.#latest = {
+      type: 'find',
+      epoch: this.#epoch,
+      id: ++this.#requestId,
+      version: this.#session.snapshot().version,
+      query,
+      from,
+      to,
+      action,
+      ...(options.mode ? { mode: options.mode } : {}),
+      ...(config ? { config } : {}),
+      ...(options.replacement === undefined
+        ? {}
+        : { replacement: options.replacement }),
+      ...(options.prefix === undefined
+        ? config
+          ? { prefix: config.prefix }
+          : {}
+        : { prefix: options.prefix }),
+      ...(options.viewport ? { viewport: { ...options.viewport } } : {}),
+    }
+    this.#options.pending()
+    this.#flushQuery()
+  }
+  metadata(
+    dialect: MetadataDialect,
+    from: number,
+    to: number,
+    limit = 128,
+    frontmatter = false,
+    reference?: MarkdownReferenceRequest,
+    semantic?: MarkdownReferenceSyntax,
+  ) {
+    if (this.#disposed || this.#failed) return
+    if (!this.#worker && !this.#startTimer && !this.#bootstrap) this.#restart()
+    this.#metadata = {
+      type: 'metadata',
+      epoch: this.#epoch,
+      id: ++this.#requestId,
+      version: this.#session.snapshot().version,
+      dialect,
+      frontmatter,
+      ...(reference ? { reference: { ...reference } } : {}),
+      ...(semantic ? { semantic: { ...semantic } } : {}),
+      from,
+      to,
+      limit,
+    }
+    this.#options.metadataPending?.()
+    this.#flushMetadata()
+  }
+  cancelFind() {
+    this.#highlightRequest = null
+    clearTimeout(this.#findTimer)
+    this.#findTimer = undefined
+    this.#findQuietUntil = 0
+    this.#latest = null
+    this.#sentRequest = 0
+    if (this.#flight === null || this.#canceling !== null) return
+    this.#canceling = this.#flight
+    this.#post({ type: 'cancel-find', epoch: this.#epoch, id: this.#flight })
+  }
+  releaseMetadata() {
+    const id =
+      this.#metadataFlight ??
+      this.#metadataCanceling ??
+      (this.#sentMetadata || null)
+    this.#metadata = null
+    this.#sentMetadata = 0
+    if (id === null || this.#metadataReleasing) return
+    this.#metadataCanceling = id
+    this.#metadataReleasing = true
+    this.#post({
+      type: 'cancel-metadata',
+      epoch: this.#epoch,
+      id,
+      release: true,
+    })
+    if (this.#metadataCanceling === id && !this.#metadataDeadline)
+      this.#metadataDeadline = setTimeout(
+        () =>
+          this.#fail(new Error('Document metadata cancellation timed out.')),
+        this.#options.timeoutMs ?? 5000,
+      )
+  }
+  #flushMetadata() {
+    const request = this.#metadata
+    if (
+      !request ||
+      !this.#loaded ||
+      this.#ack !== this.#session.snapshot().version ||
+      this.#metadataCanceling !== null
+    )
+      return
+    if (this.#metadataFlight !== null) {
+      if (this.#metadataFlight !== request.id) {
+        this.#metadataCanceling = this.#metadataFlight
+        this.#post({
+          type: 'cancel-metadata',
+          epoch: this.#epoch,
+          id: this.#metadataFlight,
+          release: false,
+        })
+      }
+      return
+    }
+    if (request.id === this.#sentMetadata || request.version !== this.#ack)
+      return
+    this.#metadataFlight = this.#sentMetadata = request.id
+    this.#post(request)
+    if (this.#metadataFlight === request.id) this.#watchMetadata()
+  }
+  #watchMetadata() {
+    clearTimeout(this.#metadataDeadline)
+    this.#metadataDeadline = setTimeout(
+      () =>
+        this.#fail(new Error('Document metadata worker stopped responding.')),
+      this.#options.timeoutMs ?? 5000,
+    )
+  }
+  #post(message: DocumentWorkerRequest) {
+    if (!this.#worker) return false
+    try {
+      this.#worker.postMessage(message)
+      return true
+    } catch (error) {
+      this.#fail(error)
+      return false
+    }
+  }
+  #sendOperation(operation: SourceOperation) {
+    this.#sent = operation.contentVersion
+    this.#post({ type: 'edit', epoch: this.#epoch, operation })
+    this.#watch()
+  }
+  #deferFind(until = Date.now() + 300) {
+    clearTimeout(this.#findTimer)
+    this.#findQuietUntil = until
+    const remaining = until - Date.now()
+    // Edits cancel worker work immediately; rebuild only after input settles.
+    this.#findTimer =
+      remaining > 0
+        ? setTimeout(() => {
+            this.#findTimer = undefined
+            this.#flushQuery()
+          }, remaining)
+        : undefined
+  }
+  #flushQuery() {
+    const request = this.#latest
+    if (
+      !request ||
+      !this.#loaded ||
+      this.#ack !== this.#session.snapshot().version ||
+      this.#findTimer !== undefined ||
+      this.#canceling !== null
+    )
+      return
+    if (this.#flight !== null) {
+      if (this.#flight !== request.id) {
+        this.#canceling = this.#flight
+        this.#post({
+          type: 'cancel-find',
+          epoch: this.#epoch,
+          id: this.#flight,
+        })
+      }
+      return
+    }
+    if (request.id === this.#sentRequest || request.version !== this.#ack)
+      return
+    this.#flight = this.#sentRequest = request.id
+    this.#post({
+      type: 'find',
+      epoch: this.#epoch,
+      id: request.id,
+      version: request.version,
+      query: request.query,
+      highlights:
+        this.#highlightRequest?.query !== request.query ||
+        this.#highlightRequest?.version !== request.version ||
+        this.#highlightRequest?.mode !== request.mode ||
+        this.#highlightRequest?.prefix !== request.prefix,
+      ...(request.mode ? { mode: request.mode } : {}),
+      ...(request.config ? { config: request.config } : {}),
+      ...(request.replacement === undefined
+        ? {}
+        : { replacement: request.replacement }),
+      ...(request.prefix === undefined ? {} : { prefix: request.prefix }),
+      ...(request.viewport ? { viewport: request.viewport } : {}),
+      from: request.from,
+      to: request.to,
+    })
+    if (this.#flight === request.id) this.#watchFind()
+    this.#watch()
+  }
+  #watchFind() {
+    clearTimeout(this.#findDeadline)
+    this.#findDeadline = setTimeout(
+      () => this.#fail(new Error('Find worker stopped responding.')),
+      this.#options.timeoutMs ?? 5000,
+    )
+  }
+  #watch() {
+    if (!this.#bootstrap && !this.#pending.size) {
+      clearTimeout(this.#deadline)
+      this.#deadline = undefined
+      return
+    }
+    if (this.#deadline || !this.#worker) return
+    this.#deadline = setTimeout(
+      () => this.#fail(new Error('Find worker stopped responding.')),
+      this.#options.timeoutMs ?? 5000,
+    )
+  }
+  #reply(reply: DocumentWorkerReply) {
+    if (this.#disposed) return
+    if (
+      (reply.type === 'boundaries' || reply.type === 'boundary-declined') &&
+      this.#boundaries &&
+      reply.id < this.#boundaries.id
+    )
+      return
+    if (reply.epoch !== this.#epoch) {
+      if (reply.type === 'boundaries') this.#boundaries?.declined('stale')
+      return
+    }
+    if (reply.type === 'boundaries' || reply.type === 'boundary-declined') {
+      const request = this.#boundaries
+      if (!request) return
+      if (
+        reply.id !== request.id ||
+        reply.version !== request.version ||
+        reply.version !== this.#session.snapshot().version
+      ) {
+        request.declined('stale')
+        return
+      }
+      if (reply.key !== request.key || reply.type === 'boundary-declined') {
+        request.declined('mismatch')
+        return
+      }
+      const from = reply.from ?? 0,
+        to = reply.to ?? reply.length
+      if (
+        !Number.isSafeInteger(from) ||
+        from < 0 ||
+        from > request.from ||
+        !Number.isSafeInteger(to) ||
+        to < from ||
+        to > reply.length ||
+        (reply.to !== undefined && request.baseVersion === undefined) ||
+        (this.#boundaryTo !== null && to !== this.#boundaryTo) ||
+        (this.#boundaryFrom !== null && from !== this.#boundaryFrom) ||
+        reply.sequence !== this.#boundarySequence++ ||
+        !Array.isArray(reply.records) ||
+        reply.records.length > 128 ||
+        (reply.code !== undefined &&
+          !validCodeCoverage(reply.code, reply.length, reply.records.length)) ||
+        reply.length !== this.#session.snapshot().normalizedLength
+      ) {
+        request.declined('mismatch')
+        this.releaseBoundaries()
+        return
+      }
+      this.#boundaryFrom = from
+      this.#boundaryTo = to
+      if (reply.code) {
+        this.#codeDelivered = true
+        for (const receive of [...this.#codeReceivers]) {
+          if (
+            this.#boundaries !== request ||
+            reply.version !== this.#session.snapshot().version
+          )
+            break
+          receive({ version: reply.version, ...reply.code })
+        }
+      }
+      if (
+        this.#boundaries !== request ||
+        reply.version !== this.#session.snapshot().version
+      )
+        return
+      let acknowledged = false
+      request.receive(reply, () => {
+        if (
+          acknowledged ||
+          this.#boundaries !== request ||
+          request.version !== reply.version ||
+          reply.version !== this.#session.snapshot().version
+        )
+          return
+        acknowledged = true
+        if (reply.done) {
+          request.complete = true
+          if (request.codeOnly) this.#codeVersion = reply.version
+        }
+        this.#post({
+          type: 'boundary-ack',
+          epoch: this.#epoch,
+          id: request.id,
+          version: reply.version,
+          key: request.key,
+          sequence: reply.sequence,
+        })
+        if (reply.done && !request.codeOnly) this.#watchCode()
+      })
+      return
+    }
+    if (reply.type === 'load-ack') {
+      const bootstrap = this.#bootstrap
+      if (
+        !bootstrap ||
+        bootstrap.finishing ||
+        reply.request?.streamId !== bootstrap.request.streamId ||
+        reply.request?.sequence !== bootstrap.request.sequence
+      ) {
+        this.#fail(
+          new Error('Document worker acknowledged an unknown version.'),
+        )
+        return
+      }
+      const document = this.#session.snapshot().document
+      if (
+        document.tabId !== bootstrap.source.document.tabId ||
+        document.revision !== bootstrap.source.document.revision
+      ) {
+        this.#restart()
+        return
+      }
+      clearTimeout(this.#deadline)
+      this.#deadline = undefined
+      try {
+        if (bootstrap.done) {
+          bootstrap.sender.finish(reply.request)
+          bootstrap.finishing = true
+          this.#sent = bootstrap.source.version
+          this.#post({
+            type: 'load-finish',
+            epoch: this.#epoch,
+            request: reply.request,
+          })
+        } else {
+          const chunk = bootstrap.sender.read(reply.request)
+          bootstrap.request = {
+            streamId: chunk.streamId,
+            sequence: chunk.sequence + 1,
+          }
+          bootstrap.done = chunk.done
+          this.#post({ type: 'load-chunk', epoch: this.#epoch, chunk })
+        }
+      } catch (error) {
+        this.#fail(error)
+        return
+      }
+    } else if (reply.type === 'ack') {
+      if (
+        !Number.isSafeInteger(reply.version) ||
+        reply.version > this.#sent ||
+        (this.#bootstrap &&
+          (!this.#bootstrap.finishing ||
+            reply.version !== this.#bootstrap.source.version))
+      ) {
+        this.#fail(
+          new Error('Document worker acknowledged an unknown version.'),
+        )
+        return
+      }
+      if (reply.version <= this.#ack) return
+      clearTimeout(this.#deadline)
+      this.#deadline = undefined
+      this.#ack = reply.version
+      const operations = this.#bootstrap?.operations
+      if (this.#bootstrap) {
+        this.#bootstrap = null
+        this.#loaded = true
+      }
+      for (const [version, bytes] of this.#pending)
+        if (version <= reply.version) {
+          this.#pending.delete(version)
+          this.#bytes -= bytes
+        }
+      if (operations)
+        for (const operation of operations) {
+          if (reply.epoch !== this.#epoch) return
+          this.#sendOperation(operation)
+        }
+    } else if (reply.type === 'find-progress') {
+      const request = this.#latest
+      if (
+        request?.id === reply.id &&
+        this.#flight === reply.id &&
+        this.#canceling === null &&
+        request.version === reply.version &&
+        reply.version === this.#ack &&
+        reply.version === this.#session.snapshot().version
+      )
+        this.#watchFind()
+    } else if (reply.type === 'canceled') {
+      if (reply.id !== this.#canceling) return
+      this.#flight = this.#canceling = null
+      clearTimeout(this.#findDeadline)
+      this.#findDeadline = undefined
+    } else if (reply.type === 'find') {
+      if (reply.id === this.#flight) {
+        this.#flight = null
+        if (this.#canceling === null) {
+          clearTimeout(this.#findDeadline)
+          this.#findDeadline = undefined
+        }
+      }
+      const request = this.#latest
+      if (
+        request?.id === reply.id &&
+        request.version === reply.version &&
+        reply.version === this.#session.snapshot().version
+      ) {
+        if (
+          reply.highlightStarts ||
+          reply.highlights ||
+          reply.mode === 'rendered'
+        )
+          this.#highlightRequest = request
+        if (reply.mode === 'rendered' || reply.highlights)
+          this.#options.result(
+            reply.location,
+            request.action,
+            reply.highlightStarts,
+            request.query,
+            reply.highlights,
+            reply.mode ?? 'source',
+            reply.replacement,
+          )
+        else
+          this.#options.result(
+            reply.location,
+            request.action,
+            reply.highlightStarts,
+            request.query,
+          )
+      }
+    } else if (reply.type === 'metadata-progress') {
+      const request = this.#metadata
+      if (
+        request?.id === reply.id &&
+        this.#metadataFlight === reply.id &&
+        this.#metadataCanceling === null &&
+        request.version === reply.version &&
+        reply.version === this.#ack &&
+        reply.version === this.#session.snapshot().version
+      )
+        this.#watchMetadata()
+    } else if (reply.type === 'metadata-canceled') {
+      if (
+        reply.id !== this.#metadataCanceling ||
+        reply.release !== this.#metadataReleasing
+      )
+        return
+      this.#metadataFlight = this.#metadataCanceling = null
+      this.#metadataReleasing = false
+      clearTimeout(this.#metadataDeadline)
+      this.#metadataDeadline = undefined
+    } else if (reply.type === 'metadata') {
+      if (reply.id === this.#metadataFlight) {
+        this.#metadataFlight = null
+        if (this.#metadataCanceling === null) {
+          clearTimeout(this.#metadataDeadline)
+          this.#metadataDeadline = undefined
+        }
+      }
+      const request = this.#metadata
+      if (
+        request?.id === reply.id &&
+        request.version === reply.version &&
+        reply.version === this.#session.snapshot().version
+      )
+        this.#options.metadataResult?.(
+          reply.page,
+          reply.reference,
+          reply.semantic,
+        )
+    } else if (reply.stage === 'replica') {
+      this.#fail(new Error(reply.message))
+      return
+    } else if (reply.stage === 'metadata') {
+      if (reply.id === this.#metadataFlight) {
+        this.#metadataFlight = null
+        if (this.#metadataCanceling === null) {
+          clearTimeout(this.#metadataDeadline)
+          this.#metadataDeadline = undefined
+        }
+      }
+      if (reply.id === this.#metadata?.id)
+        this.#options.metadataError?.(reply.message)
+    } else {
+      if (reply.id === this.#flight) {
+        this.#flight = null
+        if (this.#canceling === null) {
+          clearTimeout(this.#findDeadline)
+          this.#findDeadline = undefined
+        }
+      }
+      if (reply.id === this.#latest?.id) {
+        if (reply.reason) this.#options.error(reply.message, reply.reason)
+        else this.#options.error(reply.message)
+      }
+    }
+    this.#flushQuery()
+    this.#flushMetadata()
+    this.#flushBoundaries()
+    this.#watch()
+  }
+  #stop() {
+    this.#codeVersion = -1
+    this.#highlightRequest = null
+    clearTimeout(this.#findTimer)
+    this.#findTimer = undefined
+    clearTimeout(this.#startTimer)
+    clearTimeout(this.#deadline)
+    clearTimeout(this.#findDeadline)
+    this.#findDeadline = undefined
+    clearTimeout(this.#metadataDeadline)
+    this.#metadataDeadline = undefined
+    this.#metadataFlight = this.#metadataCanceling = null
+    this.#metadataReleasing = false
+    this.#sentMetadata = 0
+    this.#startTimer = this.#deadline = undefined
+    this.#worker?.terminate()
+    this.#worker = null
+    this.#bootstrap?.sender.close()
+    this.#bootstrap = null
+    this.#pending.clear()
+    this.#bytes = 0
+    this.#loaded = false
+    this.#flight = this.#canceling = null
+    this.#ack = this.#sent = -1
+    this.#sentRequest = 0
+    this.#sentBoundaries = ''
+    this.#boundarySequence = 0
+    this.#codeDelivered = false
+    this.#boundaryFrom = null
+    this.#boundaryTo = null
+  }
+  #restart() {
+    this.#stop()
+    this.#deferFind(this.#findQuietUntil)
+    this.#epoch = crypto.randomUUID()
+    this.#requestId = 0
+    if (this.#latest)
+      this.#latest = {
+        ...this.#latest,
+        epoch: this.#epoch,
+        id: ++this.#requestId,
+        version: this.#session.snapshot().version,
+        action:
+          this.#latest.version === this.#session.snapshot().version
+            ? this.#latest.action
+            : null,
+      }
+    if (this.#metadata)
+      this.#metadata = {
+        ...this.#metadata,
+        epoch: this.#epoch,
+        id: ++this.#requestId,
+        version: this.#session.snapshot().version,
+      }
+    if (this.#boundaries)
+      this.#boundaries = {
+        ...this.#boundaries,
+        id: ++this.#requestId,
+      }
+    const epoch = this.#epoch
+    this.#startTimer = setTimeout(() => {
+      this.#startTimer = undefined
+      try {
+        this.#start(epoch)
+      } catch (error) {
+        if (epoch === this.#epoch) this.#fail(error)
+      }
+    }, 0)
+  }
+  #start(epoch: string) {
+    if (this.#disposed || epoch !== this.#epoch) return
+    const snapshot = this.#session.snapshot(),
+      sender = new SourceTransferSender(
+        {
+          ...snapshot.document,
+          contentVersion: snapshot.version,
+          streamId: epoch,
+          length: snapshot.utf16Length,
+        },
+        snapshot.chunks(),
+      )
+    this.#bootstrap = {
+      source: snapshot,
+      sender,
+      request: { streamId: epoch, sequence: 0 },
+      done: false,
+      finishing: false,
+      operations: [],
+    }
+    const worker =
+      this.#options.worker?.() ??
+      new Worker(new URL('./document.worker.ts', import.meta.url), {
+        type: 'module',
+      })
+    this.#worker = worker
+    worker.onmessage = (event: MessageEvent<DocumentWorkerReply>) =>
+      this.#reply(event.data)
+    worker.onerror = (event) => {
+      event.preventDefault()
+      if (epoch === this.#epoch && this.#worker === worker) {
+        reportDiagnosticFailure('SOURCE_WORKER_FAILED', event, worker)
+        this.#fail(new Error('Could not start document find.'))
+      }
+    }
+    worker.onmessageerror = (event) => {
+      if (epoch === this.#epoch && this.#worker === worker) {
+        reportDiagnosticFailure('SOURCE_WORKER_FAILED', event, worker)
+        this.#fail(new Error('Could not read a document worker reply.'))
+      }
+    }
+    if (!this.#post({ type: 'load-start', epoch, head: sender.head })) return
+    this.#watch()
+  }
+  #fail(error: unknown) {
+    this.#stop()
+    if (this.#disposed) return
+    if (this.#restarts++ < 1) {
+      this.#restart()
+      return
+    }
+    this.#failed = true
+    this.#options.error(error instanceof Error ? error.message : String(error))
+    this.#options.metadataError?.(
+      error instanceof Error ? error.message : String(error),
+    )
+  }
+  dispose() {
+    this.#disposed = true
+    this.#stop()
+    for (const detach of this.#detach) detach()
+    this.#latest = null
+    this.#metadata = null
+    this.#boundaries = null
+    this.#codeReceivers.clear()
+  }
+}

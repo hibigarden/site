@@ -1,0 +1,8 @@
+.hibi-literal-block,
+.hibi-literal-inline {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.hibi-literal-block {
+  margin-block: 1em;
+}

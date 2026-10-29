@@ -1,0 +1,71 @@
+.hibi-tag {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-radius: var(--radius-control);
+}
+.tags-browser {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+.tags-list,
+.tags-files {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.tags-list .ui-button > span:first-child {
+  flex: 1;
+  min-width: 0;
+}
+.tags-list button span:last-child,
+.tags-files p {
+  color: var(--muted);
+}
+.tags-files {
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-3);
+}
+.tags-list,
+.tags-files {
+  margin-inline: calc(-1 * var(--space-3));
+}
+.tags-list button,
+.tags-files button {
+  border: 0;
+  border-radius: 0;
+  min-height: var(--sidebar-row-height);
+  padding-inline: var(--space-4);
+}
+.tags-list button.ui-button[aria-pressed="true"] {
+  --muted: var(--ink);
+  color: var(--ink);
+  background: var(--active);
+}
+.tags-controls {
+  flex-wrap: nowrap;
+}
+.tags-controls input {
+  flex: 1;
+  min-width: 0;
+}
+.tags-list button span:first-child,
+.tags-files button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tags-files button {
+  justify-content: flex-start;
+}
+.tags-files p {
+  font-size: var(--text-xs);
+  padding-inline: var(--space-4);
+}
+.tags-files svg {
+  flex-shrink: 0;
+}
+.tags-panel {
+  flex: 1;
+}

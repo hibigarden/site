@@ -1,0 +1,38 @@
+\documentclass{article}
+
+\title{problem set 3: growth and spirals}
+\author{for the thursday seminar}
+\date{october}
+
+\begin{document}
+
+\maketitle
+
+\section{logistic growth}
+
+the sunflowers on the back fence follow
+\[
+  h(t) = \frac{K}{1 + e^{-r(t - t_0)}}
+\]
+with $K = 2.4$ m, $r = 0.09$ per day and $t_0 = 60$.
+
+\begin{enumerate}
+  \item show that $h$ solves $\frac{dh}{dt} = r h \left(1 - \frac{h}{K}\right)$.
+  \item show that the growth rate is largest when $h = K/2$, and that it is $rK/4$ there.
+  \item how tall is a plant on day 30? give the answer in centimetres.
+\end{enumerate}
+
+\section{the golden angle}
+
+seed $n$ of a sunflower head sits at radius $r_n = c\sqrt{n}$ and angle $n\theta$, where
+\[
+  \theta = 360^\circ \left(1 - \frac{1}{\varphi}\right), \qquad \varphi = \frac{1 + \sqrt{5}}{2}.
+\]
+
+\begin{enumerate}
+  \item show that $\theta = 360^\circ / \varphi^2$ and that $\theta \approx 137.5^\circ$.
+  \item explain why seed $n$ and seed $n + 1$ never line up.
+  \item \emph{harder.} count the clockwise and anticlockwise spirals on one of the heads left by the shed. which two fibonacci numbers do you get?
+\end{enumerate}
+
+\end{document}

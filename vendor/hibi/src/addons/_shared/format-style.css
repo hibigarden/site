@@ -1,0 +1,37 @@
+.format-preview {
+  padding: var(--editor-padding, 48px);
+  contain: content;
+  overflow-wrap: anywhere;
+}
+.format-preview .format-content {
+  line-height: 1.65;
+  font-size: var(--text-editor);
+}
+.format-content > :first-child {
+  margin-top: 0;
+}
+.format-content img {
+  max-width: 100%;
+}
+.format-content pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.format-content math {
+  font-family: math;
+}
+.format-pdf {
+  display: grid;
+  gap: 16px;
+}
+.format-pdf canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background: white;
+  box-shadow: 0 0 0 1px var(--border);
+}
+.format-pdf-page {
+  min-height: 200px;
+  aspect-ratio: 210 / 297;
+}

@@ -16,8 +16,9 @@ function apply(theme) {
   const label = `switch to ${theme === "dark" ? "light" : "dark"} mode`;
   toggle.setAttribute("aria-label", label);
   toggle.title = label;
+  // each page's own background (the landing's tan paper, the plain pages' white)
   document.querySelector('meta[name="theme-color"]').content =
-    theme === "dark" ? "#181818" : "#ffffff";
+    getComputedStyle(root).getPropertyValue("--page").trim();
 }
 
 function changeTheme(theme) {
@@ -53,15 +54,23 @@ reducedMotion.addEventListener("change", () => {
   if (reducedMotion.matches) transition?.skipTransition();
 });
 
-// Warm the other garden after page load so its first theme switch can crossfade.
-if (root.dataset.page === "home") {
-  window.addEventListener("load", () => {
-    const image = new Image();
-    image.decoding = "async";
-    image.fetchPriority = "low";
-    image.src =
-      root.dataset.theme === "dark"
-        ? "/hero-garden.webp"
-        : "/hero-garden-dark.webp";
+// "still the garden": one switch in the footer that stops every looping animation, remembered across visits. its
+// label swaps with [data-motion] (css), so the button's name always says what pressing it does.
+const motionToggle = document.querySelector(".motion-toggle");
+if (motionToggle) {
+  const setStill = (still) => {
+    if (still) root.dataset.motion = "still";
+    else delete root.dataset.motion;
+  };
+  setStill(root.dataset.motion === "still");
+  motionToggle.hidden = false;
+  motionToggle.addEventListener("click", () => {
+    const still = root.dataset.motion !== "still";
+    setStill(still);
+    try {
+      localStorage.setItem("hibi-site-motion", still ? "still" : "moving");
+    } catch {
+      // Keep the choice for this visit.
+    }
   });
 }

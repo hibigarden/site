@@ -46,6 +46,19 @@
   pointer-events: auto;
   animation: toast-in var(--motion-feedback) var(--ease-out) both;
 }
+.toast[data-action="true"] {
+  cursor: pointer;
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+.toast[data-action="true"]:is(:hover, :has(:focus-visible)) {
+  border-color: var(--accent);
+}
+.toast-copy button.toast-action {
+  display: flex;
+  min-height: 0;
+  margin: var(--space-1) 0 0 calc(-1 * var(--control-padding-x));
+  color: var(--accent);
+}
 .toast[data-closing="true"] {
   animation: toast-out var(--motion-feedback) var(--ease-out) both;
   pointer-events: none;
@@ -112,6 +125,9 @@
   .toast,
   .toast[data-closing="true"] {
     animation: none;
+  }
+  .toast[data-action="true"] {
+    transition: none;
   }
   .toast[data-closing="true"] {
     opacity: 0;

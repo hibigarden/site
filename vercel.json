@@ -2,12 +2,22 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/addon-seo.js": {
-      "includeFiles": "dist/addons/{index.html,catalog.json}"
+      "includeFiles": "dist/addons/{index.html,catalog.json,community-snapshot.json}"
+    },
+    "api/release.js": {
+      "includeFiles": "dist/release.json"
     }
   },
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
+  ],
   "rewrites": [
     { "source": "/addons/:id([a-z][a-z0-9-]{0,47})", "destination": "/api/addon-seo?id=:id" },
     { "source": "/addons/:id([a-z][a-z0-9-]{0,47})/", "destination": "/api/addon-seo?id=:id" },
-    { "source": "/sitemap.xml", "destination": "/api/addon-seo?sitemap=1" }
+    { "source": "/sitemap.xml", "destination": "/api/addon-seo?sitemap=1" },
+    { "source": "/addons/community.json", "destination": "/api/addon-seo?community=1" }
   ]
 }

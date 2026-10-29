@@ -1,50 +1,204 @@
-.app[data-platform="linux"] .titlebar {
-  padding-right: var(--titlebar-edge-inset);
+@font-face {
+  font-family: "EB Garamond";
+  src: url("./fonts/eb-garamond-latin-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
 }
 
-.titlebar .palette-trigger,
-.titlebar [aria-label="editor settings"],
-.titlebar [aria-label="open"] {
+/* Settings and the left sidebar's other views stay on the desktop. */
+.titlebar :is([aria-label="Settings"], .sidebar-view-controls) {
   display: none;
 }
-
 .titlebar .view-switch {
   margin-left: auto;
 }
+/* The LaTeX preview renders as you type, so its compile button, which runs Tectonic in the app, stays there. */
+.preview-toolbar button:has(> .lucide-play) {
+  display: none;
+}
 
-/* Fit the desktop controls to phones without changing the vendored hibi UI. */
+/* Decorative window controls at each system's place and size: macOS traffic lights where the app puts
+   them (trafficLightPosition x 12, y 11), Windows caption buttons and GNOME's round buttons in the
+   132px the app keeps for them on the right of its 36px title bar. */
+.window-controls {
+  position: absolute;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  color: var(--ink);
+}
+.window-controls svg {
+  display: block;
+  fill: none;
+  stroke: currentColor;
+}
+.window-controls[data-platform="darwin"] {
+  left: 13px;
+  gap: 8px;
+  pointer-events: none;
+}
+.window-controls[data-platform="darwin"] span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff5f57;
+  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.18);
+}
+.window-controls[data-platform="darwin"] span:nth-child(2) {
+  background: #febc2e;
+}
+.window-controls[data-platform="darwin"] span:nth-child(3) {
+  background: #28c840;
+}
+.window-controls[data-platform="win32"] {
+  right: 0;
+}
+.window-controls[data-platform="win32"] span {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 36px;
+}
+.window-controls[data-platform="win32"] span:hover {
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+}
+.window-controls[data-platform="win32"] span:last-child:hover {
+  background: #c42b1c;
+  color: #fff;
+}
+.window-controls[data-platform="linux"] {
+  right: 12px;
+  gap: 12px;
+}
+.window-controls[data-platform="linux"] span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.window-controls[data-platform="linux"] span:hover {
+  background: color-mix(in srgb, var(--ink) 15%, transparent);
+}
+.window-controls[data-platform="linux"] svg {
+  stroke-width: 1.5;
+}
+
+/* The Typst and LaTeX engines' loading notice, over their preview pane until the first preview arrives. */
+:is(.typst-preview, .format-preview):has(> .engine-notice) {
+  position: relative;
+  min-height: 160px;
+}
+.engine-notice {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--background);
+}
+.engine-notice progress {
+  display: block;
+  width: 180px;
+  height: 2px;
+  margin-top: var(--space-2);
+  border: 0;
+  appearance: none;
+  background: var(--border);
+  color: var(--accent);
+}
+.engine-notice progress::-webkit-progress-bar {
+  background: var(--border);
+}
+.engine-notice progress::-webkit-progress-value {
+  background: var(--accent);
+}
+.engine-notice progress::-moz-progress-bar {
+  background: var(--accent);
+}
+.engine-notice:not([data-phase="error"]) .document-notice > svg {
+  animation: engine-spin 1s linear infinite;
+}
+@keyframes engine-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .engine-notice .document-notice > svg {
+    display: none;
+  }
+  .engine-notice progress:indeterminate {
+    visibility: hidden;
+  }
+}
+
+/* /demo/ on its own: the editor on a plain page in the editor's own colours */
+html[data-embedded] .demo-header {
+  display: none;
+}
+html:not([data-embedded]) body {
+  margin: 0;
+  padding: 0 32px 32px;
+  background: var(--surface);
+}
+.demo-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  height: 72px;
+  color: var(--ink);
+}
+.demo-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: inherit;
+  font: 500 28px/1 "EB Garamond", Georgia, serif;
+  text-decoration: none;
+}
+.demo-home:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.demo-icon {
+  width: 28px;
+  height: 28px;
+  background: url("/scrapbook/icon-day.webp") center / contain no-repeat;
+}
+[data-appearance="dark"] .demo-icon {
+  background-image: url("/scrapbook/icon-night.webp");
+}
+.demo-label {
+  color: var(--muted);
+  font-size: 13px;
+}
+html:not([data-embedded]) .app {
+  max-width: 1100px;
+  height: min(780px, calc(100svh - 104px));
+  min-height: 420px;
+  margin-inline: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.06),
+    0 24px 48px -28px rgb(0 0 0 / 0.3);
+}
+/* Narrower editor margins on phones, without changing the vendored hibi styles. */
 @media (max-width: 640px) {
   .app {
     --editor-padding: 24px;
   }
-  .sidebar-toolbar,
-  .sidebar-toolbar[data-open="true"] {
-    width: 40px;
+  html:not([data-embedded]) body {
+    padding: 0 10px 12px;
   }
-  .document-toolbar {
-    padding-left: 0;
-    gap: 4px;
+  .demo-header {
+    height: 60px;
   }
-  .document-actions {
-    display: none;
-  }
-  .palette-trigger .shortcut-keys {
-    display: none;
-  }
-  .settings-sidebar {
-    display: none;
-  }
-  .settings-screen::before {
-    left: 0;
-  }
-  .app[data-sidebar="true"] .editor-surface {
-    width: 100%;
-    transform: none;
-  }
-  .workspace-sidebar {
-    z-index: 3;
-  }
-  .titlebar {
-    z-index: 4;
+  html:not([data-embedded]) .app {
+    height: calc(100svh - 72px);
   }
 }

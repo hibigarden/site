@@ -7,8 +7,25 @@ import {
   undo,
   undoDepth,
 } from '@codemirror/commands'
-import { EditorSelection, Transaction } from '@codemirror/state'
+import {
+  EditorSelection,
+  type EditorState,
+  Facet,
+  Transaction,
+} from '@codemirror/state'
 import type { EditorView, KeyBinding } from '@codemirror/view'
+import type {
+  DocumentEdit,
+  DocumentFormat,
+  DocumentSelection,
+} from '../../addons/api'
+import type { MediaAttachment } from '../../shared/media'
+import { formattedSyntaxTree } from './formatted-contributions.ts'
+import {
+  formattedStates,
+  unfenceChanges,
+  unlinkChanges,
+} from './formatted-toolbar-state.ts'
 
 /** Same format actions as the toolbar; addon keymaps (including vim) run first. */
 const formatBindings: [string, string][] = [
@@ -27,16 +44,49 @@ const formatBindings: [string, string][] = [
     `heading-${i + 1}`,
   ]),
 ]
-export const formattingKeymap: KeyBinding[] = formatBindings.map(
-  ([key, id]) => ({ key, run: (view) => sourceFormatting(view).run(id) }),
-)
+export const formattingKeymap = (run: (id: string) => boolean): KeyBinding[] =>
+  formatBindings.map(([key, id]) => ({ key, run: () => run(id) }))
 
 export type InsertValues = { url: string; alt: string }
+
+/** A view's table editing: whether the selection is in a table, and the toolbar's table actions. */
+export type TableActions = {
+  active: (view: EditorView) => boolean
+  run: (view: EditorView, id: string) => boolean
+}
+export const tableActions = Facet.define<TableActions>()
+const tableIds = [
+  'row-before',
+  'row-after',
+  'row-delete',
+  'column-before',
+  'column-after',
+  'column-delete',
+  'table-delete',
+]
+/** Actions that make or change blocks, which a table cell cannot hold. */
+const blockIds = [
+  'paragraph',
+  'subtext',
+  'bullet-list',
+  'numbered-list',
+  'checklist',
+  'quote',
+  'code-block',
+  'divider',
+  'table',
+  'indent',
+  'outdent',
+  ...Array.from({ length: 6 }, (_, i) => `heading-${i + 1}`),
+]
+const inTable = (view: EditorView) =>
+  view.state.facet(tableActions).some((actions) => actions.active(view))
 export type SourceFormatting = ReturnType<typeof sourceFormatting>
 const marks: Record<string, string> = {
   bold: '**',
   italic: '*',
   strike: '~~',
+  subscript: '~',
   'inline-code': '`',
 }
 const prefixes: Record<string, string> = {
@@ -44,7 +94,20 @@ const prefixes: Record<string, string> = {
   'numbered-list': '1. ',
   checklist: '- [ ] ',
   quote: '> ',
+  subtext: '-# ',
 }
+/** Delimiters the toolbar opened at the caret, with no text between them yet. */
+function opened(state: EditorState, pos: number, token: string) {
+  const before = state.sliceDoc(Math.max(0, pos - token.length - 1), pos)
+  const after = state.sliceDoc(pos, pos + token.length + 1)
+  return (
+    before.endsWith(token) &&
+    after.startsWith(token) &&
+    before.at(-token.length - 1) !== token[0] &&
+    after[token.length] !== token[0]
+  )
+}
+
 const fenceLength = (text: string, minimum = 0) =>
   Array.from(text.matchAll(/`+/g)).reduce(
     (longest, match) => Math.max(longest, match[0].length),
@@ -52,8 +115,73 @@ const fenceLength = (text: string, minimum = 0) =>
   ) + 1
 
 /** One transaction per action: preserve selections and isolate the undo step. */
-export function sourceFormatting(view: EditorView) {
+function validEdit(
+  edit: DocumentEdit | null | undefined,
+  length: number,
+): edit is DocumentEdit {
+  if (
+    !edit ||
+    !Number.isInteger(edit.from) ||
+    !Number.isInteger(edit.to) ||
+    edit.from < 0 ||
+    edit.to < edit.from ||
+    edit.to > length ||
+    typeof edit.insert !== 'string'
+  )
+    return false
+  const start = edit.selection?.from ?? edit.insert.length,
+    end = edit.selection?.to ?? start
+  return (
+    Number.isInteger(start) &&
+    Number.isInteger(end) &&
+    start >= 0 &&
+    end >= start &&
+    end <= edit.insert.length
+  )
+}
+
+export function sourceFormatting(
+  view: EditorView,
+  format: DocumentFormat['formatting'] | null = 'markdown',
+  media = false,
+  history?: {
+    undo: () => boolean
+    redo: () => boolean
+    state: () => { canUndo: boolean; canRedo: boolean }
+  },
+) {
   const editable = () => !view.state.readOnly
+  let lastDocument = view.state.doc,
+    text = lastDocument.toString()
+  const selection = (values?: InsertValues): DocumentSelection => {
+    if (lastDocument !== view.state.doc) {
+      lastDocument = view.state.doc
+      text = lastDocument.toString()
+    }
+    const range = view.state.selection.main
+    return { source: text, from: range.from, to: range.to, values }
+  }
+  const supported = (id: string) =>
+    ['undo', 'redo', 'indent', 'outdent'].includes(id) ||
+    (media && id === 'image') ||
+    format === 'markdown' ||
+    !!format?.actions.includes(id)
+  const applyEdit = (edit: DocumentEdit) => {
+    if (!validEdit(edit, view.state.doc.length)) return false
+    const start = edit.selection?.from ?? edit.insert.length,
+      end = edit.selection?.to ?? start
+    view.dispatch({
+      changes: { from: edit.from, to: edit.to, insert: edit.insert },
+      selection: EditorSelection.single(edit.from + start, edit.from + end),
+      annotations: [
+        Transaction.userEvent.of('input.format'),
+        isolateHistory.of('full'),
+      ],
+      scrollIntoView: true,
+    })
+    view.focus()
+    return true
+  }
   const marked = (id: string) => {
     const selection = view.state.selection.main
     const token = marks[id]
@@ -82,17 +210,53 @@ export function sourceFormatting(view: EditorView) {
     )
   }
   const run = (id: string, values?: InsertValues) => {
-    if (!editable()) return false
+    if (!editable() || !supported(id)) return false
+    if (blockIds.includes(id) && inTable(view)) return false
     if (id === 'undo' || id === 'redo' || id === 'indent' || id === 'outdent') {
-      const done = { undo, redo, indent: indentMore, outdent: indentLess }[id](
-        view,
-      )
+      const done = {
+        undo: history?.undo ?? undo,
+        redo: history?.redo ?? redo,
+        indent: indentMore,
+        outdent: indentLess,
+      }[id](view)
       view.focus()
       return done
     }
     if (view.state.selection.ranges.length !== 1) return false
+    // A table writes a cell's line break as `<br>`.
+    if (tableIds.includes(id) || (id === 'hard-break' && inTable(view)))
+      return view.state
+        .facet(tableActions)
+        .some((actions) => actions.run(view, id))
     const range = view.state.selection.main
     const doc = view.state.doc
+    const tree = format === 'markdown' ? formattedSyntaxTree(view.state) : null
+    // The formatted view removes links and code fences by their syntax, as the rich editor does.
+    const structural =
+      tree && id === 'unlink'
+        ? unlinkChanges(view.state, tree, range)
+        : tree &&
+            id === 'code-block' &&
+            formattedStates(view.state, tree, range).pressed(id)
+          ? unfenceChanges(tree, range)
+          : null
+    if (structural) {
+      // An action with nothing to change still returns focus to the note, like any action.
+      if (!structural.length) {
+        view.focus()
+        return false
+      }
+      view.dispatch({
+        changes: structural,
+        annotations: [
+          Transaction.userEvent.of('input.format'),
+          isolateHistory.of('full'),
+        ],
+        scrollIntoView: true,
+      })
+      view.focus()
+      return true
+    }
     let from = range.from,
       to = range.to
     const selected = doc.sliceString(from, to)
@@ -100,7 +264,22 @@ export function sourceFormatting(view: EditorView) {
       start = 0,
       end = selected.length
     const token = marks[id]
-    if (token) {
+    if (format !== 'markdown') {
+      const edit = format?.apply(id, selection(values))
+      if (!validEdit(edit, doc.length)) return false
+      from = edit.from
+      to = edit.to
+      insert = edit.insert
+      start = edit.selection?.from ?? insert.length
+      end = edit.selection?.to ?? start
+      if (
+        ![start, end].every(Number.isInteger) ||
+        start < 0 ||
+        end < start ||
+        end > insert.length
+      )
+        return false
+    } else if (token) {
       if (marked(id)) {
         from -= token.length
         to += token.length
@@ -133,7 +312,8 @@ export function sourceFormatting(view: EditorView) {
       const prefix = id.startsWith('heading-')
         ? `${'#'.repeat(Number(id.slice(-1)))} `
         : (prefixes[id] ?? '')
-      const existing = /^( {0,3})(?:#{1,6} |[-+*] (?:\[[ xX]\] )?|\d+[.)] |> )/
+      const existing =
+        /^( {0,3})(?:#{1,6} |[-+*] (?:\[[ xX]\] )?|\d+[.)] |> |-# )/
       const remove =
         !!prefix &&
         lines.every((line) =>
@@ -180,14 +360,19 @@ export function sourceFormatting(view: EditorView) {
       end = insert.length
     } else {
       const fence = '`'.repeat(fenceLength(selected, 2))
+      // A view that edits tables in place inserts the rich editor's table: a
+      // header and two empty rows, with the caret in the first header cell.
+      const cells = id === 'table' && view.state.facet(tableActions).length > 0
       const block =
         id === 'code-block'
           ? `${fence}\n${selected}\n${fence}`
           : id === 'divider'
             ? '---'
-            : id === 'table'
-              ? '| column 1 | column 2 |\n| --- | --- |\n|  |  |'
-              : null
+            : cells
+              ? '|  |  |\n| --- | --- |\n|  |  |\n|  |  |'
+              : id === 'table'
+                ? '| column 1 | column 2 |\n| --- | --- |\n|  |  |'
+                : null
       if (id === 'hard-break') {
         insert = '  \n'
         start = end = insert.length
@@ -206,60 +391,99 @@ export function sourceFormatting(view: EditorView) {
             : '\n\n'
         insert = before + block + after
         start =
-          id === 'code-block' ? before.length + fence.length + 1 : insert.length
+          id === 'code-block'
+            ? before.length + fence.length + 1
+            : cells
+              ? before.length + 2
+              : insert.length
         end = id === 'code-block' ? start + selected.length : start
       } else return false
     }
-    view.dispatch({
-      changes: { from, to, insert },
-      selection: EditorSelection.single(from + start, from + end),
-      annotations: [
-        Transaction.userEvent.of('input.format'),
-        isolateHistory.of('full'),
-      ],
-      scrollIntoView: true,
-    })
-    view.focus()
-    return true
+    // An action that changes no Markdown leaves the note unedited.
+    if (format === 'markdown' && insert === doc.sliceString(from, to)) {
+      view.focus()
+      return false
+    }
+    return applyEdit({ from, to, insert, selection: { from: start, to: end } })
+  }
+  const inspect = () => {
+    const state = view.state
+    const range = state.selection.main
+    const tree = format === 'markdown' ? formattedSyntaxTree(state) : null
+    // The formatted view reads its syntax tree; a source pane reads the selection's line.
+    const formatted = tree && formattedStates(state, tree, range)
+    const line =
+      format === 'markdown' && !formatted
+        ? state.doc.lineAt(range.from).text.trimStart()
+        : ''
+    let activeSelection: DocumentSelection | undefined
+    const selected = () => {
+      if (!activeSelection) activeSelection = selection()
+      return activeSelection
+    }
+    const table = inTable(view)
+    return {
+      /** The selection is in a table whose actions this view runs. */
+      table,
+      state(id: string, checkPressed = true) {
+        if (!supported(id))
+          return { supported: false, pressed: false, disabled: true }
+        if (tableIds.includes(id))
+          return {
+            supported: true,
+            pressed: false,
+            disabled:
+              state.readOnly || !table || state.selection.ranges.length !== 1,
+          }
+        const blockActive = id.startsWith('heading-')
+          ? line.startsWith(`${'#'.repeat(Number(id.slice(-1)))} `)
+          : id === 'numbered-list'
+            ? /^\d+[.)] /.test(line)
+            : id === 'bullet-list'
+              ? /^[-+*] (?!\[[ xX]\] )/.test(line)
+              : id === 'checklist'
+                ? /^[-+*] \[[ xX]\] /.test(line)
+                : prefixes[id]
+                  ? line.startsWith(prefixes[id])
+                  : false
+        return {
+          supported: true,
+          pressed:
+            checkPressed &&
+            (formatted
+              ? formatted.pressed(id) ||
+                // Delimiters typed in code are its text, not an open mark.
+                (range.empty &&
+                  !!marks[id] &&
+                  !formatted.disabled(id) &&
+                  opened(state, range.from, marks[id]))
+              : format === 'markdown'
+                ? marked(id) || blockActive
+                : (format?.isActive?.(id, { ...selected() }) ?? false)),
+          disabled:
+            state.readOnly ||
+            (table && blockIds.includes(id)) ||
+            (state.selection.ranges.length !== 1 &&
+              !['undo', 'redo', 'indent', 'outdent'].includes(id)) ||
+            (id === 'undo'
+              ? !(history ? history.state().canUndo : undoDepth(state))
+              : id === 'redo'
+                ? !(history ? history.state().canRedo : redoDepth(state))
+                : formatted
+                  ? formatted.disabled(id)
+                  : id === 'unlink' &&
+                    !/\[[^\]]+\]\(/.test(state.sliceDoc(range.from, range.to))),
+        }
+      },
+    }
   }
   return {
     focus: () => view.focus(),
     run,
     state(id: string) {
-      const line = view.state.doc
-        .lineAt(view.state.selection.main.from)
-        .text.trimStart()
-      const blockActive = id.startsWith('heading-')
-        ? line.startsWith(`${'#'.repeat(Number(id.slice(-1)))} `)
-        : id === 'numbered-list'
-          ? /^\d+[.)] /.test(line)
-          : id === 'bullet-list'
-            ? /^[-+*] (?!\[[ xX]\] )/.test(line)
-            : id === 'checklist'
-              ? /^[-+*] \[[ xX]\] /.test(line)
-              : prefixes[id]
-                ? line.startsWith(prefixes[id])
-                : false
-      return {
-        pressed: marked(id) || blockActive,
-        disabled:
-          !editable() ||
-          (view.state.selection.ranges.length !== 1 &&
-            !['undo', 'redo', 'indent', 'outdent'].includes(id)) ||
-          (id === 'undo'
-            ? !undoDepth(view.state)
-            : id === 'redo'
-              ? !redoDepth(view.state)
-              : id === 'unlink'
-                ? !/\[[^\]]+\]\(/.test(
-                    view.state.sliceDoc(
-                      view.state.selection.main.from,
-                      view.state.selection.main.to,
-                    ),
-                  )
-                : false),
-      }
+      return inspect().state(id)
     },
+    inspect,
     capture(coords?: { x: number; y: number }) {
       const doc = view.state.doc,
         position = coords ? view.posAtCoords(coords) : null,
@@ -273,17 +497,41 @@ export function sourceFormatting(view: EditorView) {
           if (!view.dom.isConnected || view.state.doc !== doc || !editable())
             return false
           const { from, to } = selection.main
-          view.dispatch({
-            changes: { from, to, insert },
-            selection: { anchor: from + insert.length },
-            annotations: [
-              Transaction.userEvent.of('input.format'),
-              isolateHistory.of('full'),
-            ],
-            scrollIntoView: true,
+          return applyEdit({ from, to, insert })
+        },
+        insertMedia(items: readonly MediaAttachment[]) {
+          if (
+            !format ||
+            format === 'markdown' ||
+            !view.dom.isConnected ||
+            view.state.doc !== doc ||
+            !editable()
+          )
+            return false
+          let source = doc.toString(),
+            from = selection.main.from,
+            to = selection.main.to
+          for (const [index, values] of items.entries()) {
+            if (index) {
+              source = source.slice(0, from) + '\n\n' + source.slice(from)
+              from += 2
+              to = from
+            }
+            const edit = format.apply(
+              /\.(mp4|webm|ogv|mov)$/i.test(values.url) ? 'link' : 'image',
+              { source, from, to, values },
+            )
+            if (!validEdit(edit, source.length)) return false
+            source =
+              source.slice(0, edit.from) + edit.insert + source.slice(edit.to)
+            from = to = edit.from + (edit.selection?.to ?? edit.insert.length)
+          }
+          return applyEdit({
+            from: 0,
+            to: doc.length,
+            insert: source,
+            selection: { from, to },
           })
-          view.focus()
-          return true
         },
         run(id: string, values: InsertValues) {
           if (!view.dom.isConnected || view.state.doc !== doc) return false

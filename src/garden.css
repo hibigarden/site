@@ -234,6 +234,12 @@
 }
 /* layers end */
 
+/* the lawn plate paints a bright rim along the far trees' feet, so the lawn files are cut just below it and the
+   hero's far trees step 20 canvas px down onto the grass. the closing park has no lawn and keeps the plate's place */
+.garden .g-far {
+  translate: 0 calc(20 * var(--c));
+}
+
 /* the standalone tree stands with its trunk base at canvas (190, 863) (44.6% across its image). on short, wide
    panels the canvas sits high and its crown would reach the header, so its height is capped to end 96 px below the
    panel top; it then shrinks around the trunk base, which stays where it stands */

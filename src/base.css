@@ -488,3 +488,28 @@ summary:focus-visible {
   animation-duration: var(--motion-pane);
   animation-timing-function: var(--ease-out);
 }
+
+/* washi tape: a strip of the image agent's tape, laid over a corner or an edge */
+.tape {
+  position: absolute;
+  z-index: 3;
+  width: var(--tape-w, 132px);
+  aspect-ratio: 320 / 47;
+  background: var(--tape-img) center / 100% 100% no-repeat;
+  opacity: 0.78;
+  pointer-events: none;
+}
+.tape-blue {
+  --tape-img: url("/scrapbook/tape-blue.webp");
+}
+.tape-dots {
+  --tape-img: url("/scrapbook/tape-dots.webp");
+  aspect-ratio: 320 / 39;
+}
+.tape-periwinkle {
+  --tape-img: url("/scrapbook/tape-periwinkle.webp");
+}
+.tape-cream {
+  --tape-img: url("/scrapbook/tape-cream.webp");
+  aspect-ratio: 320 / 63;
+}

@@ -614,16 +614,19 @@ main noscript a {
 
 /* ---------------------------------------------------------------- credits */
 
-.credits-section {
+.credits-section,
+.story-section {
   max-width: 720px;
   padding-block: 28px;
   border-top: 1px solid var(--line);
 }
-.credits-section h2 {
+.credits-section h2,
+.story-section h2 {
   font: 500 28px/1.15 var(--serif);
 }
 .credits-section p,
-.credits-section li {
+.credits-section li,
+.story-section p {
   max-width: 62ch;
   margin-top: 10px;
   color: var(--ink-soft);
@@ -634,9 +637,155 @@ main noscript a {
   margin: 0;
   padding-left: 20px;
 }
-.credits-section a {
+.credits-section a,
+.story-section a {
   text-decoration: underline;
   text-underline-offset: 0.2em;
+}
+
+/* ---------------------------------------------------------------- story */
+
+.story {
+  --h3: clamp(23px, 0.6vw + 20px, 29px);
+}
+.story-intro {
+  position: relative;
+}
+.story-section {
+  position: relative;
+}
+.story-section h2 {
+  font-size: clamp(29px, 1.5vw + 19px, 36px);
+}
+.story-section p + p {
+  margin-top: 16px;
+}
+.story-section .story-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+  max-width: none;
+}
+.story-section .button {
+  text-decoration: none;
+}
+/* the homepage's closing call to action (its park scene is garden.css, run by garden.js), as on / */
+main .cta {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(1120px, calc(100% - 64px));
+  height: 380px;
+  margin: 96px auto 0;
+  padding: 0 24px;
+  border-radius: 16px;
+  text-align: center;
+}
+main .cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  border-radius: inherit;
+  box-shadow:
+    0 1px 2px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 0.6)),
+    0 24px 44px -28px rgb(var(--shadow-rgb) / calc(var(--shadow-a) * 1.6));
+  pointer-events: none;
+}
+main .cta-copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+main .cta-copy::before {
+  content: "";
+  position: absolute;
+  inset: -48px -96px;
+  z-index: -1;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.42), transparent);
+  pointer-events: none;
+}
+[data-theme="dark"] main .cta-copy::before {
+  background: radial-gradient(closest-side, rgb(8 14 36 / 0.5), transparent);
+}
+main .cta h2 {
+  font: 500 clamp(34px, 3.4vw, 49px) / 1.06 var(--serif);
+  letter-spacing: -0.02em;
+}
+main .cta h2 em {
+  color: var(--accent);
+  font-style: italic;
+}
+main .cta .download-get {
+  margin-top: 26px;
+  min-height: 52px;
+  padding-inline: 26px;
+  font-size: 15px;
+  text-decoration: none;
+}
+main .cta .beta-tag {
+  position: absolute;
+  top: -11px;
+  right: -14px;
+  align-self: center;
+  padding: 4px 8px 3px;
+  background: var(--card-white);
+  box-shadow:
+    inset 0 0 0 2px var(--card-white),
+    inset 0 0 0 3px rgb(var(--shadow-rgb) / 0.34);
+  color: var(--ink-soft);
+  font: 400 11.5px/1.2 var(--mono);
+  letter-spacing: 0.04em;
+  rotate: 8deg;
+}
+[data-theme="dark"] main .cta .cta-primary,
+[data-theme="dark"] main .cta .cta-primary:hover {
+  color: #1f1b16;
+}
+[data-theme="dark"] main .cta .cta-primary::before {
+  background: #f6e3b4;
+}
+main .cta .facts {
+  margin-top: 16px;
+  color: var(--ink-soft);
+  font: 400 13px/1.5 var(--mono);
+  letter-spacing: 0.02em;
+}
+main.wrap .cta {
+  width: 100%;
+}
+@media (max-width: 960px) {
+  main:not(.wrap) .cta {
+    width: calc(100% - 32px);
+  }
+}
+/* the butterfly that starts on the flower at the top (companion.js lifts it off when the reader scrolls) */
+.story .g-companion {
+  --bf: url("/scrapbook/fly/small-blue-plain.webp");
+  --ar: 208 / 161;
+  left: auto;
+  top: 26px;
+  right: 52px;
+  width: 54px;
+  translate: none;
+  rotate: 12deg;
+}
+.story .g-companion[hidden] {
+  display: block;
+  visibility: hidden;
+}
+.story .people {
+  margin-top: 96px;
+}
+.story .people h2 {
+  max-width: 20em;
+  font: 500 clamp(29px, 1.5vw + 19px, 40px) / 1.06 var(--serif);
+  letter-spacing: -0.016em;
 }
 
 /* ---------------------------------------------------------------- footer */

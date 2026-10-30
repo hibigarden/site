@@ -34,8 +34,22 @@ function addonPages(server) {
   });
 }
 
+function storyRedirect(server) {
+  server.middlewares.use((request, response, next) => {
+    if (new URL(request.url, "http://localhost").pathname !== "/story") return next();
+    response.statusCode = 308;
+    response.setHeader("Location", "/story/");
+    response.end();
+  });
+}
+
 export default defineConfig({
   plugins: [
+    {
+      name: "hibi-story-redirect",
+      configureServer: storyRedirect,
+      configurePreviewServer: storyRedirect,
+    },
     addonCatalog(),
     releasePlugin(),
     peoplePlugin(),
@@ -93,6 +107,7 @@ export default defineConfig({
         addons: "addons/index.html",
         credits: "credits/index.html",
         download: "download/index.html",
+        story: "story/index.html",
         sync: "sync/index.html",
         publish: "publish/index.html",
       },

@@ -28,8 +28,10 @@
     <link rel="preload" href="/node_modules/geist/dist/fonts/geist-mono/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/src/base.css" />
     <link rel="stylesheet" href="/src/pages.css" />
+    <link rel="stylesheet" href="/src/garden.css" />
     <script type="module" src="/src/theme.js"></script>
     <script type="module" src="/src/navigation.js"></script>
+    <script type="module" src="/src/garden.js"></script>
     <title>sync | hibi</title>
   </head>
   <body>
@@ -180,6 +182,31 @@ Hibi sync listening on loopback.</pre></div>
         <h2 id="sync-follow">hear about it first</h2>
         <p>sync will be announced in <a href="https://discord.gg/v9r4cABUP2">hibi’s discord</a> and in the <a href="https://github.com/schmayterling/hibi/releases">releases on github</a>.</p>
       </section>
+          <section class="cta" aria-labelledby="cta-title" data-scene="liftoff">
+        <!-- the hero's park again, down to its horizon: the treeline and the top of its lamppost -->
+        <div class="park park-horizon" aria-hidden="true">
+          <div class="g-scene">
+            <i class="g-layer g-sky"></i>
+            <i class="g-sun g-day"></i>
+            <i class="g-free g-stars g-night" data-twinkle="4.3,0"></i>
+            <i class="g-free g-stars-2 g-night" data-twinkle="6.1,0.45"></i>
+            <i class="g-free g-moon g-night"><i class="g-halo"></i></i>
+            <i class="g-layer g-clouds g-clouds-far" data-drift="640"></i>
+            <i class="g-layer g-clouds g-clouds-mid" data-drift="460"></i>
+            <i class="g-layer g-clouds g-clouds-near" data-drift="330"></i>
+            <i class="g-layer g-far"></i>
+            <i class="g-layer g-lamp" data-perch="0.5,0.012"></i>
+            <i class="g-layer g-glow g-night"></i>
+          </div>
+        </div>
+        <div class="cta-copy">
+          <h2 id="cta-title">a place for your <em>words</em>.</h2>
+          <a class="button cta-primary download-get" href="/download/"
+            ><svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /></svg>download hibi<span class="beta-tag">beta</span></a
+          >
+          <p class="facts">free and open source · macOS, windows, linux</p>
+        </div>
+      </section>
     </main>
     <footer class="site-footer">
       <div class="wrap">
@@ -208,7 +235,9 @@ Hibi sync listening on loopback.</pre></div>
                 <a href="https://docs.hibi.garden">documentation</a>
                 <a href="https://github.com/schmayterling/hibi/releases">changelog</a>
                 <a href="/#faq">faq</a>
+                <a href="/story/">story</a>
                 <a href="/credits/">credits</a>
+                <a href="https://github.com/sponsors/schmayterling">sponsor</a>
               </nav>
             </div>
             <div class="footer-group">
@@ -221,7 +250,7 @@ Hibi sync listening on loopback.</pre></div>
           </div>
         </div>
         <div class="footer-bottom">
-          <span>© 2026 <a href="https://github.com/schmayterling">schmayterling</a></span>
+          <span>© 2026 <a href="https://github.com/schmayterling">schmayterling</a> · made with ♥</span>
           <a href="#">back to top <span aria-hidden="true">↑</span></a>
         </div>
       </div>

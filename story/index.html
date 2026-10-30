@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en" data-page="story">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fffdf8" />
+    <meta name="description" content="why hibi exists and what it is trying to be." />
+    <meta property="og:title" content="story | hibi" />
+    <meta property="og:description" content="why hibi exists and what it is trying to be." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://www.hibi.garden/opengraph.png?v=3" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="one app for everything you write. hibi's editor in a park under a blue sky, with a tree, a lamppost and lavender."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://www.hibi.garden/opengraph.png?v=3" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-dark-32.png" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon-dark.png" media="(prefers-color-scheme: dark)" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script src="/theme-init.js"></script>
+    <link rel="preload" href="/src/fonts/eb-garamond-latin-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/node_modules/geist/dist/fonts/geist-mono/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/src/base.css" />
+    <link rel="stylesheet" href="/src/pages.css" />
+    <link rel="stylesheet" href="/src/people.css" />
+    <link rel="stylesheet" href="/src/garden.css" />
+    <link rel="stylesheet" href="/src/butterflies.css" />
+    <script type="module" src="/src/theme.js"></script>
+    <script type="module" src="/src/navigation.js"></script>
+    <script type="module" src="/src/garden.js"></script>
+    <script type="module" src="/src/butterflies.js"></script>
+    <script type="module" src="/src/companion.js"></script>
+    <title>story | hibi</title>
+  </head>
+  <body data-butterflies="0">
+    <a class="skip-link" href="#main">skip to content</a>
+    <header class="site-header page-header wrap">
+      <a class="wordmark" href="/" aria-label="hibi home"
+        ><span class="wordmark-icon" aria-hidden="true"></span>hibi</a
+      >
+      <nav aria-label="main navigation">
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-links"
+        >
+          menu
+        </button>
+        <div class="nav-links" id="site-links">
+          <a href="/addons/"><span class="nav-label">addons</span></a>
+          <a href="/sync/"><span class="nav-label">sync</span> <span class="soon-tag">soon</span></a>
+          <a href="/publish/"><span class="nav-label">publish</span> <span class="soon-tag">soon</span></a>
+          <a href="https://docs.hibi.garden"
+            ><span class="nav-label">docs</span> <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <a class="nav-download" href="/download/">download</a>
+        <button
+          class="theme-toggle"
+          type="button"
+          aria-label="switch to dark mode"
+          title="switch to dark mode"
+          hidden
+        >
+          <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z" />
+          </svg>
+          <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42m0-14.14-1.42 1.42m-11.3 11.3-1.42 1.42"
+            />
+          </svg>
+        </button>
+      </nav>
+    </header>
+    <main id="main" class="story">
+      <div class="wrap">
+        <header class="page-intro story-intro">
+          <h1>story</h1>
+          <p>hibi is a place for your words, made by people who believe a writing app should belong to the people who write in it.</p>
+          <span class="intro-pressed" aria-hidden="true"
+            ><img class="piece intro-lavender" src="/scrapbook/lavender-bundle.webp" width="147" height="298" alt="" decoding="async"
+            /><i class="g-bf g-companion" data-companion-start><i></i><i></i></i
+          ></span>
+        </header>
+        <section class="story-section" aria-labelledby="story-start">
+          <h2 id="story-start">where we started</h2>
+          <p>
+            hibi started when may wanted an app to keep track of her day to day, something like a journal or a mood tracker, because she kept losing track of her things.
+          </p>
+          <p>
+            on the side, she was writing blog posts for ryanaque.com, and writing all that markdown by hand was wearing her down. she tried obsidian, notion and plenty of others, but they were too complicated, cost money, or just didn’t fit how she works.
+          </p>
+          <p>
+            she also knows how many people live in obsidian, and she didn’t want hibi to ask anyone to start over. one of her goals was to support the tools and formats people already know, which is why it writes in typst and latex as well as markdown.
+          </p>
+          <p>
+            so she turned hibi into a writing app you can make your own. it’s extensible, with addons and themes, so it can fit your flow instead of the other way around. she loves designing things, so it had to look good. she’s a performance nerd, so it had to be fast.
+          </p>
+          <p>
+            that’s how hibi was born, and today it has 1,000 downloads.
+          </p>
+        </section>
+        <section class="story-section" aria-labelledby="story-belief">
+          <h2 id="story-belief">what we believe</h2>
+          <p>
+            writing is personal. your words should live in plain files, in your own folders, in formats that will outlast any app, including this one.
+          </p>
+          <p>
+            the editor should be quiet and fast and get out of your way. nothing to hand over, nothing to lock you in.
+          </p>
+        </section>
+        <section class="story-section" aria-labelledby="story-team">
+          <h2 id="story-team">we are not doing this alone</h2>
+          <p>
+            hibi started with one person, and it didn’t stay that way. other maintainers joined because they share the same vision: a writing app that is simple, powerful and yours.
+          </p>
+          <p>
+            they look after the linux, nix and windows versions, and hibi is better for every one of them. our beloved maintainers help make this project possible, along with the help of everyone else.
+          </p>
+        </section>
+        <section class="story-section" aria-labelledby="story-help">
+          <h2 id="story-help">help us keep it growing</h2>
+          <p>
+            there is a lot left to build, and we would love to build it with you. it’s also may’s dream that she can work on hibi full time one day, and your support is what makes that dream feel possible.
+          </p>
+          <p>
+            if hibi sounds like the app you have been waiting for, the kindest thing you can do is star it on github. it helps other writers find it, and it tells us the work matters. then come say hi: join the discord to share ideas, ask questions, or just hang out with the people who make hibi.
+          </p>
+          <p class="story-actions">
+            <a class="button cta-primary" href="https://github.com/schmayterling/hibi"
+              ><svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" /></svg>star hibi on github</a
+            >
+            <a class="button" href="https://discord.gg/v9r4cABUP2">join the discord</a>
+          </p>
+        </section>
+      </div>
+      <!--hibi:people-->
+      <section class="cta" aria-labelledby="cta-title" data-scene="liftoff">
+        <!-- the hero's park again, down to its horizon: the treeline and the top of its lamppost -->
+        <div class="park park-horizon" aria-hidden="true">
+          <div class="g-scene">
+            <i class="g-layer g-sky"></i>
+            <i class="g-sun g-day"></i>
+            <i class="g-free g-stars g-night" data-twinkle="4.3,0"></i>
+            <i class="g-free g-stars-2 g-night" data-twinkle="6.1,0.45"></i>
+            <i class="g-free g-moon g-night"><i class="g-halo"></i></i>
+            <i class="g-layer g-clouds g-clouds-far" data-drift="640"></i>
+            <i class="g-layer g-clouds g-clouds-mid" data-drift="460"></i>
+            <i class="g-layer g-clouds g-clouds-near" data-drift="330"></i>
+            <i class="g-layer g-far"></i>
+            <i class="g-layer g-lamp" data-perch="0.5,0.012"></i>
+            <i class="g-layer g-glow g-night"></i>
+          </div>
+        </div>
+        <div class="cta-copy">
+          <h2 id="cta-title">a place for your <em>words</em>.</h2>
+          <a class="button cta-primary download-get" href="/download/"
+            ><svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3" /><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /></svg>download hibi<span class="beta-tag">beta</span></a
+          >
+          <p class="facts">free and open source · macOS, windows, linux</p>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-details">
+          <div>
+            <a class="footer-brand wordmark" href="/" aria-label="hibi home">
+              <span class="wordmark-icon" aria-hidden="true"></span>
+              hibi
+            </a>
+            <p class="footer-tagline">a place for your words</p>
+          </div>
+          <div class="footer-groups">
+            <div class="footer-group">
+              <h2>hibi</h2>
+              <nav aria-label="footer hibi">
+                <a href="/download/">download</a>
+                <a href="/#features">features</a>
+                <a href="/addons/">addons</a>
+                <a href="/sync/">sync</a>
+                <a href="/publish/">publish</a>
+              </nav>
+            </div>
+            <div class="footer-group">
+              <h2>resources</h2>
+              <nav aria-label="footer resources">
+                <a href="https://docs.hibi.garden">documentation</a>
+                <a href="https://github.com/schmayterling/hibi/releases">changelog</a>
+                <a href="/#faq">faq</a>
+                <a href="/story/" aria-current="page">story</a>
+                <a href="/credits/">credits</a>
+                <a href="https://github.com/sponsors/schmayterling">sponsor</a>
+              </nav>
+            </div>
+            <div class="footer-group">
+              <h2>community</h2>
+              <nav aria-label="footer community">
+                <a href="https://github.com/schmayterling/hibi"><svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg>github</a>
+                <a href="https://discord.gg/v9r4cABUP2"><svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" /></svg>discord</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© 2026 <a href="https://github.com/schmayterling">schmayterling</a> · made with ♥</span>
+          <a href="#">back to top <span aria-hidden="true">↑</span></a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

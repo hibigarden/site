@@ -164,12 +164,12 @@ export function renderPeople({ people, avatars = {} }) {
     .join("\n          ");
   return `<section class="s people wrap" aria-labelledby="people-title">
         <header class="s-head">
-          <h2 id="people-title">led by a team who loves to make writing great.</h2>
+          <h2 id="people-title">led by a team who loves to make writing yours.</h2>
         </header>
         <ul class="team" aria-label="team">
           ${team}
         </ul>
-        <h3 class="people-sub" id="people-everyone">and everyone who helped make hibi possible.</h3>
+        <h3 class="people-sub" id="people-everyone">possible with everyone who does too.</h3>
         <ul class="contributors" aria-labelledby="people-everyone">
           ${everyone}
         </ul>

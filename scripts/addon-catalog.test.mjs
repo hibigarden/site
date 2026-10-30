@@ -130,6 +130,7 @@ test("reads every directory source variant", () => {
     entry({}),
     entry({
       id: "doom",
+      apiVersion: 3,
       path: undefined,
       kind: "theme",
       repository: { url: "https://github.com/o/r", commit, path: "addon" },
@@ -206,6 +207,7 @@ test("skips malformed entries and URLs", () => {
     entry({ homepage: "javascript:alert(1)" }),
     entry({ id: "Bad id" }),
     entry({ kind: "native" }),
+    entry({ apiVersion: 4 }),
     entry({ license: "" }),
     entry({ authors: [] }),
     repository({ url: "http://github.com/o/r" }),
@@ -218,7 +220,7 @@ test("skips malformed entries and URLs", () => {
     download({ size: 26 * 1024 * 1024 }),
   ]);
   assert.deepEqual(entries, []);
-  assert.equal(skipped, 18);
+  assert.equal(skipped, 19);
   assert.throws(() => parseDirectory({}), /directory is invalid/);
 });
 

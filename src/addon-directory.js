@@ -122,7 +122,7 @@ export function parseDirectory(value, builtinIds = []) {
       !text(entry.description, 500) ||
       !text(entry.version, 40) ||
       !text(entry.license, 100) ||
-      ![1, 2].includes(entry.apiVersion) ||
+      ![1, 2, 3].includes(entry.apiVersion) ||
       !["extension", "theme"].includes(entry.kind) ||
       (entry.homepage !== undefined && !homepage)
     ) {

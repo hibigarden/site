@@ -484,7 +484,7 @@ if (garden) {
     tx = ty = 0;
   });
   // garden.css hides the bench, lamp, glow and trees on narrow panels
-  intent(() => warm(garden, garden.clientWidth / garden.clientHeight < 0.55 ? ":not(.g-bench, .g-lamp, .g-glow, .g-trees, .g-tree)" : ""));
+  intent(() => warm(garden, garden.clientWidth / garden.clientHeight < 0.55 ? ":not(.g-bench, .g-lamp, .g-glow, .g-tree)" : ""));
 }
 
 // Park panels (.park, behind the window of "built around writing" and the closing call to action): the hero's park in

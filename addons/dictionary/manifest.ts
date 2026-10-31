@@ -22,6 +22,39 @@ export default {
     "category": "addons",
     "icon": "book-open"
   },
+  "commands": [
+    {
+      "id": "define",
+      "label": "Define word",
+      "keywords": "dictionary definition meaning look up",
+      "menu": {
+        "location": "editor",
+        "group": "dictionary",
+        "order": 1
+      }
+    },
+    {
+      "id": "synonyms",
+      "label": "Find synonyms",
+      "keywords": "thesaurus synonym antonym replace word",
+      "defaultShortcut": "shift+f7",
+      "menu": {
+        "location": "editor",
+        "group": "dictionary",
+        "order": 2
+      }
+    },
+    {
+      "id": "add-word",
+      "label": "Add word to dictionary",
+      "keywords": "dictionary custom word add own spelling",
+      "menu": {
+        "location": "editor",
+        "group": "dictionary",
+        "order": 3
+      }
+    }
+  ],
   "startup": "background",
   "licenses": [
     {

@@ -14,7 +14,6 @@ export default {
   "defaultEnabled": true,
   "capabilities": [
     "ui",
-    "rich",
     "source",
     "markdown"
   ],

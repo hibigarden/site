@@ -81,11 +81,11 @@
   },
   "markdown": {
     "released": "2026-09-17",
-    "updated": "2026-11-05"
+    "updated": "2026-11-11"
   },
   "math": {
     "released": "2026-09-17",
-    "updated": "2026-11-05"
+    "updated": "2026-11-11"
   },
   "mcp-server": {
     "released": "2026-10-10",
@@ -141,7 +141,7 @@
   },
   "text-extras": {
     "released": "2026-09-17",
-    "updated": "2026-10-28"
+    "updated": "2026-11-23"
   },
   "textile": {
     "released": "2026-09-17",
@@ -161,7 +161,7 @@
   },
   "word-count": {
     "released": "2026-09-18",
-    "updated": "2026-11-05"
+    "updated": "2026-11-11"
   },
   "writing-suggestions": {
     "released": "2026-09-27",

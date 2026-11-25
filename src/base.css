@@ -369,6 +369,25 @@ summary:focus-visible {
   display: block;
 }
 
+/* the footer credit. the lockup is the schmayterling brand kit's logo/lockup.svg, and the kit allows only ink on light
+   (#1d1d1f) and paper on dark (#f5f5f5), never the page's own ink. 1.64em tall and lowered 0.44em sets the name on the
+   text's baseline at about its cap height, 8.3em wide: over the kit's 96px minimum at the footer's 12.5px */
+.site-footer .schmayterling-credit {
+  color: var(--ink);
+  text-decoration: none;
+}
+.schmayterling-lockup {
+  display: inline-block;
+  width: auto;
+  height: 1.64em;
+  margin-inline: 0.1em -0.25em;
+  vertical-align: -0.44em;
+  fill: #1d1d1f;
+}
+[data-theme="dark"] .schmayterling-lockup {
+  fill: #f5f5f5;
+}
+
 /* the links fold into the menu before they can run into the wordmark (sync and publish made the row longer) */
 @media (max-width: 879px) {
   .menu-toggle {
@@ -432,6 +451,14 @@ summary:focus-visible {
   .site-header nav a.nav-download {
     min-height: 44px;
     padding: 0 14px;
+  }
+  /* the credit takes its own line, so the colophon never wraps onto a lone separator */
+  .site-footer .schmayterling-credit {
+    display: flex;
+    width: fit-content;
+  }
+  .schmayterling-credit-sep {
+    display: none;
   }
 }
 @media (max-width: 440px) {
